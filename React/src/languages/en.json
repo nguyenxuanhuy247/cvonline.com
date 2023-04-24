@@ -1,0 +1,55 @@
+{
+    "homeheader": {
+        "specialty": "Medical specialty",
+        "searchdoctor": "Find a doctor  by speciallty",
+        "health-facility": "Health facilities",
+        "select-room": "Choose hospital clinic",
+        "doctor": "Doctor",
+        "select-doctor": "Choose a good doctor",
+        "fee": "checkup package",
+        "check-health": "General health check",
+        "support": "support",
+        "welcome": "Welcome, "
+    },
+    "banner": {
+        "title1": "HEALTH FOUNDATION",
+        "title2": "COMPLETE HEALTH CARE",
+        "child1": "Specialist examination",
+        "child2": "Remote examination",
+        "child3": "General examination",
+        "child4": "Medical test",
+        "child5": "Mental Health",
+        "child6": "Dental examination"
+    },
+    "menu": {
+        "admin": {
+            "manage-user": "Users",
+            "manage-doctor": "Manage doctors",
+            "manage-admin": "Manage admin",
+            "crud": "CRUD user",
+            "crud-redux": "CRUD Redux",
+            "clinic": "Clinics",
+            "manage-clinic": "Manage clinics",
+            "specialty": "Specialties",
+            "manage-specialty": "Manage specialties",
+            "handbook": "Handbook",
+            "manage-handbook": "Manage handbook",
+            "abc": "abc",
+            "def": "def"
+        }
+    },
+    "manage-user": {
+        "add": "Add new user",
+        "email": "Email",
+        "password": "Password",
+        "first-name": "First name",
+        "last-name": "Last name",
+        "phone-number": "Phone number",
+        "address": "Address",
+        "gender": "Gender",
+        "position": "Position",
+        "role": "Role",
+        "image": "Avatar",
+        "save": "Save user"
+    }
+}
