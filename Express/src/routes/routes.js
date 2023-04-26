@@ -1,10 +1,10 @@
 import express from 'express';
-import * as homeController from '../controllers/homeController.js';
+import * as userController from '~/controllers';
 
 let router = express.Router();
 
 let initWebRoutes = (app) => {
-    router.get('/', homeController.getHomePage);
+    router.post('/api/login', userController.handleUserLogin);
 
     return app.use('/', router);
 };

@@ -4,8 +4,8 @@ import { routerMiddleware } from "connected-react-router";
 import { createBrowserHistory } from "history";
 import { createStateSyncMiddleware } from "redux-state-sync";
 
-import createRootReducer from "./store/reducers/rootReducer.js";
-import actionNames from "./store/actions/actionNames.js";
+import createRootReducer from "~/store/reducers/rootReducer.js";
+import actionNames from "~/store/actions/actionNames.js";
 
 
 export const history = createBrowserHistory({ basename: process.env.REACT_APP_ROUTER_BASE_NAME });

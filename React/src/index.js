@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 
-import reduxStore, { persistor } from "./redux";
+import reduxStore, { persistor } from "~/config/redux.js";
 import IntlProviderWrapper from "./hoc/IntlProviderWrapper.js";
 import App from "./containers/App.js";
 
