@@ -10,6 +10,7 @@ import { history } from '~/config/redux.js';
 import { path } from '~/utils';
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
 import Auth from './Auth/Auth.js';
+import ManageUser from './ManageUser/ManageUser.js';
 
 const cx = className.bind(styles);
 
@@ -21,7 +22,8 @@ class App extends Component {
                 <ConnectedRouter history={history}>
                     <div className={cx('App')}>
                         <Switch>
-                            <Route path={path.HOME} component={userIsNotAuthenticated(Auth)} />
+                            <Route path={path.HOME} exact component={userIsNotAuthenticated(Auth)} />
+                            <Route path={path.CRUDUSER} component={ManageUser} />
                         </Switch>
                     </div>
                 </ConnectedRouter>

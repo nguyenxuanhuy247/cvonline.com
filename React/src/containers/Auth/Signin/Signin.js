@@ -6,6 +6,7 @@ import { GrGoogle } from 'react-icons/gr';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import logoWithText from '~/assets/logo/logo-with-text.png';
 import Validator from '~/components/formValidation.js';
@@ -22,6 +23,7 @@ class Login extends Component {
             password: '',
             errorMessage: '',
             isShowPassword: false,
+            prevFormData: {},
         };
     }
 
@@ -37,34 +39,41 @@ class Login extends Component {
         this.setState({ isShowPassword: !this.state.isShowPassword });
     };
 
-    handleValidateForm = () => {
-        Validator({
-            formSelector: `.${cx('form-login')}`,
-            formGroupSelector: `.${cx('form-group')}`,
-            messageSelector: `.${cx('form-message')}`,
-            rules: [
-                Validator.isRequired(`#${cx('email')}`),
-                Validator.isEmail(`#${cx('email')}`),
-                Validator.isRequired(`#${cx('password')}`),
-                Validator.minLength(`#${cx('password')}`, 6),
-            ],
-            onSubmit: async (data) => {
-                try {
-                    let dataRes = await userService.handleLogin(data.email, data.password);
-                    if (dataRes?.errorCode !== 0) {
-                        this.setState({ errorMessage: dataRes.errorMessage });
-                    } else if (dataRes?.errorCode === 0) {
-                        this.props.userLoginSuccess(dataRes.user);
-                    }
-                } catch (error) {
-                    console.log('An error in ComponentDidMount() in Login.js: ', error);
+    fetchData = async (dataReq) => {
+        let isEqual = _.isEqual(this.state.prevFormData, dataReq);
+        if (!isEqual) {
+            try {
+                console.log('call nAPI');
+                await this.setState({ errorMessage: '' });
+                await this.setState({ prevFormData: dataReq });
+                let dataRes = await userService.handleLogin(dataReq.email, dataReq.password);
+                if (dataRes?.errorCode !== 0) {
+                    this.setState({ errorMessage: dataRes.errorMessage });
+                } else if (dataRes?.errorCode === 0) {
+                    this.props.userLoginSuccess(dataRes.user);
                 }
-            },
-        });
+            } catch (error) {
+                console.log('An error in fetchData() in Login.js: ', error);
+            }
+        }
     };
 
-    componentDidUpdate = (prevProps, prevState, snapshot) => {
-        this.handleValidateForm();
+    handleValidateForm = () => {
+        Validator(
+            {
+                formSelector: `.${cx('form')}`,
+                formGroupSelector: `.${cx('form-group')}`,
+                messageSelector: `.${cx('form-message')}`,
+                rules: [
+                    Validator.isRequired(`#${cx('email')}`),
+                    Validator.isEmail(`#${cx('email')}`),
+                    Validator.isRequired(`#${cx('password')}`),
+                    Validator.minLength(`#${cx('password')}`, 6),
+                ],
+            },
+            cx('invalid'),
+            this.fetchData,
+        );
     };
 
     componentDidMount = () => {
@@ -75,13 +84,13 @@ class Login extends Component {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
 
         return (
-            <div className={cx('login')}>
-                <div className={cx('login-container')}>
-                    <img src={logoWithText} alt="mycompany" className={cx('logo')} />
+            <div className={cx('signin')}>
+                <div className={cx('signin-container')}>
+                    <form className={cx('form')} autoComplete="on">
+                        <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
 
-                    <form className={cx('form-login')} autoComplete="on">
                         <div className={cx('form-group')}>
-                            <div className={cx('form-field')}>
+                            <div className={cx('form-input')}>
                                 <label htmlFor="email" className={cx('form-label')}>
                                     <MdEmail className={cx('form-icon')} />
                                 </label>
@@ -100,7 +109,7 @@ class Login extends Component {
                         </div>
 
                         <div className={cx('form-group')}>
-                            <div className={cx('form-field')}>
+                            <div className={cx('form-input')}>
                                 <label htmlFor="password" className={cx('form-label')}>
                                     <RiLockPasswordFill className={cx('form-icon')} />
                                 </label>
@@ -118,13 +127,14 @@ class Login extends Component {
                                     <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
                                 </div>
                             </div>
+                            <span className={cx('form-message')}></span>
                             <span className={cx('form-message')}>{this.state.errorMessage}</span>
                         </div>
 
                         <a href="#!" className={cx('forgot-password')}>
                             Quên mật khẩu?
                         </a>
-                        <button type="submit" className={cx('signin-btn')} onClick={() => this.handleValidateForm()}>
+                        <button type="submit" className={cx('form-submit')}>
                             Đăng nhập
                         </button>
                     </form>
@@ -140,10 +150,9 @@ class Login extends Component {
                     </div>
                     <div className={cx('signup')}>
                         <p className={cx('signup-question')}>Bạn chưa có tài khoản?</p>
-                        {/* <button type="submit" className={cx('signup-btn')}>
+                        <Link to={'/signup'} className={cx('signup-btn')}>
                             Đăng ký
-                        </button> */}
-                        <Link to={"/signup"} className={cx('signup-btn')}>Đăng ký</Link>
+                        </Link>
                     </div>
                 </div>
             </div>

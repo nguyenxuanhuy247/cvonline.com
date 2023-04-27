@@ -1,10 +1,8 @@
 export const path = {
     HOME: '/',
-    HOMEPAGE: '/home',
-    LOGIN: '/login',
+    SIGNIN: '/signin',
     SIGNUP: '/signup',
-    LOG_OUT: '/logout',
-    SYSTEM: '/system',
+    CRUDUSER: '/crud-user',
 };
 
 export const LANGUAGES = {

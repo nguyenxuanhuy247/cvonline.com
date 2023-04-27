@@ -22,7 +22,7 @@ const checkUserEmailInDB = async (userEmail) => {
             return false;
         }
     } catch (error) {
-        console.log('An error in checkUserEmailInDB function: ', error);
+        console.log('An error in checkUserEmailInDB() in userService.js : ', error);
     }
 };
 
@@ -32,7 +32,7 @@ export const handleUserLogin = async (userEmail, userPassword) => {
 
         // Use email to check whether the user exists
         let isEmailExisted = await checkUserEmailInDB(userEmail);
-        
+
         if (isEmailExisted) {
             // Get user's data again prevent someone from deleting/changing data
             let user = await db.User.findOne({
@@ -63,5 +63,27 @@ export const handleUserLogin = async (userEmail, userPassword) => {
         }
 
         return userData;
-    } catch (error) {}
+    } catch (error) {
+        console.log('An error in handleUserLogin() in userService.js : ', error);
+    }
+};
+
+export const handleGetAllUsers = (userId) => {
+    try {
+        let users;
+        if (userId === 'ALL') {
+            users = db.User.findAll();
+        } else if (userId !== 'ALL') {
+            users = db.User.findOne({
+                where: { id: userId },
+                attributes: {
+                    exclude: ['password'],
+                },
+            });
+        }
+
+        return users;
+    } catch (error) {
+        console.log('An error in handleGetAllUsers() in userService.js : ', error);
+    }
 };

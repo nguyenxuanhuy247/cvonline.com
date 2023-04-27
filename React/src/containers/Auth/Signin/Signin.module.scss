@@ -1,26 +1,13 @@
-// Common
-@mixin btn {
-    width: 100%;
-    color: var(--primary-color);
-    background-color: #fff;
-    padding: 8px 20px;
-    text-align: center;
-    font-size: 1.6rem;
-    line-height: 1.5;
-    border: 1px solid var(--primary-color);
-    border-radius: 6px;
-    cursor: pointer;
-}
+@import '../Auth.module.scss';
 
-// Individual
-.login {
+.signin {
     display: flex;
     align-items: center;
     min-height: 100vh;
     background-color: #f0f2f5;
     user-select: none;
 
-    .login-container {
+    .signin-container {
         position: absolute;
         inset: auto 0;
         margin: auto;
@@ -32,33 +19,40 @@
         background-color: #fff;
         overflow: hidden;
 
-        .logo {
-            width: 100%;
-            height: auto;
-        }
-
-        .form-login {
-            margin-top: 50px;
+        .form {
+            .form-logo {
+                margin-bottom: 50px;
+                width: 100%;
+                height: auto;
+            }
 
             .form-group {
                 &.invalid {
-                    .form-field {
+                    .form-input {
                         border-color: #f33a58;
+
+                        .form-label {
+                            border-color: #f33a58;
+                        }
                     }
                 }
 
-                .form-field {
+                .form-input {
                     height: 44px;
-                    border: 2px solid #eee;
+                    border: 1px solid #b3b3b3;
                     border-radius: 99px;
                     overflow: hidden;
                     position: relative;
                     display: flex;
                     align-items: center;
 
-                    &:focus-within {
-                        border: 2px solid #aaa;
+                    &:hover {
+                        border-color: #1dbfaf;
                         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+                        .form-label {
+                            border-color: #1dbfaf;
+                        }
                     }
 
                     .form-label {
@@ -70,7 +64,8 @@
                         padding: 8px;
                         border-top-left-radius: 99px;
                         border-bottom-left-radius: 99px;
-                        background-color: #eee;
+                        border-right: 1px solid #b3b3b3;
+                        background-color: #fff;
 
                         .form-icon {
                             font-size: 20px;
@@ -95,7 +90,7 @@
                             background-color: #fff;
                         }
 
-                        &[id="password"] {
+                        &[id='password'] {
                             padding-right: 44px;
                         }
                     }
@@ -124,36 +119,29 @@
                     text-align: center;
                     color: #f33a58;
                 }
+
+                & + .form-group {
+                    margin-top: 8px;
+                }
             }
 
-            .form-group + .form-group {
-                margin-top: 8px;
+            .forgot-password {
+                display: block;
+                margin-top: 16px;
+                font-size: 1.4rem;
+                font-weight: 500;
+                color: #1c74e4;
+                text-align: right;
+
+                &:hover {
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                }
             }
-        }
 
-        .forgot-password {
-            display: block;
-            margin-top: 16px;
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: #1c74e4;
-            text-align: right;
-
-            &:hover {
-                text-decoration: underline;
-                text-underline-offset: 3px;
-            }
-        }
-
-        .signin-btn {
-            @include btn;
-            margin-top: 20px;
-            color: #fff;
-            background-color: var(--primary-color);
-            font-size: 1.8rem;
-
-            &:hover {
-                opacity: 0.9;
+            .form-submit {
+                @include btn-solid;
+                margin-top: 20px;
             }
         }
 
@@ -198,29 +186,30 @@
                 }
             }
         }
-    }
 
-    .signup {
-        display: flex;
-        align-items: center;
-        column-gap: 12px;
-        margin-top: 40px;
+        .signup {
+            display: flex;
+            align-items: center;
+            column-gap: 12px;
+            margin-top: 40px;
 
-        .signup-question {
-            flex-shrink: 0;
-            font-size: 1.4rem;
-            line-height: 1.5;
-            height: 100%;
-            margin-bottom: 0;
-            color: #444;
-        }
+            .signup-question {
+                flex-shrink: 0;
+                font-size: 1.4rem;
+                line-height: 1.5;
+                height: 100%;
+                margin-bottom: 0;
+                color: #444;
+            }
 
-        .signup-btn {
-            @include btn;
+            .signup-btn {
+                @include btn-solid;
+                @include btn-regular;
 
-            &:hover {
-                color: #fff;
-                background-color: var(--primary-color);
+                &:hover {
+                    color: #fff;
+                    background-color: var(--primary-color);
+                }
             }
         }
     }

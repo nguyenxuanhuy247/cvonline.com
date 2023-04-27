@@ -1,0 +1,27 @@
+@mixin btn-solid {
+    width: 100%;
+    color: var(--primary-color);
+    background-color: #fff;
+    padding: 8px 20px;
+    text-align: center;
+    font-size: 1.8rem;
+    line-height: 1.5;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0.85;
+    color: #fff;
+    background-color: var(--primary-color);
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+@mixin btn-regular {
+    color: var(--primary-color);
+    background-color: #fff;
+    border: 1px solid var(--primary-color);
+    padding: 6px 20px;
+    font-size: 1.6rem;
+}

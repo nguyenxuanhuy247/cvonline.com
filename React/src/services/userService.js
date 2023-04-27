@@ -1,10 +1,15 @@
 import axios from "~/config/axios.js";
 
-const handleLogin = (userEmail, userPassword) => {
+export const handleLogin = (userEmail, userPassword) => {
     return axios.post("/api/login", {
         email: userEmail,
         password: userPassword,
     });
 };
 
-export { handleLogin };
+
+export const getAllUsersFromServer = (inputId) => {
+    return axios.get(`/api/get-all-users?id=${inputId}`);
+};
+
+

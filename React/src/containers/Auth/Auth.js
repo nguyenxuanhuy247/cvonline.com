@@ -10,7 +10,7 @@ class Auth extends Component {
     render() {
         return (
             <Switch>
-                <Route path={path.LOGIN} component={Signin} />
+                <Route path={path.SIGNIN} exact component={Signin} />
                 <Route path={path.SIGNUP} component={Signup} />
             </Switch>
         );
