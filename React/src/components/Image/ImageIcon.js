@@ -10,10 +10,10 @@ export class ImageIcon extends Component {
     render = () => {
         return (
             <img
-                className={classNames(cx('image-icon'))}
+                className={classNames(cx('image-icon', this.props.hover))}
                 src={this.props.src}
-                width={this.props.width || '30px'}
-                height={this.props.height || '30px'}
+                width={this.props.width || '24px'}
+                height={this.props.height || '24px'}
                 alt={this.props.alt}
             />
         );

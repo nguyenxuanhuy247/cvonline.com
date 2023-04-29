@@ -23,7 +23,7 @@ export default class Library extends Component {
         return (
             <Comp className={cx('button')} {...button}>
                 <ImageIcon src={this.props.src} alt={this.props.name}/>
-                <span className={cx('name')}>{this.props.name} |</span>
+                <span className={cx('name')}>{this.props.name}vvccccccccccccccccccccccccccv</span>
                 <span className={cx('version')}>{this.props.version}</span>
             </Comp>
         );

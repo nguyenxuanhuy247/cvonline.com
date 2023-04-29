@@ -22,7 +22,7 @@ export default class Technology extends Component {
 
         return (
             <Comp className={cx('button')} {...button}>
-                <ImageIcon src={this.props.src} alt={this.props.name}/>
+                <ImageIcon src={this.props.src} alt={this.props.name} hover={cx('image')}/>
                 <span className={cx('name')}>{this.props.name}</span>
             </Comp>
         );

@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import className from 'classnames/bind';
 import { AiFillHome } from 'react-icons/ai';
-import { FaUserAlt, FaRoad, FaUniversity, FaUserCircle, FaAddressBook } from 'react-icons/fa';
+import { FaUserAlt, FaRoad, FaUniversity, FaUserCircle, FaAddressBook, FaGraduationCap } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 
@@ -46,64 +46,112 @@ class PersonalPage extends Component {
                         </div>
                     </aside>
                     <main className={cx('main')}>
-                        {/* Section 1 */}
-                        <div className={cx('section-1')}>
-                            <div className={cx('candidate')}>
-                                <img src={avatar} className={cx('avatar')} alt="Nguyen Xuan Huy" />
-                                <strong className={cx('name')}>Nguyễn Xuân Huy</strong>
-                            </div>
-                            <div className={cx('apply-job')}>
-                                <span className={cx('job-title')}>Fullstack developer</span>
-                                <div className={cx('skills')}>React + Express</div>
-                            </div>
-                        </div>
-
-                        {/* Section 2 */}
-                        <div className={cx('section-2')}>
-                            <section className={cx('detail-info')}>
-                                <p className={cx('text')}>Giới thiệu</p>
-                                <div className={cx('content')}>
-                                    <artical className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <BsFillCalendarDayFill />
-                                        </span>
-                                        <span className={cx('info-text')}>24/07/1993</span>
-                                    </artical>
-                                    <artical className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <FaUserCircle />
-                                        </span>
-                                        <span className={cx('info-text')}>Nam</span>
-                                    </artical>
-                                    <artical className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <BsFillTelephoneFill />
-                                        </span>
-                                        <span className={cx('info-text')}>0356 118 188</span>
-                                    </artical>
-                                    <artical className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <MdEmail />
-                                        </span>
-                                        <span className={cx('info-text')}>nguyenxuanhuy24071993@gmail.com</span>
-                                    </artical>
-                                    <artical className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <FaAddressBook />
-                                        </span>
-                                        <span className={cx('info-text')}>
-                                            Số nhà 126, xóm 1, Vĩnh Thanh, Vĩnh Ngọc, Đông Anh, Hà Nội
-                                        </span>
-                                    </artical>
+                        <div className={cx('wrapper')}>
+                            {/* Column left */}
+                            <div className={cx('col-left')}>
+                                {/* Candidate */}
+                                <div className={cx('candidate')}>
+                                    <img src={avatar} className={cx('avatar')} alt="Nguyen Xuan Huy" />
+                                    <strong className={cx('name')}>Nguyễn Xuân Huy</strong>
                                 </div>
-                            </section>
-                        </div>
 
-                        {/* Section 3 */}
-                        <div className={cx('section-3')}>
-                            <section className={cx('experience')}>
-                                <Product />
-                            </section>
+                                {/* Candidate info */}
+                                <div className={cx('candidate-info')}>
+                                    <p className={cx('text')}>Thông tin cá nhân</p>
+                                    <div className={cx('content')}>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <BsFillCalendarDayFill />
+                                            </span>
+                                            <span className={cx('info-text')}>24/07/1993</span>
+                                        </artical>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <FaUserCircle />
+                                            </span>
+                                            <span className={cx('info-text')}>Nam</span>
+                                        </artical>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <BsFillTelephoneFill />
+                                            </span>
+                                            <span className={cx('info-text')}>0356 118 188</span>
+                                        </artical>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <MdEmail />
+                                            </span>
+                                            <span className={cx('info-text')}>nguyenxuanhuy24071993@gmail.com</span>
+                                        </artical>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <FaAddressBook />
+                                            </span>
+                                            <span className={cx('info-text')}>
+                                                Số nhà 126, xóm 1, Vĩnh Thanh, Vĩnh Ngọc, Đông Anh, Hà Nội
+                                            </span>
+                                        </artical>
+                                    </div>
+                                </div>
+
+                                {/* Literacy */}
+                                <div className={cx('literacy')}>
+                                    <p className={cx('text')}>Trình độ học vấn</p>
+                                    <div className={cx('content')}>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <FaUniversity />
+                                            </span>
+                                            <span className={cx('info-text')}>Trường Đại Học Công Nghiệp Hà Nội</span>
+                                        </artical>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <FaGraduationCap />
+                                            </span>
+                                            <span className={cx('info-text')}>Khoa Cơ Khí</span>
+                                        </artical>
+                                    </div>
+                                </div>
+
+                                {/* Languages */}
+                                <div className={cx('Languages')}>
+                                    <p className={cx('text')}>Trình độ ngoại ngữ</p>
+                                    <div className={cx('content')}>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <FaUniversity />
+                                            </span>
+                                            <span className={cx('info-text')}>Tiếng Anh</span>
+                                        </artical>
+                                        <artical className={cx('info')}>
+                                            <span className={cx('icon')}>
+                                                <FaGraduationCap />
+                                            </span>
+                                            <span className={cx('info-text')}>Tiếng Nhật</span>
+                                        </artical>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Column right */}
+                            <div className={cx('col-right')}>
+                                <div className={cx('row-job-title')}>
+                                    <span className={cx('job-title')}>Fullstack developer</span>
+                                </div>
+
+                                {/* experience */}
+                                <div className={cx('experience')}>
+                                    <div className={cx('real-product')}>
+                                        <p className={cx('title')}>SẢN PHẨM THỰC TẾ</p>
+                                    </div>
+                                    <div className={cx('product-list')}>
+                                        <Product />
+                                        <Product />
+                                        <Product />
+                                        <Product />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </main>
                 </div>
