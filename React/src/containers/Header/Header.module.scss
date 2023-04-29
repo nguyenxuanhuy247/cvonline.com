@@ -1,0 +1,64 @@
+@import '../App.module.scss';
+
+.header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid #e4e6eb;
+
+    .logo {
+        height: 40px;
+    }
+
+    .search {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        width: 400px;
+        border-radius: 99px;
+        overflow: hidden;
+        background-color: #F0F2F5;
+        // border: 1px solid #ccc;
+        // box-shadow: 0 1px 4px #e4e6eb;
+
+        .search-input {
+            font-size: 1.6rem;
+            flex: 1;
+            height: 100%;
+            outline: none;
+            border: none;
+            padding: 0 8px 0 20px;
+            background-color: transparent;
+        }
+
+        .search-icon {
+            font-size: 20px;
+            display: inline-block;
+            padding: 0 16px 0 12px;
+            cursor: pointer;
+            position: relative;
+            top: -1px;
+        }
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        column-gap: 12px;
+        flex-shrink: 0;
+
+        .signin {
+            @include btn-solid;
+            white-space: nowrap;
+        }
+
+        .signup {
+            @include btn-solid;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            background-color: #fff;
+        }
+    }
+}

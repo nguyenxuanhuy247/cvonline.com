@@ -12,6 +12,7 @@ import logoWithText from '~/assets/logo/logo-with-text.png';
 import Validator from '~/components/formValidation.js';
 import * as userService from '~/services';
 import styles from './Signin.module.scss';
+import * as userActions from '~/store/actions';
 
 const cx = className.bind(styles);
 
@@ -50,7 +51,7 @@ class Login extends Component {
                 if (dataRes?.errorCode !== 0) {
                     this.setState({ errorMessage: dataRes.errorMessage });
                 } else if (dataRes?.errorCode === 0) {
-                    this.props.userLoginSuccess(dataRes.user);
+                    this.props.userLoginSuccess(dataRes.data);
                 }
             } catch (error) {
                 console.log('An error in fetchData() in Login.js: ', error);
@@ -167,7 +168,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        userLoginSuccess: (userData) => dispatch(userActions.userLoginSuccess(userData)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

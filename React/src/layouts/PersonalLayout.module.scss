@@ -1,0 +1,179 @@
+// Header
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #fff;
+}
+
+// Container
+.container {
+    display: flex;
+
+    // Side bar
+    .sidebar {
+        padding: 0 8px;
+        background-color: #fff;
+        border-right: 1px solid #e4e6eb;
+        position: sticky;
+        top: 60px;
+
+        .page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #404040;
+            padding: 12px 12px;
+            border-radius: 20px;
+            margin-top: 8px;
+            transition: 0.25s;
+
+            &:hover {
+                background-color: #e8ebed;
+                cursor: pointer;
+            }
+
+            .icon {
+                font-size: 22px;
+            }
+
+            .name {
+                font-size: 1.6rem;
+                padding-top: 8px;
+            }
+        }
+    }
+
+    // Main
+    .main {
+        padding: 12px 12px 0;
+        background-color: #f0f2f5;
+        flex-grow: 1;
+        display: grid;
+        grid-template-columns: 380px auto;
+        grid-gap: 12px;
+
+        // Section 1
+        .section-1 {
+            grid-column: 1 / 3;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+
+            .candidate {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 380px;
+                padding: 20px;
+                border: 1px solid red;
+
+                .avatar {
+                    width: 170px;
+                    height: 170px;
+                    object-fit: cover;
+                    border-radius: 50%;
+                    border: 3px solid red;
+                    outline: 10px solid rgb(255, 133, 133);
+                }
+
+                .name {
+                    font-size: 2rem;
+                    font-weight: 600;
+                    margin-top: 30px;
+                }
+            }
+
+            .apply-job {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                background-color: #318e06;
+
+                .job-title {
+                    font-size: 5rem;
+                    font-weight: 700;
+                }
+
+                .skills {
+                    margin-top: 20px;
+                    font-size: 3rem;
+                    font-weight: 500;
+                }
+            }
+
+            .general-info {
+            }
+        }
+
+        // Section 2
+        .section-2 {
+            .detail-info {
+                padding: 16px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+                .text {
+                    font-size: 2rem;
+                    font-weight: 600;
+                }
+
+                .content {
+                    display: flex;
+                    flex-direction: column;
+
+                    .info {
+                        display: flex;
+                        align-items: center;
+                        border: 1px solid blue;
+                        padding: 8px 8px 8px 0;
+
+                        .icon {
+                            height: 30px;
+                            width: 30px;
+                            border-radius: 50%;
+                            background-color: green;
+                            margin-right: 8px;
+                            padding: 4px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-shrink: 0;
+                            color: #fff;
+                        }
+
+                        .info-text {
+                            font-size: 1.6rem;
+                            font-weight: 600;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Section 3
+        .section-3 {
+            .experience {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+                .projects {
+                    flex: 1;
+                }
+
+                .libaries {
+                    width: 380px;
+                }
+            }
+        }
+    }
+}

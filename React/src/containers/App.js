@@ -2,8 +2,8 @@ import { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { Switch, Route } from 'react-router-dom';
-import 'reset-css';
 import className from 'classnames/bind';
+import 'reset-css';
 
 import styles from './App.module.scss';
 import { history } from '~/config/redux.js';
@@ -11,6 +11,7 @@ import { path } from '~/utils';
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
 import Auth from './Auth/Auth.js';
 import ManageUser from './ManageUser/ManageUser.js';
+import PersonalLayout from '~/layouts/PersonalLayout.js';
 
 const cx = className.bind(styles);
 
@@ -20,10 +21,16 @@ class App extends Component {
         return (
             <Fragment>
                 <ConnectedRouter history={history}>
-                    <div className={cx('App')}>
+                    <div className={cx('App', "list-unstyled")}>
                         <Switch>
-                            <Route path={path.HOME} exact component={userIsNotAuthenticated(Auth)} />
-                            <Route path={path.CRUDUSER} component={ManageUser} />
+                            {/* <Route path={path.HOME} exact component={userIsNotAuthenticated(Auth)} /> */}
+                            <Route path={path.MANAGEUSER} component={ManageUser} />
+
+                            <Route path={path.PERSONAL}>
+                                <PersonalLayout>
+                                    <ManageUser />
+                                </PersonalLayout>
+                            </Route>
                         </Switch>
                     </div>
                 </ConnectedRouter>

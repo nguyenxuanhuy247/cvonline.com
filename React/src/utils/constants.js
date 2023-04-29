@@ -2,7 +2,8 @@ export const path = {
     HOME: '/',
     SIGNIN: '/signin',
     SIGNUP: '/signup',
-    CRUDUSER: '/crud-user',
+    PERSONAL: '/personal',
+    MANAGEUSER: '/manage-user',
 };
 
 export const LANGUAGES = {

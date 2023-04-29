@@ -87,3 +87,27 @@ export const handleGetAllUsers = (userId) => {
         console.log('An error in handleGetAllUsers() in userService.js : ', error);
     }
 };
+
+export const deleteUser = async (userId) => {
+    try {
+        if (userId) {
+            let user = await db.User.findOne({ where: { id: userId } });
+
+            if (!user) {
+                return {
+                    errorCode: 2,
+                    errorMessage: 'User not found',
+                };
+            } else {
+                await db.User.destroy({ where: { id: userId } });
+                
+                return {
+                    errorCode: 0,
+                    errorMessage: 'User deleted successfully',
+                }
+            }
+        }
+    } catch (error) {
+        console.log('An error in deleteUser() in userService.js : ', error);
+    }
+};

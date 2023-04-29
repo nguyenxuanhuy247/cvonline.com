@@ -1,0 +1,19 @@
+.modal-content {
+    .modal-header {
+        background-color: #04aa6d;
+        display: flex;
+        color: #fff !important;
+
+        .modal-title {
+            font-size: 1.6rem !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            flex-shrink: 0 !important;
+        }
+
+        .btn-close {
+            padding: 0;
+            margin: 0;
+        }
+    }
+}

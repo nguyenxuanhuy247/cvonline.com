@@ -7,9 +7,12 @@ export const handleLogin = (userEmail, userPassword) => {
     });
 };
 
-
 export const getAllUsersFromServer = (inputId) => {
     return axios.get(`/api/get-all-users?id=${inputId}`);
+};
+
+export const deleteUser = (inputId) => {
+    return axios.delete(`/api/delete-user?id=${inputId}`);
 };
 
 
