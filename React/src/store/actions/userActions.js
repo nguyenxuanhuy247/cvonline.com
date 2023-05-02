@@ -1,18 +1,49 @@
-import actionTypes from './actionNames';
+import actionNames from './actionNames';
+import * as userService from '~/services';
 
-export const addUserSuccess = () => ({
-    type: actionTypes.ADD_USER_SUCCESS
-})
+// User signin
+export const userSignInStart = (dataUser) => async (dispatch) => {
+    dispatch(actionNames.USER_SIGNIN_START);
+    try {
+        let res = await userService.handleSignIn(dataUser.email, dataUser.password);
+        if (res?.errorCode === 0) {
+        }
+    } catch (error) {
+        userSignInFail();
+        console.log('An error in hashUserPassword() : ', error);
+    }
+};
 
-export const userLoginSuccess = (userData) => ({
-    type: actionTypes.USER_LOGIN_SUCCESS,
-    userData: userData,
-})
+export const userSignInSuccess = () => ({
+    type: actionNames.USER_LOGIN_FAIL,
+});
 
-export const userLoginFail = () => ({
-    type: actionTypes.USER_LOGIN_FAIL,
-})
+export const userSignInFail = () => ({
+    type: actionNames.USER_LOGIN_FAIL,
+});
 
-export const processLogout = () => ({
-    type: actionTypes.PROCESS_LOGOUT,
-})
+// User signup
+export const userSignUpStart = (userData) => {
+    return async (dispatch) => {
+        dispatch(actionNames.USER_SIGNUP_START);
+        try {
+            let res = await userService.handleSignUp(userData);
+            if (res?.errorCode === 0) {
+                dispatch(userSignUpSuccess());
+            } else {
+                dispatch(userSignUpFail());
+            }
+        } catch (error) {
+            userSignUpFail();
+            console.log('An error in userSignUpStart() : ', error);
+        }
+    };
+};
+
+export const userSignUpSuccess = () => ({
+    type: actionNames.USER_LOGIN_FAIL,
+});
+
+export const userSignUpFail = () => ({
+    type: actionNames.USER_LOGIN_FAIL,
+});

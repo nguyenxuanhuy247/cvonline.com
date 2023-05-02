@@ -1,4 +1,4 @@
-@import '../Auth.module.scss';
+@import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .signup {
     display: flex;
@@ -19,7 +19,7 @@
         background-color: #fff;
         overflow: hidden;
 
-        .form {
+        .form-signup {
             .form-logo {
                 margin-bottom: 20px;
                 width: 100%;

@@ -1,6 +1,6 @@
-
 const Validator = (options, invalid, fetchData) => {
     let selectorRules = {};
+    let dataFromValidator = {};
 
     // Function is to get form-group
     function getParent(inputElement, formGroupSelector) {
@@ -70,7 +70,7 @@ const Validator = (options, invalid, fetchData) => {
 
             if (isFormValid) {
                 let enableInputs = formElement.querySelectorAll('[name]');
-                let formData = Array.from(enableInputs).reduce(function (values, input) {
+                let dataFromValidator = Array.from(enableInputs).reduce(function (values, input) {
                     switch (input.type) {
                         case 'radio':
                             values[input.name] = formElement.querySelector(
@@ -96,8 +96,8 @@ const Validator = (options, invalid, fetchData) => {
 
                     return values;
                 }, {});
-    
-                fetchData(formData);
+
+                // fetchData(formData);
             }
         };
 
@@ -129,6 +129,8 @@ const Validator = (options, invalid, fetchData) => {
             });
         });
     }
+
+    console.log(dataFromValidator);
 };
 
 // Rule definitions
@@ -149,7 +151,7 @@ Validator.isEmail = function (selector, message) {
         selector: selector,
         test: function (value) {
             let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-                return regex.test(value) ? undefined : message || 'Trường này phải là email';
+            return regex.test(value) ? undefined : message || 'Trường này phải là email';
         },
     };
 };

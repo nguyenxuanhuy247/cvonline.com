@@ -63,7 +63,6 @@ class ManageUser extends Component {
 
     render() {
         let allUsers = this.state.allUsers;
-        console.log('Re-render');
         return (
             <div className={cx('container')}>
                 <ModalAddUser

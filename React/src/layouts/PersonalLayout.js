@@ -12,7 +12,7 @@ import avatar from '~/assets/img/avatar.jpg';
 
 const cx = className.bind(styles);
 
-class PersonalPage extends Component {
+class PersonalLayout extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -160,4 +160,4 @@ class PersonalPage extends Component {
     };
 }
 
-export default PersonalPage;
+export default PersonalLayout;

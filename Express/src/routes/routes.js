@@ -5,7 +5,7 @@ let router = express.Router();
 
 let initWebRoutes = (app) => {
     // User API
-    router.post('/api/login', userController.handleUserLogin);
+    router.post('/api/signin', userController.handleUserSignin);
     router.get('/api/get-all-users', userController.handleGetAllUsers);
     router.delete('/api/delete-user', userController.handleDeleteUser);
 

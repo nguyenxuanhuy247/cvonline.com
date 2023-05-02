@@ -1,20 +1,27 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import reportWebVitals from "./reportWebVitals";
-import { Provider } from "react-redux";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
 
-import reduxStore, { persistor } from "~/config/redux.js";
-import IntlProviderWrapper from "./hoc/IntlProviderWrapper.js";
-import App from "./containers/App.js";
+import store, { persistor } from '~/config/redux.js';
+import { history } from '~/config/redux.js';
+import IntlProviderWrapper from './hoc/IntlProviderWrapper.js';
+import App from './App.js';
+import GlobalStyles from '~/components/GlobalStyles/GlobalStyles.js';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
-        <Provider store={reduxStore}>
+    <Provider store={store}>
+        <ConnectedRouter history={history}>
             <IntlProviderWrapper>
-                <App persistor={persistor} />
+                <GlobalStyles>
+                    <App persistor={persistor} />
+                </GlobalStyles>
             </IntlProviderWrapper>
-        </Provider>
+        </ConnectedRouter>
+    </Provider>,
     // </React.StrictMode>
 );
 

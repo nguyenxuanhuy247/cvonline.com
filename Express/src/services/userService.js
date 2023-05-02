@@ -8,7 +8,7 @@ const hashUserPassword = async (password) => {
         let hashPassword = await bcrypt.hashSync(password, salt);
         return hashPassword;
     } catch (error) {
-        console.log('An error in hashUserPassword function: ', error);
+        console.log('An error in hashUserPassword() : ', error);
     }
 };
 
@@ -26,7 +26,7 @@ const checkUserEmailInDB = async (userEmail) => {
     }
 };
 
-export const handleUserLogin = async (userEmail, userPassword) => {
+export const handleUserSignin = async (userEmail, userPassword) => {
     try {
         let userData = {};
 

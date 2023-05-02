@@ -1,6 +1,6 @@
 import * as userService from '~/services';
 
-export const handleUserLogin = async (req, res) => {
+export const handleUserSignin = async (req, res) => {
     let { email, password } = req.body;
 
     if (!email || !password) {
@@ -10,7 +10,7 @@ export const handleUserLogin = async (req, res) => {
         });
     }
 
-    let userData = await userService.handleUserLogin(email, password);
+    let userData = await userService.handleUserSignin(email, password);
 
     return res.status(200).json(userData);
 };

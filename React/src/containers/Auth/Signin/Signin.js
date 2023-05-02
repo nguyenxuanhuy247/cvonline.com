@@ -9,14 +9,14 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import logoWithText from '~/assets/logo/logo-with-text.png';
-import Validator from '~/components/formValidation.js';
+import Validator from '~/components/formValidation/formValidation.js';
 import * as userService from '~/services';
 import styles from './Signin.module.scss';
 import * as userActions from '~/store/actions';
 
 const cx = className.bind(styles);
 
-class Login extends Component {
+class SignIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,25 +44,24 @@ class Login extends Component {
         let isEqual = _.isEqual(this.state.prevFormData, dataReq);
         if (!isEqual) {
             try {
-                console.log('call nAPI');
                 await this.setState({ errorMessage: '' });
                 await this.setState({ prevFormData: dataReq });
-                let dataRes = await userService.handleLogin(dataReq.email, dataReq.password);
+                let dataRes = await userService.handleSignIn(dataReq.email, dataReq.password);
                 if (dataRes?.errorCode !== 0) {
                     this.setState({ errorMessage: dataRes.errorMessage });
                 } else if (dataRes?.errorCode === 0) {
-                    this.props.userLoginSuccess(dataRes.data);
+                    this.props.userSignInSuccess(dataRes.data);
                 }
             } catch (error) {
-                console.log('An error in fetchData() in Login.js: ', error);
+                console.log('An error in fetchData() in SignIn.js: ', error);
             }
         }
     };
 
     handleValidateForm = () => {
-        Validator(
+        let data = Validator(
             {
-                formSelector: `.${cx('form')}`,
+                formSelector: `.${cx('form-signin')}`,
                 formGroupSelector: `.${cx('form-group')}`,
                 messageSelector: `.${cx('form-message')}`,
                 rules: [
@@ -75,6 +74,8 @@ class Login extends Component {
             cx('invalid'),
             this.fetchData,
         );
+
+        console.log(data);
     };
 
     componentDidMount = () => {
@@ -87,7 +88,7 @@ class Login extends Component {
         return (
             <div className={cx('signin')}>
                 <div className={cx('signin-container')}>
-                    <form className={cx('form')} autoComplete="on">
+                    <form className={cx('form-signin')} autoComplete="on">
                         <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
 
                         <div className={cx('form-group')}>
@@ -169,8 +170,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        userLoginSuccess: (userData) => dispatch(userActions.userLoginSuccess(userData)),
+        userSignInSuccess: (userData) => dispatch(userActions.userSignInSuccess(userData)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom';
 
 import styles from './Signup.module.scss';
 import logoWithText from '~/assets/logo/logo-with-text.png';
-import Validator from '~/components/formValidation.js';
+import Validator from '~/components/formValidation/formValidation.js';
+import * as userActions from '~/store/actions/userActions.js';
 
 const cx = className.bind(styles);
 
@@ -47,7 +48,7 @@ class Signup extends Component {
     handleValidateForm = () => {
         Validator(
             {
-                formSelector: `.${cx('form')}`,
+                formSelector: `.${cx('form-signup')}`,
                 formGroupSelector: `.${cx('form-group')}`,
                 messageSelector: `.${cx('form-message')}`,
                 rules: [
@@ -58,8 +59,8 @@ class Signup extends Component {
                     Validator.minLength(`#${cx('password')}`, 6),
                     Validator.isRequired(`#${cx('password_confirmation')}`),
                     Validator.isConfirmed(`#${cx('password_confirmation')}`, () => {
-                      return document.querySelector(`#${cx('password')}`).value;
-                    })
+                        return document.querySelector(`#${cx('password')}`).value;
+                    }),
                 ],
             },
             cx('invalid'),
@@ -77,12 +78,12 @@ class Signup extends Component {
         return (
             <div className={cx('signup')}>
                 <div className={cx('signup-container')}>
-                    <form action="" method="POST" className={cx('form')} autoComplete="on">
+                    <form className={cx('form-signup')} autoComplete="on">
                         <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
 
                         <div className={cx('form-group')}>
                             <div className={cx('form-input')}>
-                                <label for="fullname" className={cx('form-label')}>
+                                <label htmlFor="fullname" className={cx('form-label')}>
                                     Họ và tên
                                 </label>
                                 <input
@@ -100,7 +101,7 @@ class Signup extends Component {
 
                         <div className={cx('form-group')}>
                             <div className={cx('form-input')}>
-                                <label for="email" className={cx('form-label')}>
+                                <label htmlFor="email" className={cx('form-label')}>
                                     Email
                                 </label>
                                 <input
@@ -118,7 +119,7 @@ class Signup extends Component {
 
                         <div className={cx('form-group')}>
                             <div className={cx('form-input')}>
-                                <label for="password" className={cx('form-label')}>
+                                <label htmlFor="password" className={cx('form-label')}>
                                     Mật khẩu
                                 </label>
                                 <input
@@ -139,7 +140,7 @@ class Signup extends Component {
 
                         <div className={cx('form-group')}>
                             <div className={cx('form-input')}>
-                                <label for="password_confirmation" className={cx('form-label')}>
+                                <label htmlFor="password_confirmation" className={cx('form-label')}>
                                     Nhập lại mật khẩu
                                 </label>
                                 <input
@@ -183,13 +184,13 @@ class Signup extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {
-        language: state.app.language,
-    };
+    return {};
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        userSignUp: (dataUser) => dispatch(userActions.userSignUpStart(dataUser)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);
