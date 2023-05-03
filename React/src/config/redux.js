@@ -8,8 +8,6 @@ import thunk from 'redux-thunk';
 import createRootReducer from '~/store/reducers/rootReducer.js';
 // import actionNames from "~/store/actions/actionNames.js";
 
-const environment = process.env.NODE_ENV || 'development';
-
 export const history = createBrowserHistory({ basename: process.env.REACT_APP_ROUTER_BASE_NAME });
 
 // const reduxStateSyncConfig = {
@@ -22,13 +20,12 @@ const rootReducer = createRootReducer(history);
 
 const allMiddleware = [
     routerMiddleware(history),
-    // createStateSyncMiddleware(reduxStateSyncConfig),
     thunk,
+    // createStateSyncMiddleware(reduxStateSyncConfig),
 ];
-const composeEnhancers =
-    environment && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
-    const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...allMiddleware)));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...allMiddleware)));
 
 // export const dispatch = store.dispatch;
 

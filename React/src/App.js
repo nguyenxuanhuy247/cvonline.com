@@ -9,7 +9,7 @@ import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authenticatio
 import SignIn from '~/containers/Auth/Signin/Signin.js';
 import SignUp from '~/containers/Auth/Signup/Signup.js';
 import Home from '~/pages/Home.js';
-import PersonalLayout from '~/layouts/PersonalLayout.js';
+import { PersonalLayout } from '~/layouts';
 import ManageUser from '~/containers/ManageUser/ManageUser.js';
 
 class App extends Component {
@@ -17,7 +17,7 @@ class App extends Component {
         return (
             <div>
                 <Switch>
-                    <Route path={path.HOME} exact component={userIsNotAuthenticated(Home)} />
+                    <Route path={path.HOME} exact component={Home} />
                     <Route path={path.SIGNIN} component={userIsNotAuthenticated(SignIn)} />
                     <Route path={path.SIGNUP} component={userIsNotAuthenticated(SignUp)} />
                     <Route path={path.MANAGEUSER} component={ManageUser} />

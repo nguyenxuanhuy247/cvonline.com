@@ -1,2 +1,1 @@
-export { default as PersonalLayout} from './PersonalLayout';
-export { default as HomeLayout} from './HomeLayout';
+export { default, default as PersonalLayout } from './PersonalLayout/PersonalLayout.js';

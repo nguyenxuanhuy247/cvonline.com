@@ -1,0 +1,24 @@
+
+.candidate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+
+    .avatar {
+        box-sizing: content-box;
+        width: 170px;
+        height: 170px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 8px solid var(--primary-color);
+        outline: 12px solid rgba(73, 178, 83, 0.4);
+    }
+
+    .name {
+        font-size: 3rem;
+        font-weight: 600;
+        margin-top: 30px;
+    }
+}

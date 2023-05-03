@@ -9,6 +9,7 @@ import styles from './Signup.module.scss';
 import logoWithText from '~/assets/logo/logo-with-text.png';
 import Validator from '~/components/formValidation/formValidation.js';
 import * as userActions from '~/store/actions/userActions.js';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
 const cx = className.bind(styles);
 
@@ -64,7 +65,7 @@ class Signup extends Component {
                 ],
             },
             cx('invalid'),
-            this.fetchData,
+            this.props.userSignUp,
         );
     };
 
@@ -184,7 +185,9 @@ class Signup extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        isLoginIn: state.user.isLoginIn,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {

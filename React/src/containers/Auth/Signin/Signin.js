@@ -5,12 +5,11 @@ import { FaFacebookF, FaEyeSlash, FaEye } from 'react-icons/fa';
 import { GrGoogle } from 'react-icons/gr';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import _ from 'lodash';
 
 import logoWithText from '~/assets/logo/logo-with-text.png';
 import Validator from '~/components/formValidation/formValidation.js';
-import * as userService from '~/services';
 import styles from './Signin.module.scss';
 import * as userActions from '~/store/actions';
 
@@ -40,26 +39,26 @@ class SignIn extends Component {
         this.setState({ isShowPassword: !this.state.isShowPassword });
     };
 
-    fetchData = async (dataReq) => {
-        let isEqual = _.isEqual(this.state.prevFormData, dataReq);
-        if (!isEqual) {
-            try {
-                await this.setState({ errorMessage: '' });
-                await this.setState({ prevFormData: dataReq });
-                let dataRes = await userService.handleSignIn(dataReq.email, dataReq.password);
-                if (dataRes?.errorCode !== 0) {
-                    this.setState({ errorMessage: dataRes.errorMessage });
-                } else if (dataRes?.errorCode === 0) {
-                    this.props.userSignInSuccess(dataRes.data);
-                }
-            } catch (error) {
-                console.log('An error in fetchData() in SignIn.js: ', error);
-            }
-        }
-    };
+    // fetchData = async (dataReq) => {
+    //     let isEqual = _.isEqual(this.state.prevFormData, dataReq);
+    //     if (!isEqual) {
+    //         try {
+    //             await this.setState({ errorMessage: '' });
+    //             await this.setState({ prevFormData: dataReq });
+    //             let dataRes = await userService.postSignIn(dataReq.email, dataReq.password);
+    //             if (dataRes?.errorCode !== 0) {
+    //                 this.setState({ errorMessage: dataRes.errorMessage });
+    //             } else if (dataRes?.errorCode === 0) {
+    //                 this.props.userSignInSuccess(dataRes.data);
+    //             }
+    //         } catch (error) {
+    //             console.log('An error in fetchData() in SignIn.js: ', error);
+    //         }
+    //     }
+    // };
 
     handleValidateForm = () => {
-        let data = Validator(
+        Validator(
             {
                 formSelector: `.${cx('form-signin')}`,
                 formGroupSelector: `.${cx('form-group')}`,
@@ -72,10 +71,8 @@ class SignIn extends Component {
                 ],
             },
             cx('invalid'),
-            this.fetchData,
+            this.props.userSignIn,
         );
-
-        console.log(data);
     };
 
     componentDidMount = () => {
@@ -88,7 +85,7 @@ class SignIn extends Component {
         return (
             <div className={cx('signin')}>
                 <div className={cx('signin-container')}>
-                    <form className={cx('form-signin')} autoComplete="on">
+                    <form className={cx('form-signin')} autoomplete="on">
                         <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
 
                         <div className={cx('form-group')}>
@@ -170,7 +167,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        userSignInSuccess: (userData) => dispatch(userActions.userSignInSuccess(userData)),
+        userSignIn: (userData) => dispatch(userActions.userSignInStart(userData)),
     };
 };
 

@@ -1,19 +1,23 @@
 import * as userService from '~/services';
 
-export const handleUserSignin = async (req, res) => {
-    let { email, password } = req.body;
+// Sign Up
+export const handleUserSignUp = async (req, res) => {
+    let { firstName, email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Missing email or password field',
-        });
-    }
-
-    let userData = await userService.handleUserSignin(email, password);
+    let userData = await userService.postUserSignUp(firstName, email, password);
 
     return res.status(200).json(userData);
 };
+
+// Sign In
+export const handleUserSignIn = async (req, res) => {
+    let { email, password } = req.body;
+
+    let userData = await userService.postUserSignIn(email, password);
+
+    return res.status(200).json(userData);
+};
+
 
 export const handleGetAllUsers = async (req, res) => {
     let userId = req.query.id;
@@ -46,9 +50,9 @@ export const handleDeleteUser = async (req, res) => {
     } else {
         let message = await userService.deleteUser(userId);
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             errorCode: message.errorCode,
-            errorMessage: message.errorMessage
-         });
+            errorMessage: message.errorMessage,
+        });
     }
 };

@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import className from 'classnames/bind';
+import { connect } from 'react-redux';
 
 import styles from './Product.module.scss';
 import Technology from '~/components/Technology/Technology.js';
@@ -10,12 +11,31 @@ import Avatar from '~/assets/img/avatar.jpg';
 
 const cx = className.bind(styles);
 
-export default class Product extends Component {
+class Product extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            company: this.company,
+        };
+    }
+
+    handleChangeNameCompany = (e) => {
+        this.setState({ company: e.target.innerText });
+    };
+
     render = () => {
+        console.log(this.state.company);
         return (
-            <div className={cx('container')}>
+            <div className={cx('container')} spellCheck="false">
                 <div className={cx('company')}>
-                    <p className={cx('name')}>Tên công ty</p>
+                    <p
+                        className={cx('name')}
+                        contentEditable="true"
+                        onInput={(e) => this.handleChangeNameCompany(e)}
+                        suppressContentEditableWarning={true}
+                    >
+                        Tên công ty
+                    </p>
                     <span className={cx('dash')}>-</span>
                     <p className={cx('job-title')}>Vị trí công việc</p>
                 </div>
@@ -38,13 +58,6 @@ export default class Product extends Component {
                             <span className={cx('title')}>Source code</span>
                             <div className={cx('list')}>
                                 <Technology src={Images.Github} name="Github" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
                                 <Technology src={Images.Gitlab} name="Gitlab" />
                             </div>
                         </div>
@@ -113,3 +126,13 @@ export default class Product extends Component {
         );
     };
 }
+
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (state) => {
+    return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Product);

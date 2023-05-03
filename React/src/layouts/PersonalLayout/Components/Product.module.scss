@@ -8,9 +8,9 @@
         align-items: center;
         column-gap: 6px;
         font-size: 2rem;
-        color: #41bc8a;
+        color: var(--primary-color);
         font-weight: 600;
-        border-left: 4px solid #41bc8a;
+        border-left: 4px solid currentColor;
 
         .name {
             padding: 4px 6px;
@@ -73,15 +73,14 @@
                     font-size: 1.8rem;
                     line-height: 1.6;
                     font-weight: 600;
-                    color: #41bc8a;
-                    border-left: 4px solid #41bc8a;
+                    color: var(--primary-color);
+                    border-left: 4px solid currentColor;
                 }
 
                 .list {
                     margin-top: 4px;
                     display: flex;
                     align-items: center;
-                    column-gap: 4px;
                     row-gap: 2px;
                     flex-wrap: wrap;
                 }
@@ -95,14 +94,14 @@
                 display: flex;
                 flex-direction: column;
                 padding: 8px;
-                border: 1px solid #41bc8a;
+                border: 1px solid var(--primary-color);
 
                 .library-heading {
                     font-size: 1.8rem;
                     font-weight: 600;
                     padding: 8px 8px;
                     text-align: center;
-                    color: #41bc8a;
+                    color: var(--primary-color);
                 }
 
                 .divide {
@@ -117,14 +116,14 @@
                         text-align: center;
                         font-size: 1.6rem;
                         font-weight: 600;
-                        color: #41bc8a;
-                        border: 1px solid #41bc8a;
+                        color: var(--primary-color);
+                        border: 1px solid currentColor;
                         cursor: pointer;
 
                         &.active {
                             color: #fff;
-                            border: 1px solid #41bc8a;
-                            background-color: #41bc8a;
+                            border: 1px solid var(--primary-color);
+                            background-color: var(--primary-color);
                             opacity: 0.6;
                         }
                     }

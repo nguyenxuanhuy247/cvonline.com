@@ -1,20 +1,34 @@
 import axios from "~/config/axios.js";
 
+// Handle Sign Up
+export const postSignUp = (userData) => {
+    return axios.post(`/signup`, {
+        firstName: userData.fullname,
+        email: userData.email,
+        password: userData.password,
+    });
+};
+
 // Handle Sign In
-export const handleSignIn = (userEmail, userPassword) => {
-    return axios.post("/api/signin", {
+export const postSignIn = (userEmail, userPassword) => {
+    return axios.post(`/signin`, {
         email: userEmail,
         password: userPassword,
     });
 };
 
-// Handle Sign Up
-export const handleSignUp = (userData) => {
-    return axios.post("/api/signup", {
-        email: userData.email,
-        password: userData.password,
-    });
-};
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const getAllUsersFromServer = (inputId) => {
     return axios.get(`/api/get-all-users?id=${inputId}`);

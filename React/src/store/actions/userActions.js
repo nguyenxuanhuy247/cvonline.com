@@ -1,49 +1,54 @@
 import actionNames from './actionNames';
 import * as userService from '~/services';
 
-// User signin
-export const userSignInStart = (dataUser) => async (dispatch) => {
-    dispatch(actionNames.USER_SIGNIN_START);
-    try {
-        let res = await userService.handleSignIn(dataUser.email, dataUser.password);
-        if (res?.errorCode === 0) {
-        }
-    } catch (error) {
-        userSignInFail();
-        console.log('An error in hashUserPassword() : ', error);
-    }
-};
-
-export const userSignInSuccess = () => ({
-    type: actionNames.USER_LOGIN_FAIL,
-});
-
-export const userSignInFail = () => ({
-    type: actionNames.USER_LOGIN_FAIL,
-});
-
-// User signup
+// User Sign Up
 export const userSignUpStart = (userData) => {
     return async (dispatch) => {
-        dispatch(actionNames.USER_SIGNUP_START);
+        dispatch({ type: actionNames.USER_SIGNUP_START });
         try {
-            let res = await userService.handleSignUp(userData);
+            let res = await userService.postSignUp(userData);
             if (res?.errorCode === 0) {
-                dispatch(userSignUpSuccess());
+                dispatch(userSignUpSuccess(res.data));
             } else {
                 dispatch(userSignUpFail());
             }
         } catch (error) {
-            userSignUpFail();
+            dispatch(userSignUpFail());
             console.log('An error in userSignUpStart() : ', error);
         }
     };
 };
 
-export const userSignUpSuccess = () => ({
-    type: actionNames.USER_LOGIN_FAIL,
+export const userSignUpSuccess = (userData) => ({
+    type: actionNames.USER_SIGNUP_SUCCESS,
+    payload: userData,
 });
 
 export const userSignUpFail = () => ({
-    type: actionNames.USER_LOGIN_FAIL,
+    type: actionNames.USER_SIGNUP_FAIL,
+});
+
+// User sign In
+export const userSignInStart = (userData) => {
+    return async (dispatch) => {
+        dispatch({ type: actionNames.USER_SIGNIN_START });
+        try {
+            let res = await userService.postSignIn(userData.email, userData.password);
+            if (res?.errorCode === 0) {
+                dispatch(userSignInSuccess(res.data));
+            }
+        } catch (error) {
+            dispatch(userSignInFail())
+            console.log('An error in userSignInStart() : ', error);
+        }
+    };
+};
+
+export const userSignInSuccess = (data) => ({
+    type: actionNames.USER_SIGNIN_SUCCESS,
+    payload: data,
+});
+
+export const userSignInFail = () => ({
+    type: actionNames.USER_SIGNIN_FAIL,
 });
