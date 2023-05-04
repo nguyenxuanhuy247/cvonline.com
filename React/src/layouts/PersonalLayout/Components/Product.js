@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import styles from './Product.module.scss';
 import Technology from '~/components/Technology/Technology.js';
 import Library from '~/components/Library/Library.js';
-import Images from '~/assets/icons/Images.js';
+import { Icons, PngImages} from '~/components/Image/Images.js';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
 import Avatar from '~/assets/img/avatar.jpg';
 
@@ -57,39 +57,39 @@ class Product extends Component {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Source code</span>
                             <div className={cx('list')}>
-                                <Technology src={Images.Github} name="Github" />
-                                <Technology src={Images.Gitlab} name="Gitlab" />
+                                <Technology src={Icons.Github} name="Github" />
+                                <Technology src={Icons.Gitlab} name="Gitlab" />
                             </div>
                         </div>
                         <div className={cx('section')}>
                             <span className={cx('title')}>Ngôn ngữ lập trình</span>
                             <div className={cx('list')}>
-                                <Technology src={Images.HTML} name="HTML" />
-                                <Technology src={Images.CSS} name="CSS" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
+                                <Technology src={Icons.HTML} name="HTML" />
+                                <Technology src={Icons.CSS} name="CSS" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
                             </div>
                         </div>
                         <div className={cx('section')}>
                             <span className={cx('title')}>Frameworks</span>
                             <div className={cx('list')}>
-                                <Technology src={Images.HTML} name="HTML" />
-                                <Technology src={Images.CSS} name="CSS" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
-                                <Technology src={Images.CSS} name="JavaScript" />
+                                <Technology src={Icons.HTML} name="HTML" />
+                                <Technology src={Icons.CSS} name="CSS" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
+                                <Technology src={Icons.CSS} name="JavaScript" />
                             </div>
                         </div>
                     </div>
@@ -101,20 +101,20 @@ class Product extends Component {
                                 <span className={cx('text')}>Back-end</span>
                             </div>
                             <div className={cx('library-list')}>
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
-                                <Library src={Images.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
+                                <Library src={Icons.Github} name="React router dom" version="6.10.0" />
                             </div>
                             <div className={cx('paganition')}>
                                 <PaginationBar />

@@ -1,0 +1,16 @@
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+
+    .col-left {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(73, 178, 83, 0.2);
+    }
+
+    .col-right {
+        display: flex;
+        align-items: center;
+    }
+}

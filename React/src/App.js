@@ -3,25 +3,22 @@ import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import 'reset-css';
 
-import { path } from '~/utils';
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
+import { publicRoutes, privateRoutes } from '~/routes/routes';
 
-import SignIn from '~/containers/Auth/Signin/Signin.js';
-import SignUp from '~/containers/Auth/Signup/Signup.js';
-import Home from '~/pages/Home.js';
-import { PersonalLayout } from '~/layouts';
-import ManageUser from '~/containers/ManageUser/ManageUser.js';
 
 class App extends Component {
     render() {
         return (
             <div>
                 <Switch>
-                    <Route path={path.HOME} exact component={Home} />
-                    <Route path={path.SIGNIN} component={userIsNotAuthenticated(SignIn)} />
-                    <Route path={path.SIGNUP} component={userIsNotAuthenticated(SignUp)} />
-                    <Route path={path.MANAGEUSER} component={ManageUser} />
-                    <Route path={path.PERSONAL} component={userIsAuthenticated(PersonalLayout)} />
+                    {privateRoutes.map((route, index) => {
+                        let Authenticated = route.Authenticated ? userIsAuthenticated : userIsNotAuthenticated;
+                        return <Route key={index} path={route.path} component={Authenticated(route.component)} />;
+                    })}
+                    {publicRoutes.map((route, index) => {
+                        return <Route key={index} path={route.path} component={route.component} />;
+                    })}
                 </Switch>
             </div>
         );

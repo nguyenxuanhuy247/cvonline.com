@@ -1,24 +1,25 @@
 import * as userService from '~/services';
 
-// Sign Up
+// Handle Sign Up
 export const handleUserSignUp = async (req, res) => {
-    let { firstName, email, password } = req.body;
+    let { firstName, lastName, email, password } = req.body;
 
-    let userData = await userService.postUserSignUp(firstName, email, password);
+    let message = await userService.postUserSignUp(firstName, lastName, email, password);
 
-    return res.status(200).json(userData);
+    return res.status(201).json(message);
 };
 
-// Sign In
+// Handle Sign In
 export const handleUserSignIn = async (req, res) => {
     let { email, password } = req.body;
 
-    let userData = await userService.postUserSignIn(email, password);
+    let message = await userService.postUserSignIn(email, password);
 
-    return res.status(200).json(userData);
+    return res.status(200).json(message);
 };
 
 
+// Others
 export const handleGetAllUsers = async (req, res) => {
     let userId = req.query.id;
 

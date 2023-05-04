@@ -29,7 +29,7 @@ const hashUserPassword = async (password) => {
 };
 
 // Handle User Sign Up with Database
-export const postUserSignUp = async (userFullName, userEmail, userPassword) => {
+export const postUserSignUp = async (userFistName, userLastName, userEmail, userPassword) => {
     try {
         let userData = {};
         let hashPassword = await hashUserPassword(userPassword);
@@ -39,24 +39,22 @@ export const postUserSignUp = async (userFullName, userEmail, userPassword) => {
                 email: userEmail,
             },
             defaults: {
-                firstName: userFullName,
+                firstName: userFistName,
+                firstName: userLastName,
                 email: userEmail,
                 password: hashPassword,
             },
+            raw: true,
         });
 
-        const oneUser = await db.User.findOne({
-            where: {
-                email: userEmail,
-            },
-        });
+        console.log(user, created);
 
         if (!created) {
             userData.errorCode = 11;
-            userData.errorMessage = `Your email already used. Please try another email`;
+            userData.errorMessage = `Email của bạn đã được đăng ký. Vui lòng điền email khác`;
         } else {
             userData.errorCode = 0;
-            userData.errorMessage = `Your account is created successfully`;
+            userData.errorMessage = `Tài khoản được tạo thành công`;
         }
 
         return userData;
@@ -88,21 +86,21 @@ export const postUserSignIn = async (userEmail, userPassword) => {
                     delete user.password;
 
                     userData.errorCode = 0;
-                    userData.errorMessage = `Sign in successfully`;
+                    userData.errorMessage = `Bạn đã đăng nhập thành công`;
                     userData.data = user;
                 } else {
-                    userData.errorCode = 11;
-                    userData.errorMessage = `Wrong password`;
+                    userData.errorCode = 12;
+                    userData.errorMessage = `Sai mật khẩu. Vui lòng kiểm tra lại`;
                 }
             } else {
-                userData.errorCode = 12;
-                userData.errorMessage = `User's not found`;
+                userData.errorCode = 13;
+                userData.errorMessage = `Không tìm thấy người dùng`;
             }
         } else {
-            userData.errorCode = 13;
-            userData.errorMessage = `Your email does not exist. Please try another email`;
+            userData.errorCode = 11;
+            userData.errorMessage = `Email của bạn không tồn tại trên hệ thống. Vui lòng nhập email khác`;
         }
-        console.log(userData);
+        
         return userData;
     } catch (error) {
         console.log('An error in postUserSignIn() in userService.js : ', error);

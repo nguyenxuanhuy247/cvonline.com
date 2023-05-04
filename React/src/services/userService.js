@@ -1,9 +1,10 @@
-import axios from "~/config/axios.js";
+import axios from '~/config/axios.js';
 
 // Handle Sign Up
 export const postSignUp = (userData) => {
     return axios.post(`/signup`, {
-        firstName: userData.fullname,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
         email: userData.email,
         password: userData.password,
     });
@@ -17,19 +18,6 @@ export const postSignIn = (userEmail, userPassword) => {
     });
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 export const getAllUsersFromServer = (inputId) => {
     return axios.get(`/api/get-all-users?id=${inputId}`);
 };
@@ -37,5 +25,3 @@ export const getAllUsersFromServer = (inputId) => {
 export const deleteUser = (inputId) => {
     return axios.delete(`/api/delete-user?id=${inputId}`);
 };
-
-

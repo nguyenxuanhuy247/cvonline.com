@@ -1,24 +1,31 @@
 export const checkReqSignUp = (req, res, next) => {
-    let { firstName, email, password } = req.body;
+    let { firstName, lastName, email, password } = req.body;
     
     if (!firstName) {
         return res.status(400).json({
             errorCode: 1,
-            errorMessage: 'Missing full name field',
+            errorMessage: 'Vui lòng nhập Tên của bạn',
+        });
+    }
+    
+    if (!lastName) {
+        return res.status(400).json({
+            errorCode: 2,
+            errorMessage: 'Vui lòng nhập Họ của bạn',
         });
     }
 
     if (!email) {
         return res.status(400).json({
-            errorCode: 2,
-            errorMessage: 'Missing email field',
+            errorCode: 3,
+            errorMessage: 'Vui lòng nhập email của bạn',
         });
     }
 
     if (!password) {
         return res.status(400).json({
-            errorCode: 3,
-            errorMessage: 'Missing password field',
+            errorCode: 4,
+            errorMessage: 'Vui lòng nhập mật khẩu của bạn',
         });
     }
     
@@ -31,14 +38,14 @@ export const checkReqSignIn = (req, res, next) => {
     if (!email) {
         return res.status(400).json({
             errorCode: 1,
-            errorMessage: 'Missing email field',
+            errorMessage: 'Vui lòng nhập email của bạn',
         });
     }
 
     if (!password) {
         return res.status(400).json({
             errorCode: 2,
-            errorMessage: 'Missing password field',
+            errorMessage: 'Vui lòng nhập mật khẩu của bạn',
         });
     }
 

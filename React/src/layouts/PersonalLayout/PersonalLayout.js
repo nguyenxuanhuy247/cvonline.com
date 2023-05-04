@@ -10,6 +10,7 @@ import Literacy from '~/layouts/PersonalLayout/Components/Literacy.js';
 import Languages from '~/layouts/PersonalLayout/Components/Languages.js';
 
 import styles from './PersonalLayout.module.scss';
+import JobTitle from '~/layouts/PersonalLayout/Components/JobTitle.js';
 
 const cx = className.bind(styles);
 
@@ -22,35 +23,28 @@ class PersonalLayout extends Component {
     render = () => {
         return (
             <div className={cx('body')}>
-                <header className={cx('header')}>
+                <div className={cx('header')}>
                     <Header />
-                </header>
+                </div>
+                
                 <div className={`container ${cx('wrapper')}`}>
-                        <div className={`col-4 ${cx('col-left')}`}>
-                            <AvatarFullname />
-                            <PersonalInfo />
-                            <Literacy />
-                            <Languages />
-                        </div>
+                    <div className={`col-4 ${cx('col-left')}`}>
+                        <AvatarFullname />
+                        <PersonalInfo />
+                        <Literacy />
+                        <Languages />
+                    </div>
 
-                        <div className={`col-8 ${cx('col-right')}`}>
-                            <div className={cx('row-job-title')}>
-                                <span className={cx('job-title')}>Fullstack developer</span>
-                            </div>
-                            <div className={cx('experience')}>
-                                <div className={cx('real-product')}>
-                                    <p className={cx('title')}>SẢN PHẨM THỰC TẾ</p>
-                                </div>
-                                
-                                <div className={cx('product-list')}>
-                                    <Product />
-                                    <Product />
-                                    <Product />
-                                    <Product />
-                                </div>
-                            </div>
+                    <div className={`col-8 ${cx('col-right')}`}>
+                        <JobTitle />
+                        <div className={cx('product-list')}>
+                            <Product />
+                            <Product />
+                            <Product />
+                            <Product />
                         </div>
                     </div>
+                </div>
             </div>
         );
     };

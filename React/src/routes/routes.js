@@ -2,18 +2,21 @@ import { path } from '~/utils';
 
 // Layouts
 
-
 // Pages
-import Home from '~/pages/Home';
-import Live from '~/pages/Live';
+import Auth from '~/layouts/AuthLayout/Auth.js';
+import PersonalLayout from '~/layouts/PersonalLayout/PersonalLayout.js';
+import ManageUser from '~/containers/ManageUser/ManageUser';
 
 // Public routes
 const publicRoutes = [
-    { path: path.HONE, component: Home, layout: null  },
-    { path: path.SIGNIN, component: Home, layout: null  },
-    { path: path.SIGNUP, component: Live, layout: null  },
+    { path: path.MANAGEUSER, component: ManageUser },
 ];
 
-const privateRoutes = [];
+// Private routes
+const privateRoutes = [
+    { path: path.SIGNIN, component: Auth, Authenticated: false },
+    { path: path.SIGNUP, component: Auth, Authenticated: false },
+    { path: path.PERSONAL, component: PersonalLayout, Authenticated: true },
+];
 
 export { publicRoutes, privateRoutes };

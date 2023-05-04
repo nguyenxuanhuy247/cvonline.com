@@ -9,6 +9,10 @@ const actionNames = Object.freeze({
     USER_SIGNIN_SUCCESS: 'USER_SIGNIN_SUCCESS',
     USER_SIGNIN_FAIL: 'USER_SIGNIN_FAIL',
 
+    // Remove error message
+    REMOVE_SIGNUP_MESSAGE: 'REMOVE_SIGNUP_MESSAGE',
+    REMOVE_SIGNIN_MESSAGE: 'REMOVE_SIGNIN_MESSAGE',
+
 });
 
 export default actionNames;
