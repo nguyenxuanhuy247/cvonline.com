@@ -2,22 +2,57 @@ import { Component } from 'react';
 import className from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import DefaultTippy from '@tippyjs/react';
 import { FaBell } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 
 import styles from './Header.module.scss';
 import logo from '~/assets/logo/logo-with-text.png';
+import { AvatarRef } from '~/components/Image/ImageComponent.js';
+import { JpgImages, SignOutIcon, AccountIcon, LanguageIcon, HelpIcon } from '~/components/Image/Images.js';
+import { path } from '~/utils';
+import Menu from '~/components/Popover/Menu/Menu.js';
+import Button from '~/components/Button/Button';
 
 const cx = className.bind(styles);
 
-class Header extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+const MENU_ITEMS = [
+    {
+        icon: <AccountIcon />,
+        title: 'Tài khoản',
+        to: '/feedback',
+    },
+    {
+        icon: <LanguageIcon />,
+        title: 'Tiếng Việt',
+        children: {
+            title: 'Ngôn ngữ',
+            data: [
+                {
+                    type: 'Ngôn ngữ',
+                    code: 'en',
+                    title: 'English',
+                },
+                {
+                    type: 'Ngôn ngữ',
+                    code: 'vi',
+                    title: 'Tiếng Việt',
+                },
+            ],
+        },
+    },
+    {
+        icon: <HelpIcon />,
+        title: 'Trợ giúp',
+    },
+    {
+        icon: <SignOutIcon />,
+        title: 'Đăng xuất',
+    },
+];
 
+class Header extends Component {
     render = () => {
-        console.log(this.props.isSignIn)
         return (
             <header className={cx('header')}>
                 <Link to={'/personal'} className={cx('logo-link')}>
@@ -51,22 +86,31 @@ class Header extends Component {
 
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>
-                        <Link to={'/signin'} className={cx('signin')}>
+                        <Link to={path.SIGNIN} className={cx('signin')}>
                             Đăng nhập
                         </Link>
-                        <Link to={'/signup'} className={cx('signup')}>
+                        <Link to={path.SIGNUP} className={cx('signup')}>
                             Đăng ký
                         </Link>
                     </div>
                 ) : (
                     <div className={cx('login')}>
-                        <button className={cx('icon')}>
-                            <FaBell />
-                        </button>
-                        <button className={cx('icon')}>
-                            <RiMessage2Fill />
-                        </button>
-                        <span className={cx('icon')}></span>
+                        <DefaultTippy content="Thông báo">
+                            <button className={cx('icon')}>
+                                <FaBell />
+                            </button>
+                        </DefaultTippy>
+                        <DefaultTippy content="Tin nhắn">
+                            <button className={cx('icon')}>
+                                <RiMessage2Fill />
+                            </button>
+                        </DefaultTippy>
+                        <Menu data={MENU_ITEMS}>
+                            <button className={cx('user')}>
+                                <AvatarRef src={JpgImages.avatar} className={cx('avatar')} alt="Nguyễn Xuân Huy" />
+                                <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
+                            </button>
+                        </Menu>
                     </div>
                 )}
             </header>
@@ -80,7 +124,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
     return {};
 };
 

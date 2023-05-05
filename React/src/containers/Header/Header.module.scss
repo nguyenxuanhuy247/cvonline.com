@@ -71,5 +71,28 @@
             border-radius: 50%;
             color: var(--primary-color);
         }
+
+        .user {
+            display: flex;
+            align-items: center;
+            column-gap: 8px;
+            background: #fafafa;
+            border-radius: 99px;
+            padding: 4px 10px;
+
+            .avatar {
+                display: block;
+                @extend .icon;
+
+                overflow: hidden;
+                object-fit: cover;
+            }
+
+            .fullname {
+                display: block;
+                font-size: 1.6rem;
+                font-weight: 600;
+            }
+        }
     }
 }

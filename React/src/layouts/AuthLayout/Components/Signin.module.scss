@@ -5,13 +5,19 @@
     user-select: none;
     padding: 0 120px;
     background-color: #fff;
-    overflow: hidden;
 
     .form-signin {
         .form-logo {
             display: block;
             height: 80px;
-            margin: 0 auto 60px auto;
+            margin: 0 auto 20px auto;
+        }
+
+        .error-message {
+            text-align: center !important;
+            margin-bottom: 16px;
+            font-size: 1.4rem;
+            height: 40px;
         }
 
         .form-group {

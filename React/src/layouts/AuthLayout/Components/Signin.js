@@ -65,12 +65,20 @@ class SignIn extends Component {
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
-        let { errorMessage } = this.props.signInMessage;
+        let { errorCode, errorMessage } = this.props.signInMessage;
 
         return (
             <div className={cx('signin-container')}>
                 <form className={cx('form-signin')} autoomplete="on">
                     <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
+
+                    <div className={cx('error-message')}>
+                                {errorMessage && (
+                                    <p className={`${errorCode ? 'alert alert-danger' : 'alert alert-success'}`}>
+                                        {errorMessage}
+                                    </p>
+                                )}
+                            </div>
 
                     <div className={cx('form-group')}>
                         <div className={cx('form-input')}>

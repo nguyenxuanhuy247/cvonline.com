@@ -11,11 +11,12 @@
     }
 
     .facebook, .google {
+        min-width: 120px;
         padding: 6px 12px;
         border-radius: 4px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         column-gap: 6px;
     }
 

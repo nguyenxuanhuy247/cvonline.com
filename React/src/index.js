@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import 'tippy.js/dist/tippy.css';
 
 import store, { persistor } from '~/config/redux.js';
 import { history } from '~/config/redux.js';

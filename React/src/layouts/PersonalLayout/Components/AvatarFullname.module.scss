@@ -1,4 +1,3 @@
-
 .candidate {
     display: flex;
     flex-direction: column;
@@ -6,14 +5,20 @@
     justify-content: center;
     padding: 20px 0 60px;
 
-    .avatar {
-        box-sizing: content-box;
-        width: 170px;
-        height: 170px;
-        object-fit: cover;
+    .avatar-outline,
+    .avatar-border {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 50%;
-        border: 8px solid var(--primary-color);
-        outline: 12px solid rgba(73, 178, 83, 0.4);
+    }
+
+    .avatar-outline {
+        border: 12px solid rgba(73, 178, 83, 0.4);
+
+        .avatar-border {
+            border: 8px solid var(--primary-color);
+        }
     }
 
     .name {

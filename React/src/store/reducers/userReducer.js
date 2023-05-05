@@ -65,6 +65,12 @@ const userReducer = (state = initialState, action) => {
                 signInMessage: action.payload,
             };
 
+        // Sign Out
+        case actionNames.USER_SIGNOUT:
+            return {
+                ...state,
+                isSignIn: false,
+            };
         default:
             return state;
     }

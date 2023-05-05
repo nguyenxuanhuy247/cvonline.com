@@ -13,6 +13,8 @@ const actionNames = Object.freeze({
     REMOVE_SIGNUP_MESSAGE: 'REMOVE_SIGNUP_MESSAGE',
     REMOVE_SIGNIN_MESSAGE: 'REMOVE_SIGNIN_MESSAGE',
 
+    //user - Sign Out
+    USER_SIGNOUT: 'USER_SIGNOUT',
 });
 
 export default actionNames;

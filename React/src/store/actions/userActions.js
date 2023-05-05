@@ -67,3 +67,8 @@ export const removeSignInMessage = () => ({
     type: actionNames.REMOVE_SIGNIN_MESSAGE,
     payload: {},
 });
+
+// User Sign Out
+export const userSignOut = () => ({
+    type: actionNames.USER_SIGNOUT,
+});

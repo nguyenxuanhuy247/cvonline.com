@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import styles from './Product.module.scss';
 import Technology from '~/components/Technology/Technology.js';
 import Library from '~/components/Library/Library.js';
-import { Icons, PngImages} from '~/components/Image/Images.js';
+import { Icons } from '~/components/Image/Images.js';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
 import Avatar from '~/assets/img/avatar.jpg';
 
@@ -24,7 +24,6 @@ class Product extends Component {
     };
 
     render = () => {
-        console.log(this.state.company);
         return (
             <div className={cx('container')} spellCheck="false">
                 <div className={cx('company')}>

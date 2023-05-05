@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 
 import styles from './Library.module.scss';
-import { ImageIcon } from '~/components/Image/ImageIcon.js';
+import { ImageIcon } from '~/components/Image/ImageComponent.js';
 
 const cx = classNames.bind(styles);
 
