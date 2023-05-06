@@ -13,6 +13,7 @@ import { JpgImages, SignOutIcon, AccountIcon, LanguageIcon, HelpIcon } from '~/c
 import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
 import Button from '~/components/Button/Button';
+import HeaderNavbar from '~/containers/Header/HeaderNavbar.js';
 
 const cx = className.bind(styles);
 
@@ -78,11 +79,18 @@ class Header extends Component {
                         </li>
                         <li className={cx('item')}>
                             <Link to={'#!'} className={cx('link')}>
+                                Phát triển sự nghiệp
+                            </Link>
+                        </li>
+                        <li className={cx('item')}>
+                            <Link to={'#!'} className={cx('link')}>
                                 Công cụ
                             </Link>
                         </li>
                     </ul>
                 </nav>
+                <HeaderNavbar />
+            
 
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>

@@ -9,12 +9,11 @@ import PersonalInfo from '~/layouts/PersonalLayout/Components/PersonalInfo.js';
 import Literacy from '~/layouts/PersonalLayout/Components/Literacy.js';
 import Languages from '~/layouts/PersonalLayout/Components/Languages.js';
 
-import styles from './PersonalLayout.module.scss';
-import JobTitle from '~/layouts/PersonalLayout/Components/JobTitle.js';
+import styles from './JobLayout.module.scss';
 
 const cx = className.bind(styles);
 
-class PersonalLayout extends Component {
+class JobLayout extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -36,7 +35,6 @@ class PersonalLayout extends Component {
                     </div>
 
                     <div className={`col-8 ${cx('col-right')}`}>
-                        <JobTitle />
                         <div className={cx('product-list')}>
                             <Product />
                             <Product />
@@ -54,8 +52,8 @@ const mapStateToProps = (state) => {
     return {};
 };
 
-const mapDispatchToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PersonalLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(JobLayout);

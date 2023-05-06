@@ -1,22 +1,19 @@
 import { path } from '~/utils';
 
 // Layouts
-
-// Pages
-import Auth from '~/layouts/AuthLayout/Auth.js';
-import PersonalLayout from '~/layouts/PersonalLayout/PersonalLayout.js';
-import ManageUser from '~/containers/ManageUser/ManageUser';
+import { AuthLayout, PersonalLayout, JobLayout } from '~/layouts';
 
 // Public routes
 const publicRoutes = [
-    { path: path.MANAGEUSER, component: ManageUser },
+    { path: path.HOME, component: JobLayout },
+    { path: path.JOB, component: JobLayout },
 ];
 
-// Private routes
-const privateRoutes = [
-    { path: path.SIGNIN, component: Auth, Authenticated: false },
-    { path: path.SIGNUP, component: Auth, Authenticated: false },
+// Authenticated routes
+const authenticatedRoutes = [
+    { path: path.SIGNIN, component: AuthLayout, Authenticated: false },
+    { path: path.SIGNUP, component: AuthLayout, Authenticated: false },
     { path: path.PERSONAL, component: PersonalLayout, Authenticated: true },
 ];
 
-export { publicRoutes, privateRoutes };
+export { publicRoutes, authenticatedRoutes };

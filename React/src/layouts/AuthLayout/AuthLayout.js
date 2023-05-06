@@ -4,7 +4,7 @@ import className from 'classnames/bind';
 import { Switch, Route } from 'react-router-dom';
 import _ from 'lodash';
 
-import styles from './Auth.module.scss';
+import styles from './AuthLayout.module.scss';
 import SignIn from './Components/Signin.js';
 import SignUp from './Components/Signup.js';
 import CarouselTag from './Components/Carousel.js';
@@ -23,7 +23,7 @@ class Auth extends Component {
             <div className={'container-fluid px-0'}>
                 <div className={cx('wrapper')}>
                     <div className={`col-6 ${cx('col-left')}`}>
-                        <CarouselTag />
+                        abc
                     </div>
 
                     <div className={`col-6 ${cx('col-right')}`}>

@@ -1,6 +1,7 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .header {
+    font-family: var(--alexandria-font);
     height: 68px;
     display: flex;
     align-items: center;
@@ -9,7 +10,7 @@
 
     .logo-link {
         .logo {
-            height: 40px;
+            height: 30px;
         }
     }
 
@@ -24,8 +25,7 @@
             .item {
                 .link {
                     font-size: 1.5rem;
-                    font-weight: 500;
-                    letter-spacing: 0.08rem;
+                    font-weight: 400;
                     padding: 8px 24px;
 
                     &:hover {

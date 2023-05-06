@@ -3,6 +3,7 @@
     display: flex;
 
     .col-left {
+        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -10,6 +11,7 @@
     }
 
     .col-right {
+        flex: 1;
         display: flex;
         align-items: center;
     }

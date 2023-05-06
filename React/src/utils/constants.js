@@ -1,7 +1,11 @@
 export const path = {
+    // Public routes
     HOME: '/',
-    SIGNIN: '/signin',
+    JOB: '/job',
+    
+    // Authenticated routes
     SIGNUP: '/signup',
+    SIGNIN: '/signin',
     PERSONAL: '/personal',
     MANAGEUSER: '/manage-user',
 };

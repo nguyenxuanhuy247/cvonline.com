@@ -4,7 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import 'reset-css';
 
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
-import { publicRoutes, privateRoutes } from '~/routes/routes';
+import { publicRoutes, authenticatedRoutes } from '~/routes/routes';
 
 
 class App extends Component {
@@ -12,10 +12,11 @@ class App extends Component {
         return (
             <div>
                 <Switch>
-                    {privateRoutes.map((route, index) => {
+                    {authenticatedRoutes.map((route, index) => {
                         let Authenticated = route.Authenticated ? userIsAuthenticated : userIsNotAuthenticated;
                         return <Route key={index} path={route.path} component={Authenticated(route.component)} />;
                     })}
+
                     {publicRoutes.map((route, index) => {
                         return <Route key={index} path={route.path} component={route.component} />;
                     })}
