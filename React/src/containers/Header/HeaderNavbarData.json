@@ -1,11 +1,34 @@
 [
     {
+        "id": 11,
         "name": "Việc làm",
-        "id": 13
+        "children": [
+            {
+                "icon": "LanguageIcon",
+                "id": 21,
+                "name": "Tìm việc"
+            },
+            {
+                "id": 22,
+                "name": "Việc làm đã ứng tuyển"
+            },
+            {
+                "name": "Việc làm đã lưu",
+                "id": 23
+            },
+            {
+                "name": "Việc làm phù hợp",
+                "id": 24
+            },
+            {
+                "name": "Việc làm senior",
+                "id": 25
+            }
+        ]
     },
     {
         "name": "Hồ sơ & CV",
-        "id": 14,
+        "id": 12,
         "children": [
             {
                 "name": "sub menu 1",
@@ -22,29 +45,12 @@
             {
                 "name": "sub menu 4",
                 "id": 24
-            },
-            {
-                "name": "sub menu 5",
-                "id": 25
-            },
-            {
-                "name": "sub menu 6",
-                "id": 26,
-                "children": [
-                    { "name": "tree", "id": 41 },
-                    { "name": "bush", "id": 42 },
-                    { "name": "plant", "id": 43 }
-                ]
-            },
-            {
-                "name": "sub menu 7",
-                "id": 27
             }
         ]
     },
     {
         "name": "Công ty",
-        "id": 15,
+        "id": 13,
         "children": [
             {
                 "id": 31,
@@ -52,17 +58,7 @@
             },
             {
                 "id": 32,
-                "name": "options",
-                "children": [
-                    {
-                        "id": 53,
-                        "name": "3 grand child 1"
-                    },
-                    {
-                        "id": 54,
-                        "name": "3 grand child 2"
-                    }
-                ]
+                "name": "options"
             },
             {
                 "id": 33,
@@ -72,20 +68,15 @@
     },
     {
         "name": "Phát triển sự nghiệp",
-        "id": 16
+        "id": 14
     },
     {
         "name": "Công cụ",
-        "id": 17,
+        "id": 15,
         "children": [
             {
                 "id": 39,
-                "name": "options 2",
-                "children": [
-                    { "name": "1 grand child 5", "id": 69 },
-                    { "name": "2 grand child 5", "id": 67 },
-                    { "name": "3 grand child 5", "id": 63 }
-                ]
+                "name": "options 2"
             },
             {
                 "id": 38,

@@ -60,7 +60,7 @@ class Header extends Component {
                     <img src={logo} className={cx('logo')} alt="cvonline.com" />
                 </Link>
 
-                <nav className={cx('navbar')}>
+                {/* <nav className={cx('navbar')}>
                     <ul className={cx('list')}>
                         <li className={cx('item')}>
                             <Link to={'#!'} className={cx('link')}>
@@ -88,8 +88,8 @@ class Header extends Component {
                             </Link>
                         </li>
                     </ul>
-                </nav>
-                <HeaderNavbar />
+                </nav> */}
+                <HeaderNavbar/>
             
 
                 {!this.props.isSignIn ? (
