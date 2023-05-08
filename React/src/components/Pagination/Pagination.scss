@@ -1,23 +1,25 @@
-.page-item {
-    &.active > .page-link {
-        color: #fff;
-        background-color: #41bc8a;
-    }
-
-    .page-link {
-        font-size: 1.6rem;
-        color: #41bc8a;
-        border: none;
-        margin-bottom: 8px;
-        padding: 8px 12px;
-        border-radius: 4px;
-
-        &:hover,
-        &:focus {
+.pag {
+    .page-item {
+        &.active > .page-link {
             color: #fff;
             background-color: #41bc8a;
-            outline: none !important;
-            box-shadow: none;
+        }
+
+        .page-link {
+            font-size: 1.6rem;
+            color: #41bc8a;
+            border: none;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 4px;
+
+            &:hover,
+            &:focus {
+                color: #fff;
+                background-color: #41bc8a;
+                outline: none !important;
+                box-shadow: none;
+            }
         }
     }
 }

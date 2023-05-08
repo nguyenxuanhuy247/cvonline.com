@@ -2,42 +2,42 @@ import React, { Component } from 'react';
 import className from 'classnames/bind';
 import { connect } from 'react-redux';
 
-import styles from './JobTitle.module.scss';
+import styles from './ContentEditableTag.module.scss';
 import * as userCVActions from '~/store/actions';
 
 const cx = className.bind(styles);
 
-class JobTitle extends Component {
+class ContentEditableTag extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: this.props.jobTitle,
+            content: this.props.content,
         };
 
-        this.myRef = React.createRef();
+        this.ref = React.createRef();
     }
 
-    hanleChangeContext() {
-        this.setState({ text: this.myRef.current.innerText });
+    hanleChangeContent() {
+        this.setState({ text: this.ref.current.innerText });
     }
 
     componentWillUnmount() {
-        this.props.changeJobTitle(this.state.text);
+        this.props.changeJobTitle(this.state.content);
     }
 
     render = () => {
-        console.log(this.state.text);
+        const {className = '', placeholder = 'Nhập trường này'} = this.props;
         return (
-            <span
-                className={cx('job-title')}
-                ref={this.myRef}
+            <div
+                className={cx('contenteditable-tag', className)}
+                ref={this.ref}
                 dangerouslySetInnerHTML={{ __html: this.props.jobTitle }}
                 contentEditable
                 suppressContentEditableWarning
-                onInput={() => this.hanleChangeContext()}
-                data-placeholder="VD: Fullstack developer"
+                onInput={() => this.hanleChangeContent()}
+                placeholder={placeholder}
                 spellCheck="false"
-            ></span>
+            ></div>
         );
     };
 }
@@ -54,4 +54,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(JobTitle);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentEditableTag);

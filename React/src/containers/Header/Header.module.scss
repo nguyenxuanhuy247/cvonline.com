@@ -2,11 +2,16 @@
 
 .header {
     font-family: var(--alexandria-font);
-    height: 68px;
+    height: var(--header-height);
+    width: 100%;
     display: flex;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 32px;
     border-bottom: 1px solid #e4e6eb;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    background-color: #fff;
 
     .logo-link {
         .logo {
@@ -79,6 +84,7 @@
             background: #fafafa;
             border-radius: 99px;
             padding: 4px 10px;
+            cursor: pointer;
 
             .avatar {
                 display: block;

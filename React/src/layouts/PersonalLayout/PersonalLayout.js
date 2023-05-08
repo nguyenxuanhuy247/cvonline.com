@@ -11,6 +11,7 @@ import Languages from '~/layouts/PersonalLayout/Components/Languages.js';
 
 import styles from './PersonalLayout.module.scss';
 import JobTitle from '~/layouts/PersonalLayout/Components/JobTitle.js';
+import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 
 const cx = className.bind(styles);
 
@@ -23,20 +24,22 @@ class PersonalLayout extends Component {
     render = () => {
         return (
             <div className={cx('body')}>
-                <div className={cx('header')}>
-                    <Header />
-                </div>
-                
-                <div className={`container ${cx('wrapper')}`}>
-                    <div className={`col-4 ${cx('col-left')}`}>
+                <Header />
+                <div className={cx('wrapper', 'container')}>
+                    <div className={cx('col-left', 'col-3')}>
                         <AvatarFullname />
                         <PersonalInfo />
                         <Literacy />
                         <Languages />
                     </div>
 
-                    <div className={`col-8 ${cx('col-right')}`}>
-                        <JobTitle />
+                    <div className={cx('col-right', 'col-9')}>
+                        <div className={cx('job-title')}>
+                            <JobTitle />
+                        </div>
+                        <div>
+                            <ContentEditableTag className='product-desc' placeholder='Mô tả ngắn gọn về sản phẩm'/>
+                        </div>
                         <div className={cx('product-list')}>
                             <Product />
                             <Product />

@@ -2,16 +2,15 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import className from 'classnames/bind';
 
-import HeaderNavbarData from './HeaderNavbarData.json';
+import { HEADER_NAVBAR_DATA } from '~/components/MenuData/MenuData.js';
 import styles from './HeaderNavbar.module.scss';
 import Button from '~/components/Button/Button.js';
-
 const cx = className.bind(styles);
 
 class HeaderNavbar extends Component {
     constructor(props) {
         super(props);
-        this.data = HeaderNavbarData;
+        this.data = HEADER_NAVBAR_DATA;
     }
     render() {
         return (
@@ -21,15 +20,16 @@ class HeaderNavbar extends Component {
                         this.data.map((item) => {
                             return !item.children ? (
                                 <li key={item.id} className={cx('menu-item')}>
-                                    <Link to={'#!'} className={cx('menu-link')}>
+                                    <Link to={item.route} className={cx('menu-link')}>
                                         {item.name}
                                     </Link>
                                 </li>
                             ) : (
                                 <li key={item.id} className={cx('menu-item')}>
-                                    <Link to={'#!'} className={cx('menu-link')}>
+                                    <Link to={item.route} className={cx('menu-link')}>
                                         {item.name}
                                     </Link>
+
                                     <ul className={cx('submenu-lv1')}>
                                         {item.children.map((subItem) => {
                                             return (
@@ -37,7 +37,8 @@ class HeaderNavbar extends Component {
                                                     <Button
                                                         to={'#!'}
                                                         childrenClass={cx('submenu-link')}
-                                                        // leftIcon={<LeftIcon />}
+                                                        leftIcon={subItem.leftIcon}
+                                                        rightIcon={subItem.rightIcon}
                                                     >
                                                         {subItem.name}
                                                     </Button>

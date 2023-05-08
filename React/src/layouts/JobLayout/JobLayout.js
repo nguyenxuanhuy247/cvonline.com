@@ -22,10 +22,8 @@ class JobLayout extends Component {
     render = () => {
         return (
             <div className={cx('body')}>
-                <div className={cx('header')}>
-                    <Header />
-                </div>
-                
+                <Header />
+
                 <div className={`container ${cx('wrapper')}`}>
                     <div className={`col-4 ${cx('col-left')}`}>
                         <AvatarFullname />

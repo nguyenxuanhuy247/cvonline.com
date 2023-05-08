@@ -1,62 +1,50 @@
-.wrapper {
+@import '../../components/GlobalStyles/GlobalStyles.module.scss';
+
+.button {
+    font-family: var(--alexandria-font) !important;
+    background-color: #f4f5f5;
+    border-radius: 6px;
+    padding: 16px;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    min-width: 100px;
-    padding: 9px 16px;
-    border-radius: 4px;
-    font-size: 1.6rem;
-    font-weight: 700;
-    font-family: var(--font-family);
-    cursor: pointer;
-    background-color: var(--white);
-    border: 1px solid transparent;
-    user-select: none;
-
-    + .wrapper {
-        margin-left: 8px;
-    }
-
-    &.disabled {
-        pointer-events: none;
-        opacity: 0.5;
-    }
-}
-
-.icon + .text,
-.text + .icon {
-    margin-left: 8px;
-}
-
-.icon {
-    display: inline-block;
-    width: 24px;
-    text-align: center;
-}
-
-.primary {
-    color: var(--white);
-    background-color: var(--primary);
-    border-color: var(--primary);
+    margin: 0;
+    font-size: 1.4rem;
+    width: 100%;
 
     &:hover {
-        border-color: var(--primary);
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), #fe2c55;
+        background-color: #efefef;
+        cursor: pointer;
+
+        .text,
+        .right-icon {
+            color: var(--primary-color);
+            opacity: 1;
+        }
     }
-}
 
-.outline {
-    color: var(--primary);
-    border-color: currentColor;
-
-    &:hover {
-        border-color: currentColor;
-        background-color: rgba(254, 44, 85, 0.06);
+    .left-icon {
+        box-sizing: content-box;
+        width: 20px;
+        height: 20px;
+        font-size: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        object-fit: cover;
+        color: var(--primary-color);
     }
-}
 
-.text {
-    &:hover {
-        text-decoration: underline;
+    .text {
+        margin-left: 16px;
+        font-weight: 500;
+    }
+
+    .right-icon {
+        box-sizing: content-box;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        font-size: 20px;
+        margin-left: auto;
     }
 }

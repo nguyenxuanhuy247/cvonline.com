@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
-import { Carousel, CarouselItem, CarouselControl, CarouselIndicators, CarouselCaption } from 'reactstrap';
+import { Component } from 'react';
+import classNames from 'classnames/bind';
 
-import {PngImages} from '~/components/Image/Images.js';
+import { PngImages } from '~/components/Image/Images.js';
+import styles from './Carousel.module.scss';
+
+const cx = classNames.bind(styles);
 
 const items = [
     {
         id: 1,
-        src: PngImages.findJob,
+        src: PngImages.makeCV,
         altText: 'Slide 1',
         caption: 'Slide 1',
     },
@@ -18,65 +21,54 @@ const items = [
     },
     {
         id: 3,
-        src: PngImages.findJob,
+        src: PngImages.secSafe,
         altText: 'Slide 3',
         caption: 'Slide 3',
     },
 ];
 
-function Example(props) {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const [animating, setAnimating] = useState(false);
+class Carousel extends Component {
+    constructor(props) {
+        super(props);
+        this.image = items;
+    }
+    componentDidMount() {
+        // let copySlide = document.querySelector(`.${cx('slide')}`).cloneNode(true);
+        // document.querySelector(`.${cx('carousel')}`).appendChild(copySlide);
+    }
 
-    const next = () => {
-        if (animating) return;
-        const nextIndex = activeIndex === items.length - 1 ? 0 : activeIndex + 1;
-        setActiveIndex(nextIndex);
-    };
-
-    const previous = () => {
-        if (animating) return;
-        const nextIndex = activeIndex === 0 ? items.length - 1 : activeIndex - 1;
-        setActiveIndex(nextIndex);
-    };
-
-    const goToIndex = (newIndex) => {
-        if (animating) return;
-        setActiveIndex(newIndex);
-    };
-
-    const slides = items.map((item) => {
+    render() {
         return (
-            <CarouselItem
-                className="custom-tag"
-                tag="div"
-                key={item.id}
-                onExiting={() => setAnimating(true)}
-                onExited={() => setAnimating(false)}
-            >
-                 <img src={item.src} alt={item.altText} />
-                <CarouselCaption className="text-danger" captionText={item.caption} captionHeader={item.caption} />
-            </CarouselItem>
+            <div className={cx('carousel')}>
+                <div className={cx('slider')}>
+                    <div className={cx('img-wrapper')}>
+                        <img src={this.image[0].src} alt="" className={cx('image')} />
+                        <h3 className={cx('title')}>Công cụ viết CV đẹp Miễn phí</h3>
+                        <p className={cx('desc')}>
+                            Nhiều mẫu CV đẹp, phù hợp nhu cầu ứng tuyển các vị trí khác nhau. Dễ dàng chỉnh sửa thông
+                            tin, tạo CV online nhanh chóng trong vòng 5 phút.
+                        </p>
+                    </div>
+                    <div className={cx('img-wrapper')}>
+                        <img src={this.image[0].src} alt="" className={cx('image')} />
+                        <h3 className={cx('title')}>Công cụ viết CV đẹp Miễn phí</h3>
+                        <p className={cx('desc')}>
+                            Nhiều mẫu CV đẹp, phù hợp nhu cầu ứng tuyển các vị trí khác nhau. Dễ dàng chỉnh sửa thông
+                            tin, tạo CV online nhanh chóng trong vòng 5 phút.
+                        </p>
+                    </div>
+                    <div className={cx('img-wrapper')}>
+                        <img src={this.image[0].src} alt="" className={cx('image')} />
+                        <h3 className={cx('title')}>Công cụ viết CV đẹp Miễn phí</h3>
+                        <p className={cx('desc')}>
+                            Nhiều mẫu CV đẹp, phù hợp nhu cầu ứng tuyển các vị trí khác nhau. Dễ dàng chỉnh sửa thông
+                            tin, tạo CV online nhanh chóng trong vòng 5 phút.
+                        </p>
+                    </div>
+                </div>
+            </div>
         );
-    });
-
-    return (
-        <div>
-            <style>
-                {`.custom-tag {
-              max-width: 100%;
-              height: 500px;
-              background: black;
-            }`}
-            </style>
-            <Carousel activeIndex={activeIndex} next={next} previous={previous}>
-                <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={goToIndex} />
-                {slides}
-                <CarouselControl direction="prev" directionText="Previous" onClickHandler={previous} />
-                <CarouselControl direction="next" directionText="Next" onClickHandler={next} />
-            </Carousel>
-        </div>
-    );
+    }
 }
 
-export default Example;
+export default Carousel;

@@ -15,6 +15,12 @@ const actionNames = Object.freeze({
 
     //user - Sign Out
     USER_SIGNOUT: 'USER_SIGNOUT',
+
+    // User - Make CV
+    USER_CHANGE_JOB_TITLE: 'USER_CHANGE_JOB_TITLE',
+    USER_CHANGE_COMPANY_NAME: 'USER_CHANGE_COMPANY_NAME',
+    USER_CHANGE_JOB_POSITION: 'USER_CHANGE_JOB_POSITION',
+    USER_CHANGE_PRODUCT_DESC: 'USER_CHANGE_PRODUCT_DESC',
 });
 
 export default actionNames;

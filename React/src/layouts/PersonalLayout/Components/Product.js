@@ -7,7 +7,9 @@ import Technology from '~/components/Technology/Technology.js';
 import Library from '~/components/Library/Library.js';
 import { Icons } from '~/components/Image/Images.js';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
+import WorkExperience from './WorkExperience.js';
 import Avatar from '~/assets/img/avatar.jpg';
+import * as userCVActions from '~/store/actions';
 
 const cx = className.bind(styles);
 
@@ -26,18 +28,27 @@ class Product extends Component {
     render = () => {
         return (
             <div className={cx('container')} spellCheck="false">
-                <div className={cx('company')}>
+                <WorkExperience />
+                
+                {/* <div className={cx('work-exp')}>
                     <p
-                        className={cx('name')}
-                        contentEditable="true"
+                        className={cx('company')}
                         onInput={(e) => this.handleChangeNameCompany(e)}
-                        suppressContentEditableWarning={true}
+
+                        ref={this.myRef}
+                        // dangerouslySetInnerHTML={{ __html: this.props.jobTitle }}
+                        contentEditable
+                        suppressContentEditableWarning
+                        data-placeholder="Tên công ty"
+                        spellCheck="false"
                     >
-                        Tên công ty
                     </p>
                     <span className={cx('dash')}>-</span>
-                    <p className={cx('job-title')}>Vị trí công việc</p>
+                    <p className={cx('job-title')} contentEditable>
+                        Vị trí công việc
+                    </p>
                 </div>
+
                 <div className={cx('description')}>
                     <p
                         className={cx('job-title')}
@@ -45,7 +56,7 @@ class Product extends Component {
                         data-placeholder="Mô tả ngắn gọn về sản phẩm"
                         spellCheck="false"
                     ></p>
-                </div>
+                </div> */}
 
                 <div className={cx('product-detail')}>
                     <div className={cx('col-left')}>

@@ -16,7 +16,7 @@
 
         .info {
             display: flex;
-            padding: 8px 8px 0;
+            padding: 8px 0 0 8px;
 
             .icon {
                 height: 30px;
@@ -37,6 +37,7 @@
                 font-size: 1.5rem;
                 line-height: 1.6;
                 font-weight: 300;
+                word-break: break-all;
             }
         }
     }

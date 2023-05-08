@@ -5,52 +5,20 @@ import { connect } from 'react-redux';
 import DefaultTippy from '@tippyjs/react';
 import { FaBell } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
+import { BsArrowRight } from 'react-icons/bs';
 
 import styles from './Header.module.scss';
 import logo from '~/assets/logo/logo-with-text.png';
 import { AvatarRef } from '~/components/Image/ImageComponent.js';
-import { JpgImages, SignOutIcon, AccountIcon, LanguageIcon, HelpIcon } from '~/components/Image/Images.js';
+import { JpgImages } from '~/components/Image/Images.js';
 import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
 import Button from '~/components/Button/Button';
 import HeaderNavbar from '~/containers/Header/HeaderNavbar.js';
 
-const cx = className.bind(styles);
+import { MENU_AVATAR_DATA } from '~/components/MenuData/MenuData.js';
 
-const MENU_ITEMS = [
-    {
-        icon: <AccountIcon />,
-        title: 'Tài khoản',
-        to: '/feedback',
-    },
-    {
-        icon: <LanguageIcon />,
-        title: 'Tiếng Việt',
-        children: {
-            title: 'Ngôn ngữ',
-            data: [
-                {
-                    type: 'Ngôn ngữ',
-                    code: 'en',
-                    title: 'English',
-                },
-                {
-                    type: 'Ngôn ngữ',
-                    code: 'vi',
-                    title: 'Tiếng Việt',
-                },
-            ],
-        },
-    },
-    {
-        icon: <HelpIcon />,
-        title: 'Trợ giúp',
-    },
-    {
-        icon: <SignOutIcon />,
-        title: 'Đăng xuất',
-    },
-];
+const cx = className.bind(styles);
 
 class Header extends Component {
     render = () => {
@@ -60,37 +28,7 @@ class Header extends Component {
                     <img src={logo} className={cx('logo')} alt="cvonline.com" />
                 </Link>
 
-                {/* <nav className={cx('navbar')}>
-                    <ul className={cx('list')}>
-                        <li className={cx('item')}>
-                            <Link to={'#!'} className={cx('link')}>
-                                Việc làm
-                            </Link>
-                        </li>
-                        <li className={cx('item')}>
-                            <Link to={'#!'} className={cx('link')}>
-                                Hồ sơ & CV
-                            </Link>
-                        </li>
-                        <li className={cx('item')}>
-                            <Link to={'#!'} className={cx('link')}>
-                                Công ty
-                            </Link>
-                        </li>
-                        <li className={cx('item')}>
-                            <Link to={'#!'} className={cx('link')}>
-                                Phát triển sự nghiệp
-                            </Link>
-                        </li>
-                        <li className={cx('item')}>
-                            <Link to={'#!'} className={cx('link')}>
-                                Công cụ
-                            </Link>
-                        </li>
-                    </ul>
-                </nav> */}
-                <HeaderNavbar/>
-            
+                <HeaderNavbar />
 
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>
@@ -113,7 +51,7 @@ class Header extends Component {
                                 <RiMessage2Fill />
                             </button>
                         </DefaultTippy>
-                        <Menu data={MENU_ITEMS}>
+                        <Menu data={MENU_AVATAR_DATA}>
                             <button className={cx('user')}>
                                 <AvatarRef src={JpgImages.avatar} className={cx('avatar')} alt="Nguyễn Xuân Huy" />
                                 <span className={cx('fullname')}>Nguyễn Xuân Huy</span>

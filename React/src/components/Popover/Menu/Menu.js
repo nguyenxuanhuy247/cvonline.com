@@ -1,52 +1,81 @@
 import React, { Component } from 'react';
 import className from 'classnames/bind';
+import { connect } from 'react-redux';
 import TippyHeadless from '@tippyjs/react/headless';
+import { BiArrowBack } from 'react-icons/bi';
 
+import * as userActions from '~/store/actions/userActions.js';
 import PopoverWrapper from '~/components/Popover/Wrapper.js';
 import styles from './Menu.module.scss';
-import MenuItem from './MenuItem.js';
+import Button from '~/components/Button/Button';
 
 const cx = className.bind(styles);
-
-const HeaderSubMenu = () => {
-    return <div>Header</div>;
-};
 
 class Menu extends Component {
     constructor(props) {
         super(props);
         this.state = {
             menuList: this.props.data || [],
+            isHeaderShow: false,
+            subMenuHeaderTitle: '',
         };
     }
 
-    handleRenderMenuItem = () => {
-        this.state.menuList.length > 0 &&
-            this.state.menuList.map((item, index) => {
-                const isParent = !!item.children;
-
-                return (
-                    <MenuItem
-                        key={index}
-                        data={item}
-                        onClick={() => {
-                            if (isParent) {
-                                this.setState({ menuList: item.children.data });
-                            }
-                        }}
-                    />
-                );
-            });
-    };
-
     handleShowMenuContent = (attrs) => (
         <div tabIndex="-1" {...attrs}>
-            <PopoverWrapper className={cx('menu-wrapper')}>{this.handleRenderMenuItem()}</PopoverWrapper>
+            <PopoverWrapper className={cx('menu-wrapper')}>
+                {this.state.isHeaderShow && (
+                    <div className={cx('submenu-header')}>
+                        <Button
+                            buttonClass={cx('button-back')}
+                            leftIconClass={cx('arrow-back')}
+                            leftIcon={<BiArrowBack />}
+                            onClick={() =>
+                                this.setState({
+                                    menuList: this.props.data,
+                                    isHeaderShow: false,
+                                })
+                            }
+                        />
+                        <div className={cx('text')}>{this.state.subMenuHeaderTitle}</div>
+                    </div>
+                )}
+
+                {this.state.menuList.length > 0 &&
+                    this.state.menuList.map((item) => {
+                        const isChildren = !!item.children;
+
+                        return (
+                            <Button
+                                key={item.id}
+                                leftIcon={item.leftIcon}
+                                rightIcon={item.rightIcon}
+                                onClick={() => {
+                                    if (isChildren) {
+                                        const { title, data } = item.children;
+                                        this.setState({
+                                            menuList: data,
+                                            isHeaderShow: true,
+                                            subMenuHeaderTitle: title,
+                                        });
+                                    }
+
+                                    if (item.title === 'Đăng xuất') {
+                                        this.props.userSignOut();
+                                    }
+                                }}
+                            >
+                                {item.title}
+                            </Button>
+                        );
+                    })}
+            </PopoverWrapper>
         </div>
     );
 
     render() {
         let { children } = this.props;
+
         return (
             <TippyHeadless
                 interactive
@@ -61,4 +90,14 @@ class Menu extends Component {
     }
 }
 
-export default Menu;
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        userSignOut: () => dispatch(userActions.userSignOut()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

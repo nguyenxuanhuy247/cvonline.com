@@ -42,7 +42,7 @@ class Personal_Info extends Component {
                         <span className={cx('icon')}>
                             <MdEmail />
                         </span>
-                        <span className={cx('info-text')}>nguyenxuanhuy24071993@gmail.com</span>
+                        <span className={cx('info-text')}>nguyenxuanhuy24dddddddddddd071993@gmail.com</span>
                     </div>
                     <div className={cx('info')}>
                         <span className={cx('icon')}>
