@@ -26,7 +26,7 @@ class JobTitle extends Component {
     }
 
     render = () => {
-        console.log(this.state.text);
+        // console.log(this.state.text);
         return (
             <span
                 className={cx('job-title')}

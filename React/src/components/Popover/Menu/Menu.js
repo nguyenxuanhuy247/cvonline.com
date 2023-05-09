@@ -48,6 +48,8 @@ class Menu extends Component {
                         return (
                             <Button
                                 key={item.id}
+                                buttonClass={cx('button')}
+                                rightIconClass={cx('right-icon')}
                                 leftIcon={item.leftIcon}
                                 rightIcon={item.rightIcon}
                                 onClick={() => {

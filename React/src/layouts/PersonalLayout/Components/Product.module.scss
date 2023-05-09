@@ -4,6 +4,37 @@
     padding: 16px;
     background-color: #fff;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    
+    .work-exp-desc {
+        .work-exp {
+            padding-left: 4px;
+            display: flex;
+            align-items: center;
+            column-gap: 6px;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            border-left: 4px solid #41bc8a;
+
+            .dash {
+                color: #999;
+                font-style: italic;
+                font-weight: 300;
+            }
+        }
+
+        .product-desc {
+            padding: 8px;
+
+            .product-desc {
+                font-size: 1.4rem;
+                line-height: 1.6;
+                padding: 4px;
+                color: #222;
+                text-align: justify;
+            }
+        }
+    }
 
     .product-detail {
         display: flex;
@@ -19,6 +50,7 @@
                     width: 100%;
                     height: 300px;
                     object-fit: cover;
+                    border-radius: 0;
                 }
             }
 
@@ -50,7 +82,6 @@
         }
 
         .col-right {
-            width: 300px;
 
             .library-used {
                 display: flex;

@@ -1,12 +1,15 @@
 import actionNames from '../actions/actionNames.js';
 
 const initialState = {
-    content: '',
+    imageUrl: '',
 };
 
 const userCVReducer = (state = initialState, action) => {
+    // const myDeepCopy = structuredClone(state);
+
+    console.log(action);
     switch (action.type) {
-        case actionNames.USER_CHANGE_JOB_TITLE:
+        case actionNames.USER_CHANGE_PRODUCT_IMAGE:
             return {
                 ...state,
                 content: action.payload,

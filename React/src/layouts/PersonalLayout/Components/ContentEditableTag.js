@@ -10,28 +10,33 @@ const cx = className.bind(styles);
 class ContentEditableTag extends Component {
     constructor(props) {
         super(props);
+        this.reduxState = this.props.reduxName;
+        this.reduxDispatch = `change${this.props.reduxName}`;
         this.state = {
-            content: this.props.content,
+            content: this.props[this.reduxState],
         };
 
         this.ref = React.createRef();
     }
 
     hanleChangeContent() {
-        this.setState({ text: this.ref.current.innerText });
+        this.setState({ content: this.ref.current.innerText });
     }
 
     componentWillUnmount() {
-        this.props.changeJobTitle(this.state.content);
+        if (this.props[this.reduxState] !== this.state.content) {
+            this.props[this.reduxDispatch](this.state.content);
+        }
     }
 
     render = () => {
-        const {className = '', placeholder = 'Nhập trường này'} = this.props;
+        const { className = '', placeholder = 'Vui lòng nhập trường này' } = this.props;
+
         return (
             <div
                 className={cx('contenteditable-tag', className)}
                 ref={this.ref}
-                dangerouslySetInnerHTML={{ __html: this.props.jobTitle }}
+                dangerouslySetInnerHTML={{ __html: this.props[this.reduxState] }}
                 contentEditable
                 suppressContentEditableWarning
                 onInput={() => this.hanleChangeContent()}
@@ -42,15 +47,20 @@ class ContentEditableTag extends Component {
     };
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+    const { reduxName } = ownProps;
+    // console.log(reduxName);
     return {
-        jobTitle: state.userCV.jobTitle,
+        [reduxName]: state[reduxName][reduxName],
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { reduxName } = ownProps;
+    const reduxDispatch = `change${reduxName}`;
+
     return {
-        changeJobTitle: (data) => dispatch(userCVActions.userChangeJobTitle(data)),
+        [reduxDispatch]: (data) => dispatch(userCVActions[reduxDispatch](data)),
     };
 };
 

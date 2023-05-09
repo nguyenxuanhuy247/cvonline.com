@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import className from 'classnames/bind';
 import { connect } from 'react-redux';
 
@@ -7,13 +7,14 @@ import Technology from '~/components/Technology/Technology.js';
 import Library from '~/components/Library/Library.js';
 import { Icons } from '~/components/Image/Images.js';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
-import WorkExperience from './WorkExperience.js';
-import Avatar from '~/assets/img/avatar.jpg';
-import * as userCVActions from '~/store/actions';
+import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
+import { ImageWithRef } from '~/components/Image/Image.js';
+
+import { JpgImages } from '~/components/Image/Images.js';
 
 const cx = className.bind(styles);
 
-class Product extends Component {
+class Product extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,40 +29,34 @@ class Product extends Component {
     render = () => {
         return (
             <div className={cx('container')} spellCheck="false">
-                <WorkExperience />
-                
-                {/* <div className={cx('work-exp')}>
-                    <p
-                        className={cx('company')}
-                        onInput={(e) => this.handleChangeNameCompany(e)}
+                <div className={cx('work-exp-desc')} spellCheck="false">
+                    <div className={cx('work-exp')}>
+                        <ContentEditableTag
+                            className="company-name"
+                            placeholder="Tên công ty"
+                            reduxName="companyName"
+                        />
+                        <span className={cx('dash')}>-</span>
+                        <ContentEditableTag
+                            className="job-position"
+                            placeholder="Vị trí công việc"
+                            reduxName="jobPosition"
+                        />
+                    </div>
 
-                        ref={this.myRef}
-                        // dangerouslySetInnerHTML={{ __html: this.props.jobTitle }}
-                        contentEditable
-                        suppressContentEditableWarning
-                        data-placeholder="Tên công ty"
-                        spellCheck="false"
-                    >
-                    </p>
-                    <span className={cx('dash')}>-</span>
-                    <p className={cx('job-title')} contentEditable>
-                        Vị trí công việc
-                    </p>
+                    <div className={cx('product-desc')}>
+                        <ContentEditableTag
+                            className="product-desc"
+                            placeholder="Mô tả ngắn gọn về sản phẩm"
+                            reduxName="productDesc"
+                        />
+                    </div>
                 </div>
 
-                <div className={cx('description')}>
-                    <p
-                        className={cx('job-title')}
-                        contentEditable="true"
-                        data-placeholder="Mô tả ngắn gọn về sản phẩm"
-                        spellCheck="false"
-                    ></p>
-                </div> */}
-
                 <div className={cx('product-detail')}>
-                    <div className={cx('col-left')}>
+                    <div className={cx('col-left', 'col-8')}>
                         <div className={cx('product-image')}>
-                            <img className={cx('image')} src={Avatar} alt="" />
+                            <ImageWithRef src={JpgImages.avatar} className={cx('image')} alt="Ảnh sản phẩm" isModified />
                         </div>
 
                         <div className={cx('section')}>
@@ -103,7 +98,7 @@ class Product extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className={cx('col-right')}>
+                    <div className={cx('col-right', 'col-4')}>
                         <div className={cx('library-used')}>
                             <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
                             <div className={cx('divide')}>

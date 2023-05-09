@@ -10,7 +10,6 @@ import Literacy from '~/layouts/PersonalLayout/Components/Literacy.js';
 import Languages from '~/layouts/PersonalLayout/Components/Languages.js';
 
 import styles from './PersonalLayout.module.scss';
-import JobTitle from '~/layouts/PersonalLayout/Components/JobTitle.js';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 
 const cx = className.bind(styles);
@@ -35,10 +34,11 @@ class PersonalLayout extends Component {
 
                     <div className={cx('col-right', 'col-9')}>
                         <div className={cx('job-title')}>
-                            <JobTitle />
-                        </div>
-                        <div>
-                            <ContentEditableTag className='product-desc' placeholder='Mô tả ngắn gọn về sản phẩm'/>
+                            <ContentEditableTag
+                                className="job-title"
+                                placeholder="VD: Fullstack developer"
+                                reduxName="jobTitle"
+                            />
                         </div>
                         <div className={cx('product-list')}>
                             <Product />

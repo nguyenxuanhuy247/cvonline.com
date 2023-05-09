@@ -9,7 +9,7 @@ import { BsArrowRight } from 'react-icons/bs';
 
 import styles from './Header.module.scss';
 import logo from '~/assets/logo/logo-with-text.png';
-import { AvatarRef } from '~/components/Image/ImageComponent.js';
+import { ImageWithRef } from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
@@ -41,19 +41,21 @@ class Header extends Component {
                     </div>
                 ) : (
                     <div className={cx('login')}>
-                        <DefaultTippy content="Thông báo">
-                            <button className={cx('icon')}>
+                        <DefaultTippy content="Thông báo" arrow="" offset={[0, 10]}>
+                            <Button className={cx('icon')}>
                                 <FaBell />
-                            </button>
+                            </Button>
                         </DefaultTippy>
-                        <DefaultTippy content="Tin nhắn">
-                            <button className={cx('icon')}>
+
+                        <DefaultTippy content="Tin nhắn" arrow="">
+                            <Button className={cx('icon')}>
                                 <RiMessage2Fill />
-                            </button>
+                            </Button>
                         </DefaultTippy>
+
                         <Menu data={MENU_AVATAR_DATA}>
                             <button className={cx('user')}>
-                                <AvatarRef src={JpgImages.avatar} className={cx('avatar')} alt="Nguyễn Xuân Huy" />
+                                <ImageWithRef src={JpgImages.avatar} className={cx('avatar')} alt="Nguyễn Xuân Huy" />
                                 <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
                             </button>
                         </Menu>

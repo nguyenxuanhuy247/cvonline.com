@@ -1,9 +1,7 @@
+import { forwardRef } from 'react';
 import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import styles from './Button.module.scss';
-// import { FaBell } from 'react-icons/fa';
-// import { forwardRef } from 'react';
-// import DefaultTippy from '@tippyjs/react';
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +17,7 @@ function Button({
     leftIcon,
     rightIcon,
     onClick,
+    forwardRef,
     ...passProps
 }) {
 
@@ -54,7 +53,7 @@ function Button({
         disabled,
     });
     return (
-        <Component className={classes} {...props}>
+        <Component className={classes} {...props} ref={forwardRef}>
             {leftIcon && <span className={cx('left-icon', leftIconClass)}>{leftIcon}</span>}
             {children && <span className={cx('text', childrenClass)}>{children}</span>}
             {rightIcon && <span className={cx('right-icon', rightIconClass)}>{rightIcon}</span>}
@@ -62,4 +61,4 @@ function Button({
     );
 }
 
-export default Button;
+export default forwardRef((props, ref) => <Button {...props} forwardRef={ref}/>)

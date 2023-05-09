@@ -8,6 +8,8 @@ import makeCV from '~/assets/img/make-cv.png';
 import secSafe from '~/assets/img/sec-safe.png';
 
 import avatar from '~/assets/img/avatar.jpg';
+import placeholder from '~/assets/img/img-placeholder.jpg';
+
 export const Icons = {
     Github,
     Gitlab,
@@ -17,7 +19,7 @@ export const Icons = {
 
 export const PngImages = { findJob, makeCV, secSafe };
 
-export const JpgImages = { avatar };
+export const JpgImages = { avatar, placeholder };
 
 export const AccountIcon = () => {
     return (

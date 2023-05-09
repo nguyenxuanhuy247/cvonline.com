@@ -26,18 +26,10 @@ class JobLayout extends Component {
 
                 <div className={`container ${cx('wrapper')}`}>
                     <div className={`col-4 ${cx('col-left')}`}>
-                        <AvatarFullname />
-                        <PersonalInfo />
-                        <Literacy />
-                        <Languages />
                     </div>
 
                     <div className={`col-8 ${cx('col-right')}`}>
                         <div className={cx('product-list')}>
-                            <Product />
-                            <Product />
-                            <Product />
-                            <Product />
                         </div>
                     </div>
                 </div>

@@ -7,20 +7,10 @@
     padding: 16px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     margin: 0;
     font-size: 1.4rem;
     width: 100%;
-
-    &:hover {
-        background-color: #efefef;
-        cursor: pointer;
-
-        .text,
-        .right-icon {
-            color: var(--primary-color);
-            opacity: 1;
-        }
-    }
 
     .left-icon {
         box-sizing: content-box;

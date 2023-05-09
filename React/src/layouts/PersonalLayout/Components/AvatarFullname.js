@@ -3,7 +3,7 @@ import className from 'classnames/bind';
 import { connect } from 'react-redux';
 
 import styles from './AvatarFullname.module.scss';
-import { AvatarRef } from '~/components/Image/ImageComponent.js';
+import { ImageWithRef } from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 
 const cx = className.bind(styles);
@@ -19,7 +19,7 @@ class AvatarFullname extends Component {
             <div className={cx('candidate')}>
                     <div className={cx('avatar-outline')}>
                         <div className={cx('avatar-border')}>
-                            <AvatarRef
+                            <ImageWithRef
                                 className={cx('avatar')}
                                 src={JpgImages.avatar}
                                 width="170px"

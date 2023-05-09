@@ -27,7 +27,11 @@ const appPersistConfig = {
     whitelist: ['language'],
 };
 
-contenteditableReducer('jobPosition', userCVReducer);
+const userCVPersistConfig = {
+    ...persistCommonConfig,
+    key: 'userCV',
+    whitelist: ['jobTitle', 'productDesc', 'jobPosition', 'companyName'],
+};
 
 const createRootReducer = (history) =>
     combineReducers({
@@ -35,6 +39,11 @@ const createRootReducer = (history) =>
         user: persistReducer(userPersistConfig, userReducer),
         app: persistReducer(appPersistConfig, appReducer),
         userCV: userCVReducer,
+
+        jobTitle: persistReducer(userCVPersistConfig, contenteditableReducer('jobTitle')),
+        companyName: persistReducer(userCVPersistConfig, contenteditableReducer('companyName')),
+        jobPosition: persistReducer(userCVPersistConfig, contenteditableReducer('jobPosition')),
+        productDesc: persistReducer(userCVPersistConfig, contenteditableReducer('productDesc')),
     });
 
 export default createRootReducer;

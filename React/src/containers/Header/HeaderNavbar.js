@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import className from 'classnames/bind';
 
@@ -7,7 +7,7 @@ import styles from './HeaderNavbar.module.scss';
 import Button from '~/components/Button/Button.js';
 const cx = className.bind(styles);
 
-class HeaderNavbar extends Component {
+class HeaderNavbar extends PureComponent {
     constructor(props) {
         super(props);
         this.data = HEADER_NAVBAR_DATA;
@@ -36,7 +36,9 @@ class HeaderNavbar extends Component {
                                                 <li key={subItem.id} className={cx('submenu-item')}>
                                                     <Button
                                                         to={'#!'}
+                                                        buttonClass={cx('button')}
                                                         childrenClass={cx('submenu-link')}
+                                                        rightIconClass={cx('right-icon')}
                                                         leftIcon={subItem.leftIcon}
                                                         rightIcon={subItem.rightIcon}
                                                     >

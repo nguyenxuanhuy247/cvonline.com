@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 
 import styles from './Technology.module.scss';
-import { ImageIcon } from '~/components/Image/ImageComponent.js';
+import { ImageIcon } from '~/components/Image/Image.js';
 
 const cx = classNames.bind(styles);
 
