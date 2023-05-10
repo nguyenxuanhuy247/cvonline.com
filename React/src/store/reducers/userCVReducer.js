@@ -7,7 +7,6 @@ const initialState = {
 const userCVReducer = (state = initialState, action) => {
     // const myDeepCopy = structuredClone(state);
 
-    console.log(action);
     switch (action.type) {
         case actionNames.USER_CHANGE_PRODUCT_IMAGE:
             return {

@@ -86,12 +86,16 @@
             padding: 4px 10px;
             cursor: pointer;
 
-            .avatar {
-                display: block;
-                @extend .icon;
+            .wapper {
+                width: auto;
 
-                overflow: hidden;
-                object-fit: cover;
+                .avatar {
+                    display: block;
+                    @extend .icon;
+
+                    overflow: hidden;
+                    object-fit: cover;
+                }
             }
 
             .fullname {

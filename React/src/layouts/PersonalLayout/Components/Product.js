@@ -56,7 +56,7 @@ class Product extends PureComponent {
                 <div className={cx('product-detail')}>
                     <div className={cx('col-left', 'col-8')}>
                         <div className={cx('product-image')}>
-                            <ImageWithRef src={JpgImages.avatar} className={cx('image')} alt="Ảnh sản phẩm" isModified />
+                            <ImageWithRef src={JpgImages.avatar || JpgImages.placeholder } className={cx('image')} alt="Ảnh sản phẩm" isModified />
                         </div>
 
                         <div className={cx('section')}>

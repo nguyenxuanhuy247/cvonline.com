@@ -9,10 +9,9 @@
 // Image
 .wapper {
     position: relative;
+    height: 100%;
 
     &:hover {
-        cursor: pointer;
-
         .overlay {
             opacity: 1;
         }
@@ -24,6 +23,10 @@
         justify-content: center;
         object-fit: cover;
         border-radius: 50%;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 
     .overlay {

@@ -3,9 +3,8 @@ import classNames from 'classnames/bind';
 import { MdFileUpload } from 'react-icons/md';
 
 import styles from './Image.module.scss';
-import ImageModal from '~/containers/ManageUser/Modal/Image/ImageModal.js';
+import CropModal from '~/containers/ManageUser/Modal/Crop/CropImage.js';
 import Button from '~/components/Button/Button.js';
-
 const cx = classNames.bind(styles);
 
 export class ImageIcon extends PureComponent {
@@ -24,37 +23,53 @@ export class ImageIcon extends PureComponent {
         );
     };
 }
-
 class Image extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isModalOpen: false,
+            isModal: false,
+            isCrop: false,
+            url: '',
         };
 
-        this.ref = React.createRef();
+        this.btnRef = React.createRef();
     }
 
-    openModal = () => {
-        this.setState({ isModalOpen: true });
+    handleChangeImageSrc = (url) => {
+        this.setState({
+            isModal: false,
+            url: url,
+        });
     };
 
-    closeModal = () => {
-        this.setState({ isModalOpen: false });
+    handleOpenModal = () => {
+        this.setState({ isModal: true });
+    };
+
+    handleCloseModal = () => {
+        this.setState({ isModal: false });
+    };
+
+    handleOpenCropImage = () => {
+        this.setState({
+            isModal: false,
+            isCrop: true,
+        });
     };
 
     render() {
-        const { forwardRef, className, src, width, height, alt, isModified } = this.props;
+        const { forwardRef, wapperClass, className, width, height, alt, isModified, isLazy } = this.props;
 
         return (
-            <div className={classNames(cx('wapper'))}>
+            <div className={classNames(cx('wapper', wapperClass))}>
                 <img
                     className={classNames(cx('image', className))}
-                    src={src}
+                    src={this.state.url || this.props.src}
                     width={width || '40px'}
                     height={height || '40px'}
                     alt={alt}
                     ref={forwardRef}
+                    loading={isLazy || 'lazy'}
                 />
 
                 {isModified && (
@@ -64,12 +79,23 @@ class Image extends PureComponent {
                             buttonClass={cx('button')}
                             leftIconClass={cx('left-icon')}
                             childrenClass={cx('text')}
-                            ref={this.ref}
-                            onClick={this.openModal}
+                            ref={this.btnRef}
+                            onClick={this.handleOpenModal}
                         >
                             Sửa ảnh
                         </Button>
-                        <ImageModal isOpen={this.state.isModalOpen} closeModal={this.closeModal} />
+
+                        {this.state.isModal && (
+                            <CropModal
+                                isOpen={this.state.isModal}
+                                onClose={this.handleCloseModal}
+                                onChange={this.handleChangeImageSrc}
+                                onCrop={this.handleOpenCropImage}
+                                src={this.state.url}
+                            />
+                        )}
+
+                        {this.state.isCrop && <CropModal src={this.state.url} onChange={this.handleChangeImageSrc} />}
                     </div>
                 )}
             </div>

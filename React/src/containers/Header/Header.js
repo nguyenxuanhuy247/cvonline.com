@@ -55,7 +55,12 @@ class Header extends Component {
 
                         <Menu data={MENU_AVATAR_DATA}>
                             <button className={cx('user')}>
-                                <ImageWithRef src={JpgImages.avatar} className={cx('avatar')} alt="Nguyễn Xuân Huy" />
+                                <ImageWithRef
+                                    src={JpgImages.avatar}
+                                    wapperClass={cx('wapper')}
+                                    className={cx('avatar')}
+                                    alt="Nguyễn Xuân Huy"
+                                />
                                 <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
                             </button>
                         </Menu>
