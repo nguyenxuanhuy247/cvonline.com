@@ -1,44 +1,42 @@
 import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import Slider from '@material-ui/core/Slider';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import { Button } from 'reactstrap';
+
 import getCroppedImg from './cropImage';
 import { styles } from './styles';
 
-const dogImg = 'https://img.huffingtonpost.com/asset/5ab4d4ac2000007d06eb2c56.jpeg?cache=sih0jwle4e&ops=1910_1000';
-
-const Demo = ({ classes, onTake, url }) => {
+const Crop = ({ classes, onClose, onGetUrl, src, round = false }) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [rotation, setRotation] = useState(0);
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-    const [croppedImage, setCroppedImage] = useState(null);
 
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
 
-    const showCroppedImage = useCallback(async () => {
+    const getCroppedImage = useCallback(async () => {
         try {
-            const croppedImage = await getCroppedImg(url, croppedAreaPixels, rotation);
-            console.log('donee', { croppedImage });
-            setCroppedImage(croppedImage);
+            const croppedImage = await getCroppedImg(src, croppedAreaPixels, rotation);
+            onGetUrl(croppedImage);
         } catch (e) {
             console.error(e);
         }
-    }, [croppedAreaPixels, rotation, url]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [src, croppedAreaPixels, rotation]);
 
     return (
         <div>
             <div className={classes.cropContainer}>
                 <Cropper
-                    image={url}
+                    image={src}
                     crop={crop}
                     rotation={rotation}
                     zoom={zoom}
                     aspect={4 / 3}
+                    cropShape={round ? 'round' : 'react'}
                     onCropChange={setCrop}
                     onRotationChange={setRotation}
                     onCropComplete={onCropComplete}
@@ -47,9 +45,7 @@ const Demo = ({ classes, onTake, url }) => {
             </div>
             <div className={classes.controls}>
                 <div className={classes.sliderContainer}>
-                    <Typography variant="overline" classes={{ root: classes.sliderLabel }}>
-                        Zoom
-                    </Typography>
+                    <span className={classes.sliderLabel}>Zoom</span>
                     <Slider
                         value={zoom}
                         min={1}
@@ -61,9 +57,7 @@ const Demo = ({ classes, onTake, url }) => {
                     />
                 </div>
                 <div className={classes.sliderContainer}>
-                    <Typography variant="overline" classes={{ root: classes.sliderLabel }}>
-                        Rotation
-                    </Typography>
+                    <span className={classes.sliderLabel}>Rotation</span>
                     <Slider
                         value={rotation}
                         min={0}
@@ -74,21 +68,22 @@ const Demo = ({ classes, onTake, url }) => {
                         onChange={(e, rotation) => setRotation(rotation)}
                     />
                 </div>
-                <Button color="primary" size="" onClick={() => onTake(croppedImage)}>
-                    Hoàn thành
-                </Button>
-                <Button
-                    onClick={showCroppedImage}
-                    variant="contained"
-                    color="primary"
-                    classes={{ root: classes.cropButton }}
-                >
-                    Show Result
-                </Button>
+                <div className={classes.actions}>
+                    <Button
+                        color="success"
+                        className={`${classes.button}  ${classes.finish}`}
+                        onClick={() => getCroppedImage()}
+                    >
+                        Hoàn thành
+                    </Button>
+                    <Button color="danger" className={`${classes.button}`} onClick={onClose}>
+                        Hủy
+                    </Button>
+                </div>
             </div>
         </div>
     );
 };
 
-const StyledDemo = withStyles(styles)(Demo);
-export default StyledDemo;
+const StyledCrop = withStyles(styles)(Crop);
+export default StyledCrop;

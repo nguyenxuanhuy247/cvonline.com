@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { MdFileUpload } from 'react-icons/md';
 
 import styles from './Image.module.scss';
-import CropModal from '~/containers/ManageUser/Modal/Crop/CropImage.js';
+import ImageModal from '~/containers/ManageUser/Modal/Image/ImageModal.js';
 import Button from '~/components/Button/Button.js';
 const cx = classNames.bind(styles);
 
@@ -27,34 +27,26 @@ class Image extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isModal: false,
-            isCrop: false,
+            isOpen: false,
             url: '',
         };
 
         this.btnRef = React.createRef();
     }
 
-    handleChangeImageSrc = (url) => {
+    handleChangeImageFromModal = (url) => {
         this.setState({
-            isModal: false,
+            isOpen: false,
             url: url,
         });
     };
 
     handleOpenModal = () => {
-        this.setState({ isModal: true });
+        this.setState({ isOpen: true });
     };
 
     handleCloseModal = () => {
-        this.setState({ isModal: false });
-    };
-
-    handleOpenCropImage = () => {
-        this.setState({
-            isModal: false,
-            isCrop: true,
-        });
+        this.setState({ isOpen: false });
     };
 
     render() {
@@ -85,17 +77,14 @@ class Image extends PureComponent {
                             Sửa ảnh
                         </Button>
 
-                        {this.state.isModal && (
-                            <CropModal
-                                isOpen={this.state.isModal}
+                        {this.state.isOpen && (
+                            <ImageModal
+                                isOpen={this.state.isOpen}
                                 onClose={this.handleCloseModal}
-                                onChange={this.handleChangeImageSrc}
-                                onCrop={this.handleOpenCropImage}
+                                onChange={this.handleChangeImageFromModal}
                                 src={this.state.url}
                             />
                         )}
-
-                        {this.state.isCrop && <CropModal src={this.state.url} onChange={this.handleChangeImageSrc} />}
                     </div>
                 )}
             </div>
