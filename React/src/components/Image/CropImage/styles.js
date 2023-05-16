@@ -46,12 +46,11 @@ export const styles = (theme) => ({
         columnGap: '20px',
     },
     button: {
-        minWidth: '110px',
         fontSize: '1.6rem',
-        padding: '10px 20px',
-        borderRadius: '8px',
+        minWidth: '100px',
     },
     finish: {
+        color: '#fff',
         backgroundColor: 'var(--primary-color)',
     },
 });

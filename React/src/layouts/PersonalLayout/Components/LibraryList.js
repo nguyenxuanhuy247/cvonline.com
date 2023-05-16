@@ -1,25 +1,25 @@
 import { PureComponent } from 'react';
-import className from 'classnames/bind';
 import { connect } from 'react-redux';
+import classnames from 'classnames/bind';
 
-import styles from './Product.module.scss';
-import Library from '~/components/Library/Library.js';
-import { Icons } from '~/components/Image/Images.js';
+import Button from '~/components/Button/Button.js';
+import { ImageWithRef } from '~/components/Image/Image.js';
+import styles from './LibraryList.module.scss';
 
-const cx = className.bind(styles);
-
+const cx = classnames.bind(styles);
 class LibraryList extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
     render() {
         return (
-            <div className={cx('library-list')}>
+            <div>
                 {this.props.data &&
                     this.props.data.map((lib) => {
-                        return <Library key={lib.id} src={lib.icon} name={lib.name} version={lib.version} />;
+                        return (
+                            <Button key={lib.id} className={cx('button')} isEdit>
+                                <ImageWithRef src={lib.icon} className={cx('image-icon')} />
+                                <span className={cx('name')}>{lib.name}</span>
+                                <span className={cx('version')}>{lib.version}</span>
+                            </Button>
+                        );
                     })}
             </div>
         );
@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
     return {};
 };
 
-const mapDispatchToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
     return {};
 };
 

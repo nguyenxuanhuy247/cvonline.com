@@ -44,6 +44,7 @@ const createRootReducer = (history) =>
         companyName: persistReducer(userCVPersistConfig, contenteditableReducer('companyName')),
         jobPosition: persistReducer(userCVPersistConfig, contenteditableReducer('jobPosition')),
         productDesc: persistReducer(userCVPersistConfig, contenteditableReducer('productDesc')),
+        fullName: persistReducer(userCVPersistConfig, contenteditableReducer('fullName')),
     });
 
 export default createRootReducer;

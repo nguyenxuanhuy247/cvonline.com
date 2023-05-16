@@ -12,10 +12,7 @@ export const contenteditableReducer = (specifiedName) => {
         .split(' ')
         .join('_');
 
-    // console.log(UPPER_TEXT);
-
     return (state = initialState, action) => {
-        // console.log(action);
         switch (action.type) {
             case actionNames[`USER_CHANGE_${UPPER_TEXT}`]:
                 return {

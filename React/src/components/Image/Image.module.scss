@@ -23,6 +23,7 @@
         justify-content: center;
         object-fit: cover;
         border-radius: 50%;
+        overflow: hidden;
 
         &:hover {
             cursor: pointer;
@@ -39,21 +40,30 @@
         opacity: 0;
         transition: 0.25s;
 
-        .button {
+        .button-lg {
+            inset: 0;
             width: auto;
-            min-width: 150px;
+            padding: 4px 20px;
+            min-width: 120px;
             height: 44px;
             background-color: var(--text-color);
             color: #fff;
-
-            .left-icon {
-                color: currentColor;
-            }
 
             &:hover {
                 .text {
                     color: #fff;
                     background-color: var(--text-color);
+                }
+            }
+        }
+
+        .button-sm {
+            color: #000;
+            background-color: transparent;
+
+            &:hover {
+                .text {
+                    color: #000;
                 }
             }
         }

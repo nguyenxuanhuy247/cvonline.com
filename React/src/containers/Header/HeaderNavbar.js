@@ -34,15 +34,10 @@ class HeaderNavbar extends PureComponent {
                                         {item.children.map((subItem) => {
                                             return (
                                                 <li key={subItem.id} className={cx('submenu-item')}>
-                                                    <Button
-                                                        to={'#!'}
-                                                        buttonClass={cx('button')}
-                                                        childrenClass={cx('submenu-link')}
-                                                        rightIconClass={cx('right-icon')}
-                                                        leftIcon={subItem.leftIcon}
-                                                        rightIcon={subItem.rightIcon}
-                                                    >
-                                                        {subItem.name}
+                                                    <Button to={'#!'} className={cx('button')}>
+                                                        <i className={cx('left-icon')}>{subItem.leftIcon}</i>
+                                                        <span className={cx('submenu-link')}>{subItem.name}</span>
+                                                        <i className={cx('arrow-right')}>{subItem.rightIcon}</i>
                                                     </Button>
                                                 </li>
                                             );

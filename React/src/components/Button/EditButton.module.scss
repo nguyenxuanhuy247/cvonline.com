@@ -1,0 +1,35 @@
+@import '../GlobalStyles/GlobalStyles.module.scss';
+
+.wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(0, -100%);
+    display: flex;
+    column-gap: 4px;
+    padding-bottom: 4px;
+
+    .btn {
+        padding: 6px;
+        font-size: 20px;
+        border-radius: 4px;
+        border: none;
+        color: #fff;
+
+        &.drag {
+            background-color: var(--primary-color);
+        }
+
+        &.add {
+            background-color: #212f3f;
+        }
+
+        &.delete {
+            background-color: red;
+        }
+
+        &.esc {
+            background-color: #212f3f;
+        }
+    }
+}

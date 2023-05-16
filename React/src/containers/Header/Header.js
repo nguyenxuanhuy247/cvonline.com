@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import DefaultTippy from '@tippyjs/react';
 import { FaBell } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
-import { BsArrowRight } from 'react-icons/bs';
 
 import styles from './Header.module.scss';
 import logo from '~/assets/logo/logo-with-text.png';
@@ -13,7 +12,7 @@ import { ImageWithRef } from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
-import Button from '~/components/Button/Button';
+import Button from '~/components/Button/Button.js';
 import HeaderNavbar from '~/containers/Header/HeaderNavbar.js';
 
 import { MENU_AVATAR_DATA } from '~/components/MenuData/MenuData.js';
@@ -21,6 +20,17 @@ import { MENU_AVATAR_DATA } from '~/components/MenuData/MenuData.js';
 const cx = className.bind(styles);
 
 class Header extends Component {
+    handleChangeActiveButton = (e, classNameRemoved) => {
+        document.querySelector(`.${classNameRemoved}`).classList.remove(cx('active'));
+        e.currentTarget.classList.add(cx('active'));
+    };
+
+    componentDidMount() {
+        if (!this.props.isSignIn) {
+            document.querySelector(`.${cx('signin')}`).classList.add(cx('active'));
+        }
+    }
+
     render = () => {
         return (
             <header className={cx('header')}>
@@ -32,12 +42,20 @@ class Header extends Component {
 
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>
-                        <Link to={path.SIGNIN} className={cx('signin')}>
+                        <Button
+                            route={path.SIGNIN}
+                            className={cx('signin', 'btn')}
+                            onMouseOver={(e) => this.handleChangeActiveButton(e, cx('signup'))}
+                        >
                             Đăng nhập
-                        </Link>
-                        <Link to={path.SIGNUP} className={cx('signup')}>
+                        </Button>
+                        <Button
+                            route={path.SIGNUP}
+                            className={cx('signup', 'btn')}
+                            onMouseOver={(e) => this.handleChangeActiveButton(e, cx('signin'))}
+                        >
                             Đăng ký
-                        </Link>
+                        </Button>
                     </div>
                 ) : (
                     <div className={cx('login')}>
@@ -54,7 +72,7 @@ class Header extends Component {
                         </DefaultTippy>
 
                         <Menu data={MENU_AVATAR_DATA}>
-                            <button className={cx('user')}>
+                            <Button className={cx('user')}>
                                 <ImageWithRef
                                     src={JpgImages.avatar}
                                     wapperClass={cx('wapper')}
@@ -62,7 +80,7 @@ class Header extends Component {
                                     alt="Nguyễn Xuân Huy"
                                 />
                                 <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
-                            </button>
+                            </Button>
                         </Menu>
                     </div>
                 )}

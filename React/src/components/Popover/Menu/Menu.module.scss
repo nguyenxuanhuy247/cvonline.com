@@ -1,3 +1,5 @@
+@import '../../GlobalStyles/GlobalStyles.module.scss';
+
 .menu-wrapper {
     display: flex;
     flex-direction: column;
@@ -11,13 +13,13 @@
         position: relative;
 
         .button-back {
-            position: absolute;
+            // position: absolute;
             background-color: #fff;
             width: auto;
             padding: 0;
 
-            .arrow-back {
-                font-size: 4rem;
+            .arrow-left {
+                font-size: 2rem;
                 color: black;
                 padding: 8px;
                 border-radius: 50%;
@@ -25,6 +27,12 @@
                 &:hover {
                     color: var(--primary-color);
                 }
+            }
+
+            .text {
+                flex: 1;
+                display: inline-block;
+                text-align: center;
             }
         }
 
@@ -36,16 +44,7 @@
         }
     }
 
-    .button {
-        &:hover {
-            background-color: #efefef;
-            cursor: pointer;
-
-            .text,
-            .right-icon {
-                color: var(--primary-color);
-                opacity: 1;
-            }
-        }
+    .container {
+        @include btn-in-menu;
     }
 }

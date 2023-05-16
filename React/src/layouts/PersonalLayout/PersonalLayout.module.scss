@@ -34,6 +34,13 @@
             padding: 20px;
             color: #fff;
             background-color: #37474f;
+
+            .separate {
+                height: 1px;
+                background-color: #fff;
+                border-radius: 10px;
+                margin: 12px 0;
+            }
         }
 
         .col-right {

@@ -1,7 +1,10 @@
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import styles from './Button.module.scss';
+import EditButton from './EditButton';
 
 const cx = classNames.bind(styles);
 
@@ -10,16 +13,13 @@ function Button({
     url,
     disabled = false,
     children,
-    buttonClass,
-    leftIconClass,
-    childrenClass,
-    rightIconClass,
-    leftIcon,
-    rightIcon,
+    isEdit = false,
+    className,
     onClick,
     forwardRef,
     ...passProps
 }) {
+    const [edit, setEdit] = useState(false);
 
     const props = {
         onClick,
@@ -49,16 +49,32 @@ function Button({
 
     // Custom class
     const classes = cx('button', {
-        [buttonClass]: buttonClass,
+        [className]: className,
         disabled,
     });
+
     return (
-        <Component className={classes} {...props} ref={forwardRef}>
-            {leftIcon && <span className={cx('left-icon', leftIconClass)}>{leftIcon}</span>}
-            {children && <span className={cx('text', childrenClass)}>{children}</span>}
-            {rightIcon && <span className={cx('right-icon', rightIconClass)}>{rightIcon}</span>}
+        <Component
+            className={classes}
+            {...props}
+            ref={forwardRef}
+            onMouseOver={() => setEdit(true)}
+            onMouseOut={() => setEdit(false)}
+            draggable
+        >
+            {children}
+            {isEdit && edit && <EditButton />}
         </Component>
     );
 }
 
-export default forwardRef((props, ref) => <Button {...props} forwardRef={ref}/>)
+Button.propTypes = {
+    route: PropTypes.string,
+    url: PropTypes.string,
+    disabled: PropTypes.bool,
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string,
+    onClick: PropTypes.func,
+};
+
+export default forwardRef((props, ref) => <Button {...props} forwardRef={ref} />);

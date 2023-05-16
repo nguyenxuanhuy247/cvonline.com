@@ -9,6 +9,9 @@
 
 :root {
     --primary-color: #49b253;
+    --green-02: #41bc8a;
+    --button-backgroundColor: #e5f7ed;
+    --white-btn: #fff;
     --alexandria-font: 'Alexandria', sans-serif;
     --roboto-font: 'Roboto', sans-serif;
 
@@ -41,9 +44,10 @@ a {
     color: inherit;
 }
 
-@mixin btn-solid {
+@mixin btn {
+    display: inline-block;
     color: var(--primary-color);
-    background-color: #fff;
+    background-color: var(--white-btn);
     padding: 8px 20px;
     text-align: center;
     font-size: 1.6rem;
@@ -51,22 +55,57 @@ a {
     border: 1px solid var(--primary-color);
     border-radius: 6px;
     cursor: pointer;
-    opacity: 0.85;
-    color: #fff;
-    background-color: var(--primary-color);
+    white-space: nowrap;
+}
 
-    &:hover {
-        opacity: 1;
-    }
+@mixin solid-btn {
+    @include btn;
+    color: var(--white-btn);
+    background-color: var(--primary-color);
 }
 
 @mixin btn-regular {
-    min-width: 150px;
+    @include btn;
+
     color: var(--primary-color);
-    background-color: #fff;
-    border: 1px solid var(--primary-color);
-    padding: 6px 20px;
-    font-size: 1.6rem;
+    background-color: var(--white-btn);
+
+    &:hover {
+        @include solid-btn;
+    }
+}
+
+@mixin active-btn {
+    @include solid-btn;
+}
+
+@mixin btn-in-menu {
+    .button {
+        width: 100%;
+        justify-content: flex-start;
+
+        .left-icon {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .arrow-right {
+            font-size: 20px;
+            margin-left: auto;
+            opacity: 0;
+        }
+
+        &:hover {
+            background-color: #efefef;
+            cursor: pointer;
+
+            .text,
+            .arrow-right {
+                color: var(--primary-color);
+                opacity: 1;
+            }
+        }
+    }
 }
 
 @mixin line-clamp {

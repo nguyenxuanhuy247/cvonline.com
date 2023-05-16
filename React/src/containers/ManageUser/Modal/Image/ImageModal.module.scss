@@ -1,4 +1,12 @@
 .modal {
+    .btn {
+        font-size: 16px;
+        padding: 12px 12px;
+        border: none;
+        min-width: 100px;
+        color: #fff;
+    }
+
     .header {
         display: flex;
         justify-content: center;
@@ -48,18 +56,12 @@
             justify-content: center;
             row-gap: 12px;
 
-            .btn {
-                font-size: 16px;
-                padding: 8px 12px;
-                border: none;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                column-gap: 6px;
-            }
-
             .crop {
                 background-color: var(--primary-color);
+            }
+
+            .delete {
+                background-color: red;
             }
         }
     }
@@ -67,21 +69,13 @@
     .footer {
         display: flex;
         justify-content: center;
+        column-gap: 20px;
 
-        .btn {
-            min-width: 110px;
-            font-size: 1.6rem;
-            background-color: #ddd;
-            padding: 12px 20px;
-            border-radius: 8px;
-
-            & + .btn {
-                margin-left: 16px;
-            }
+        .cancel {
+            color: #000;
         }
 
         .finish {
-            color: #fff;
             background-color: var(--primary-color);
         }
     }

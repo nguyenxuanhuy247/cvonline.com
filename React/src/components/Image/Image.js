@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames/bind';
-import { MdFileUpload } from 'react-icons/md';
 
 import styles from './Image.module.scss';
 import ImageModal from '~/containers/ManageUser/Modal/Image/ImageModal.js';
 import Button from '~/components/Button/Button.js';
+import { JpgImages } from '~/components/Image/Images.js';
+
 const cx = classNames.bind(styles);
 
 export class ImageIcon extends PureComponent {
@@ -23,6 +24,7 @@ export class ImageIcon extends PureComponent {
         );
     };
 }
+
 class Image extends PureComponent {
     constructor(props) {
         super(props);
@@ -50,13 +52,13 @@ class Image extends PureComponent {
     };
 
     render() {
-        const { forwardRef, wapperClass, className, width, height, alt, isModified, isLazy } = this.props;
+        const { forwardRef, wapperClass, className, width, height, alt, isLazy, editText, sizeEditBtn } = this.props;
 
         return (
-            <div className={classNames(cx('wapper', wapperClass))}>
+            <div className={cx('wapper', wapperClass)}>
                 <img
-                    className={classNames(cx('image', className))}
-                    src={this.state.url || this.props.src}
+                    className={cx('image', className)}
+                    src={this.state.url || this.props.src || JpgImages.placeholder}
                     width={width || '40px'}
                     height={height || '40px'}
                     alt={alt}
@@ -64,17 +66,14 @@ class Image extends PureComponent {
                     loading={isLazy || 'lazy'}
                 />
 
-                {isModified && (
+                {editText && (
                     <div className={cx('overlay')}>
                         <Button
-                            leftIcon={<MdFileUpload />}
-                            buttonClass={cx('button')}
-                            leftIconClass={cx('left-icon')}
-                            childrenClass={cx('text')}
+                            className={sizeEditBtn === 'large' ? cx('button-lg') : cx('button-sm')}
                             ref={this.btnRef}
                             onClick={this.handleOpenModal}
                         >
-                            Sửa ảnh
+                            <span className={cx('text')}>{editText}</span>
                         </Button>
 
                         {this.state.isOpen && (

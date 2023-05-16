@@ -1,0 +1,36 @@
+@import '../GlobalStyles/GlobalStyles.module.scss';
+
+.modal {
+    position: fixed;
+    inset: var(--header-height) 0 0;
+    background-color: #333;
+
+    * {
+        border: 1px solid black;
+    }
+
+    .container {
+        min-height: 200px;
+        min-height: 400px;
+        width: 800px;
+        padding: 12px;
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        background-color: #fff;
+        border-radius: 4px;
+
+        .header {
+            font-size: 2rem;
+            font-weight: 600;
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+
+            .title {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    }
+}

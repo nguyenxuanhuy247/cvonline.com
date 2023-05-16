@@ -47,16 +47,16 @@
         column-gap: 12px;
         flex-shrink: 0;
 
-        .signin {
-            @include btn-solid;
-            white-space: nowrap;
-        }
+        .btn {
+            @include btn-regular;
 
-        .signup {
-            @include btn-solid;
             color: var(--primary-color);
             border-color: var(--primary-color);
             background-color: #fff;
+        }
+
+        .active {
+            @include active-btn;
         }
     }
 
@@ -66,6 +66,7 @@
         column-gap: 12px;
 
         .icon {
+            flex-shrink: 0;
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -75,6 +76,7 @@
             background-color: #e5f7ed;
             border-radius: 50%;
             color: var(--primary-color);
+            padding: 0;
         }
 
         .user {

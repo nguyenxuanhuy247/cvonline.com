@@ -17,7 +17,7 @@
     }
 
     .button {
-        @include btn-solid;
+        @include solid-btn;
         @include btn-regular;
 
         &:hover {
@@ -30,5 +30,5 @@
 .form-submit {
     width: 100%;
     margin-top: 20px;
-    @include btn-solid;
+    @include solid-btn;
 }

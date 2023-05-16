@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px 0 60px;
+    padding: 20px 0;
 
     .avatar-outline,
     .avatar-border {
@@ -21,7 +21,7 @@
         }
     }
 
-    .name {
+    .full-name {
         font-size: 3rem;
         font-weight: 600;
         margin-top: 30px;

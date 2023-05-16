@@ -82,7 +82,7 @@
 
         .form-submit {
             width: 100%;
-            @include btn-solid;
+            @include solid-btn;
             margin-top: 10px;
         }
     }

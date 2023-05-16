@@ -2,7 +2,8 @@ import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
-import { Button } from 'reactstrap';
+// import { Button } from 'reactstrap';
+import Button from '~/components/Button/Button.js';
 
 import getCroppedImg from './cropImage';
 import { styles } from './styles';
@@ -69,15 +70,11 @@ const Crop = ({ classes, onClose, onGetUrl, src, round = false }) => {
                     />
                 </div>
                 <div className={classes.actions}>
-                    <Button
-                        color="success"
-                        className={`${classes.button}  ${classes.finish}`}
-                        onClick={() => getCroppedImage()}
-                    >
-                        Hoàn thành
-                    </Button>
-                    <Button color="danger" className={`${classes.button}`} onClick={onClose}>
+                    <Button className={`${classes.button}`} onClick={onClose}>
                         Hủy
+                    </Button>
+                    <Button className={`${classes.button}  ${classes.finish}`} onClick={() => getCroppedImage()}>
+                        Hoàn thành
                     </Button>
                 </div>
             </div>

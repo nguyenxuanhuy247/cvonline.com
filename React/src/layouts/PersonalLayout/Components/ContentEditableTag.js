@@ -49,7 +49,6 @@ class ContentEditableTag extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     const { reduxName } = ownProps;
-    // console.log(reduxName);
     return {
         [reduxName]: state[reduxName][reduxName],
     };

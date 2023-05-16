@@ -8,17 +8,16 @@ export default class PaginationBar extends Component {
         return (
             <Pagination className="pag">
                 <PaginationItem className="pag-item">
-                    <PaginationLink first href="#" className="pag-link" />
-                </PaginationItem>
-                <PaginationItem className="pag-item">
-                    <PaginationLink href="#" previous className="pag-link" />
+                    <PaginationLink href="#" className="pag-link">
+                        Prev
+                    </PaginationLink>
                 </PaginationItem>
                 <PaginationItem className="pag-item">
                     <PaginationLink href="#" className="pag-link">
                         1
                     </PaginationLink>
                 </PaginationItem>
-                <PaginationItem className="pag-item" active>
+                <PaginationItem className="pag-item">
                     <PaginationLink href="#" className="pag-link">
                         2
                     </PaginationLink>
@@ -39,10 +38,9 @@ export default class PaginationBar extends Component {
                     </PaginationLink>
                 </PaginationItem>
                 <PaginationItem className="pag-item">
-                    <PaginationLink href="#" next className="pag-link" />
-                </PaginationItem>
-                <PaginationItem className="pag-item">
-                    <PaginationLink href="#" last className="pag-link" />
+                    <PaginationLink href="#" className="pag-link">
+                        Next
+                    </PaginationLink>
                 </PaginationItem>
             </Pagination>
         );

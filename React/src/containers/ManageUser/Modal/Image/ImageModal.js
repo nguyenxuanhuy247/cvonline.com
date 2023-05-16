@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import classNames from 'classnames/bind';
 import { MdCrop } from 'react-icons/md';
 import { AiTwotoneDelete } from 'react-icons/ai';
 
-import CustomButton from '~/components/Button/Button.js';
+import Button from '~/components/Button/Button.js';
 import { ImageWithRef } from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import styles from './ImageModal.module.scss';
@@ -65,19 +65,19 @@ class ImageModal extends PureComponent {
             <div>
                 {!this.state.isCropOpen ? (
                     <Modal
-                        className={classNames(cx('modal'))}
+                        className={(cx('modal'))}
                         size="lg"
                         isOpen={isOpen}
                         toggle={() => onClose()}
                         centered
                     >
-                        <ModalHeader className={classNames(cx('header'))} toggle={() => onClose()}>
+                        <ModalHeader className={(cx('header'))} toggle={() => onClose()}>
                             Cập nhật ảnh đại diện
                         </ModalHeader>
 
-                        <ModalBody className={classNames(cx('container', 'body'))}>
+                        <ModalBody className={(cx('container', 'body'))}>
                             <React.Fragment>
-                                <div className={classNames(cx('col-8', 'wrapper'))}>
+                                <div className={(cx('col-8', 'wrapper'))}>
                                     <input id="upload" type="file" hidden onChange={(e) => this.handleUploadImage(e)} />
                                     <label htmlFor="upload" className={cx('label')}>
                                         <ImageWithRef
@@ -87,37 +87,37 @@ class ImageModal extends PureComponent {
                                         />
                                     </label>
                                 </div>
-                                <div className={classNames(cx('col-2', 'actions'))}>
+                                <div className={(cx('col-2', 'actions'))}>
                                     <Button
-                                        size="lg"
-                                        className={classNames(cx('btn', 'crop'))}
+                                        className={(cx('btn', 'crop'))}
                                         onClick={() => this.handleOpenCropModal()}
                                         disabled={this.state.url ? false : true}
                                     >
-                                        Cắt <MdCrop />
+                                        <span className={(cx('text'))}>Cắt</span>
+                                        <i className={(cx('right-icon'))}>
+                                            <MdCrop />
+                                        </i>
                                     </Button>
-                                    <Button
-                                        size="lg"
-                                        color="danger"
-                                        className={classNames(cx('btn'))}
-                                        onClick={() => this.handleDeleteImage()}
-                                    >
-                                        Xóa <AiTwotoneDelete />
+                                    <Button className={(cx('btn', 'delete'))} onClick={() => this.handleDeleteImage()}>
+                                        <span className={(cx('text'))}>Xóa</span>
+                                        <i className={(cx('right-icon'))}>
+                                            <AiTwotoneDelete />
+                                        </i>
                                     </Button>
                                 </div>
                             </React.Fragment>
                         </ModalBody>
 
-                        <ModalFooter className={classNames(cx('footer'))}>
-                            <CustomButton className={classNames(cx('btn'))} onClick={() => onClose()}>
+                        <ModalFooter className={(cx('footer'))}>
+                            <Button className={(cx('btn', 'cancel'))} onClick={() => onClose()}>
                                 Hủy
-                            </CustomButton>
-                            <CustomButton
-                                className={classNames(cx('btn', 'finish'))}
+                            </Button>
+                            <Button
+                                className={(cx('btn', 'finish'))}
                                 onClick={() => this.handleClickFinishButton()}
                             >
                                 Hoàn tất
-                            </CustomButton>
+                            </Button>
                         </ModalFooter>
                     </Modal>
                 ) : (

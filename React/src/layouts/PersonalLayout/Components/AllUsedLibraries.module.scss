@@ -1,0 +1,124 @@
+@import '../../../components/GlobalStyles/GlobalStyles.module.scss';
+
+.library-used {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    border: 1px solid var(--primary-color);
+
+    .library-heading {
+        font-size: 1.8rem;
+        font-weight: 600;
+        padding: 8px 8px;
+        text-align: center;
+        color: var(--primary-color);
+    }
+
+    .divide {
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-evenly;
+
+        .text {
+            flex: 1;
+            display: inline-block;
+            padding: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            border: 1px solid currentColor;
+            background-color: #fff;
+            border-radius: 0;
+            cursor: pointer;
+
+            &.active {
+                color: #fff;
+                border: 1px solid var(--primary-color);
+                background-color: var(--primary-color);
+            }
+        }
+    }
+
+    .library-list {
+        min-height: 320px;
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .add-btn {
+        margin-top: 12px;
+        text-align: center;
+        padding: 8px;
+        color: var(--primary-color);
+        background-color: var(--button-backgroundColor);
+        border-radius: 4px;
+        font-size: 20px;
+
+        &:hover {
+            cursor: pointer;
+            color: #fff;
+            background-color: var(--green-02);
+        }
+
+        .text {
+            font-size: 1.4rem;
+        }
+    }
+
+    .add-library {
+        margin-top: 12px;
+        padding: 8px;
+        border: 1px dashed #333;
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            row-gap: 4px;
+
+            .wrapper {
+                border: 1px dashed transparent;
+                align-self: flex-start;
+            }
+
+            .name,
+            .version {
+                border: 1px dashed #333;
+                padding: 4px;
+            }
+
+            & > :hover:not(.wrapper) {
+                border: 1px solid var(--primary-color);
+            }
+        }
+
+        .actions {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            column-gap: 12px;
+
+            .btn {
+                min-width: 80px;
+                padding: 8px 12px;
+                color: #fff;
+                border-radius: 4px;
+
+                &.cancel {
+                    background-color: #212f3f;
+                }
+
+                &.add {
+                    background-color: var(--primary-color);
+                }
+            }
+        }
+    }
+
+    .paganition {
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+    }
+}
