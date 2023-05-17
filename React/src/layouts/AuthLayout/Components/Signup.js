@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
-import { Link, Redirect, Route } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 
 import styles from './Signup.module.scss';
 import logoWithText from '~/assets/logo/logo-with-text.png';
@@ -10,7 +10,7 @@ import Validator from '~/components/formValidation/formValidation.js';
 import * as userActions from '~/store/actions/userActions.js';
 import { path } from '~/utils';
 import FacebookGoogle from './FacebookGoogle.js';
-import { SwitchButton, SubmitButton } from './Button.js';
+import Button from '~/components/Button/Button.js';
 
 const cx = className.bind(styles);
 
@@ -203,12 +203,17 @@ class Signup extends Component {
                                     <span className={cx('form-message')}></span>
                                 </div>
                             </div>
-                            <SubmitButton text="Đăng ký" />
+                            <Button className={cx('submit-btn')}>Đăng ký</Button>
                         </form>
 
                         <p className={cx('signin-with')}>Hoặc đăng ký bằng :</p>
                         <FacebookGoogle />
-                        <SwitchButton question="Bạn đã có tài khoản?" to="/signin" button="Đăng nhập" />
+                        <div className={cx('switch-signin')}>
+                            <span className={cx('text')}>Bạn chưa có tài khoản?</span>
+                            <Button className={cx('signin-btn')} route="/signin">
+                                Đăng nhập
+                            </Button>
+                        </div>
                     </div>
                 )}
             </Route>

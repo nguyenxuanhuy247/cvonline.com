@@ -11,11 +11,12 @@ import { TbLanguageHiragana } from 'react-icons/tb';
 
 import Header from '~/containers/Header/Header.js';
 import Product from '~/layouts/PersonalLayout/Components/Product.js';
-import AvatarFullname from '~/layouts/PersonalLayout/Components/AvatarFullname.js';
 import PersonalInfo from '~/layouts/PersonalLayout/Components/PersonalInfo.js';
 
 import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
+import Image from '~/components/Image/Image.js';
+import { JpgImages } from '~/components/Image/Images.js';
 
 const cx = className.bind(styles);
 
@@ -23,27 +24,27 @@ const PERSONAL_INFO = [
     {
         id: 1,
         icon: <BsFillCalendarDayFill />,
-        text: '24/07/1993',
+        placeholder: 'Ngày tháng năm sinh',
     },
     {
         id: 2,
         icon: <FaUserCircle />,
-        text: 'Nam',
+        placeholder: 'Giới tính',
     },
     {
         id: 3,
         icon: <BsFillTelephoneFill />,
-        text: '0356 118 188',
+        placeholder: 'Số điện thoại',
     },
     {
         id: 4,
         icon: <MdEmail />,
-        text: 'nguyenxuanhuy24dddddddddddd071993@gmail.com',
+        placeholder: 'Email',
     },
     {
         id: 5,
         icon: <FaAddressBook />,
-        text: 'Số nhà 126, xóm 1, Vĩnh Thanh, Vĩnh Ngọc, Đông Anh, Hà Nội',
+        placeholder: 'Địa chỉ',
     },
 ];
 
@@ -51,12 +52,12 @@ const LITERACY = [
     {
         id: 1,
         icon: <FaUniversity />,
-        text: 'Trường Đại Học Công Nghiệp Hà Nội',
+        placeholder: 'Trường đại hoc',
     },
     {
         id: 2,
         icon: <FaGraduationCap />,
-        text: 'Khoa Cơ Khí',
+        placeholder: 'Khoa - chuyên ngành',
     },
 ];
 
@@ -64,12 +65,12 @@ const LANGUAGES = [
     {
         id: 1,
         icon: <RiEnglishInput />,
-        text: 'Tiếng Anh',
+        placeholder: 'Tiếng anh',
     },
     {
         id: 2,
         icon: <TbLanguageHiragana />,
-        text: 'Tiếng Nhật',
+        placeholder: 'Tiếng nhật',
     },
 ];
 
@@ -85,7 +86,23 @@ class PersonalLayout extends PureComponent {
                 <Header />
                 <div className={cx('wrapper', 'container')}>
                     <div className={cx('col-left', 'col-3')}>
-                        <AvatarFullname />
+                        <div className={cx('avatar-wrapper')}>
+                            <Image
+                                wrapperClass={cx('inner')}
+                                className={cx('avatar')}
+                                src={JpgImages.avatar}
+                                width="170px"
+                                height="170px"
+                                alt="Nguyễn Xuân Huy"
+                                editButton="Sửa ảnh"
+                                round
+                            />
+                        </div>
+                        <ContentEditableTag
+                            className={cx('full-name')}
+                            placeholder="Nguyễn Xuân Huy"
+                            reduxName="fullName"
+                        />
                         <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
                         <div className={cx('separate')}></div>
                         <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
@@ -94,9 +111,9 @@ class PersonalLayout extends PureComponent {
                     </div>
 
                     <div className={cx('col-right', 'col-9')}>
-                        <div className={cx('job-title')}>
+                        <div className={cx('applied-position')}>
                             <ContentEditableTag
-                                className="job-title"
+                                className={cx('job-title')}
                                 placeholder="VD: Fullstack developer"
                                 reduxName="jobTitle"
                             />

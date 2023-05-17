@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import className from 'classnames/bind';
 import { connect } from 'react-redux';
 
-import styles from './ContentEditableTag.module.scss';
 import * as userCVActions from '~/store/actions';
-
-const cx = className.bind(styles);
 
 class ContentEditableTag extends Component {
     constructor(props) {
@@ -34,7 +30,8 @@ class ContentEditableTag extends Component {
 
         return (
             <div
-                className={cx('contenteditable-tag', className)}
+                className={`${className}`}
+                style={{ padding: '0.1em 0.4em' }}
                 ref={this.ref}
                 dangerouslySetInnerHTML={{ __html: this.props[this.reduxState] }}
                 contentEditable

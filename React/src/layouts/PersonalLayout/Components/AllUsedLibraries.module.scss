@@ -82,8 +82,8 @@
                 align-self: flex-start;
             }
 
-            .name,
-            .version {
+            .input-form {
+                font-size: 1.4rem;
                 border: 1px dashed #333;
                 padding: 4px;
             }
@@ -111,6 +111,12 @@
 
                 &.add {
                     background-color: var(--primary-color);
+
+                    &:hover {
+                        .add-library {
+                            border: 1px solid var(--primary-color);
+                        }
+                    }
                 }
             }
         }

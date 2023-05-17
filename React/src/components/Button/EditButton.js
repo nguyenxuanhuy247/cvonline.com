@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { RiDragMove2Fill } from 'react-icons/ri';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { MdOutlineLogout } from 'react-icons/md';
 import DefaultTippy from '@tippyjs/react';
 
 import styles from './EditButton.module.scss';

@@ -52,9 +52,8 @@ class Menu extends Component {
                         const isChildren = !!item.children;
 
                         return (
-                            <div className={cx('container')}>
+                            <div key={item.id} className={cx('container')}>
                                 <Button
-                                    key={item.id}
                                     className={cx('button')}
                                     onClick={() => {
                                         if (isChildren) {

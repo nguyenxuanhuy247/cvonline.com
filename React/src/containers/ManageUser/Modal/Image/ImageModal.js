@@ -5,7 +5,7 @@ import { MdCrop } from 'react-icons/md';
 import { AiTwotoneDelete } from 'react-icons/ai';
 
 import Button from '~/components/Button/Button.js';
-import { ImageWithRef } from '~/components/Image/Image.js';
+import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import styles from './ImageModal.module.scss';
 import CropImageModal from '~/containers/ManageUser/Modal/Crop/CropImageModal.js';
@@ -24,14 +24,14 @@ class ImageModal extends PureComponent {
     handleUploadImage = (e) => {
         const file = e.target.files[0];
         if (file) {
-            let url = URL.createObjectURL(file);
-            this.setState({ url: url });
+            const urlObj = URL.createObjectURL(file);
+            this.setState({ url: urlObj });
         }
     };
 
     handleClickFinishButton = () => {
-        this.props.onClose();
         this.props.onChange(this.state.url);
+        this.props.onClose();
     };
 
     handleDeleteImage = () => {
@@ -55,52 +55,46 @@ class ImageModal extends PureComponent {
     };
 
     componentWillUnmount() {
-        URL.revokeObjectURL(this.state.url);
+        console.log('componentWillUnmount', this.state.url);
     }
 
     render() {
         const { isOpen, onClose } = this.props;
-
+        console.log('re-render url: ', this.state.url);
         return (
             <div>
                 {!this.state.isCropOpen ? (
-                    <Modal
-                        className={(cx('modal'))}
-                        size="lg"
-                        isOpen={isOpen}
-                        toggle={() => onClose()}
-                        centered
-                    >
-                        <ModalHeader className={(cx('header'))} toggle={() => onClose()}>
+                    <Modal className={cx('modal')} size="lg" isOpen={isOpen} toggle={() => onClose()} centered>
+                        <ModalHeader className={cx('header')} toggle={() => onClose()}>
                             Cập nhật ảnh đại diện
                         </ModalHeader>
 
-                        <ModalBody className={(cx('container', 'body'))}>
+                        <ModalBody className={cx('container', 'body')}>
                             <React.Fragment>
-                                <div className={(cx('col-8', 'wrapper'))}>
+                                <div className={cx('col-8', 'wrapper')}>
                                     <input id="upload" type="file" hidden onChange={(e) => this.handleUploadImage(e)} />
                                     <label htmlFor="upload" className={cx('label')}>
-                                        <ImageWithRef
+                                        <Image
                                             src={this.state.url || JpgImages.placeholder}
                                             className={cx('placeholder')}
                                             alt="placeholder"
                                         />
                                     </label>
                                 </div>
-                                <div className={(cx('col-2', 'actions'))}>
+                                <div className={cx('col-2', 'actions')}>
                                     <Button
-                                        className={(cx('btn', 'crop'))}
+                                        className={cx('btn', 'crop')}
                                         onClick={() => this.handleOpenCropModal()}
                                         disabled={this.state.url ? false : true}
                                     >
-                                        <span className={(cx('text'))}>Cắt</span>
-                                        <i className={(cx('right-icon'))}>
+                                        <span className={cx('text')}>Cắt</span>
+                                        <i className={cx('right-icon')}>
                                             <MdCrop />
                                         </i>
                                     </Button>
-                                    <Button className={(cx('btn', 'delete'))} onClick={() => this.handleDeleteImage()}>
-                                        <span className={(cx('text'))}>Xóa</span>
-                                        <i className={(cx('right-icon'))}>
+                                    <Button className={cx('btn', 'delete')} onClick={() => this.handleDeleteImage()}>
+                                        <span className={cx('text')}>Xóa</span>
+                                        <i className={cx('right-icon')}>
                                             <AiTwotoneDelete />
                                         </i>
                                     </Button>
@@ -108,14 +102,11 @@ class ImageModal extends PureComponent {
                             </React.Fragment>
                         </ModalBody>
 
-                        <ModalFooter className={(cx('footer'))}>
-                            <Button className={(cx('btn', 'cancel'))} onClick={() => onClose()}>
+                        <ModalFooter className={cx('footer')}>
+                            <Button className={cx('btn', 'cancel')} onClick={() => onClose()}>
                                 Hủy
                             </Button>
-                            <Button
-                                className={(cx('btn', 'finish'))}
-                                onClick={() => this.handleClickFinishButton()}
-                            >
+                            <Button className={cx('btn', 'finish')} onClick={() => this.handleClickFinishButton()}>
                                 Hoàn tất
                             </Button>
                         </ModalFooter>

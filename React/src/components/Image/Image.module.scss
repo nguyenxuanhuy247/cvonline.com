@@ -1,71 +1,61 @@
-// Image icon
-.image-icon {
-    border-radius: 50%;
-    object-fit: contain;
-    border: none;
-    border: 3px solid transparent;
-}
+@import '../GlobalStyles/GlobalStyles.module.scss';
 
-// Image
 .wapper {
     position: relative;
-    height: 100%;
 
-    &:hover {
-        .overlay {
+    &.mouse-enter:hover {
+        .image {
+            cursor: pointer;
+            opacity: 0.6;
+            border: 1px solid var(--primary-color);
+        }
+
+        .edit-button {
             opacity: 1;
+        }
+
+        .edit-text {
+            color: var(--primary-color);
+            background-color: 0.5;
         }
     }
 
     .image {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
         object-fit: cover;
-        border-radius: 50%;
         overflow: hidden;
+        opacity: 1;
+        border: 1px solid transparent;
 
-        &:hover {
-            cursor: pointer;
+        &.round {
+            border-radius: 50%;
         }
     }
 
-    .overlay {
+    .edit-button {
         position: absolute;
-        inset: 0;
-        background-color: rgba(255, 255, 255, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: auto;
+        padding: 12px;
+        background-color: var(--primary-color);
+        color: #fff;
         opacity: 0;
-        transition: 0.25s;
+    }
 
-        .button-lg {
-            inset: 0;
-            width: auto;
-            padding: 4px 20px;
-            min-width: 120px;
-            height: 44px;
-            background-color: var(--text-color);
-            color: #fff;
-
-            &:hover {
-                .text {
-                    color: #fff;
-                    background-color: var(--text-color);
-                }
-            }
-        }
-
-        .button-sm {
-            color: #000;
-            background-color: transparent;
-
-            &:hover {
-                .text {
-                    color: #000;
-                }
-            }
-        }
+    .edit-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background-color: transparent;
+        color: transparent;
     }
 }

@@ -8,7 +8,7 @@ import { RiMessage2Fill } from 'react-icons/ri';
 
 import styles from './Header.module.scss';
 import logo from '~/assets/logo/logo-with-text.png';
-import { ImageWithRef } from '~/components/Image/Image.js';
+import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
@@ -73,9 +73,9 @@ class Header extends Component {
 
                         <Menu data={MENU_AVATAR_DATA}>
                             <Button className={cx('user')}>
-                                <ImageWithRef
+                                <Image
                                     src={JpgImages.avatar}
-                                    wapperClass={cx('wapper')}
+                                    wrapperClass={cx('wapper')}
                                     className={cx('avatar')}
                                     alt="Nguyễn Xuân Huy"
                                 />

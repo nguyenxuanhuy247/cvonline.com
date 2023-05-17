@@ -135,10 +135,12 @@
             }
         }
 
-        .form-submit {
-            width: 100%;
-            margin-top: 20px;
+        .submit-btn {
             @include solid-btn;
+
+            font-family: inherit !important;
+            margin-top: 20px;
+            width: 100%;
         }
     }
 
@@ -147,5 +149,23 @@
         text-align: center;
         font-size: 1.4rem;
         color: #555;
+    }
+
+    .switch-signup {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .text {
+            font-size: 1.4rem;
+        }
+
+        & > .signup-btn {
+            @include regular-btn;
+
+            font-family: inherit !important;
+            margin-left: 12px;
+        }
     }
 }

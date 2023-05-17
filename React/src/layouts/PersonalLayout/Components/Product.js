@@ -5,7 +5,7 @@ import className from 'classnames/bind';
 import styles from './Product.module.scss';
 import Technology from '~/components/Technology/Technology.js';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
-import { ImageWithRef } from '~/components/Image/Image.js';
+import Image from '~/components/Image/Image.js';
 import { JpgImages, Icons } from '~/components/Image/Images.js';
 import AllUsedLibraries from './AllUsedLibraries';
 
@@ -42,14 +42,10 @@ class Product extends PureComponent {
             <div className={cx('container')} spellCheck="false">
                 <div className={cx('work-exp-desc')} spellCheck="false">
                     <div className={cx('work-exp')}>
-                        <ContentEditableTag
-                            className="company-name"
-                            placeholder="Tên công ty"
-                            reduxName="companyName"
-                        />
+                        <ContentEditableTag className={cx('exp')} placeholder="Tên công ty" reduxName="companyName" />
                         <span className={cx('dash')}>-</span>
                         <ContentEditableTag
-                            className="job-position"
+                            className={cx('exp')}
                             placeholder="Vị trí công việc"
                             reduxName="jobPosition"
                         />
@@ -57,7 +53,7 @@ class Product extends PureComponent {
 
                     <div className={cx('product-desc')}>
                         <ContentEditableTag
-                            className="product-desc"
+                            className={cx('desc')}
                             placeholder="Mô tả ngắn gọn về sản phẩm"
                             reduxName="productDesc"
                         />
@@ -67,12 +63,11 @@ class Product extends PureComponent {
                 <div className={cx('product-detail')}>
                     <div className={cx('col-left', 'col-8')}>
                         <div className={cx('product-image')}>
-                            <ImageWithRef
-                                src={JpgImages.avatar || JpgImages.placeholder}
+                            <Image
+                                src={JpgImages.avatar}
                                 className={cx('image')}
                                 alt="Ảnh sản phẩm"
-                                editText="Sửa ảnh"
-                                sizeEditBtn="large"
+                                editButton="Sửa ảnh"
                             />
                         </div>
 

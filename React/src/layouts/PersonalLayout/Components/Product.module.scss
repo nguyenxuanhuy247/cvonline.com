@@ -16,6 +16,13 @@
             color: var(--text-color);
             border-left: 4px solid #41bc8a;
 
+            .exp {
+                color: var(--text-color);
+                font-size: 2rem;
+                line-height: 1.5;
+                font-weight: 600;
+            }
+
             .dash {
                 color: #999;
                 font-style: italic;
@@ -32,18 +39,25 @@
                 padding: 4px;
                 color: #222;
                 text-align: justify;
+
+                .desc {
+                    font-size: 1.4rem;
+                    line-height: 1.6;
+                    color: #222;
+                    text-align: justify;
+                }
             }
         }
     }
 
     .product-detail {
         display: flex;
+        column-gap: 12px;
 
         .col-left {
             flex: 1;
 
             .product-image {
-                padding-right: 12px;
                 height: fit-content;
 
                 .image {

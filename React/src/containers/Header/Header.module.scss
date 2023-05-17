@@ -48,7 +48,7 @@
         flex-shrink: 0;
 
         .btn {
-            @include btn-regular;
+            @include regular-btn;
 
             color: var(--primary-color);
             border-color: var(--primary-color);

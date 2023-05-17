@@ -7,24 +7,6 @@ import Button from '~/components/Button/Button.js';
 import { JpgImages } from '~/components/Image/Images.js';
 
 const cx = classNames.bind(styles);
-
-export class ImageIcon extends PureComponent {
-    render = () => {
-        return (
-            <div>
-                <img
-                    className={classNames(cx('image-icon', this.props.hover))}
-                    src={this.props.src}
-                    width={this.props.width || '24px'}
-                    height={this.props.height || '24px'}
-                    alt={this.props.alt}
-                />
-                {this.props.isModified && <div>Button</div>}
-            </div>
-        );
-    };
-}
-
 class Image extends PureComponent {
     constructor(props) {
         super(props);
@@ -36,9 +18,8 @@ class Image extends PureComponent {
         this.btnRef = React.createRef();
     }
 
-    handleChangeImageFromModal = (url) => {
+    handleGetImageFromModal = (url) => {
         this.setState({
-            isOpen: false,
             url: url,
         });
     };
@@ -51,13 +32,23 @@ class Image extends PureComponent {
         this.setState({ isOpen: false });
     };
 
+    componentWillUnmount() {
+        URL.revokeObjectURL(this.state.url);
+    }
+
     render() {
-        const { forwardRef, wapperClass, className, width, height, alt, isLazy, editText, sizeEditBtn } = this.props;
+        const { forwardRef, wrapperClass, className, round, width, height, alt, isLazy, editText, editButton } =
+            this.props;
+
+        const classes = cx('image', {
+            [className]: className,
+            round,
+        });
 
         return (
-            <div className={cx('wapper', wapperClass)}>
+            <div className={cx('wapper', wrapperClass, { 'mouse-enter': editButton || editText })}>
                 <img
-                    className={cx('image', className)}
+                    className={classes}
                     src={this.state.url || this.props.src || JpgImages.placeholder}
                     width={width || '40px'}
                     height={height || '40px'}
@@ -66,29 +57,27 @@ class Image extends PureComponent {
                     loading={isLazy || 'lazy'}
                 />
 
-                {editText && (
-                    <div className={cx('overlay')}>
-                        <Button
-                            className={sizeEditBtn === 'large' ? cx('button-lg') : cx('button-sm')}
-                            ref={this.btnRef}
-                            onClick={this.handleOpenModal}
-                        >
-                            <span className={cx('text')}>{editText}</span>
-                        </Button>
+                {(editText || editButton) && (
+                    <Button
+                        className={cx({ 'edit-button': editButton, 'edit-text': editText })}
+                        ref={this.btnRef}
+                        onClick={this.handleOpenModal}
+                    >
+                        <span className={cx('text')}>{editText || editButton}</span>
+                    </Button>
+                )}
 
-                        {this.state.isOpen && (
-                            <ImageModal
-                                isOpen={this.state.isOpen}
-                                onClose={this.handleCloseModal}
-                                onChange={this.handleChangeImageFromModal}
-                                src={this.state.url}
-                            />
-                        )}
-                    </div>
+                {this.state.isOpen && (
+                    <ImageModal
+                        isOpen={this.state.isOpen}
+                        onClose={this.handleCloseModal}
+                        onChange={this.handleGetImageFromModal}
+                        src={this.state.url}
+                    />
                 )}
             </div>
         );
     }
 }
 
-export const ImageWithRef = React.forwardRef((props, ref) => <Image {...props} forwardRef={ref} />);
+export default React.forwardRef((props, ref) => <Image {...props} forwardRef={ref} />);

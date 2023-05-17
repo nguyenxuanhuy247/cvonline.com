@@ -64,7 +64,7 @@ a {
     background-color: var(--primary-color);
 }
 
-@mixin btn-regular {
+@mixin regular-btn {
     @include btn;
 
     color: var(--primary-color);

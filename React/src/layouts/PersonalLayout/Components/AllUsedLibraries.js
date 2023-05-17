@@ -9,7 +9,7 @@ import LibraryList from './LibraryList';
 import { Icons } from '~/components/Image/Images.js';
 import Button from '~/components/Button/Button.js';
 import Modal from '~/components/Modal/Modal.js';
-import { ImageWithRef } from '~/components/Image/Image';
+import Image from '~/components/Image/Image.js';
 
 const cx = className.bind(styles);
 
@@ -212,14 +212,15 @@ class AllUsedLibraries extends PureComponent {
                     ) : (
                         <div className={cx('add-library')}>
                             <div className={cx('info')}>
-                                <ImageWithRef
-                                    wapperClass={cx('wrapper')}
+                                <Image
+                                    wrapperClass={cx('wrapper')}
                                     className={cx('image')}
                                     editText="Sửa"
-                                    sizeEditbtn="small"
+                                    round
                                 />
-                                <input type="text" className={cx('name')} placeholder="Nhập tên thư viện" />
-                                <input type="text" className={cx('version')} placeholder="Nhập version" />
+                                <input type="text" className={cx('input-form')} placeholder="Nhập tên thư viện" />
+                                <input type="text" className={cx('input-form')} placeholder="Nhập version" />
+                                <input type="text" className={cx('input-form')} placeholder="Nhập link website" />
                             </div>
                             <div className={cx('actions')}>
                                 <Button

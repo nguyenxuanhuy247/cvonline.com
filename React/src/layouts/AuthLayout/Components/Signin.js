@@ -10,7 +10,7 @@ import Validator from '~/components/formValidation/formValidation.js';
 import styles from './Signin.module.scss';
 import * as userActions from '~/store/actions';
 import FacebookGoogle from './FacebookGoogle.js';
-import { SwitchButton, SubmitButton } from './Button.js';
+import Button from '~/components/Button/Button.js';
 
 const cx = className.bind(styles);
 
@@ -73,12 +73,12 @@ class SignIn extends Component {
                     <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
 
                     <div className={cx('error-message')}>
-                                {errorMessage && (
-                                    <p className={`${errorCode ? 'alert alert-danger' : 'alert alert-success'}`}>
-                                        {errorMessage}
-                                    </p>
-                                )}
-                            </div>
+                        {errorMessage && (
+                            <p className={`${errorCode ? 'alert alert-danger' : 'alert alert-success'}`}>
+                                {errorMessage}
+                            </p>
+                        )}
+                    </div>
 
                     <div className={cx('form-group')}>
                         <div className={cx('form-input')}>
@@ -125,12 +125,19 @@ class SignIn extends Component {
                     <a href="#!" className={cx('forgot-password')}>
                         Quên mật khẩu?
                     </a>
-                    <SubmitButton text="Đăng nhập" />
+                    <Button className={cx('submit-btn')}>Đăng nhập</Button>
                 </form>
 
                 <p className={cx('signin-with')}>Hoặc đăng nhập bằng :</p>
+                
                 <FacebookGoogle />
-                <SwitchButton question="Bạn chưa có tài khoản?" to="/signup" button="Đăng ký" />
+
+                <div className={cx('switch-signup')}>
+                    <span className={cx('text')}>Bạn chưa có tài khoản?</span>
+                    <Button className={cx('signup-btn')} route="/signup">
+                        Đăng ký
+                    </Button>
+                </div>
             </div>
         );
     }

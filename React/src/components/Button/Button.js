@@ -27,7 +27,7 @@ function Button({
     };
 
     // By default, Button component is a button
-    let Component = 'button';
+    let Button = 'button';
 
     // Remove event listener when btn is disabled
     if (disabled) {
@@ -41,10 +41,10 @@ function Button({
     // Check whether Button Component is a tag or Link
     if (route) {
         props.to = route;
-        Component = Link;
+        Button = Link;
     } else if (url) {
         props.href = url;
-        Component = 'a';
+        Button = 'a';
     }
 
     // Custom class
@@ -54,7 +54,7 @@ function Button({
     });
 
     return (
-        <Component
+        <Button
             className={classes}
             {...props}
             ref={forwardRef}
@@ -64,7 +64,7 @@ function Button({
         >
             {children}
             {isEdit && edit && <EditButton />}
-        </Component>
+        </Button>
     );
 }
 

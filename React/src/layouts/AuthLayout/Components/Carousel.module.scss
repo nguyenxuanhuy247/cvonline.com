@@ -1,28 +1,33 @@
 .carousel {
+    position: absolute;
+    inset: 0;
+    margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 800px;
+    width: 600px;
     height: 100%;
+    overflow: hidden;
 
     .slider {
+        position: absolute;
+        left: 0;
         width: 300%;
         display: flex;
         align-items: center;
-        border: 1px solid black;
 
         .img-wrapper {
-            width: 33.3333%;
-            border: 1px solid black;
+            width: calc(100% / 3);
             text-align: center;
             flex-direction: column;
             display: flex;
             align-items: center;
             flex: 1;
+            padding: 0 100px;
 
             .image {
                 display: block;
-                width: 400px;
+                width: 100%;
             }
 
             .title {
@@ -39,6 +44,8 @@
                 color: rgba(0, 0, 0, 0.851);
                 font-size: 1.6rem;
                 line-height: 1.6;
+                width: 100%;
+                padding: 4px;
             }
         }
     }

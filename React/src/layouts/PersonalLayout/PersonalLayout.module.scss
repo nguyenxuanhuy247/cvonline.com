@@ -35,6 +35,33 @@
             color: #fff;
             background-color: #37474f;
 
+            .avatar-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 20px 0;
+
+                .inner {
+                    display: flex;
+                    justify-content: center;
+                    border-radius: 50%;
+                    border: 8px solid var(--primary-color);
+                    outline: 12px solid rgba(73, 178, 83, 0.4);
+
+                    // .avatar {
+                    //     border-radius: 50%;
+                    // }
+                }
+            }
+
+            .full-name {
+                text-align: center;
+                font-size: 3rem;
+                line-height: 1.5;
+                font-weight: 600;
+                margin: 30px 0;
+            }
+
             .separate {
                 height: 1px;
                 background-color: #fff;
@@ -44,13 +71,23 @@
         }
 
         .col-right {
-            .job-title {
+            .applied-position {
                 min-height: 150px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 background-color: #212a2f;
                 padding: 20px;
+
+                .job-title {
+                    padding: 12px;
+                    display: block;
+                    font-size: 5rem;
+                    line-height: 1.5;
+                    font-weight: 700;
+                    text-align: center;
+                    color: #fff;
+                }
             }
 
             .product-list {
