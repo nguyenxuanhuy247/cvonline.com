@@ -3,8 +3,7 @@ import axios from '~/config/axios.js';
 // Handle Sign Up
 export const postSignUp = (userData) => {
     return axios.post(`/signup`, {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
+        fullName: userData.fullName,
         email: userData.email,
         password: userData.password,
     });

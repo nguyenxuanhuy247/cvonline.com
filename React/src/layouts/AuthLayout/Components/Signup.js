@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
@@ -11,6 +11,7 @@ import * as userActions from '~/store/actions/userActions.js';
 import { path } from '~/utils';
 import FacebookGoogle from './FacebookGoogle.js';
 import Button from '~/components/Button/Button.js';
+import Loading from '~/components/Modal/Loading.js';
 
 const cx = className.bind(styles);
 
@@ -23,30 +24,18 @@ class Signup extends Component {
             email: '',
             password: '',
             passwordConfirmation: '',
-            errorMessage: '',
             isShowPassword: false,
+            delayRedirect: false,
         };
+
+        this.id = React.createRef();
     }
 
-    handleChangeFistName = (event) => {
-        this.setState({ firstName: event.target.value });
-    };
-
-    handleChangeLastName = (event) => {
-        this.setState({ lastName: event.target.value });
-    };
-
-    handleChangeEmail = (event) => {
-        this.props.removeSignUpMessage();
-        this.setState({ email: event.target.value });
-    };
-
-    handleChangePassword = (event) => {
-        this.setState({ password: event.target.value });
-    };
-
-    handleChangePasswordConfirmation = (event) => {
-        this.setState({ passwordConfirmation: event.target.value });
+    handleChangeInputField = (event, inputName) => {
+        if (inputName === 'email') {
+            this.props.removeSignUpMessage();
+        }
+        this.setState({ [inputName]: event.target.value });
     };
 
     handleShowHidePassword = () => {
@@ -61,8 +50,7 @@ class Signup extends Component {
                 formGroupSelector: `.${cx('form-group')}`,
                 messageSelector: `.${cx('form-message')}`,
                 rules: [
-                    Validator.isRequired(`#${cx('firstName')}`),
-                    Validator.isRequired(`#${cx('lastName')}`),
+                    Validator.isRequired(`#${cx('fullName')}`),
                     Validator.isRequired(`#${cx('email')}`),
                     Validator.isEmail(`#${cx('email')}`),
                     Validator.isRequired(`#${cx('password')}`),
@@ -82,139 +70,141 @@ class Signup extends Component {
         this.handleValidateForm();
     };
 
+    componentDidUpdate(prevProps) {
+        if (this.props.isSignUp !== prevProps.isSignUp) {
+            this.id.current = setTimeout(() => this.setState({ delayRedirect: true }), 2000);
+        }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.id.current);
+    }
+
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
         let { errorCode, errorMessage } = this.props.signUpMessage;
-        let { isSignUp } = this.props;
+        let { isLoading } = this.props;
+        const { delayRedirect } = this.state;
 
         return (
             <Route exact path={path.SIGNUP}>
-                {isSignUp ? (
+                {delayRedirect ? (
                     <Redirect to={path.SIGNIN} />
                 ) : (
-                    <div className={cx('signup-container')}>
-                        <form className={cx('form-signup')} autoComplete="on">
-                            <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
+                    <>
+                        <div className={cx('signup-container')}>
+                            <form className={cx('form-signup')} autoComplete="on">
+                                <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
 
-                            <div className={cx('error-message')}>
-                                {this.state.email && errorMessage && (
-                                    <p className={`${errorCode ? 'alert alert-danger' : 'alert alert-success'}`}>
-                                        {errorMessage}
-                                    </p>
-                                )}
-                            </div>
+                                <div className={cx('error-message')}>
+                                    {this.state.email && errorMessage && (
+                                        <p className={`${errorCode ? 'alert alert-danger' : 'alert alert-success'}`}>
+                                            {errorMessage}
+                                        </p>
+                                    )}
+                                </div>
 
-                            <div className="row">
-                                <div className={cx('col-6', 'form-group')}>
+                                <div className={cx('form-group')}>
                                     <div className={cx('form-input')}>
-                                        <label htmlFor="lastName" className={cx('form-label')}>
-                                            Họ
+                                        <label htmlFor="fullName" className={cx('form-label')}>
+                                            Họ và tên
                                         </label>
                                         <input
-                                            id="lastName"
-                                            name="lastName"
+                                            id="fullName"
+                                            name="fullName"
                                             type="text"
-                                            placeholder="VD: Nguyễn Xuân"
+                                            placeholder="VD: Nguyễn Xuân Huy"
                                             className={cx('form-control')}
-                                            value={this.state.lastName}
-                                            onChange={(event) => this.handleChangeLastName(event)}
+                                            value={this.state.fullName}
+                                            onChange={(event) => this.handleChangeInputField(event, 'fullName')}
                                         />
                                     </div>
                                     <span className={cx('form-message')}></span>
                                 </div>
 
-                                <div className={cx('col-6', 'form-group')}>
+                                <div className={cx('form-group')}>
                                     <div className={cx('form-input')}>
-                                        <label htmlFor="firstName" className={cx('form-label')}>
-                                            Tên
+                                        <label htmlFor="email" className={cx('form-label')}>
+                                            Email
                                         </label>
                                         <input
-                                            id="firstName"
-                                            name="firstName"
+                                            id="email"
+                                            name="email"
                                             type="text"
-                                            placeholder="VD: Huy"
+                                            placeholder="VD: nguyenxuanhuy@gmail.com"
                                             className={cx('form-control')}
-                                            value={this.state.firstName}
-                                            onChange={(event) => this.handleChangeFistName(event)}
+                                            value={this.state.email}
+                                            onChange={(event) => this.handleChangeInputField(event, 'email')}
                                         />
                                     </div>
                                     <span className={cx('form-message')}></span>
                                 </div>
-                            </div>
 
-                            <div className={cx('form-group')}>
-                                <div className={cx('form-input')}>
-                                    <label htmlFor="email" className={cx('form-label')}>
-                                        Email
-                                    </label>
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="text"
-                                        placeholder="VD: nguyenxuanhuy@gmail.com"
-                                        className={cx('form-control')}
-                                        value={this.state.email}
-                                        onChange={(event) => this.handleChangeEmail(event)}
-                                    />
-                                </div>
-                                <span className={cx('form-message')}></span>
-                            </div>
-
-                            <div className="row">
-                                <div className={cx('col-6', 'form-group')}>
-                                    <div className={cx('form-input')}>
-                                        <label htmlFor="password" className={cx('form-label')}>
-                                            Mật khẩu
-                                        </label>
-                                        <input
-                                            id="password"
-                                            name="password"
-                                            type={this.state.isShowPassword ? 'type' : 'password'}
-                                            placeholder="VD: Abc123456@#"
-                                            className={cx('form-control')}
-                                            value={this.state.password}
-                                            onChange={(event) => this.handleChangePassword(event)}
-                                        />
-                                        <div className={cx('toggle-show-password')}>
-                                            <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
+                                <div className="row">
+                                    <div className={cx('col-6', 'form-group')}>
+                                        <div className={cx('form-input')}>
+                                            <label htmlFor="password" className={cx('form-label')}>
+                                                Mật khẩu
+                                            </label>
+                                            <input
+                                                id="password"
+                                                name="password"
+                                                type={this.state.isShowPassword ? 'type' : 'password'}
+                                                placeholder="VD: Abc123456@#"
+                                                className={cx('form-control')}
+                                                value={this.state.password}
+                                                onChange={(event) => this.handleChangeInputField(event, 'password')}
+                                            />
+                                            <div className={cx('toggle-show-password')}>
+                                                <Eye
+                                                    className={cx('eye')}
+                                                    onClick={() => this.handleShowHidePassword()}
+                                                />
+                                            </div>
                                         </div>
+                                        <span className={cx('form-message')}></span>
                                     </div>
-                                    <span className={cx('form-message')}></span>
-                                </div>
 
-                                <div className={cx('col-6', 'form-group')}>
-                                    <div className={cx('form-input')}>
-                                        <label htmlFor="password_confirmation" className={cx('form-label')}>
-                                            Nhập lại mật khẩu
-                                        </label>
-                                        <input
-                                            id="password_confirmation"
-                                            name="password_confirmation"
-                                            placeholder="VD: Abc123456@#"
-                                            type={this.state.isShowPassword ? 'type' : 'password'}
-                                            className={cx('form-control')}
-                                            value={this.state.confirmPassword}
-                                            onChange={(event) => this.handleChangePasswordConfirmation(event)}
-                                        />
-                                        <div className={cx('toggle-show-password')}>
-                                            <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
+                                    <div className={cx('col-6', 'form-group')}>
+                                        <div className={cx('form-input')}>
+                                            <label htmlFor="password_confirmation" className={cx('form-label')}>
+                                                Nhập lại mật khẩu
+                                            </label>
+                                            <input
+                                                id="password_confirmation"
+                                                name="password_confirmation"
+                                                placeholder="VD: Abc123456@#"
+                                                type={this.state.isShowPassword ? 'type' : 'password'}
+                                                className={cx('form-control')}
+                                                value={this.state.confirmPassword}
+                                                onChange={(event) =>
+                                                    this.handleChangeInputField(event, 'passwordConfirmation')
+                                                }
+                                            />
+                                            <div className={cx('toggle-show-password')}>
+                                                <Eye
+                                                    className={cx('eye')}
+                                                    onClick={() => this.handleShowHidePassword()}
+                                                />
+                                            </div>
                                         </div>
+                                        <span className={cx('form-message')}></span>
                                     </div>
-                                    <span className={cx('form-message')}></span>
                                 </div>
-                            </div>
-                            <Button className={cx('submit-btn')}>Đăng ký</Button>
-                        </form>
+                                <Button className={cx('submit-btn')}>Đăng ký</Button>
+                            </form>
 
-                        <p className={cx('signin-with')}>Hoặc đăng ký bằng :</p>
-                        <FacebookGoogle />
-                        <div className={cx('switch-signin')}>
-                            <span className={cx('text')}>Bạn chưa có tài khoản?</span>
-                            <Button className={cx('signin-btn')} route="/signin">
-                                Đăng nhập
-                            </Button>
+                            <p className={cx('signin-with')}>Hoặc đăng ký bằng :</p>
+                            <FacebookGoogle />
+                            <div className={cx('switch-signin')}>
+                                <span className={cx('text')}>Bạn chưa có tài khoản?</span>
+                                <Button className={cx('signin-btn')} route="/signin">
+                                    Đăng nhập
+                                </Button>
+                            </div>
                         </div>
-                    </div>
+                        <Loading isOpen={isLoading} />
+                    </>
                 )}
             </Route>
         );
@@ -225,6 +215,7 @@ const mapStateToProps = (state) => {
     return {
         signUpMessage: state.user.signUpMessage,
         isSignUp: state.user.isSignUp,
+        isLoading: state.user.isLoading,
     };
 };
 

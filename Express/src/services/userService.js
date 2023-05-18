@@ -3,10 +3,10 @@ import bcrypt from 'bcryptjs';
 
 const salt = bcrypt.genSaltSync(10);
 
-// Check email function
-const checkUserEmailInDB = async (userEmail) => {
+// Email check function
+const checkUserEmailInDB = async (email) => {
     try {
-        let user = await db.User.findOne({ where: { email: userEmail } });
+        let user = await db.User.findOne({ where: { email: email } });
 
         if (user) {
             return true;
@@ -28,29 +28,25 @@ const hashUserPassword = async (password) => {
     }
 };
 
-// Handle User Sign Up with Database
-export const postUserSignUp = async (userFistName, userLastName, userEmail, userPassword) => {
+// Connect signup with Database
+export const postUserSignUp = async (fullName, email, password) => {
     try {
         let userData = {};
-        let hashPassword = await hashUserPassword(userPassword);
+        let hashPassword = await hashUserPassword(password);
 
         const [user, created] = await db.User.findOrCreate({
             where: {
-                email: userEmail,
+                email: email,
             },
             defaults: {
-                firstName: userFistName,
-                firstName: userLastName,
-                email: userEmail,
+                fullName: fullName,
+                email: email,
                 password: hashPassword,
             },
-            raw: true,
         });
 
-        console.log(user, created);
-
         if (!created) {
-            userData.errorCode = 11;
+            userData.errorCode = 31;
             userData.errorMessage = `Email của bạn đã được đăng ký. Vui lòng điền email khác`;
         } else {
             userData.errorCode = 0;
@@ -75,7 +71,7 @@ export const postUserSignIn = async (userEmail, userPassword) => {
             // Get user's data again prevent someone from deleting/changing data
             let user = await db.User.findOne({
                 where: { email: userEmail },
-                attributes: ['email', 'password', 'firstName', 'lastName'],
+                attributes: ['email', 'password', 'fullName'],
             });
 
             if (user) {
@@ -100,7 +96,7 @@ export const postUserSignIn = async (userEmail, userPassword) => {
             userData.errorCode = 11;
             userData.errorMessage = `Email của bạn không tồn tại trên hệ thống. Vui lòng nhập email khác`;
         }
-        
+
         return userData;
     } catch (error) {
         console.log('An error in postUserSignIn() in userService.js : ', error);
@@ -129,7 +125,7 @@ export const handleGetAllUsers = (userId) => {
 
 export const deleteUser = async (userId) => {
     try {
-        let user = await db.User.findOne({ where: { id: userId } });
+        let user = await db.UserInfo.findOne({ where: { id: userId } });
 
         if (!user) {
             return {

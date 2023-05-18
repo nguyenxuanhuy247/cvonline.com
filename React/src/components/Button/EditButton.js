@@ -34,7 +34,7 @@ class EditButton extends PureComponent {
                 </DefaultTippy>
 
                 <DefaultTippy content="Thêm mục mới">
-                    <Button className={cx('btn', 'add')}>
+                    <Button className={cx('btn', 'add')} onClick={(e) => e.preventDefault()}>
                         <IoIosAddCircleOutline />
                     </Button>
                 </DefaultTippy>

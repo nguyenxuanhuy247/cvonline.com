@@ -1,63 +1,50 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import * as userCVActions from '~/store/actions';
-
 class ContentEditableTag extends Component {
     constructor(props) {
         super(props);
-        this.reduxState = this.props.reduxName;
-        this.reduxDispatch = `change${this.props.reduxName}`;
         this.state = {
-            content: this.props[this.reduxState],
+            content: '' || this.props.innerText,
         };
-
-        this.ref = React.createRef();
     }
 
-    hanleChangeContent() {
-        this.setState({ content: this.ref.current.innerText });
+    hanleChangeContent(e) {
+        this.setState({ content: e.target.innerText });
     }
 
-    componentWillUnmount() {
-        if (this.props[this.reduxState] !== this.state.content) {
-            this.props[this.reduxDispatch](this.state.content);
-        }
-    }
+    componentWillUnmount() {}
 
     render = () => {
-        const { className = '', placeholder = 'Vui lòng nhập trường này' } = this.props;
+        const { className = '', placeholder = 'Vui lòng nhập trường này', onKeyDown } = this.props;
+        console.log(onKeyDown);
 
         return (
             <div
                 className={`${className}`}
                 style={{ padding: '0.1em 0.4em' }}
                 ref={this.ref}
-                dangerouslySetInnerHTML={{ __html: this.props[this.reduxState] }}
+                dangerouslySetInnerHTML={{ __html: this.state.content }}
                 contentEditable
                 suppressContentEditableWarning
-                onInput={() => this.hanleChangeContent()}
+                onInput={(e) => this.hanleChangeContent(e)}
                 placeholder={placeholder}
                 spellCheck="false"
+                tabIndex="0"
+                onkeydown={() => {
+                    onKeyDown(this.state.content);
+                }}
             ></div>
         );
     };
 }
 
-const mapStateToProps = (state, ownProps) => {
-    const { reduxName } = ownProps;
-    return {
-        [reduxName]: state[reduxName][reduxName],
-    };
+const mapStateToProps = (state) => {
+    return {};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { reduxName } = ownProps;
-    const reduxDispatch = `change${reduxName}`;
-
-    return {
-        [reduxDispatch]: (data) => dispatch(userCVActions[reduxDispatch](data)),
-    };
+const mapDispatchToProps = (dispatch) => {
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentEditableTag);

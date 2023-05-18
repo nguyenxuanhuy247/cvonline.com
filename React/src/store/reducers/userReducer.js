@@ -1,34 +1,33 @@
 import actionNames from '../actions/actionNames';
 
 const initialState = {
-    isSignIn: false,
-    isSignUp: false,
     isLoading: false,
+    isSignUp: false,
     signUpMessage: {},
+    isSignIn: false,
     signInMessage: {},
 };
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
-        // Sign Up
+        // USER SIGN UP
         case actionNames.USER_SIGNUP_START:
             return {
                 ...state,
                 isLoading: true,
-                signUpMessage: action.payload,
             };
         case actionNames.USER_SIGNUP_SUCCESS:
             return {
                 ...state,
-                isSignUp: true,
                 isLoading: false,
+                isSignUp: true,
                 signUpMessage: action.payload,
             };
         case actionNames.USER_SIGNUP_FAIL:
             return {
                 ...state,
-                isSignUp: false,
                 isLoading: false,
+                isSignUp: false,
                 signUpMessage: action.payload,
             };
         case actionNames.REMOVE_SIGNUP_MESSAGE:
@@ -38,7 +37,7 @@ const userReducer = (state = initialState, action) => {
                 signUpMessage: action.payload,
             };
 
-        // Sign In
+        // USER SIGN IN
         case actionNames.USER_SIGNIN_START:
             return {
                 ...state,
@@ -47,8 +46,8 @@ const userReducer = (state = initialState, action) => {
         case actionNames.USER_SIGNIN_SUCCESS:
             return {
                 ...state,
-                isSignIn: true,
                 isLoading: false,
+                isSignIn: true,
                 signInMessage: action.payload,
             };
         case actionNames.USER_SIGNIN_FAIL:
@@ -65,11 +64,12 @@ const userReducer = (state = initialState, action) => {
                 signInMessage: action.payload,
             };
 
-        // Sign Out
+        // USER SIGN OUT
         case actionNames.USER_SIGNOUT:
             return {
                 ...state,
                 isSignIn: false,
+                isSignUp: false,
             };
         default:
             return state;

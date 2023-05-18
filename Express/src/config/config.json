@@ -2,7 +2,7 @@
     "development": {
         "username": "root",
         "password": null,
-        "database": "cvonline",
+        "database": "cvonline01",
         "host": "127.0.0.1",
         "dialect": "mysql",
         "query": { "raw": true },
@@ -10,14 +10,14 @@
         "logging": false
     },
     "test": {
-        "username": "cvonline",
+        "username": "root",
         "password": null,
         "database": "database_test",
         "host": "127.0.0.1",
         "dialect": "mysql"
     },
     "production": {
-        "username": "cvonline",
+        "username": "root",
         "password": null,
         "database": "database_production",
         "host": "127.0.0.1",

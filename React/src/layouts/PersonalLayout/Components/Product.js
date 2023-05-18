@@ -35,6 +35,16 @@ const PRO_LANGUAGES = [
         src: Icons.CSS,
         name: 'CSS',
     },
+    {
+        id: 3,
+        src: Icons.HTML,
+        name: 'Python',
+    },
+    {
+        id: 4,
+        src: Icons.CSS,
+        name: 'JavaScript',
+    },
 ];
 class Product extends PureComponent {
     render() {
@@ -86,7 +96,7 @@ class Product extends PureComponent {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Frameworks</span>
                             <div className={cx('list')}>
-                                <Technology data={PRO_LANGUAGES} />
+                                <Technology data={PRO_LANGUAGES} isEdit draggable />
                             </div>
                         </div>
                     </div>

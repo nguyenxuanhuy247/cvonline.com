@@ -1,10 +1,10 @@
 import actionNames from './actionNames';
 import * as userService from '~/services';
 
-// User Sign Up
+// USER SIGN UP
 export const userSignUpStart = (userData) => {
     return async (dispatch) => {
-        dispatch({ type: actionNames.USER_SIGNUP_START, payload: '' });
+        dispatch({ type: actionNames.USER_SIGNUP_START });
         try {
             let res = await userService.postSignUp(userData);
             if (res?.errorCode === 0) {
@@ -19,14 +19,14 @@ export const userSignUpStart = (userData) => {
     };
 };
 
-export const userSignUpSuccess = (data = {}) => ({
+export const userSignUpSuccess = (data) => ({
     type: actionNames.USER_SIGNUP_SUCCESS,
     payload: data,
 });
 
-export const userSignUpFail = (data = {}) => ({
+export const userSignUpFail = (data) => ({
     type: actionNames.USER_SIGNUP_FAIL,
-    payload: data,
+    payload: data || { errorCode: 1, errorMessage: 'Không kết nối được với máy chủ. Vui lòng thử lại sau' },
 });
 
 export const removeSignUpMessage = () => ({
@@ -34,13 +34,12 @@ export const removeSignUpMessage = () => ({
     payload: {},
 });
 
-// User Sign In
+// USER SIGN IN
 export const userSignInStart = (userData) => {
     return async (dispatch) => {
         dispatch({ type: actionNames.USER_SIGNIN_START });
         try {
             let res = await userService.postSignIn(userData.email, userData.password);
-            console.log(res);
             if (res?.errorCode === 0) {
                 dispatch(userSignInSuccess(res));
             } else {
@@ -53,14 +52,14 @@ export const userSignInStart = (userData) => {
     };
 };
 
-export const userSignInSuccess = (data = {}) => ({
+export const userSignInSuccess = (data) => ({
     type: actionNames.USER_SIGNIN_SUCCESS,
     payload: data,
 });
 
-export const userSignInFail = (data = {}) => ({
+export const userSignInFail = (data) => ({
     type: actionNames.USER_SIGNIN_FAIL,
-    payload: data,
+    payload: data || { errorCode: 1, errorMessage: 'Không kết nối được với máy chủ. Vui lòng thử lại sau' },
 });
 
 export const removeSignInMessage = () => ({
@@ -68,7 +67,7 @@ export const removeSignInMessage = () => ({
     payload: {},
 });
 
-// User Sign Out
+// USER SIGN OUT
 export const userSignOut = () => ({
     type: actionNames.USER_SIGNOUT,
 });

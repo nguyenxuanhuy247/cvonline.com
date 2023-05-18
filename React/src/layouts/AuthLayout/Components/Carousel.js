@@ -36,7 +36,6 @@ class Carousel extends Component {
     idRef = React.createRef();
 
     componentWillUnmount() {
-        console.log(this.idRef.current);
         clearInterval(this.idRef.current);
     }
 
@@ -45,7 +44,6 @@ class Carousel extends Component {
         const images = slider.querySelectorAll(`.${cx('img-wrapper')}`);
         const length = images.length;
         const imgWidth = images[0].clientWidth;
-        console.log(imgWidth);
 
         let step = 0;
 

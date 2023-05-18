@@ -60,10 +60,9 @@ function Button({
             ref={forwardRef}
             onMouseOver={() => setEdit(true)}
             onMouseOut={() => setEdit(false)}
-            draggable
         >
             {children}
-            {isEdit && edit && <EditButton />}
+            {isEdit && edit && <EditButton/>}
         </Button>
     );
 }

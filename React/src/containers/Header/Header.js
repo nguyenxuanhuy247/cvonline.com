@@ -20,6 +20,13 @@ import { MENU_AVATAR_DATA } from '~/components/MenuData/MenuData.js';
 const cx = className.bind(styles);
 
 class Header extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            fullName: '' || this.props.signInMessage.fullName,
+        };
+    }
+
     handleChangeActiveButton = (e, classNameRemoved) => {
         document.querySelector(`.${classNameRemoved}`).classList.remove(cx('active'));
         e.currentTarget.classList.add(cx('active'));
@@ -32,6 +39,8 @@ class Header extends Component {
     }
 
     render = () => {
+        const { fullName } = this.state;
+
         return (
             <header className={cx('header')}>
                 <Link to={'/personal'} className={cx('logo-link')}>
@@ -79,7 +88,7 @@ class Header extends Component {
                                     className={cx('avatar')}
                                     alt="Nguyễn Xuân Huy"
                                 />
-                                <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
+                                <span className={cx('fullname')}>{fullName}</span>
                             </Button>
                         </Menu>
                     </div>
@@ -92,6 +101,7 @@ class Header extends Component {
 const mapStateToProps = (state) => {
     return {
         isSignIn: state.user.isSignIn,
+        signInMessage: state.user.signInMessage.data,
     };
 };
 

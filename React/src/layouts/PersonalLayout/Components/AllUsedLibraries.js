@@ -10,6 +10,7 @@ import { Icons } from '~/components/Image/Images.js';
 import Button from '~/components/Button/Button.js';
 import Modal from '~/components/Modal/Modal.js';
 import Image from '~/components/Image/Image.js';
+import * as userActions from '~/store/actions';
 
 const cx = className.bind(styles);
 
@@ -146,6 +147,11 @@ class AllUsedLibraries extends PureComponent {
             isFE: true,
             isModalOpen: false,
             showAddLibrary: false,
+
+            imageIconUrl: '',
+            libraryName: '',
+            libraryVersion: '',
+            libraryLink: '',
         };
     }
 
@@ -164,6 +170,17 @@ class AllUsedLibraries extends PureComponent {
 
     handleShowBELibraryList = (e) => {
         this.changeActiveButton(e, cx('FE-btn'), false);
+    };
+
+    handleInputLibrary = (e, name) => {
+        const value = e.target.value;
+        this.setState({ [name]: value });
+    };
+
+    handleCreateLibrary = () => {
+        const { imageIconUrl, libraryName, libraryVersion, libraryLink } = this.state;
+        console.log(imageIconUrl, libraryName, libraryVersion, libraryLink);
+        // this.props.userCreateLibrary({ imageIconUrl, libraryName, libraryVersion, libraryLink });
     };
 
     componentDidMount() {
@@ -212,15 +229,28 @@ class AllUsedLibraries extends PureComponent {
                     ) : (
                         <div className={cx('add-library')}>
                             <div className={cx('info')}>
-                                <Image
-                                    wrapperClass={cx('wrapper')}
-                                    className={cx('image')}
-                                    editText="Sửa"
-                                    round
+                                <Image wrapperClass={cx('wrapper')} className={cx('image')} editText="Sửa" round />
+                                <input
+                                    type="text"
+                                    className={cx('input-form')}
+                                    placeholder="Nhập tên thư viện"
+                                    value={this.state.libraryName}
+                                    onChange={(e) => this.handleInputLibrary(e, 'libraryName')}
                                 />
-                                <input type="text" className={cx('input-form')} placeholder="Nhập tên thư viện" />
-                                <input type="text" className={cx('input-form')} placeholder="Nhập version" />
-                                <input type="text" className={cx('input-form')} placeholder="Nhập link website" />
+                                <input
+                                    type="text"
+                                    className={cx('input-form')}
+                                    placeholder="Nhập version"
+                                    value={this.state.libraryVersion}
+                                    onChange={(e) => this.handleInputLibrary(e, 'libraryVersion')}
+                                />
+                                <input
+                                    type="text"
+                                    className={cx('input-form')}
+                                    placeholder="Nhập link website (nếu có)"
+                                    value={this.state.libraryLink}
+                                    onChange={(e) => this.handleInputLibrary(e, 'libraryLink')}
+                                />
                             </div>
                             <div className={cx('actions')}>
                                 <Button
@@ -229,7 +259,9 @@ class AllUsedLibraries extends PureComponent {
                                 >
                                     Hủy
                                 </Button>
-                                <Button className={cx('btn', 'add')}>Thêm</Button>
+                                <Button className={cx('btn', 'add')} onClick={() => this.handleCreateLibrary()}>
+                                    Thêm
+                                </Button>
                             </div>
                         </div>
                     )}
@@ -250,7 +282,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        userCreateLibrary: (data) => dispatch(userActions.userSignInStart(data)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllUsedLibraries);

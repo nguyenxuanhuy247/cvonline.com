@@ -77,10 +77,20 @@ const LANGUAGES = [
 class PersonalLayout extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            fullName: '' || this.props.signInMessage.fullName,
+        };
     }
 
+    handleGetContent(data) {
+        console.log(data);
+    }
+
+    componentDidUpdate(prevProps) {}
+
     render = () => {
+        const { fullName } = this.state;
+
         return (
             <div className={cx('body')}>
                 <Header />
@@ -93,7 +103,7 @@ class PersonalLayout extends PureComponent {
                                 src={JpgImages.avatar}
                                 width="170px"
                                 height="170px"
-                                alt="Nguyễn Xuân Huy"
+                                alt={`${fullName}`}
                                 editButton="Sửa ảnh"
                                 round
                             />
@@ -101,7 +111,8 @@ class PersonalLayout extends PureComponent {
                         <ContentEditableTag
                             className={cx('full-name')}
                             placeholder="Nguyễn Xuân Huy"
-                            reduxName="fullName"
+                            innerText={`${fullName}`}
+                            onKeyDown={this.handleGetContent}
                         />
                         <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
                         <div className={cx('separate')}></div>
@@ -132,7 +143,9 @@ class PersonalLayout extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        signInMessage: state.user.signInMessage.data,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
