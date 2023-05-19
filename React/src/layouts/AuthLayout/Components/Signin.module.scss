@@ -1,16 +1,11 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .signin-container {
-    width: 100%;
-    user-select: none;
-    padding: 0 120px;
-    background-color: #fff;
+    @include signin-signup-container;
 
     .form-signin {
         .form-logo {
-            display: block;
-            height: 80px;
-            margin: 0 auto 20px auto;
+            @include auth-logo;
         }
 
         .error-message {

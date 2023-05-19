@@ -20,13 +20,13 @@ class Auth extends Component {
 
     render() {
         return (
-            <div className={'container-fluid px-0'}>
-                <div className={cx('wrapper')}>
-                    <div className={cx('col-left')}>
-                        <Carousel/>
+            <div className={cx('grid wide max-wide')}>
+                <div className={cx('wrapper', 'row no-gutter')}>
+                    <div className={cx('col pc-6', 'hide-on-mobile-tablet')}>
+                        <Carousel />
                     </div>
 
-                    <div className={cx('col-right')}>
+                    <div className={cx('col pc-6 tb-12 mb-10 mb-o-1')}>
                         <Switch>
                             <Route path={path.SIGNIN} component={SignIn} />
                             <Route path={path.SIGNUP} component={SignUp} />

@@ -1,6 +1,7 @@
 .wrapper {
     min-height: 100vh;
     display: flex;
+    flex: 1;
 
     .col-left {
         position: relative;
@@ -17,4 +18,19 @@
         display: flex;
         align-items: center;
     }
+}
+
+/* Mobiel + Tablet : width <= 1023px */
+@media (max-width: 63.9375em) {
+    .hide-on-mobile-tablet {
+        display: none;
+    }
+}
+
+/* Mobile : width <= 739px */
+@media (max-width: 46.1875em) {
+}
+
+/* Tablet : 740px <= width <= 1023px */
+@media (min-width: 46.25em) and (max-width: 63.9375em) {
 }

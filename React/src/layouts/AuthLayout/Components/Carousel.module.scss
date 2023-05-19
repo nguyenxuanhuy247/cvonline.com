@@ -1,22 +1,22 @@
 .carousel {
-    position: absolute;
-    inset: 0;
+    position: relative;
     margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 600px;
+    width: 80%;
     height: 100%;
-    overflow: hidden;
+    // overflow: hidden;
+    border: 1px solid #000;
 
     .slider {
         position: absolute;
-        left: 0;
         width: 300%;
         display: flex;
         align-items: center;
+        border: 1px solid #000;
 
-        .img-wrapper {
+        .image {
             width: calc(100% / 3);
             text-align: center;
             flex-direction: column;
@@ -24,8 +24,9 @@
             align-items: center;
             flex: 1;
             padding: 0 100px;
+            border: 1px solid #000;
 
-            .image {
+            .img {
                 display: block;
                 width: 100%;
             }

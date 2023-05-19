@@ -1,17 +1,11 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .signup-container {
-    width: 100%;
-    user-select: none;
-    padding: 30px 120px;
-    background-color: #fff;
-    overflow: hidden;
+    @include signin-signup-container;
 
     .form-signup {
         .form-logo {
-            display: block;
-            height: 80px;
-            margin: 0 auto 20px auto;
+            @include auth-logo;
         }
 
         .error-message {
@@ -84,7 +78,7 @@
             @include solid-btn;
 
             font-family: inherit !important;
-            margin-top: 20px;
+            margin-top: 10px;
             width: 100%;
         }
     }

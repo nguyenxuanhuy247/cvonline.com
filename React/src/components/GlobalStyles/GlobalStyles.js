@@ -1,19 +1,9 @@
-import { Component } from 'react';
-import styles from './GlobalStyles.module.scss';
-
-import classNames from 'classnames/bind';
-
-const cx = classNames.bind(styles);
-
-class GlobalStyles extends Component {
+import { PureComponent } from 'react';
+import './GlobalStyles.module.scss';
+class GlobalStyles extends PureComponent {
     render() {
-        return (
-            <div className={cx('global-styles')}>
-                {this.props.children}
-            </div>
-        )
+        return <>{this.props.children}</>;
     }
 }
-
 
 export default GlobalStyles;

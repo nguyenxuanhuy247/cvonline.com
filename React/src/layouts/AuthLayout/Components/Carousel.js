@@ -40,48 +40,56 @@ class Carousel extends Component {
     }
 
     componentDidMount() {
-        const slider = document.querySelector(`.${cx('slider')}`);
-        const images = slider.querySelectorAll(`.${cx('img-wrapper')}`);
-        const length = images.length;
-        const imgWidth = images[0].clientWidth;
+        // const carousel = document.querySelector(`.${cx('carousel')}`);
+        // const slider = document.querySelector(`.${cx('slider')}`);
+        // const images = document.querySelectorAll(`.${cx('image')}`);
+        // const length = images.length;
+        // const imgWidth = images[0].clientWidth;
 
-        let step = 0;
+        // let step = 0;
 
-        const moveLeft = () => {
-            const index = step % length;
-            const newImage = images[index].cloneNode(true);
-            slider.appendChild(newImage);
+        // const moveLeft = () => {
+        //     const index = (step % length) + 1;
 
-            slider.style.transition = '2s';
-            slider.style.left = `-${step * imgWidth}px`;
-            step++;
-        };
+        //     if (index === 2) {
+        //         slider.style.transition = '2s';
+        //         slider.style.left = `-${index * imgWidth}px`;
+        //     } else if (index === 1) {
+        //         slider.style.transition = '2s';
+        //         slider.style.left = `-${index * imgWidth}px`;
+        //     } else if (index === 0) {
+        //         slider.style.transition = '2s';
+        //         slider.style.left = `-${index * imgWidth}px`;
+        //     }
 
-        this.idRef.current = setInterval(moveLeft, 3000);
+        //     step++;
+        // };
+
+        // this.idRef.current = setInterval(moveLeft, 2000);
     }
 
     render() {
         return (
             <div className={cx('carousel')}>
                 <div className={cx('slider')}>
-                    <div className={cx('img-wrapper')}>
-                        <img src={this.image[0].src} alt="" className={cx('image')} />
+                    <div className={cx('image')}>
+                        <img src={this.image[0].src} alt="" className={cx('img')} />
                         <h3 className={cx('title')}>Công cụ viết CV đẹp Miễn phí</h3>
                         <p className={cx('desc')}>
                             Nhiều mẫu CV đẹp, phù hợp nhu cầu ứng tuyển các vị trí khác nhau. Dễ dàng chỉnh sửa thông
                             tin, tạo CV online nhanh chóng trong vòng 5 phút.
                         </p>
                     </div>
-                    <div className={cx('img-wrapper')}>
-                        <img src={this.image[1].src} alt="" className={cx('image')} />
+                    <div className={cx('image')}>
+                        <img src={this.image[1].src} alt="" className={cx('img')} />
                         <h3 className={cx('title')}>Bảo mật & An toàn tuyệt đối</h3>
                         <p className={cx('desc')}>
                             Bạn có thể chủ động bật / tắt trạng thái tìm việc. Nếu trạng thái tắt, không ai có thể xem
                             được CV của bạn.
                         </p>
                     </div>
-                    <div className={cx('img-wrapper')}>
-                        <img src={this.image[2].src} alt="" className={cx('image')} />
+                    <div className={cx('image')}>
+                        <img src={this.image[2].src} alt="" className={cx('img')} />
                         <h3 className={cx('title')}>Hỗ trợ Người tìm việc</h3>
                         <p className={cx('desc')}>
                             Nhiều mẫu CV đẹp, phù hợp nhu cầu ứng tuyển các vị trí khác nhau. Dễ dàng chỉnh sửa thông
