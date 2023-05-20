@@ -28,7 +28,6 @@
     .wrapper {
         margin-top: var(--header-height);
         padding-top: 20px;
-        display: flex;
 
         .col-left {
             padding: 20px;
@@ -47,10 +46,6 @@
                     border-radius: 50%;
                     border: 8px solid var(--primary-color);
                     outline: 12px solid rgba(73, 178, 83, 0.4);
-
-                    // .avatar {
-                    //     border-radius: 50%;
-                    // }
                 }
             }
 

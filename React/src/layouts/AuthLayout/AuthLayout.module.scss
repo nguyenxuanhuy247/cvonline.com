@@ -2,35 +2,26 @@
     min-height: 100vh;
     display: flex;
     flex: 1;
-
-    .col-left {
-        position: relative;
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(73, 178, 83, 0.2);
-        overflow: hidden;
-    }
-
-    .col-right {
-        flex: 1;
-        display: flex;
-        align-items: center;
-    }
 }
 
-/* Mobiel + Tablet : width <= 1023px */
-@media (max-width: 63.9375em) {
+// Mobile + Tablet
+@media (max-width: 1199px) {
     .hide-on-mobile-tablet {
         display: none;
     }
 }
 
-/* Mobile : width <= 739px */
-@media (max-width: 46.1875em) {
+// Mobile
+@media (max-width: 767px) {
 }
 
-/* Tablet : 740px <= width <= 1023px */
-@media (min-width: 46.25em) and (max-width: 63.9375em) {
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+// PC
+@media (min-width: 992px) and (max-width: 1199px) {
+}
+
+@media (min-width: 1200px) {
 }

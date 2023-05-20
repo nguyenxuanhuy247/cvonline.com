@@ -94,46 +94,56 @@ class PersonalLayout extends PureComponent {
         return (
             <div className={cx('body')}>
                 <Header />
-                <div className={cx('wrapper', 'container')}>
-                    <div className={cx('col-left', 'col-3')}>
-                        <div className={cx('avatar-wrapper')}>
-                            <Image
-                                wrapperClass={cx('inner')}
-                                className={cx('avatar')}
-                                src={JpgImages.avatar}
-                                width="170px"
-                                height="170px"
-                                alt={`${fullName}`}
-                                editButton="Sửa ảnh"
-                                round
-                            />
-                        </div>
-                        <ContentEditableTag
-                            className={cx('full-name')}
-                            placeholder="Nguyễn Xuân Huy"
-                            innerText={`${fullName}`}
-                            onKeyDown={this.handleGetContent}
-                        />
-                        <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
-                        <div className={cx('separate')}></div>
-                        <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
-                        <div className={cx('separate')}></div>
-                        <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
-                    </div>
+                <div className={cx('grid wide max-wide')}>
+                    <div className={cx('row')}>
+                        <div className={cx('col lpc-10 lpc-o-1')}>
+                            <div className={cx('row no-gutters', 'wrapper')}>
+                                <div className={cx('col lpc-3', 'col-left')}>
+                                    <div className={cx('avatar-wrapper')}>
+                                        <Image
+                                            wrapperClass={cx('inner')}
+                                            className={cx('avatar')}
+                                            src={JpgImages.avatar}
+                                            width="170px"
+                                            height="170px"
+                                            alt={`${fullName}`}
+                                            editButton="Sửa ảnh"
+                                            round
+                                        />
+                                    </div>
+                                    <ContentEditableTag
+                                        className={cx('full-name')}
+                                        placeholder="Nguyễn Xuân Huy"
+                                        innerText={`${fullName}`}
+                                        onKeyDown={this.handleGetContent}
+                                    />
+                                    <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
+                                    <div className={cx('separate')}></div>
+                                    <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
+                                    <div className={cx('separate')}></div>
+                                    <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
+                                </div>
 
-                    <div className={cx('col-right', 'col-9')}>
-                        <div className={cx('applied-position')}>
-                            <ContentEditableTag
-                                className={cx('job-title')}
-                                placeholder="VD: Fullstack developer"
-                                reduxName="jobTitle"
-                            />
-                        </div>
-                        <div className={cx('product-list')}>
-                            <Product />
-                            <Product />
-                            <Product />
-                            <Product />
+                                <div className={cx('col lpc-9', 'col-right')}>
+                                    <div className={cx('applied-position')}>
+                                        <ContentEditableTag
+                                            className={cx('job-title')}
+                                            placeholder="VD: Fullstack developer"
+                                            reduxName="jobTitle"
+                                        />
+                                    </div>
+                                    <div className={cx('row no-gutters')}>
+                                        <div className={cx('col lpc-12')}>
+                                            <div className={cx('product-list')}>
+                                                <Product />
+                                                <Product />
+                                                <Product />
+                                                <Product />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

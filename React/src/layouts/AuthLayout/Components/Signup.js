@@ -93,7 +93,7 @@ class Signup extends Component {
                 ) : (
                     <>
                         <div className={cx('row')}>
-                            <div className={cx('col pc-10 pc-o-1')}>
+                            <div className={cx('col lpc-10 lpc-o-1 pc-8 pc-o-2 tb-12 mb-12')}>
                                 <div className={cx('signup-container')}>
                                     <form className={cx('form-signup')} autoComplete="on">
                                         <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />

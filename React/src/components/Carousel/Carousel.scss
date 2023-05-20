@@ -1,0 +1,113 @@
+.container {
+    display: flex;
+    padding: 0 35px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: var(--green-03);
+
+    .wrapper {
+        max-width: 100%;
+        position: relative;
+
+        .button {
+            top: 50%;
+            height: 50px;
+            width: 50px;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--primary-color);
+            position: absolute;
+            text-align: center;
+            line-height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.23);
+            transform: translateY(-50%);
+            transition: transform 0.1s linear;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &:active {
+                transform: translateY(-50%) scale(0.85);
+            }
+
+            &:first-child {
+                left: -60px;
+                padding-right: 4px;
+            }
+
+            &:last-child {
+                right: -60px;
+                padding-left: 4px;
+            }
+        }
+    }
+}
+
+.carousel {
+    width: 500px;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    border-radius: 8px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    &.no-transition {
+        scroll-behavior: auto;
+    }
+
+    &.dragging {
+        scroll-snap-type: none;
+        scroll-behavior: auto;
+
+        .card {
+            cursor: grab;
+            user-select: none;
+        }
+    }
+
+    &:where(.card, .img) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card {
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        width: 500px;
+        height: 400px;
+        padding: 20px;
+        list-style: none;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        background-color: var(--green-03);
+
+        .img-wrapper {
+            width: 100%;
+
+            .img {
+                display: inline-block;
+                width: 100%;
+                height: 300px;
+                object-fit: contain;
+            }
+        }
+
+        .heading {
+            font-weight: 500;
+            font-size: 2rem;
+        }
+    }
+}

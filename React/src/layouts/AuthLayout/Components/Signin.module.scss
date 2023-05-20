@@ -11,8 +11,23 @@
         .error-message {
             text-align: center !important;
             margin-bottom: 16px;
-            font-size: 1.4rem;
-            height: 40px;
+            min-height: 40px;
+
+            .alert {
+                font-size: 1.5rem;
+                width: 100%;
+                line-height: 40px;
+                border-radius: 4px;
+                color: #955267;
+            }
+
+            .alert-fail {
+                @include alert-fail;
+            }
+
+            .alert-success {
+                @include alert-success;
+            }
         }
 
         .form-group {
@@ -105,10 +120,6 @@
                 overflow: hidden;
                 text-align: left;
                 color: #f33a58;
-
-                & + .form-message {
-                    text-align: center;
-                }
             }
 
             & + .form-group {

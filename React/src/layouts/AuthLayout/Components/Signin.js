@@ -66,22 +66,22 @@ class SignIn extends Component {
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
         let { errorCode, errorMessage } = this.props.signInMessage;
-
+        console.log(errorCode, errorMessage);
         return (
             <div className={cx('row')}>
-                <div className={cx('col pc-10 pc-o-1')}>
+                <div className={cx('col lpc-10 lpc-o-1 pc-8 pc-o-2 tb-12 mb-12')}>
                     <div className={cx('signin-container')}>
                         <form className={cx('form-signin')} autoomplete="on">
                             <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
-        
+
                             <div className={cx('error-message')}>
                                 {errorMessage && (
-                                    <p className={`${errorCode ? 'alert alert-danger' : 'alert alert-success'}`}>
+                                    <p className={`${cx('alert', errorCode ? 'alert-fail' : 'alert-success')}`}>
                                         {errorMessage}
                                     </p>
                                 )}
                             </div>
-        
+
                             <div className={cx('form-group')}>
                                 <div className={cx('form-input')}>
                                     <label htmlFor="email" className={cx('form-label')}>
@@ -100,7 +100,7 @@ class SignIn extends Component {
                                 </div>
                                 <p className={cx('form-message')}></p>
                             </div>
-        
+
                             <div className={cx('form-group')}>
                                 <div className={cx('form-input')}>
                                     <label htmlFor="password" className={cx('form-label')}>
@@ -121,19 +121,18 @@ class SignIn extends Component {
                                     </div>
                                 </div>
                                 <span className={cx('form-message')}></span>
-                                <span className={cx('form-message')}>{errorMessage}</span>
                             </div>
-        
+
                             <a href="#!" className={cx('forgot-password')}>
                                 Quên mật khẩu?
                             </a>
                             <Button className={cx('submit-btn')}>Đăng nhập</Button>
                         </form>
-        
+
                         <p className={cx('signin-with')}>Hoặc đăng nhập bằng :</p>
-                        
+
                         <FacebookGoogle />
-        
+
                         <div className={cx('switch-signup')}>
                             <span className={cx('text')}>Bạn chưa có tài khoản?</span>
                             <Button className={cx('signup-btn')} route="/signup">

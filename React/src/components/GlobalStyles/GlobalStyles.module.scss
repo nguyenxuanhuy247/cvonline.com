@@ -135,3 +135,11 @@ a {
     max-width: 100%;
     margin: 0 auto 20px auto;
 }
+
+@mixin alert-fail {
+    background-color: #f8d7da;
+}
+
+@mixin alert-success {
+    background-color: #d1e7dd;
+}
