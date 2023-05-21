@@ -66,7 +66,6 @@ class SignIn extends Component {
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
         let { errorCode, errorMessage } = this.props.signInMessage;
-        console.log(errorCode, errorMessage);
         return (
             <div className={cx('row')}>
                 <div className={cx('col lpc-10 lpc-o-1 pc-8 pc-o-2 tb-12 mb-12')}>

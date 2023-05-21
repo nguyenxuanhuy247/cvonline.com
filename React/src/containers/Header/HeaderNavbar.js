@@ -15,28 +15,31 @@ class HeaderNavbar extends PureComponent {
     render() {
         return (
             <nav className={cx('navbar')}>
-                <ul className={cx('menu')}>
+                <ul className={cx('menu-lv1-list')}>
                     {this.data &&
                         this.data.map((item) => {
                             return !item.children ? (
-                                <li key={item.id} className={cx('menu-item')}>
-                                    <Link to={item.route} className={cx('menu-link')}>
+                                <li key={item.id} className={cx('menu-lv1-item')}>
+                                    <Link to={item.route} className={cx('menu-lv1-link')}>
                                         {item.name}
                                     </Link>
                                 </li>
                             ) : (
-                                <li key={item.id} className={cx('menu-item')}>
-                                    <Link to={item.route} className={cx('menu-link')}>
+                                <li key={item.id} className={cx('menu-lv1-item')}>
+                                    <Link to={item.route} className={cx('menu-lv1-link')}>
                                         {item.name}
                                     </Link>
 
-                                    <ul className={cx('submenu-lv1')}>
+                                    <ul className={cx('menu-lv2-list')}>
                                         {item.children.map((subItem) => {
                                             return (
-                                                <li key={subItem.id} className={cx('submenu-item')}>
+                                                <li
+                                                    key={subItem.id}
+                                                    className={cx('menu-lv2-item', { 'separate': subItem.separate })}
+                                                >
                                                     <Button to={'#!'} className={cx('button')}>
                                                         <i className={cx('left-icon')}>{subItem.leftIcon}</i>
-                                                        <span className={cx('submenu-link')}>{subItem.name}</span>
+                                                        <span className={cx('menu-lv2-link')}>{subItem.name}</span>
                                                         <i className={cx('arrow-right')}>{subItem.rightIcon}</i>
                                                     </Button>
                                                 </li>

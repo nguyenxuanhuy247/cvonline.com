@@ -13,6 +13,7 @@ export const HEADER_NAVBAR_DATA = [
                 leftIcon: <RxMagnifyingGlass />,
                 name: 'Tìm việc làm',
                 rightIcon: <BsArrowRight />,
+                separate: true,
             },
             {
                 id: 22,
@@ -25,6 +26,7 @@ export const HEADER_NAVBAR_DATA = [
                 leftIcon: <AccountIcon />,
                 name: 'Việc làm đã lưu',
                 rightIcon: <BsArrowRight />,
+                separate: true,
             },
             {
                 id: 24,
@@ -34,7 +36,12 @@ export const HEADER_NAVBAR_DATA = [
             },
             {
                 id: 25,
-                name: 'Việc làm senior',
+                name: 'Việc làm IT',
+                rightIcon: <BsArrowRight />,
+            },
+            {
+                id: 26,
+                name: 'Việc làm Senior',
                 rightIcon: <BsArrowRight />,
             },
         ],
@@ -42,31 +49,33 @@ export const HEADER_NAVBAR_DATA = [
     {
         id: 12,
         name: 'Hồ sơ & CV',
-        route: '/personal',
+        route: '/',
         children: [
             {
                 id: 21,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 1',
+                name: 'Quản lý CV',
                 rightIcon: <BsArrowRight />,
             },
             {
                 id: 22,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 2',
+                name: 'Quản lý Cover Letter',
                 rightIcon: <BsArrowRight />,
+                separate: true,
             },
             {
                 id: 23,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 3',
+                name: 'Mẫu CV',
                 rightIcon: <BsArrowRight />,
             },
             {
                 id: 24,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 4',
+                name: 'Mẫu Cover Letter',
                 rightIcon: <BsArrowRight />,
+                separate: true,
             },
         ],
     },
@@ -78,25 +87,13 @@ export const HEADER_NAVBAR_DATA = [
             {
                 id: 21,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 1',
+                name: 'Danh sách công ty',
                 rightIcon: <BsArrowRight />,
             },
             {
                 id: 22,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 2',
-                rightIcon: <BsArrowRight />,
-            },
-            {
-                id: 23,
-                leftIcon: <AccountIcon />,
-                name: 'sub menu 3',
-                rightIcon: <BsArrowRight />,
-            },
-            {
-                id: 24,
-                leftIcon: <AccountIcon />,
-                name: 'sub menu 4',
+                name: 'Top công ty',
                 rightIcon: <BsArrowRight />,
             },
         ],
@@ -109,62 +106,31 @@ export const HEADER_NAVBAR_DATA = [
             {
                 id: 21,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 1',
+                name: 'CV Contest',
                 rightIcon: <BsArrowRight />,
             },
             {
                 id: 22,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 2',
+                name: 'CV Skills',
                 rightIcon: <BsArrowRight />,
+                separate: true,
             },
             {
                 id: 23,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 3',
+                name: 'Trắc nghiệm tính cách MBTI',
                 rightIcon: <BsArrowRight />,
             },
             {
                 id: 24,
                 leftIcon: <AccountIcon />,
-                name: 'sub menu 4',
-                rightIcon: <BsArrowRight />,
-            },
-        ],
-    },
-    {
-        id: 15,
-        name: 'Công cụ',
-        route: '/',
-        children: [
-            {
-                id: 21,
-                leftIcon: <AccountIcon />,
-                name: 'sub menu 1',
-                rightIcon: <BsArrowRight />,
-            },
-            {
-                id: 22,
-                leftIcon: <AccountIcon />,
-                name: 'sub menu 2',
-                rightIcon: <BsArrowRight />,
-            },
-            {
-                id: 23,
-                leftIcon: <AccountIcon />,
-                name: 'sub menu 3',
-                rightIcon: <BsArrowRight />,
-            },
-            {
-                id: 24,
-                leftIcon: <AccountIcon />,
-                name: 'sub menu 4',
+                name: 'Trắc nghiệm MI',
                 rightIcon: <BsArrowRight />,
             },
         ],
     },
 ];
-
 
 export const MENU_AVATAR_DATA = [
     {

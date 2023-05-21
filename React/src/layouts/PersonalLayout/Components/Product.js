@@ -50,57 +50,62 @@ class Product extends PureComponent {
     render() {
         return (
             <div className={cx('container')} spellCheck="false">
-                <div className={cx('work-exp-desc')} spellCheck="false">
-                    <div className={cx('work-exp')}>
-                        <ContentEditableTag className={cx('exp')} placeholder="Tên công ty" reduxName="companyName" />
-                        <span className={cx('dash')}>-</span>
-                        <ContentEditableTag
-                            className={cx('exp')}
-                            placeholder="Vị trí công việc"
-                            reduxName="jobPosition"
-                        />
+                <div className={cx('row')}>
+                    <div className={cx('col lpc-12')}>
+                        <div className={cx('work-exp-desc')} spellCheck="false">
+                            <div className={cx('work-exp')}>
+                                <ContentEditableTag
+                                    className={cx('exp')}
+                                    placeholder="Tên công ty"
+                                    reduxName="companyName"
+                                />
+                                <span className={cx('dash')}>-</span>
+                                <ContentEditableTag
+                                    className={cx('exp')}
+                                    placeholder="Vị trí công việc"
+                                    reduxName="jobPosition"
+                                />
+                            </div>
+                            <ContentEditableTag
+                                className={cx('desc')}
+                                placeholder="Mô tả ngắn gọn về sản phẩm"
+                                reduxName="productDesc"
+                            />
+                        </div>
                     </div>
-
-                    <div className={cx('product-desc')}>
-                        <ContentEditableTag
-                            className={cx('desc')}
-                            placeholder="Mô tả ngắn gọn về sản phẩm"
-                            reduxName="productDesc"
-                        />
-                    </div>
-                </div>
-
-                <div className={cx('product-detail')}>
-                    <div className={cx('col-left', 'col-8')}>
-                        <div className={cx('product-image')}>
+                    <div className={cx('col lpc-8')}>
+                        <div className={cx('col-inner')}>
                             <Image
                                 src={JpgImages.avatar}
+                                wrapperClass={cx('wrapper')}
                                 className={cx('image')}
                                 alt="Ảnh sản phẩm"
                                 editButton="Sửa ảnh"
                             />
-                        </div>
-
-                        <div className={cx('section')}>
-                            <span className={cx('title')}>Source code</span>
-                            <div className={cx('list')}>
-                                <Technology data={SOURCE_CODE} />
+    
+                            <div className={cx('section')}>
+                                <span className={cx('title')}>Source code</span>
+                                <div className={cx('list')}>
+                                    <Technology data={SOURCE_CODE} />
+                                </div>
                             </div>
-                        </div>
-                        <div className={cx('section')}>
-                            <span className={cx('title')}>Ngôn ngữ lập trình</span>
-                            <div className={cx('list')}>
-                                <Technology data={PRO_LANGUAGES} />
+    
+                            <div className={cx('section')}>
+                                <span className={cx('title')}>Ngôn ngữ lập trình</span>
+                                <div className={cx('list')}>
+                                    <Technology data={PRO_LANGUAGES} />
+                                </div>
                             </div>
-                        </div>
-                        <div className={cx('section')}>
-                            <span className={cx('title')}>Frameworks</span>
-                            <div className={cx('list')}>
-                                <Technology data={PRO_LANGUAGES} isEdit draggable />
+    
+                            <div className={cx('section')}>
+                                <span className={cx('title')}>Frameworks</span>
+                                <div className={cx('list')}>
+                                    <Technology data={PRO_LANGUAGES} isEdit draggable />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className={cx('col-right', 'col-4')}>
+                    <div className={cx('col lpc-4')}>
                         <AllUsedLibraries />
                     </div>
                 </div>

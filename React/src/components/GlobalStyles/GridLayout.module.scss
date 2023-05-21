@@ -452,12 +452,14 @@
         max-width: 1140px;
 
         .row {
-            margin-left: -12px;
-            margin-right: -12px;
+            .gutters {
+                margin-left: -12px;
+                margin-right: -12px;
 
-            .col {
-                padding-left: 12px;
-                padding-right: 12px;
+                .col {
+                    padding-left: 12px;
+                    padding-right: 12px;
+                }
             }
         }
     }

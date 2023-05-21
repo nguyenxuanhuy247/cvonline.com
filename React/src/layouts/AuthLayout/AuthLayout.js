@@ -14,7 +14,7 @@ class Auth extends PureComponent {
     render() {
         return (
             <div className={cx('grid wide max-wide')}>
-                <div className={cx('wrapper', 'row no-gutters')}>
+                <div className={cx('row no-gutters')}>
                     <div className={cx('col lpc-6', 'hide-on-mobile-tablet')}>
                         <Carousel />
                     </div>

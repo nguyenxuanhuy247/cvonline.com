@@ -9,10 +9,23 @@
         }
 
         .error-message {
-            text-align: center !important;
             margin-bottom: 16px;
-            font-size: 1.4rem;
-            height: 40px;
+            min-height: 40px;
+
+            .alert {
+                text-align: center;
+                font-size: 1.5rem;
+                line-height: 40px;
+                border-radius: 4px;
+
+                &.alert-fail {
+                    @include alert-fail;
+                }
+
+                &.alert-success {
+                    @include alert-success;
+                }
+            }
         }
 
         .form-group {

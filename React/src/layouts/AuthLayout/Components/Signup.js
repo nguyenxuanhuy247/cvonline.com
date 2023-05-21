@@ -101,11 +101,12 @@ class Signup extends Component {
                                         <div className={cx('error-message')}>
                                             {this.state.email && errorMessage && (
                                                 <p
-                                                    className={`${
-                                                        errorCode ? 'alert alert-danger' : 'alert alert-success'
-                                                    }`}
+                                                    className={`${cx(
+                                                        'alert',
+                                                        errorCode ? 'alert-fail' : 'alert-success',
+                                                    )}`}
                                                 >
-                                                    {errorMessage}
+                                                    {this.state.email && errorMessage}
                                                 </p>
                                             )}
                                         </div>

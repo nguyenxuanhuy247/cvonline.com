@@ -31,18 +31,19 @@ class Carousel extends PureComponent {
         this.state = { isDragging: false, isAutoPlay: true, startX: null, startScrollLeft: null, timeoutId: null };
     }
 
+    id = React.createRef();
+
     componentDidMount() {
         const wrapper = document.querySelector('.wrapper');
+        const arrowBtns = document.querySelectorAll('.button');
         const carousel = document.querySelector('.carousel');
         const firstCardWidth = carousel.querySelector('.card').offsetWidth;
-        const arrowBtns = document.querySelectorAll('.wrapper i');
         const carouselChildrens = [...carousel.children];
 
-        let isDragging = false,
-            isAutoPlay = true,
-            startX,
-            startScrollLeft,
-            timeoutId;
+        let isDragging = false;
+        let isAutoPlay = true;
+        let startX;
+        let startScrollLeft;
 
         // Get the number of cards that can fit in the carousel at once
         let cardPerView = Math.round(carousel.offsetWidth / firstCardWidth);
@@ -106,50 +107,48 @@ class Carousel extends PureComponent {
             }
 
             // Clear existing timeout & start autoplay if mouse is not hovering over carousel
-            clearTimeout(timeoutId);
+            clearTimeout(this.id.current);
             if (!wrapper.matches(':hover')) autoPlay();
         };
 
         const autoPlay = () => {
             if (window.innerWidth < 800 || !isAutoPlay) return; // Return if window is smaller than 800 or isAutoPlay is false
             // Autoplay the carousel after every 2500 ms
-            timeoutId = setTimeout(() => (carousel.scrollLeft += firstCardWidth), 2500);
+            this.id.current = setTimeout(() => (carousel.scrollLeft += firstCardWidth), 2500);
         };
 
         autoPlay();
 
         carousel.addEventListener('mousedown', dragStart);
         carousel.addEventListener('mousemove', dragging);
-        document.addEventListener('mouseup', dragStop);
+        carousel.addEventListener('mouseup', dragStop);
         carousel.addEventListener('scroll', infiniteScroll);
-        wrapper.addEventListener('mouseenter', () => clearTimeout(timeoutId));
+        wrapper.addEventListener('mouseenter', () => clearTimeout(this.id.current));
         wrapper.addEventListener('mouseleave', autoPlay);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.id.current);
     }
 
     render() {
         return (
-            <div className="container">
+            <div className="contain">
                 <div className="wrapper">
                     <i id="left" className="button">
                         <BsChevronLeft />
                     </i>
                     <ul className="carousel">
                         <li className="card">
-                            <div className="img-wrapper">
-                                <img src={items[0].src} className="img" alt="img" draggable="false" />
-                            </div>
+                            <img src={items[0].src} className="img" alt="img" draggable="false" />
                             <h3 className="heading">Công cụ viết CV đẹp miễn phí</h3>
                         </li>
                         <li className="card">
-                            <div className="img-wrapper">
-                                <img src={items[1].src} className="img" alt="img" draggable="false" />
-                            </div>
+                            <img src={items[1].src} className="img" alt="img" draggable="false" />
                             <h3 className="heading">Bảo mật & An toàn tuyệt đối</h3>
                         </li>
                         <li className="card">
-                            <div className="img-wrapper">
-                                <img src={items[2].src} className="img" alt="img" draggable="false" />
-                            </div>
+                            <img src={items[2].src} className="img" alt="img" draggable="false" />
                             <h3 className="heading">Hỗ trợ người tìm việc</h3>
                         </li>
                     </ul>

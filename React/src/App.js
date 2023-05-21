@@ -2,7 +2,6 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import 'reset-css';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
 import { publicRoutes, authenticatedRoutes } from '~/routes/routes';

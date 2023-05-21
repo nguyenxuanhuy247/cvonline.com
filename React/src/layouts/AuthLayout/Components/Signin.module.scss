@@ -9,16 +9,14 @@
         }
 
         .error-message {
-            text-align: center !important;
             margin-bottom: 16px;
             min-height: 40px;
 
             .alert {
+                text-align: center;
                 font-size: 1.5rem;
-                width: 100%;
                 line-height: 40px;
                 border-radius: 4px;
-                color: #955267;
             }
 
             .alert-fail {

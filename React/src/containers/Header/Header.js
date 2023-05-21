@@ -43,8 +43,8 @@ class Header extends Component {
 
         return (
             <header className={cx('header')}>
-                <Link to={'/personal'} className={cx('logo-link')}>
-                    <img src={logo} className={cx('logo')} alt="cvonline.com" />
+                <Link to={'/'} className={cx('logo-link')}>
+                    <img src={logo} className={cx('logo')} alt="CiVi.com" />
                 </Link>
 
                 <HeaderNavbar />
