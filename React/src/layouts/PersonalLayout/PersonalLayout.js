@@ -74,19 +74,17 @@ const LANGUAGES = [
     },
 ];
 
-class PersonalLayout extends PureComponent {
+class CVLayout extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            fullName: '' || this.props.signInMessage.fullName,
+            fullName: '' || this.props.signInMessage.fullName || 'Nguyễn Xuân Huy',
         };
     }
 
     handleGetContent(data) {
         console.log(data);
     }
-
-    componentDidUpdate(prevProps) {}
 
     render = () => {
         const { fullName } = this.state;
@@ -95,9 +93,9 @@ class PersonalLayout extends PureComponent {
             <div className={cx('body')}>
                 <Header />
                 <div className={cx('wrapper')}>
-                    <div className={cx('grid wide max-wide')}>
+                    <div className={cx('grid')}>
                         <div className={cx('row no-gutters')}>
-                            <div className={cx('col lpc-10 lpc-o-1')}>
+                            <div className={cx('col lpc-9')}>
                                 <div className={cx('row no-gutters')}>
                                     {/* Col left */}
                                     <div className={cx('col lpc-3')}>
@@ -120,6 +118,11 @@ class PersonalLayout extends PureComponent {
                                                 innerText={`${fullName}`}
                                                 onKeyDown={this.handleGetContent}
                                             />
+                                            <ContentEditableTag
+                                                className={cx('job-title')}
+                                                placeholder="VD: Fullstack developer"
+                                                reduxName="jobTitle"
+                                            />
                                             <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
                                             <div className={cx('separate')}></div>
                                             <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
@@ -131,13 +134,6 @@ class PersonalLayout extends PureComponent {
                                     {/* Col right */}
                                     <div className={cx('col lpc-9')}>
                                         <div className={cx('col-right')}>
-                                            <div className={cx('applied-position')}>
-                                                <ContentEditableTag
-                                                    className={cx('job-title')}
-                                                    placeholder="VD: Fullstack developer"
-                                                    reduxName="jobTitle"
-                                                />
-                                            </div>
                                             <div className={cx('product-list')}>
                                                 <Product />
                                                 <Product />
@@ -147,6 +143,10 @@ class PersonalLayout extends PureComponent {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div className={cx('col lpc-3')}>
+                                <div className={cx('text')}>Đăng nhập Facebook để giao lưu với nhau</div>
                             </div>
                         </div>
                     </div>
@@ -166,4 +166,4 @@ const mapDispatchToProps = (dispatch) => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PersonalLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(CVLayout);

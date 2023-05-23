@@ -6,7 +6,6 @@ export const path = {
     // Authenticated routes
     SIGNUP: '/signup',
     SIGNIN: '/signin',
-    PERSONAL: '/personal',
     MANAGEUSER: '/manage-user',
 };
 

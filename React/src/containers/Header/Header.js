@@ -13,7 +13,7 @@ import { JpgImages } from '~/components/Image/Images.js';
 import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
 import Button from '~/components/Button/Button.js';
-import HeaderNavbar from '~/containers/Header/HeaderNavbar.js';
+import SearchBar from '~/containers/Header/SearchBar.js';
 
 import { MENU_AVATAR_DATA } from '~/components/MenuData/MenuData.js';
 
@@ -47,8 +47,8 @@ class Header extends Component {
                     <img src={logo} className={cx('logo')} alt="CiVi.com" />
                 </Link>
 
-                <HeaderNavbar />
-
+                <SearchBar />
+                
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>
                         <Button

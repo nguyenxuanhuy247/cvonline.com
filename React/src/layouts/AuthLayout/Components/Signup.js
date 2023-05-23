@@ -92,122 +92,108 @@ class Signup extends Component {
                     <Redirect to={path.SIGNIN} />
                 ) : (
                     <>
-                        <div className={cx('row')}>
-                            <div className={cx('col lpc-10 lpc-o-1 pc-8 pc-o-2 tb-12 mb-12')}>
-                                <div className={cx('signup-container')}>
-                                    <form className={cx('form-signup')} autoComplete="on">
-                                        <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
+                        <div className={cx('signup-container')}>
+                            <form className={cx('form-signup')} autoComplete="on">
+                                <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
+                                <p className={cx('title')}>Chào mừng bạn đến với TopCV</p>
 
-                                        <div className={cx('error-message')}>
-                                            {this.state.email && errorMessage && (
-                                                <p
-                                                    className={`${cx(
-                                                        'alert',
-                                                        errorCode ? 'alert-fail' : 'alert-success',
-                                                    )}`}
-                                                >
-                                                    {this.state.email && errorMessage}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className={cx('form-group')}>
-                                            <div className={cx('form-input')}>
-                                                <label htmlFor="fullName" className={cx('form-label')}>
-                                                    Họ và tên
-                                                </label>
-                                                <input
-                                                    id="fullName"
-                                                    name="fullName"
-                                                    type="text"
-                                                    placeholder="VD: Nguyễn Xuân Huy"
-                                                    className={cx('form-control')}
-                                                    value={this.state.fullName}
-                                                    onChange={(event) => this.handleChangeInputField(event, 'fullName')}
-                                                />
-                                            </div>
-                                            <span className={cx('form-message')}></span>
-                                        </div>
-
-                                        <div className={cx('form-group')}>
-                                            <div className={cx('form-input')}>
-                                                <label htmlFor="email" className={cx('form-label')}>
-                                                    Email
-                                                </label>
-                                                <input
-                                                    id="email"
-                                                    name="email"
-                                                    type="text"
-                                                    placeholder="VD: nguyenxuanhuy@gmail.com"
-                                                    className={cx('form-control')}
-                                                    value={this.state.email}
-                                                    onChange={(event) => this.handleChangeInputField(event, 'email')}
-                                                />
-                                            </div>
-                                            <span className={cx('form-message')}></span>
-                                        </div>
-
-                                        <div className={cx('form-group')}>
-                                            <div className={cx('form-input')}>
-                                                <label htmlFor="password" className={cx('form-label')}>
-                                                    Mật khẩu
-                                                </label>
-                                                <input
-                                                    id="password"
-                                                    name="password"
-                                                    type={this.state.isShowPassword ? 'type' : 'password'}
-                                                    placeholder="VD: Abc123456@#"
-                                                    className={cx('form-control')}
-                                                    value={this.state.password}
-                                                    onChange={(event) => this.handleChangeInputField(event, 'password')}
-                                                />
-                                                <div className={cx('toggle-show-password')}>
-                                                    <Eye
-                                                        className={cx('eye')}
-                                                        onClick={() => this.handleShowHidePassword()}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <span className={cx('form-message')}></span>
-                                        </div>
-
-                                        <div className={cx('form-group')}>
-                                            <div className={cx('form-input')}>
-                                                <label htmlFor="password_confirmation" className={cx('form-label')}>
-                                                    Nhập lại mật khẩu
-                                                </label>
-                                                <input
-                                                    id="password_confirmation"
-                                                    name="password_confirmation"
-                                                    placeholder="VD: Abc123456@#"
-                                                    type={this.state.isShowPassword ? 'type' : 'password'}
-                                                    className={cx('form-control')}
-                                                    value={this.state.confirmPassword}
-                                                    onChange={(event) =>
-                                                        this.handleChangeInputField(event, 'passwordConfirmation')
-                                                    }
-                                                />
-                                                <div className={cx('toggle-show-password')}>
-                                                    <Eye
-                                                        className={cx('eye')}
-                                                        onClick={() => this.handleShowHidePassword()}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <span className={cx('form-message')}></span>
-                                        </div>
-                                        <Button className={cx('submit-btn')}>Đăng ký</Button>
-                                    </form>
-
-                                    <p className={cx('signin-with')}>Hoặc đăng ký bằng :</p>
-                                    <FacebookGoogle />
-                                    <div className={cx('switch-signin')}>
-                                        <span className={cx('text')}>Bạn chưa có tài khoản?</span>
-                                        <Button className={cx('signin-btn')} route="/signin">
-                                            Đăng nhập
-                                        </Button>
-                                    </div>
+                                <div className={cx('error-message')}>
+                                    {this.state.email && errorMessage && (
+                                        <p className={`${cx('alert', errorCode ? 'alert-fail' : 'alert-success')}`}>
+                                            {this.state.email && errorMessage}
+                                        </p>
+                                    )}
                                 </div>
+
+                                <div className={cx('form-group')}>
+                                    <div className={cx('form-input')}>
+                                        <label htmlFor="fullName" className={cx('form-label')}>
+                                            Họ và tên
+                                        </label>
+                                        <input
+                                            id="fullName"
+                                            name="fullName"
+                                            type="text"
+                                            placeholder="VD: Nguyễn Xuân Huy"
+                                            className={cx('form-control')}
+                                            value={this.state.fullName}
+                                            onChange={(event) => this.handleChangeInputField(event, 'fullName')}
+                                        />
+                                    </div>
+                                    <span className={cx('form-message')}></span>
+                                </div>
+
+                                <div className={cx('form-group')}>
+                                    <div className={cx('form-input')}>
+                                        <label htmlFor="email" className={cx('form-label')}>
+                                            Email
+                                        </label>
+                                        <input
+                                            id="email"
+                                            name="email"
+                                            type="text"
+                                            placeholder="VD: nguyenxuanhuy@gmail.com"
+                                            className={cx('form-control')}
+                                            value={this.state.email}
+                                            onChange={(event) => this.handleChangeInputField(event, 'email')}
+                                        />
+                                    </div>
+                                    <span className={cx('form-message')}></span>
+                                </div>
+
+                                <div className={cx('form-group')}>
+                                    <div className={cx('form-input')}>
+                                        <label htmlFor="password" className={cx('form-label')}>
+                                            Mật khẩu
+                                        </label>
+                                        <input
+                                            id="password"
+                                            name="password"
+                                            type={this.state.isShowPassword ? 'type' : 'password'}
+                                            placeholder="VD: Abc123456@#"
+                                            className={cx('form-control')}
+                                            value={this.state.password}
+                                            onChange={(event) => this.handleChangeInputField(event, 'password')}
+                                        />
+                                        <div className={cx('toggle-show-password')}>
+                                            <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
+                                        </div>
+                                    </div>
+                                    <span className={cx('form-message')}></span>
+                                </div>
+
+                                <div className={cx('form-group')}>
+                                    <div className={cx('form-input')}>
+                                        <label htmlFor="password_confirmation" className={cx('form-label')}>
+                                            Nhập lại mật khẩu
+                                        </label>
+                                        <input
+                                            id="password_confirmation"
+                                            name="password_confirmation"
+                                            placeholder="VD: Abc123456@#"
+                                            type={this.state.isShowPassword ? 'type' : 'password'}
+                                            className={cx('form-control')}
+                                            value={this.state.confirmPassword}
+                                            onChange={(event) =>
+                                                this.handleChangeInputField(event, 'passwordConfirmation')
+                                            }
+                                        />
+                                        <div className={cx('toggle-show-password')}>
+                                            <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
+                                        </div>
+                                    </div>
+                                    <span className={cx('form-message')}></span>
+                                </div>
+                                <Button className={cx('submit-btn')}>Đăng ký</Button>
+                            </form>
+
+                            <p className={cx('signin-with')}>Hoặc đăng ký bằng :</p>
+                            <FacebookGoogle />
+                            <div className={cx('switch-signin')}>
+                                <span className={cx('text')}>Bạn chưa có tài khoản?</span>
+                                <Button className={cx('signin-btn')} route="/signin">
+                                    Đăng nhập
+                                </Button>
                             </div>
                         </div>
                         <Loading isOpen={isLoading} />

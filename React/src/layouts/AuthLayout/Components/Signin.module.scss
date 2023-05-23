@@ -1,11 +1,19 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .signin-container {
+    font-family: var(--alexandria-font);
     @include signin-signup-container;
 
     .form-signin {
         .form-logo {
             @include auth-logo;
+        }
+
+        .title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
         }
 
         .error-message {

@@ -13,6 +13,8 @@
     --green-02: #41bc8a;
     --green-03: #f3fdf8;
 
+    // Background color
+    --auth-backgroundColor: #f3f5f7;
     --submenu-btn-bgc: #f4f5f5;
     --button-backgroundColor: #e5f7ed;
     --white-btn: #fff;
@@ -131,7 +133,7 @@ a {
     min-height: 100vh;
     width: 100%;
     user-select: none;
-    padding: 30px 0;
+    padding: 30px;
     background-color: #fff;
 }
 

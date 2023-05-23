@@ -13,7 +13,7 @@ class App extends Component {
                 <Switch>
                     {authenticatedRoutes.map((route, index) => {
                         let Authenticated = route.Authenticated ? userIsAuthenticated : userIsNotAuthenticated;
-                        return <Route key={index} path={route.path} component={Authenticated(route.component)} />;
+                        return <Route key={index} path={route.path} component={route.component} />;
                     })}
 
                     {publicRoutes.map((route, index) => {

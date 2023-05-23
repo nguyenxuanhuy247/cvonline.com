@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { RiDragMove2Fill } from 'react-icons/ri';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { TfiPencil } from 'react-icons/tfi';
 import DefaultTippy from '@tippyjs/react';
 
 import styles from './EditButton.module.scss';
@@ -36,6 +37,12 @@ class EditButton extends PureComponent {
                 <DefaultTippy content="Thêm mục mới">
                     <Button className={cx('btn', 'add')} onClick={(e) => e.preventDefault()}>
                         <IoIosAddCircleOutline />
+                    </Button>
+                </DefaultTippy>
+
+                <DefaultTippy content="Sửa mục này">
+                    <Button className={cx('btn', 'add')} onClick={(e) => e.preventDefault()}>
+                        <TfiPencil />
                     </Button>
                 </DefaultTippy>
 

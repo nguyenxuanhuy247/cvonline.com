@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import styles from './PersonalInfo.module.scss';
+import { HeadlessTippy } from '~/components/Tooltip/CustomTooltip.js';
 
 const cx = className.bind(styles);
 
@@ -23,7 +24,9 @@ class PersonalInfo extends PureComponent {
                         data.map((item) => {
                             return (
                                 <div key={item.id} className={cx('info')}>
-                                    <span className={cx('icon')}>{item.icon}</span>
+                                    <HeadlessTippy>
+                                        <span className={cx('icon')}>{item.icon}</span>
+                                    </HeadlessTippy>
                                     <ContentEditableTag
                                         className={cx('info-text')}
                                         placeholder={item.placeholder}

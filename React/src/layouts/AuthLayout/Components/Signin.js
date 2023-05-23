@@ -67,78 +67,75 @@ class SignIn extends Component {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
         let { errorCode, errorMessage } = this.props.signInMessage;
         return (
-            <div className={cx('row')}>
-                <div className={cx('col lpc-10 lpc-o-1 pc-8 pc-o-2 tb-12 mb-12')}>
-                    <div className={cx('signin-container')}>
-                        <form className={cx('form-signin')} autoomplete="on">
-                            <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
+            <div className={cx('signin-container')}>
+                <form className={cx('form-signin')} autoomplete="on">
+                    <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
+                    <p className={cx('title')}>Chào mừng bạn đã quay trở lại</p>
 
-                            <div className={cx('error-message')}>
-                                {errorMessage && (
-                                    <p className={`${cx('alert', errorCode ? 'alert-fail' : 'alert-success')}`}>
-                                        {errorMessage}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className={cx('form-group')}>
-                                <div className={cx('form-input')}>
-                                    <label htmlFor="email" className={cx('form-label')}>
-                                        <MdEmail className={cx('form-icon')} />
-                                    </label>
-                                    <input
-                                        type="email"
-                                        className={cx('form-control')}
-                                        id="email"
-                                        placeholder="Nhập email của bạn"
-                                        name="email"
-                                        spellCheck={false}
-                                        value={this.state.email}
-                                        onChange={(event) => this.handleOnChangeEmail(event)}
-                                    />
-                                </div>
-                                <p className={cx('form-message')}></p>
-                            </div>
-
-                            <div className={cx('form-group')}>
-                                <div className={cx('form-input')}>
-                                    <label htmlFor="password" className={cx('form-label')}>
-                                        <RiLockPasswordFill className={cx('form-icon')} />
-                                    </label>
-                                    <input
-                                        type={this.state.isShowPassword ? 'text' : 'password'}
-                                        className={cx('form-control')}
-                                        id="password"
-                                        placeholder="Nhập mật khẩu"
-                                        name="password"
-                                        spellCheck={false}
-                                        value={this.state.password}
-                                        onChange={(event) => this.handleOnChangePassword(event)}
-                                    />
-                                    <div className={cx('toggle-show-password')}>
-                                        <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
-                                    </div>
-                                </div>
-                                <span className={cx('form-message')}></span>
-                            </div>
-
-                            <a href="#!" className={cx('forgot-password')}>
-                                Quên mật khẩu?
-                            </a>
-                            <Button className={cx('submit-btn')}>Đăng nhập</Button>
-                        </form>
-
-                        <p className={cx('signin-with')}>Hoặc đăng nhập bằng :</p>
-
-                        <FacebookGoogle />
-
-                        <div className={cx('switch-signup')}>
-                            <span className={cx('text')}>Bạn chưa có tài khoản?</span>
-                            <Button className={cx('signup-btn')} route="/signup">
-                                Đăng ký
-                            </Button>
-                        </div>
+                    <div className={cx('error-message')}>
+                        {errorMessage && (
+                            <p className={`${cx('alert', errorCode ? 'alert-fail' : 'alert-success')}`}>
+                                {errorMessage}
+                            </p>
+                        )}
                     </div>
+
+                    <div className={cx('form-group')}>
+                        <div className={cx('form-input')}>
+                            <label htmlFor="email" className={cx('form-label')}>
+                                <MdEmail className={cx('form-icon')} />
+                            </label>
+                            <input
+                                type="email"
+                                className={cx('form-control')}
+                                id="email"
+                                placeholder="Nhập email của bạn"
+                                name="email"
+                                spellCheck={false}
+                                value={this.state.email}
+                                onChange={(event) => this.handleOnChangeEmail(event)}
+                            />
+                        </div>
+                        <p className={cx('form-message')}></p>
+                    </div>
+
+                    <div className={cx('form-group')}>
+                        <div className={cx('form-input')}>
+                            <label htmlFor="password" className={cx('form-label')}>
+                                <RiLockPasswordFill className={cx('form-icon')} />
+                            </label>
+                            <input
+                                type={this.state.isShowPassword ? 'text' : 'password'}
+                                className={cx('form-control')}
+                                id="password"
+                                placeholder="Nhập mật khẩu"
+                                name="password"
+                                spellCheck={false}
+                                value={this.state.password}
+                                onChange={(event) => this.handleOnChangePassword(event)}
+                            />
+                            <div className={cx('toggle-show-password')}>
+                                <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
+                            </div>
+                        </div>
+                        <span className={cx('form-message')}></span>
+                    </div>
+
+                    <a href="#!" className={cx('forgot-password')}>
+                        Quên mật khẩu?
+                    </a>
+                    <Button className={cx('submit-btn')}>Đăng nhập</Button>
+                </form>
+
+                <p className={cx('signin-with')}>Hoặc đăng nhập bằng :</p>
+
+                <FacebookGoogle />
+
+                <div className={cx('switch-signup')}>
+                    <span className={cx('text')}>Bạn chưa có tài khoản?</span>
+                    <Button className={cx('signup-btn')} route="/signup">
+                        Đăng ký
+                    </Button>
                 </div>
             </div>
         );

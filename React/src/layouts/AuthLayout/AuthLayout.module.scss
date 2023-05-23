@@ -1,3 +1,10 @@
+@import '../../components/GlobalStyles/GlobalStyles.module.scss';
+
+.container {
+    background-color: var(--auth-backgroundColor);
+    padding: 60px 0;
+}
+
 // Mobile + Tablet
 @media (max-width: 1199px) {
     .hide-on-mobile-tablet {
