@@ -25,9 +25,13 @@
         }
     }
 
-    .wrapper {
+    .container {
         margin-top: var(--header-height);
         padding-top: 20px;
+
+        .wrapper {
+            margin: 0 12px;
+        }
 
         .col-left {
             padding: 20px;
@@ -95,7 +99,6 @@
         }
 
         .text {
-            margin-left: 20px;
             background-color: #fff;
             height: 100%;
         }

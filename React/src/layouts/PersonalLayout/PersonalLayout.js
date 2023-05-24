@@ -1,6 +1,6 @@
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import className from 'classnames/bind';
+import classnames from 'classnames/bind';
 
 import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
@@ -17,8 +17,9 @@ import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
+import Modal from '~/components/Modal/Modal.js';
 
-const cx = className.bind(styles);
+const cx = classnames.bind(styles);
 
 const PERSONAL_INFO = [
     {
@@ -78,7 +79,8 @@ class CVLayout extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            fullName: '' || this.props.signInMessage.fullName || 'Nguyễn Xuân Huy',
+            fullName: '',
+            isModalOpen: false,
         };
     }
 
@@ -87,65 +89,65 @@ class CVLayout extends PureComponent {
     }
 
     render = () => {
-        const { fullName } = this.state;
+        const { fullName = 'Nguyễn Xuân Huy', isModalOpen } = this.state;
 
         return (
             <div className={cx('body')}>
                 <Header />
-                <div className={cx('wrapper')}>
+                <Modal isModalOpen={isModalOpen}/>
+                <div className={cx('container')}>
                     <div className={cx('grid')}>
                         <div className={cx('row no-gutters')}>
-                            <div className={cx('col lpc-9')}>
-                                <div className={cx('row no-gutters')}>
-                                    {/* Col left */}
-                                    <div className={cx('col lpc-3')}>
-                                        <div className={cx('col-left')}>
-                                            <div className={cx('avatar-wrapper')}>
-                                                <Image
-                                                    wrapperClass={cx('inner')}
-                                                    className={cx('avatar')}
-                                                    src={JpgImages.avatar}
-                                                    width="170px"
-                                                    height="170px"
-                                                    alt={`${fullName}`}
-                                                    editButton="Sửa ảnh"
-                                                    round
+                            <div className={cx('col pc-9')}>
+                                <div className={cx('wrapper')}>
+                                    <div className={cx('row no-gutters')}>
+                                        <div className={cx('col pc-3')}>
+                                            <div className={cx('col-left')}>
+                                                <div className={cx('avatar-wrapper')}>
+                                                    <Image
+                                                        wrapperClass={cx('inner')}
+                                                        className={cx('avatar')}
+                                                        src={JpgImages.avatar}
+                                                        width="170px"
+                                                        height="170px"
+                                                        alt={`${fullName}`}
+                                                        editButton="Sửa ảnh"
+                                                        round
+                                                    />
+                                                </div>
+                                                <ContentEditableTag
+                                                    className={cx('full-name')}
+                                                    placeholder="Nguyễn Xuân Huy"
+                                                    innerText={`${fullName}`}
+                                                    onKeyDown={this.handleGetContent}
                                                 />
+                                                <ContentEditableTag
+                                                    className={cx('job-title')}
+                                                    placeholder="VD: Fullstack developer"
+                                                    reduxName="jobTitle"
+                                                />
+                                                <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
+                                                <div className={cx('separate')}></div>
+                                                <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
+                                                <div className={cx('separate')}></div>
+                                                <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
                                             </div>
-                                            <ContentEditableTag
-                                                className={cx('full-name')}
-                                                placeholder="Nguyễn Xuân Huy"
-                                                innerText={`${fullName}`}
-                                                onKeyDown={this.handleGetContent}
-                                            />
-                                            <ContentEditableTag
-                                                className={cx('job-title')}
-                                                placeholder="VD: Fullstack developer"
-                                                reduxName="jobTitle"
-                                            />
-                                            <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
-                                            <div className={cx('separate')}></div>
-                                            <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
-                                            <div className={cx('separate')}></div>
-                                            <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
                                         </div>
-                                    </div>
-
-                                    {/* Col right */}
-                                    <div className={cx('col lpc-9')}>
-                                        <div className={cx('col-right')}>
-                                            <div className={cx('product-list')}>
-                                                <Product />
-                                                <Product />
-                                                <Product />
-                                                <Product />
+                                        <div className={cx('col pc-9')}>
+                                            <div className={cx('col-right')}>
+                                                <div className={cx('product-list')}>
+                                                    <Product />
+                                                    <Product />
+                                                    <Product />
+                                                    <Product />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className={cx('col lpc-3')}>
+                            <div className={cx('col pc-3')}>
                                 <div className={cx('text')}>Đăng nhập Facebook để giao lưu với nhau</div>
                             </div>
                         </div>

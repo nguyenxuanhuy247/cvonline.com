@@ -15,7 +15,7 @@ class Auth extends PureComponent {
             <div className={cx('container')}>
                 <div className={cx('grid wide')}>
                     <div className={cx('row no-gutters')}>
-                        <div className={cx('col lpc-6 lpc-o-3')}>
+                        <div className={cx('col pc-6 pc-o-3 tb-8 tb-o-2 mb-12')}>
                             <Switch>
                                 <Route path={path.SIGNIN} component={SignIn} />
                                 <Route path={path.SIGNUP} component={SignUp} />

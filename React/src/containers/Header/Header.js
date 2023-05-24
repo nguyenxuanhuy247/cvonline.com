@@ -23,7 +23,7 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fullName: '' || this.props.signInMessage.fullName,
+            fullName: 'Nguyễn Xuân Huy',
         };
     }
 
@@ -39,7 +39,6 @@ class Header extends Component {
     }
 
     render = () => {
-        const { fullName } = this.state;
 
         return (
             <header className={cx('header')}>
@@ -88,7 +87,7 @@ class Header extends Component {
                                     className={cx('avatar')}
                                     alt="Nguyễn Xuân Huy"
                                 />
-                                <span className={cx('fullname')}>{fullName}</span>
+                                <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
                             </Button>
                         </Menu>
                     </div>

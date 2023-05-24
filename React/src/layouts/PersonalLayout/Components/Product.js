@@ -50,8 +50,8 @@ class Product extends PureComponent {
     render() {
         return (
             <div className={cx('container')} spellCheck="false">
-                <div className={cx('row')}>
-                    <div className={cx('col lpc-12')}>
+                <div className={cx('row no-gutters')}>
+                    <div className={cx('col pc-12')}>
                         <div className={cx('work-exp-desc')} spellCheck="false">
                             <div className={cx('work-exp')}>
                                 <ContentEditableTag
@@ -72,9 +72,7 @@ class Product extends PureComponent {
                                 reduxName="productDesc"
                             />
                         </div>
-                    </div>
-                    <div className={cx('col lpc-8')}>
-                        <div className={cx('col-inner')}>
+                        <div>
                             <Image
                                 src={JpgImages.avatar}
                                 wrapperClass={cx('wrapper')}
@@ -82,31 +80,36 @@ class Product extends PureComponent {
                                 alt="Ảnh sản phẩm"
                                 editButton="Sửa ảnh"
                             />
-    
-                            <div className={cx('section')}>
-                                <span className={cx('title')}>Source code</span>
-                                <div className={cx('list')}>
-                                    <Technology data={SOURCE_CODE} />
-                                </div>
-                            </div>
-    
-                            <div className={cx('section')}>
-                                <span className={cx('title')}>Ngôn ngữ lập trình</span>
-                                <div className={cx('list')}>
-                                    <Technology data={PRO_LANGUAGES} />
-                                </div>
-                            </div>
-    
-                            <div className={cx('section')}>
-                                <span className={cx('title')}>Frameworks</span>
-                                <div className={cx('list')}>
-                                    <Technology data={PRO_LANGUAGES} isEdit draggable />
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    <div className={cx('col lpc-4')}>
-                        <AllUsedLibraries />
+                    <div className={cx('wrapper')}>
+                        <div className={cx('row no-gutters')}>
+                            <div className={cx('col pc-7')}>
+                                <div className={cx('section')}>
+                                    <span className={cx('title')}>Source code</span>
+                                    <div className={cx('list')}>
+                                        <Technology data={SOURCE_CODE} />
+                                    </div>
+                                </div>
+
+                                <div className={cx('section')}>
+                                    <span className={cx('title')}>Ngôn ngữ lập trình</span>
+                                    <div className={cx('list')}>
+                                        <Technology data={PRO_LANGUAGES} />
+                                    </div>
+                                </div>
+
+                                <div className={cx('section')}>
+                                    <span className={cx('title')}>Frameworks</span>
+                                    <div className={cx('list')}>
+                                        <Technology data={PRO_LANGUAGES} isEdit draggable />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={cx('col pc-5')}>
+                                <AllUsedLibraries />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -95,7 +95,7 @@ class Signup extends Component {
                         <div className={cx('signup-container')}>
                             <form className={cx('form-signup')} autoComplete="on">
                                 <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
-                                <p className={cx('title')}>Chào mừng bạn đến với TopCV</p>
+                                <p className={cx('title')}>Chào mừng bạn đến với CV.com</p>
 
                                 <div className={cx('error-message')}>
                                     {this.state.email && errorMessage && (

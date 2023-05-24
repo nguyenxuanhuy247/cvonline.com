@@ -5,6 +5,7 @@ import styles from './Image.module.scss';
 import ImageModal from '~/containers/ManageUser/Modal/Image/ImageModal.js';
 import Button from '~/components/Button/Button.js';
 import { JpgImages } from '~/components/Image/Images.js';
+import Modal from '~/components/Modal/Modal.js';
 
 const cx = classNames.bind(styles);
 class Image extends PureComponent {
