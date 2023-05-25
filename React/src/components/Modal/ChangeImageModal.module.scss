@@ -1,0 +1,125 @@
+@import '../GlobalStyles/GlobalStyles.module.scss';
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .container {
+        min-width: 800px;
+        background-color: #fff;
+        border-radius: 4px;
+
+        .modal-dialog {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+
+            & > * {
+                padding: 16px;
+            }
+
+            .btn {
+                font-size: 16px;
+                padding: 12px 12px;
+                border: none;
+                min-width: 100px;
+                color: #fff;
+                cursor: pointer;
+            }
+
+            .modal-header {
+                position: relative;
+                text-align: center;
+                border-bottom: 1px solid #000;
+
+                .title {
+                    color: #000;
+                    font-size: 2rem;
+                    font-weight: 600;
+                }
+
+                .close {
+                    position: absolute;
+                    right: 16px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    opacity: 0.8;
+                    display: flex;
+                    align-items: center;
+                    color: red;
+                    font-size: 30px;
+
+                    &:hover {
+                        cursor: pointer;
+                        opacity: 1;
+                        font-weight: 600;
+                    }
+                }
+            }
+
+            .modal-body {
+                flex: 1;
+                border-bottom: 1px solid #000;
+
+                .wrapper {
+                    .label {
+                        width: 100%;
+                        height: 100%;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        overflow: hidden;
+
+                        .image {
+                            width: inherit;
+                            height: inherit;
+                            object-fit: contain;
+                            border-radius: 0;
+                            width: 460px;
+                            height: 460px;
+                            max-width: 100%;
+                            max-height: 100%;
+                        }
+                    }
+                }
+
+                .actions {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    row-gap: 12px;
+
+                    .crop {
+                        background-color: var(--primary-color);
+                    }
+
+                    .delete {
+                        background-color: red;
+                    }
+                }
+            }
+
+            .modal-footer {
+                padding: 16px;
+                display: flex;
+                justify-content: center;
+                column-gap: 20px;
+
+                .cancel {
+                    color: #000;
+                }
+
+                .finish {
+                    color: #fff;
+                    background-color: var(--primary-color);
+                }
+            }
+        }
+    }
+}

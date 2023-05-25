@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
-// import { Button } from 'reactstrap';
 import Button from '~/components/Button/Button.js';
 
 import getCroppedImg from './cropImage';

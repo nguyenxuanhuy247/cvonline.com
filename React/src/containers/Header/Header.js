@@ -15,7 +15,7 @@ import Menu from '~/components/Popover/Menu/Menu.js';
 import Button from '~/components/Button/Button.js';
 import SearchBar from '~/containers/Header/SearchBar.js';
 
-import { MENU_AVATAR_DATA } from '~/components/MenuData/MenuData.js';
+import { MENU_AVATAR_DATA } from '~/components/Popover/Menu/MenuData.js';
 
 const cx = className.bind(styles);
 
@@ -39,15 +39,14 @@ class Header extends Component {
     }
 
     render = () => {
-
         return (
-            <header className={cx('header')}>
+            <div className={cx('header')}>
                 <Link to={'/'} className={cx('logo-link')}>
                     <img src={logo} className={cx('logo')} alt="CiVi.com" />
                 </Link>
 
                 <SearchBar />
-                
+
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>
                         <Button
@@ -92,7 +91,7 @@ class Header extends Component {
                         </Menu>
                     </div>
                 )}
-            </header>
+            </div>
         );
     };
 }

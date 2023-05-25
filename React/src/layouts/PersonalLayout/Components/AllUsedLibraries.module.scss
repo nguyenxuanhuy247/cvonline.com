@@ -52,14 +52,14 @@
         text-align: center;
         padding: 8px;
         color: var(--primary-color);
-        background-color: var(--button-backgroundColor);
+        background-color: var(--button-bgc-green-02);
         border-radius: 4px;
         font-size: 20px;
 
         &:hover {
             cursor: pointer;
             color: #fff;
-            background-color: var(--green-02);
+            background-color: var(--button-bgc-green-01);
         }
 
         .text {

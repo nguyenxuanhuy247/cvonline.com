@@ -4,12 +4,6 @@
     position: relative;
 
     &.mouse-enter:hover {
-        .image {
-            cursor: pointer;
-            opacity: 0.6;
-            border: 1px solid var(--primary-color);
-        }
-
         .edit-button {
             opacity: 1;
         }

@@ -36,12 +36,18 @@ class SearchBar extends PureComponent {
                         spellCheck={false}
                         onInput={(e) => this.handleInputValue(e)}
                     />
-                    <Button className={cx('keyboard')}>
-                        <BsKeyboard />
-                    </Button>
-                    <Button className={cx('close')}>
-                        <GrClose />
-                    </Button>
+
+                    <DefaultTippy content="Bàn phím ảo" arrow="">
+                        <Button className={cx('keyboard')}>
+                            <BsKeyboard />
+                        </Button>
+                    </DefaultTippy>
+
+                    <DefaultTippy content="Xóa" arrow="">
+                        <Button className={cx('close')}>
+                            <GrClose />
+                        </Button>
+                    </DefaultTippy>
 
                     <DefaultTippy content="Tìm kiếm" arrow="">
                         <Button className={cx('magnify')}>

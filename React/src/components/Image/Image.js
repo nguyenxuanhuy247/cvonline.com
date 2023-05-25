@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames/bind';
-
 import styles from './Image.module.scss';
-import ImageModal from '~/containers/ManageUser/Modal/Image/ImageModal.js';
+// import ImageModal from '~/containers/ManageUser/Modal/Image/ImageModal.js';
 import Button from '~/components/Button/Button.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import Modal from '~/components/Modal/Modal.js';
+import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 
 const cx = classNames.bind(styles);
 class Image extends PureComponent {
@@ -19,19 +18,18 @@ class Image extends PureComponent {
         this.btnRef = React.createRef();
     }
 
-    handleGetImageFromModal = (url) => {
-        this.setState({
-            url: url,
-        });
-    };
-
-    handleOpenModal = () => {
+    handleOpenModal = (e) => {
+        e.stopPropagation();
         this.setState({ isOpen: true });
     };
 
     handleCloseModal = () => {
         this.setState({ isOpen: false });
     };
+
+    getImageUrlFromModal(url) {
+        this.setState({ url: url, isOpen: false });
+    }
 
     componentWillUnmount() {
         URL.revokeObjectURL(this.state.url);
@@ -45,6 +43,8 @@ class Image extends PureComponent {
             [className]: className,
             round,
         });
+
+        console.log('Print url:', this.state.url);
 
         return (
             <div className={cx('wapper', wrapperClass, { 'mouse-enter': editButton || editText })}>
@@ -69,12 +69,7 @@ class Image extends PureComponent {
                 )}
 
                 {this.state.isOpen && (
-                    <ImageModal
-                        isOpen={this.state.isOpen}
-                        onClose={this.handleCloseModal}
-                        onChange={this.handleGetImageFromModal}
-                        src={this.state.url}
-                    />
+                    <ChangeImageModal onClose={this.handleCloseModal} onGet={(url) => this.getImageUrlFromModal(url)} />
                 )}
             </div>
         );

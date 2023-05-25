@@ -16,8 +16,7 @@ class ContentEditableTag extends Component {
     componentWillUnmount() {}
 
     render = () => {
-        const { className = '', placeholder = 'Vui lòng nhập trường này', onKeyDown } = this.props;
-        console.log(onKeyDown);
+        const { className = '', placeholder = 'Vui lòng nhập trường này'} = this.props;
 
         return (
             <div
@@ -31,9 +30,6 @@ class ContentEditableTag extends Component {
                 placeholder={placeholder}
                 spellCheck="false"
                 tabIndex="0"
-                onkeydown={() => {
-                    onKeyDown(this.state.content);
-                }}
             ></div>
         );
     };

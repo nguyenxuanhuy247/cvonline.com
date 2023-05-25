@@ -4,12 +4,12 @@
     .page-item {
         &.active > .page-link {
             color: #fff;
-            background-color: var(--green-02);
+            background-color: var(--button-bgc-green-01);
         }
 
         .page-link {
             font-size: 1.6rem;
-            color: var(--green-02);
+            color: var(--button-bgc-green-01);
             border: none;
             margin-bottom: 8px;
             padding: 8px 12px;
@@ -18,7 +18,7 @@
             &:hover,
             &:focus {
                 color: #fff;
-                background-color: var(--green-02);
+                background-color: var(--button-bgc-green-01);
                 outline: none !important;
                 box-shadow: none;
             }

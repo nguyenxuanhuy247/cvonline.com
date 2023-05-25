@@ -3,10 +3,10 @@
 .button {
     position: relative;
     font-family: var(--alexandria-font) !important;
-    background-color: #f4f5f5;
+    background-color: var(--button-bgc-grey-01);
     border: 1px solid transparent;
     border-radius: 6px;
-    padding: 12px  16px;
+    padding: 12px 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

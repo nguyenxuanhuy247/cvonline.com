@@ -5,7 +5,6 @@ import TippyHeadless from '@tippyjs/react/headless';
 import { BiArrowBack } from 'react-icons/bi';
 
 import * as userActions from '~/store/actions/userActions.js';
-import PopoverWrapper from '~/components/Popover/Wrapper.js';
 import styles from './Menu.module.scss';
 import Button from '~/components/Button/Button';
 
@@ -27,11 +26,11 @@ class Menu extends Component {
 
     handleShowMenuContent = (attrs) => (
         <div tabIndex="-1" {...attrs}>
-            <PopoverWrapper className={cx('menu-wrapper')}>
+            <div className={cx('menu-container')}>
                 {this.state.isHeaderShow && (
                     <div className={cx('submenu-header')}>
                         <Button
-                            className={cx('button-back')}
+                            className={cx('back-button')}
                             onClick={() =>
                                 this.setState({
                                     menuList: this.props.data,
@@ -39,22 +38,25 @@ class Menu extends Component {
                                 })
                             }
                         >
-                            <i className={cx('arrow-left')}>
+                            <span className={cx('arrow-left')}>
                                 <BiArrowBack />
-                            </i>
-                            <span className={cx('text')}>{this.state.subMenuHeaderTitle}</span>
+                            </span>
                         </Button>
+                        <span className={cx('text')}>{this.state.subMenuHeaderTitle}</span>
                     </div>
                 )}
 
-                {this.state.menuList.length > 0 &&
-                    this.state.menuList.map((item) => {
-                        const isChildren = !!item.children;
+                <div className={cx('container')}>
+                    {this.state.menuList.length > 0 &&
+                        this.state.menuList.map((item) => {
+                            const isChildren = !!item.children;
 
-                        return (
-                            <div key={item.id} className={cx('container')}>
+                            return (
                                 <Button
-                                    className={cx('button')}
+                                    key={item.id}
+                                    className={cx('button', {
+                                        separate: item.separate,
+                                    })}
                                     onClick={() => {
                                         if (isChildren) {
                                             const { title, data } = item.children;
@@ -74,16 +76,14 @@ class Menu extends Component {
                                     <span className={cx('text')}>{item.title}</span>
                                     <i className={cx('arrow-right')}>{item.rightIcon}</i>
                                 </Button>
-                            </div>
-                        );
-                    })}
-            </PopoverWrapper>
+                            );
+                        })}
+                </div>
+            </div>
         </div>
     );
 
     render() {
-        let { children } = this.props;
-
         return (
             <TippyHeadless
                 interactive
@@ -92,7 +92,7 @@ class Menu extends Component {
                 placement="bottom-end"
                 render={() => this.handleShowMenuContent()}
             >
-                {children}
+                {this.props.children}
             </TippyHeadless>
         );
     }

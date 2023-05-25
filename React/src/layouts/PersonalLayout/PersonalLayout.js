@@ -17,7 +17,6 @@ import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import Modal from '~/components/Modal/Modal.js';
 
 const cx = classnames.bind(styles);
 
@@ -89,12 +88,11 @@ class CVLayout extends PureComponent {
     }
 
     render = () => {
-        const { fullName = 'Nguyễn Xuân Huy', isModalOpen } = this.state;
+        const { fullName = 'Nguyễn Xuân Huy' } = this.state;
 
         return (
             <div className={cx('body')}>
                 <Header />
-                <Modal isModalOpen={isModalOpen}/>
                 <div className={cx('container')}>
                     <div className={cx('grid')}>
                         <div className={cx('row no-gutters')}>

@@ -27,9 +27,9 @@ class Signup extends Component {
             isShowPassword: false,
             delayRedirect: false,
         };
-
-        this.id = React.createRef();
     }
+
+    id = React.createRef();
 
     handleChangeInputField = (event, inputName) => {
         if (inputName === 'email') {

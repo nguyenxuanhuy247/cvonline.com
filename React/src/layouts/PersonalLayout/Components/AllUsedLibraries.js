@@ -8,7 +8,7 @@ import PaginationBar from '~/components/Pagination/PaginationBar.js';
 import LibraryList from './LibraryList';
 import { Icons } from '~/components/Image/Images.js';
 import Button from '~/components/Button/Button.js';
-import Modal from '~/components/Modal/Modal.js';
+// import Modal from '~/components/Modal/Modal.js';
 import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
 
@@ -270,7 +270,7 @@ class AllUsedLibraries extends PureComponent {
                         <PaginationBar />
                     </div>
 
-                    <Modal isOpen={this.state.isModalOpen} />
+                    {/* <Modal isOpen={this.state.isModalOpen} /> */}
                 </div>
             </div>
         );

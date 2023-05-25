@@ -9,19 +9,24 @@
 }
 
 :root {
+    // Primary color
     --primary-color: #49b253;
-    --green-02: #41bc8a;
-    --green-03: #f3fdf8;
 
     // Background color
-    --auth-backgroundColor: #f3f5f7;
-    --submenu-btn-bgc: #f4f5f5;
-    --button-backgroundColor: #e5f7ed;
-    --white-btn: #fff;
+    --bgc-white: #fff;
 
+    // Button background color
+    --auth-bgc-grey: #f3f5f7;
+    --button-bgc-green-01: #41bc8a;
+    --button-bgc-green-02: #e5f7ed;
+    --button-bgc-grey-01: #f4f5f5;
+    --button-bgc-white: #fff;
+
+    // Font fimily
     --alexandria-font: 'Alexandria', sans-serif;
     --roboto-font: 'Roboto', sans-serif;
 
+    // Height
     --header-height: 68px;
 }
 
@@ -54,7 +59,7 @@ a {
 @mixin btn {
     display: inline-block;
     color: var(--primary-color);
-    background-color: var(--white-btn);
+    background-color: var(--button-bgc-white);
     padding: 8px 20px;
     text-align: center;
     font-size: 1.6rem;
@@ -67,7 +72,7 @@ a {
 
 @mixin solid-btn {
     @include btn;
-    color: var(--white-btn);
+    color: var(--button-bgc-white);
     background-color: var(--primary-color);
 }
 
@@ -75,7 +80,7 @@ a {
     @include btn;
 
     color: var(--primary-color);
-    background-color: var(--white-btn);
+    background-color: var(--button-bgc-white);
 
     &:hover {
         @include solid-btn;
@@ -84,39 +89,6 @@ a {
 
 @mixin active-btn {
     @include solid-btn;
-}
-
-@mixin btn-in-menu {
-    .button {
-        padding: 14px 15px;
-        width: 100%;
-        min-width: 368px;
-        justify-content: flex-start;
-
-        .left-icon {
-            display: flex;
-            align-items: center;
-            font-size: 20px;
-            color: var(--primary-color);
-        }
-
-        .arrow-right {
-            font-size: 20px;
-            margin-left: auto;
-            opacity: 0;
-        }
-
-        &:hover {
-            background-color: #efefef;
-            cursor: pointer;
-
-            .text,
-            .arrow-right {
-                color: var(--primary-color);
-                opacity: 1;
-            }
-        }
-    }
 }
 
 @mixin line-clamp {
@@ -134,12 +106,12 @@ a {
     width: 100%;
     user-select: none;
     padding: 30px;
-    background-color: #fff;
+    background-color: var(--bgc-white);
 }
 
 @mixin auth-logo {
     display: block;
-    height: 12vmin;
+    height: 10vmin;
     max-width: 100%;
     margin: 0 auto 20px auto;
 }
