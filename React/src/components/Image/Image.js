@@ -44,8 +44,6 @@ class Image extends PureComponent {
             round,
         });
 
-        console.log('Print url:', this.state.url);
-
         return (
             <div className={cx('wapper', wrapperClass, { 'mouse-enter': editButton || editText })}>
                 <img

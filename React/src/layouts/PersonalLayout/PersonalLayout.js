@@ -17,6 +17,7 @@ import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
+import Calendar from '~/components/Calendar/Calendar';
 
 const cx = classnames.bind(styles);
 
@@ -25,6 +26,7 @@ const PERSONAL_INFO = [
         id: 1,
         icon: <BsFillCalendarDayFill />,
         placeholder: 'Ngày tháng năm sinh',
+        headlessTippy: <Calendar/>
     },
     {
         id: 2,
@@ -83,10 +85,6 @@ class CVLayout extends PureComponent {
         };
     }
 
-    handleGetContent(data) {
-        console.log(data);
-    }
-
     render = () => {
         const { fullName = 'Nguyễn Xuân Huy' } = this.state;
 
@@ -116,14 +114,12 @@ class CVLayout extends PureComponent {
                                                 <ContentEditableTag
                                                     className={cx('full-name')}
                                                     placeholder="Nguyễn Xuân Huy"
-                                                    innerText={`${fullName}`}
-                                                    onKeyDown={this.handleGetContent}
                                                 />
                                                 <ContentEditableTag
                                                     className={cx('job-title')}
                                                     placeholder="VD: Fullstack developer"
-                                                    reduxName="jobTitle"
                                                 />
+                                                <div className={cx('separate')}></div>
                                                 <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
                                                 <div className={cx('separate')}></div>
                                                 <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
@@ -131,6 +127,7 @@ class CVLayout extends PureComponent {
                                                 <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
                                             </div>
                                         </div>
+
                                         <div className={cx('col pc-9')}>
                                             <div className={cx('col-right')}>
                                                 <div className={cx('product-list')}>

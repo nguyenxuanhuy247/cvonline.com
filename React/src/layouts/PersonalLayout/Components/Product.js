@@ -52,24 +52,16 @@ class Product extends PureComponent {
             <div className={cx('container')} spellCheck="false">
                 <div className={cx('row no-gutters')}>
                     <div className={cx('col pc-12')}>
-                        <div className={cx('work-exp-desc')} spellCheck="false">
+                        <div className={cx('product-desc')} spellCheck="false">
                             <div className={cx('work-exp')}>
                                 <ContentEditableTag
                                     className={cx('exp')}
-                                    placeholder="Tên công ty"
-                                    reduxName="companyName"
-                                />
-                                <span className={cx('dash')}>-</span>
-                                <ContentEditableTag
-                                    className={cx('exp')}
-                                    placeholder="Vị trí công việc"
-                                    reduxName="jobPosition"
+                                    placeholder="Tên sản phẩm"
                                 />
                             </div>
                             <ContentEditableTag
                                 className={cx('desc')}
                                 placeholder="Mô tả ngắn gọn về sản phẩm"
-                                reduxName="productDesc"
                             />
                         </div>
                         <div>

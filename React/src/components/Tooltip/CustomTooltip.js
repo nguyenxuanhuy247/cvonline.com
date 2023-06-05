@@ -18,14 +18,17 @@ export class DefaultTippy extends Component {
 
 export class HeadlessTippy extends Component {
     render() {
-        let { children } = this.props;
+        let { children, content } = this.props;
+
         return (
             <TippyHeadless
                 render={(attrs) => (
                     <div className="box" tabIndex="-1" {...attrs}>
-                        My tippy box
+                        {content}
                     </div>
                 )}
+                delay={[0, 100000]}
+                interactive
             >
                 {children}
             </TippyHeadless>
