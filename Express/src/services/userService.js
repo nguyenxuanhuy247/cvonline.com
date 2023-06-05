@@ -103,6 +103,29 @@ export const postUserSignIn = async (userEmail, userPassword) => {
     }
 };
 
+// HANDLE GET ALL LIBRARIES
+export const handleGetAllLibraries = (id) => {
+    try {
+        let libraries;
+        if (id === 'ALL') {
+            users = db.User.findAll();
+        } else if (id !== 'ALL') {
+            users = db.User.findOne({
+                where: { id: id },
+                attributes: {
+                    exclude: ['password'],
+                },
+            });
+        }
+
+        return users;
+    } catch (error) {
+        console.log('An error in handleGetAllUsers() in userService.js : ', error);
+    }
+};
+
+
+// =================================================================
 export const handleGetAllUsers = (userId) => {
     try {
         let users;

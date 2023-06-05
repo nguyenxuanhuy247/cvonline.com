@@ -1,21 +1,10 @@
 import { PureComponent } from 'react';
+import * as React from 'react';
 import className from 'classnames/bind';
 import { connect } from 'react-redux';
 
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import styles from './PersonalInfo.module.scss';
-import * as React from 'react';
-import { LocalizationProvider } from '@mui/material';
-import { AdapterDayjs } from '@mui/material';
-import { DateCalendar } from '@mui/material';
-
-function BasicDateCalendar() {
-    return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateCalendar />
-        </LocalizationProvider>
-    );
-}
 
 const cx = className.bind(styles);
 
@@ -41,7 +30,6 @@ class PersonalInfo extends PureComponent {
                                             className={cx('info-text')}
                                             placeholder={item.placeholder}
                                         />
-                                        <BasicDateCalendar />
                                     </div>
                                 );
                             }

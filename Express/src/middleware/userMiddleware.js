@@ -26,10 +26,9 @@ export const checkReqSignUp = (req, res, next) => {
     next();
 };
 
-// Check Sign In
+// CHECK SIGNIN INFO
 export const checkReqSignIn = (req, res, next) => {
     let { email, password } = req.body;
-    console.log(email, password);
 
     if (!email) {
         return res.status(400).json({
@@ -42,6 +41,20 @@ export const checkReqSignIn = (req, res, next) => {
         return res.status(400).json({
             errorCode: 2,
             errorMessage: 'Vui lòng nhập mật khẩu của bạn',
+        });
+    }
+
+    next();
+};
+
+// CHECK ID TO GET LIBRARY
+export const checkReqGetLibraries = (req, res, next) => {
+    let { id } = req.query;
+
+    if (!id) {
+        return res.status(400).json({
+            errorCode: 1,
+            errorMessage: 'Vui lòng nhập id của thư viện',
         });
     }
 

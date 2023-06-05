@@ -11,7 +11,10 @@ let initWebRoutes = (app) => {
     router.post('/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
 
-    
+    router.get('/get-all-libraries', userMiddleware.checkReqGetLibraries, userController.handleGetAllLibraries);
+
+    // =================================================================
+
     router.get('/api/get-all-users', userController.handleGetAllUsers);
     router.delete('/api/delete-user', userController.handleDeleteUser);
 

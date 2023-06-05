@@ -80,6 +80,14 @@
             .wrapper {
                 border: 1px dashed transparent;
                 align-self: flex-start;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+
+                .image {
+                    width: 80px;
+                    height: 80px;
+                }
             }
 
             .input-form {

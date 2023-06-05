@@ -8,15 +8,26 @@ export const handleUserSignUp = async (req, res) => {
     return res.status(201).json(message);
 };
 
-// Handle Sign In
+// HANDLE USER SIGNIN
 export const handleUserSignIn = async (req, res) => {
     let { email, password } = req.body;
-    console.log(email, password);
 
     let message = await userService.postUserSignIn(email, password);
     console.log(message);
 
     return res.status(200).json(message);
+};
+
+// HANDLE GET LIBRARY
+export const handleGetAllLibraries = async (req, res) => {
+    let id = req.query.id;
+    let library = await userService.handleGetAllLibraries(id);
+
+    return res.status(200).json({
+        errorCode: 0,
+        errorMessage: `OK`,
+        data: users,
+    });
 };
 
 // Others

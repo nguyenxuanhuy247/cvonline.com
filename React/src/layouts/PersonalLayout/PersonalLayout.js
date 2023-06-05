@@ -17,7 +17,6 @@ import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import Calendar from '~/components/Calendar/Calendar';
 
 const cx = classnames.bind(styles);
 
@@ -26,7 +25,7 @@ const PERSONAL_INFO = [
         id: 1,
         icon: <BsFillCalendarDayFill />,
         placeholder: 'Ngày tháng năm sinh',
-        headlessTippy: <Calendar/>
+        headlessTippy: true
     },
     {
         id: 2,

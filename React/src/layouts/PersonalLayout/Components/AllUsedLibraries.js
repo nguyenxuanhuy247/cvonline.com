@@ -2,6 +2,8 @@ import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 import styles from './AllUsedLibraries.module.scss';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
@@ -267,10 +269,8 @@ class AllUsedLibraries extends PureComponent {
                     )}
 
                     <div className={cx('paganition')}>
-                        <PaginationBar />
+                        <Pagination count={5} color="success" size="medium" />
                     </div>
-
-                    {/* <Modal isOpen={this.state.isModalOpen} /> */}
                 </div>
             </div>
         );
