@@ -3,7 +3,7 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background-color: #000;
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,7 +35,7 @@
             .modal-header {
                 position: relative;
                 text-align: center;
-                border-bottom: 1px solid #000;
+                border-bottom: 1px solid #ccc;
 
                 .title {
                     color: #000;
@@ -64,7 +64,7 @@
 
             .modal-body {
                 flex: 1;
-                border-bottom: 1px solid #000;
+                border-bottom: 1px solid #ccc;
 
                 .wrapper {
                     .label {

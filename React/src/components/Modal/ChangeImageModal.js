@@ -5,11 +5,11 @@ import { AiFillCloseSquare } from 'react-icons/ai';
 import { MdCrop } from 'react-icons/md';
 import { AiTwotoneDelete } from 'react-icons/ai';
 
-import styles from './CropImageModal.module.scss';
+import styles from './ChangeImageModal.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import CropImageModal from './CropImageModal';
+import CropImageModal from './CropImageModal.js';
 
 const cx = classnames.bind(styles);
 
@@ -49,17 +49,25 @@ class ChangeImageModal extends PureComponent {
         this.setState({ isOpenCropImageModal: true });
     };
 
+    handleCloseCropImageModal = () => {
+        this.setState({ isOpenCropImageModal: false });
+    };
+
+    handleGetUrlFromCropModal = (url) => {
+        this.setState({ ImageUrl: url });
+    };
+
     render() {
         const { onClose } = this.props;
         const { isOpenCropImageModal } = this.state;
 
         return !isOpenCropImageModal ? (
-            <div className={cx('overlay')} onClick={() => onClose()}>
+            <div className={cx('overlay')} onClick={onClose}>
                 <div className={cx('container')} onClick={(e) => e.stopPropagation()}>
                     <div className={cx('modal-dialog')}>
                         <div className={cx('modal-header')}>
                             <p className={cx('title')}>Thay đổi hình ảnh</p>
-                            <span className={cx('close')} onClick={() => onClose()}>
+                            <span className={cx('close')} onClick={onClose}>
                                 <AiFillCloseSquare />
                             </span>
                         </div>
@@ -80,8 +88,6 @@ class ChangeImageModal extends PureComponent {
                                                     src={this.state.ImageUrl || JpgImages.placeholder}
                                                     className={cx('image')}
                                                     alt="Product Image"
-                                                    editText=""
-                                                    editButton=""
                                                 />
                                             </label>
                                         </div>
@@ -90,7 +96,7 @@ class ChangeImageModal extends PureComponent {
                                         <div className={cx('actions')}>
                                             <Button
                                                 className={cx('btn', 'crop')}
-                                                onClick={() => this.handleOpenCropModal()}
+                                                onClick={this.handleOpenCropModal}
                                                 disabled={this.state.ImageUrl ? false : true}
                                             >
                                                 <span className={cx('text')}>Cắt</span>
@@ -98,10 +104,7 @@ class ChangeImageModal extends PureComponent {
                                                     <MdCrop />
                                                 </i>
                                             </Button>
-                                            <Button
-                                                className={cx('btn', 'delete')}
-                                                onClick={() => this.handleDeleteImage()}
-                                            >
+                                            <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
                                                 <span className={cx('text')}>Xóa</span>
                                                 <i className={cx('right-icon')}>
                                                     <AiTwotoneDelete />
@@ -125,7 +128,11 @@ class ChangeImageModal extends PureComponent {
                 </div>
             </div>
         ) : (
-            <CropImageModal />
+            <CropImageModal
+                src={this.state.ImageUrl}
+                onClose={this.handleCloseCropImageModal}
+                onGetUrl={this.handleGetUrlFromCropModal}
+            />
         );
     }
 }

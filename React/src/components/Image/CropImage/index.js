@@ -1,13 +1,16 @@
 import React, { useState, useCallback } from 'react';
+import classnames from 'classnames/bind';
+import Slider from '@mui/material/Slider';
 import Cropper from 'react-easy-crop';
-import Slider from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '~/components/Button/Button.js';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
-import getCroppedImg from './cropImage';
-import { styles } from './styles';
+import getCroppedImg from './cropImage.js';
+import styles from './index.module.scss';
 
-const Crop = ({ classes, onClose, onGetUrl, src, round = false }) => {
+const cx = classnames.bind(styles);
+
+const Crop = ({ isCrop, onGetUrl, src, round = false }) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [rotation, setRotation] = useState(0);
     const [zoom, setZoom] = useState(1);
@@ -21,15 +24,19 @@ const Crop = ({ classes, onClose, onGetUrl, src, round = false }) => {
         try {
             const croppedImage = await getCroppedImg(src, croppedAreaPixels, rotation);
             onGetUrl(croppedImage);
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error('An error occurs in CropImageModal.js: ', error);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [src, croppedAreaPixels, rotation]);
 
+    if (isCrop) {
+        console.log('is here');
+        getCroppedImage();
+    }
     return (
         <div>
-            <div className={classes.cropContainer}>
+            <Stack className={cx('crop-container')}>
                 <Cropper
                     image={src}
                     crop={crop}
@@ -37,49 +44,45 @@ const Crop = ({ classes, onClose, onGetUrl, src, round = false }) => {
                     zoom={zoom}
                     aspect={4 / 3}
                     cropShape={round ? 'round' : 'react'}
-                    onCropChange={setCrop}
-                    onRotationChange={setRotation}
-                    onCropComplete={onCropComplete}
                     onZoomChange={setZoom}
+                    onRotationChange={setRotation}
+                    onCropChange={setCrop}
+                    onCropComplete={onCropComplete}
                 />
-            </div>
-            <div className={classes.controls}>
-                <div className={classes.sliderContainer}>
-                    <span className={classes.sliderLabel}>Zoom</span>
+            </Stack>
+            <Stack className={cx('slider-container')}>
+                <Stack className={cx('stack')}>
+                    <Typography className={cx('label')} variant="span">
+                        Zoom
+                    </Typography>
                     <Slider
                         value={zoom}
                         min={1}
                         max={3}
                         step={0.1}
                         aria-labelledby="Zoom"
-                        classes={{ root: classes.slider }}
                         onChange={(e, zoom) => setZoom(zoom)}
+                        className={cx('slider')}
                     />
-                </div>
-                <div className={classes.sliderContainer}>
-                    <span className={classes.sliderLabel}>Rotation</span>
+                </Stack>
+                <Stack className={cx('stack')}>
+                    <Typography className={cx('label')} variant="span">
+                        Rotation
+                    </Typography>
                     <Slider
                         value={rotation}
                         min={0}
                         max={360}
                         step={1}
+                        defaultValue={0}
                         aria-labelledby="Rotation"
-                        classes={{ root: classes.slider }}
                         onChange={(e, rotation) => setRotation(rotation)}
+                        className={cx('slider')}
                     />
-                </div>
-                <div className={classes.actions}>
-                    <Button className={`${classes.button}`} onClick={onClose}>
-                        Hủy
-                    </Button>
-                    <Button className={`${classes.button}  ${classes.finish}`} onClick={() => getCroppedImage()}>
-                        Hoàn thành
-                    </Button>
-                </div>
-            </div>
+                </Stack>
+            </Stack>
         </div>
     );
 };
 
-const StyledCrop = withStyles(styles)(Crop);
-export default StyledCrop;
+export default Crop;

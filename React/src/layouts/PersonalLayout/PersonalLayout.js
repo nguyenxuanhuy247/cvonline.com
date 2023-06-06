@@ -1,13 +1,13 @@
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-
 import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { FaUniversity, FaGraduationCap } from 'react-icons/fa';
 import { RiEnglishInput } from 'react-icons/ri';
 import { TbLanguageHiragana } from 'react-icons/tb';
+import HeadlessTippy from '@tippyjs/react/headless';
 
 import Header from '~/containers/Header/Header.js';
 import Product from '~/layouts/PersonalLayout/Components/Product.js';
@@ -17,6 +17,7 @@ import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
+import ChangeImageModal from '~/components/Modal/ChangeImageModal';
 
 const cx = classnames.bind(styles);
 
@@ -25,7 +26,7 @@ const PERSONAL_INFO = [
         id: 1,
         icon: <BsFillCalendarDayFill />,
         placeholder: 'Ngày tháng năm sinh',
-        headlessTippy: true
+        headlessTippy: true,
     },
     {
         id: 2,
@@ -81,8 +82,19 @@ class CVLayout extends PureComponent {
         this.state = {
             fullName: '',
             isModalOpen: false,
+            avatarUrl: '',
         };
     }
+
+    onClose = () => {
+        this.setState({
+            isModalOpen: false,
+        });
+    };
+
+    getAvatarUrlFromChangeImageModal = (url) => {
+        this.setState({ avatarUrl: url });
+    };
 
     render = () => {
         const { fullName = 'Nguyễn Xuân Huy' } = this.state;
@@ -99,16 +111,42 @@ class CVLayout extends PureComponent {
                                         <div className={cx('col pc-3')}>
                                             <div className={cx('col-left')}>
                                                 <div className={cx('avatar-wrapper')}>
-                                                    <Image
-                                                        wrapperClass={cx('inner')}
-                                                        className={cx('avatar')}
-                                                        src={JpgImages.avatar}
-                                                        width="170px"
-                                                        height="170px"
-                                                        alt={`${fullName}`}
-                                                        editButton="Sửa ảnh"
-                                                        round
-                                                    />
+                                                    <div className={cx('border-outline')}>
+                                                        <HeadlessTippy
+                                                            zIndex="10"
+                                                            placement="bottom"
+                                                            interactive
+                                                            delay={[0, 300]}
+                                                            offset={[0, -100]}
+                                                            render={(attrs) => (
+                                                                <div tabIndex="-1" {...attrs}>
+                                                                    <div
+                                                                        className={cx('tooltip')}
+                                                                        onClick={() =>
+                                                                            this.setState({ isModalOpen: true })
+                                                                        }
+                                                                    >
+                                                                        Sửa ảnh
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        >
+                                                            <Image
+                                                                className={cx('avatar')}
+                                                                src={this.state.avatarUrl || JpgImages.avatar}
+                                                                width="170px"
+                                                                height="170px"
+                                                                alt={`${fullName}`}
+                                                                round
+                                                            />
+                                                        </HeadlessTippy>
+                                                        {this.state.isModalOpen && (
+                                                            <ChangeImageModal
+                                                                onClose={this.onClose}
+                                                                onGet={this.getAvatarUrlFromChangeImageModal}
+                                                            />
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <ContentEditableTag
                                                     className={cx('full-name')}

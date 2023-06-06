@@ -85,6 +85,7 @@ class Header extends Component {
                                     wrapperClass={cx('wapper')}
                                     className={cx('avatar')}
                                     alt="Nguyễn Xuân Huy"
+                                    round
                                 />
                                 <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
                             </Button>

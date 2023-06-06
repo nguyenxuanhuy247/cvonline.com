@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react';
-import classNames from 'classnames/bind';
-import styles from './Image.module.scss';
-// import ImageModal from '~/containers/ManageUser/Modal/Image/ImageModal.js';
-import Button from '~/components/Button/Button.js';
-import { JpgImages } from '~/components/Image/Images.js';
-import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
+import classnames from 'classnames/bind';
 
-const cx = classNames.bind(styles);
+import styles from './Image.module.scss';
+import { JpgImages } from '~/components/Image/Images.js';
+
+const cx = classnames.bind(styles);
 class Image extends PureComponent {
     constructor(props) {
         super(props);
@@ -36,8 +34,7 @@ class Image extends PureComponent {
     }
 
     render() {
-        const { forwardRef, wrapperClass, className, round, width, height, alt, isLazy, editText, editButton } =
-            this.props;
+        const { forwardRef, className, round, width, height, alt} = this.props;
 
         const classes = cx('image', {
             [className]: className,
@@ -45,31 +42,14 @@ class Image extends PureComponent {
         });
 
         return (
-            <div className={cx('wapper', wrapperClass, { 'mouse-enter': editButton || editText })}>
-                <img
-                    className={classes}
-                    src={this.state.url || this.props.src || JpgImages.placeholder}
-                    width={width || '40px'}
-                    height={height || '40px'}
-                    alt={alt}
-                    ref={forwardRef}
-                    loading={isLazy || 'lazy'}
-                />
-
-                {(editText || editButton) && (
-                    <Button
-                        className={cx({ 'edit-button': editButton, 'edit-text': editText })}
-                        ref={this.btnRef}
-                        onClick={this.handleOpenModal}
-                    >
-                        <span className={cx('text')}>{editText || editButton}</span>
-                    </Button>
-                )}
-
-                {this.state.isOpen && (
-                    <ChangeImageModal onClose={this.handleCloseModal} onGet={(url) => this.getImageUrlFromModal(url)} />
-                )}
-            </div>
+            <img
+                className={classes}
+                src={this.state.url || this.props.src || JpgImages.placeholder}
+                width={width || '40px'}
+                height={height || '40px'}
+                alt={alt}
+                ref={forwardRef}
+            />
         );
     }
 }

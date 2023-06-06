@@ -13,7 +13,7 @@ export const styles = (theme) => ({
         marginLeft: 16,
     },
     controls: {
-        padding: 16,
+        padding: 0,
         alignItems: 'stretch',
         [theme.breakpoints.up('sm')]: {
             flexDirection: 'row',
@@ -29,6 +29,7 @@ export const styles = (theme) => ({
         display: 'inline-block',
         fontSize: '16px',
         minWidth: '80px',
+        color: '#000',
     },
     slider: {
         padding: '22px 0px',

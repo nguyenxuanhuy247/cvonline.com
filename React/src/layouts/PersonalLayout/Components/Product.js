@@ -67,10 +67,8 @@ class Product extends PureComponent {
                         <div>
                             <Image
                                 src={JpgImages.avatar}
-                                wrapperClass={cx('wrapper')}
                                 className={cx('image')}
                                 alt="Ảnh sản phẩm"
-                                editButton="Sửa ảnh"
                             />
                         </div>
                     </div>

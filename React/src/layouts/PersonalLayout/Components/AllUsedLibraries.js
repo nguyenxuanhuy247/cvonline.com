@@ -223,15 +223,17 @@ class AllUsedLibraries extends PureComponent {
 
                     {!this.state.showAddLibrary ? (
                         <Button className={cx('add-btn')} onClick={() => this.setState({ showAddLibrary: true })}>
-                            <i className={cx('left-icon')}>
+                            <span className={cx('left-icon')}>
                                 <BsPlusCircleDotted />
-                            </i>
+                            </span>
                             <span className={cx('text')}>Thêm thư viện</span>
                         </Button>
                     ) : (
                         <div className={cx('add-library')}>
                             <div className={cx('info')}>
-                                <Image wrapperClass={cx('wrapper')} className={cx('image')} editText="Sửa" round />
+                                <div className={cx('img-wrapper')}>
+                                    <Image className={cx('image')} round />
+                                </div>
                                 <input
                                     type="text"
                                     className={cx('input-form')}

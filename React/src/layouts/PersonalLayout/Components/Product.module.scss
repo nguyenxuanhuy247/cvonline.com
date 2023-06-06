@@ -33,17 +33,13 @@
         }
     }
 
-    .wrapper {
-        min-height: 400px;
+    .image {
         margin-right: 12px;
-
-        .image {
-            width: 100%;
-            height: auto;
-            min-height: 300px;
-            border-radius: 0;
-            object-fit: contain;
-        }
+        height: auto;
+        min-height: 400px;
+        width: 100%;
+        object-fit: contain;
+        border-radius: 0;
     }
 
     .wrapper {
