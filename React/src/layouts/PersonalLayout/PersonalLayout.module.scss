@@ -1,6 +1,6 @@
+
 .body {
     background-color: #f0f2f5;
-    overflow: scroll;
 
     [contentEditable] {
         word-break: break-all;
@@ -28,10 +28,6 @@
     .container {
         margin-top: var(--header-height);
         padding-top: 20px;
-
-        .wrapper {
-            margin: 0 12px;
-        }
 
         .col-left {
             padding: 20px;
@@ -88,27 +84,11 @@
             }
         }
 
-        .col-right {
-            .applied-position {
-                min-height: 150px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: #212a2f;
-                padding: 20px;
-            }
-
-            .product-list {
-                display: flex;
-                flex-direction: column;
-                row-gap: 8px;
-                background-color: #f0f2f5;
-            }
-        }
-
-        .text {
-            background-color: #fff;
-            height: 100%;
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            row-gap: 8px;
+            background-color: #f0f2f5;
         }
     }
 }

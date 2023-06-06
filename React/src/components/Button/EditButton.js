@@ -19,13 +19,12 @@ class EditButton extends PureComponent {
         this.state = {};
     }
 
-    static defaultProps = {};
-
     static propTypes = {
         name: PropTypes.string,
     };
 
     render() {
+        const { onAdd, onEdit } = this.props;
         return (
             <div className={cx('wrapper')}>
                 <DefaultTippy content="Kéo thả để di chuyển mục">
@@ -35,13 +34,13 @@ class EditButton extends PureComponent {
                 </DefaultTippy>
 
                 <DefaultTippy content="Thêm mục mới">
-                    <Button className={cx('btn', 'add')} onClick={(e) => e.preventDefault()}>
+                    <Button className={cx('btn', 'add')} onClick={onAdd}>
                         <IoIosAddCircleOutline />
                     </Button>
                 </DefaultTippy>
 
                 <DefaultTippy content="Sửa mục này">
-                    <Button className={cx('btn', 'add')} onClick={(e) => e.preventDefault()}>
+                    <Button className={cx('btn', 'add')} onClick={onEdit}>
                         <TfiPencil />
                     </Button>
                 </DefaultTippy>

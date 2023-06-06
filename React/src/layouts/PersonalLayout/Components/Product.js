@@ -49,57 +49,42 @@ const PRO_LANGUAGES = [
 class Product extends PureComponent {
     render() {
         return (
-            <div className={cx('container')} spellCheck="false">
+            <div className={cx('product')}>
                 <div className={cx('row no-gutters')}>
                     <div className={cx('col pc-12')}>
                         <div className={cx('product-desc')} spellCheck="false">
                             <div className={cx('work-exp')}>
-                                <ContentEditableTag
-                                    className={cx('exp')}
-                                    placeholder="Tên sản phẩm"
-                                />
+                                <ContentEditableTag className={cx('exp')} placeholder="Tên sản phẩm" />
                             </div>
-                            <ContentEditableTag
-                                className={cx('desc')}
-                                placeholder="Mô tả ngắn gọn về sản phẩm"
-                            />
+                            <ContentEditableTag className={cx('desc')} placeholder="Mô tả ngắn gọn về sản phẩm" />
                         </div>
-                        <div>
-                            <Image
-                                src={JpgImages.avatar}
-                                className={cx('image')}
-                                alt="Ảnh sản phẩm"
-                            />
+
+                        <Image src={JpgImages.avatar} className={cx('image')} alt="Ảnh sản phẩm" />
+                    </div>
+                    <div className={cx('col pc-7')}>
+                        <div className={cx('section')}>
+                            <span className={cx('title')}>Source code</span>
+                            <div className={cx('list')}>
+                                <Technology data={SOURCE_CODE} />
+                            </div>
+                        </div>
+
+                        <div className={cx('section')}>
+                            <span className={cx('title')}>Ngôn ngữ lập trình</span>
+                            <div className={cx('list')}>
+                                <Technology data={PRO_LANGUAGES} />
+                            </div>
+                        </div>
+
+                        <div className={cx('section')}>
+                            <span className={cx('title')}>Frameworks</span>
+                            <div className={cx('list')}>
+                                <Technology data={PRO_LANGUAGES} isEdit draggable />
+                            </div>
                         </div>
                     </div>
-                    <div className={cx('wrapper')}>
-                        <div className={cx('row no-gutters')}>
-                            <div className={cx('col pc-7')}>
-                                <div className={cx('section')}>
-                                    <span className={cx('title')}>Source code</span>
-                                    <div className={cx('list')}>
-                                        <Technology data={SOURCE_CODE} />
-                                    </div>
-                                </div>
-
-                                <div className={cx('section')}>
-                                    <span className={cx('title')}>Ngôn ngữ lập trình</span>
-                                    <div className={cx('list')}>
-                                        <Technology data={PRO_LANGUAGES} />
-                                    </div>
-                                </div>
-
-                                <div className={cx('section')}>
-                                    <span className={cx('title')}>Frameworks</span>
-                                    <div className={cx('list')}>
-                                        <Technology data={PRO_LANGUAGES} isEdit draggable />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={cx('col pc-5')}>
-                                <AllUsedLibraries />
-                            </div>
-                        </div>
+                    <div className={cx('col pc-5')}>
+                        <AllUsedLibraries />
                     </div>
                 </div>
             </div>

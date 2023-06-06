@@ -1,9 +1,9 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 import './Pagination.scss';
 
-export default class PaginationBar extends Component {
+class PaginationBar extends PureComponent {
     render() {
         return (
             <Pagination className="pag">
@@ -46,3 +46,5 @@ export default class PaginationBar extends Component {
         );
     }
 }
+
+export default PaginationBar;

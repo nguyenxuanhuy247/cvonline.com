@@ -76,7 +76,7 @@ const LANGUAGES = [
     },
 ];
 
-class CVLayout extends PureComponent {
+class PersonalLayout extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -103,84 +103,67 @@ class CVLayout extends PureComponent {
             <div className={cx('body')}>
                 <Header />
                 <div className={cx('container')}>
-                    <div className={cx('grid')}>
+                    <div className={cx('grid wide')}>
                         <div className={cx('row no-gutters')}>
-                            <div className={cx('col pc-9')}>
-                                <div className={cx('wrapper')}>
-                                    <div className={cx('row no-gutters')}>
-                                        <div className={cx('col pc-3')}>
-                                            <div className={cx('col-left')}>
-                                                <div className={cx('avatar-wrapper')}>
-                                                    <div className={cx('border-outline')}>
-                                                        <HeadlessTippy
-                                                            zIndex="10"
-                                                            placement="bottom"
-                                                            interactive
-                                                            delay={[0, 300]}
-                                                            offset={[0, -100]}
-                                                            render={(attrs) => (
-                                                                <div tabIndex="-1" {...attrs}>
-                                                                    <div
-                                                                        className={cx('tooltip')}
-                                                                        onClick={() =>
-                                                                            this.setState({ isModalOpen: true })
-                                                                        }
-                                                                    >
-                                                                        Sửa ảnh
-                                                                    </div>
-                                                                </div>
-                                                            )}
+                            <div className={cx('col pc-3')}>
+                                <div className={cx('col-left')}>
+                                    <div className={cx('avatar-wrapper')}>
+                                        <div className={cx('border-outline')}>
+                                            <HeadlessTippy
+                                                zIndex="10"
+                                                placement="bottom"
+                                                interactive
+                                                delay={[0, 300]}
+                                                offset={[0, -100]}
+                                                render={(attrs) => (
+                                                    <div tabIndex="-1" {...attrs}>
+                                                        <div
+                                                            className={cx('tooltip')}
+                                                            onClick={() => this.setState({ isModalOpen: true })}
                                                         >
-                                                            <Image
-                                                                className={cx('avatar')}
-                                                                src={this.state.avatarUrl || JpgImages.avatar}
-                                                                width="170px"
-                                                                height="170px"
-                                                                alt={`${fullName}`}
-                                                                round
-                                                            />
-                                                        </HeadlessTippy>
-                                                        {this.state.isModalOpen && (
-                                                            <ChangeImageModal
-                                                                onClose={this.onClose}
-                                                                onGet={this.getAvatarUrlFromChangeImageModal}
-                                                            />
-                                                        )}
+                                                            Sửa ảnh
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <ContentEditableTag
-                                                    className={cx('full-name')}
-                                                    placeholder="Nguyễn Xuân Huy"
+                                                )}
+                                            >
+                                                <Image
+                                                    className={cx('avatar')}
+                                                    src={this.state.avatarUrl || JpgImages.avatar}
+                                                    width="170px"
+                                                    height="170px"
+                                                    alt={`${fullName}`}
+                                                    round
                                                 />
-                                                <ContentEditableTag
-                                                    className={cx('job-title')}
-                                                    placeholder="VD: Fullstack developer"
+                                            </HeadlessTippy>
+                                            {this.state.isModalOpen && (
+                                                <ChangeImageModal
+                                                    onClose={this.onClose}
+                                                    onGet={this.getAvatarUrlFromChangeImageModal}
                                                 />
-                                                <div className={cx('separate')}></div>
-                                                <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
-                                                <div className={cx('separate')}></div>
-                                                <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
-                                                <div className={cx('separate')}></div>
-                                                <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
-                                            </div>
-                                        </div>
-
-                                        <div className={cx('col pc-9')}>
-                                            <div className={cx('col-right')}>
-                                                <div className={cx('product-list')}>
-                                                    <Product />
-                                                    <Product />
-                                                    <Product />
-                                                    <Product />
-                                                </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
+                                    <ContentEditableTag className={cx('full-name')} placeholder="Nguyễn Xuân Huy" />
+                                    <ContentEditableTag
+                                        className={cx('job-title')}
+                                        placeholder="VD: Fullstack developer"
+                                    />
+                                    <div className={cx('separate')}></div>
+                                    <PersonalInfo title="Thông tin cá nhân" data={PERSONAL_INFO} />
+                                    <div className={cx('separate')}></div>
+                                    <PersonalInfo title="Trình độ học vấn" data={LITERACY} />
+                                    <div className={cx('separate')}></div>
+                                    <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
                                 </div>
                             </div>
 
-                            <div className={cx('col pc-3')}>
-                                <div className={cx('text')}>Đăng nhập Facebook để giao lưu với nhau</div>
+                            <div className={cx('col pc-9')}>
+                                <div className={cx('product-list')}>
+                                    <Product />
+                                    <Product />
+                                    <Product />
+                                    <Product />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -200,4 +183,4 @@ const mapDispatchToProps = (dispatch) => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CVLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalLayout);

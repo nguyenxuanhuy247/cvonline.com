@@ -3,16 +3,15 @@ import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
+import HeadlessTippy from '@tippyjs/react/headless';
 
 import styles from './AllUsedLibraries.module.scss';
-import PaginationBar from '~/components/Pagination/PaginationBar.js';
-import LibraryList from './LibraryList';
 import { Icons } from '~/components/Image/Images.js';
 import Button from '~/components/Button/Button.js';
-// import Modal from '~/components/Modal/Modal.js';
 import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
+import PaginationBar from '~/components/Pagination/PaginationBar.js';
+import EditButton from '~/components/Button/EditButton';
 
 const cx = className.bind(styles);
 
@@ -147,8 +146,8 @@ class AllUsedLibraries extends PureComponent {
         super(props);
         this.state = {
             isFE: true,
-            isModalOpen: false,
-            showAddLibrary: false,
+            isAddLibrary: false,
+            isEditLibrary: false,
 
             imageIconUrl: '',
             libraryName: '',
@@ -179,101 +178,151 @@ class AllUsedLibraries extends PureComponent {
         this.setState({ [name]: value });
     };
 
-    handleCreateLibrary = () => {
-        const { imageIconUrl, libraryName, libraryVersion, libraryLink } = this.state;
-        console.log(imageIconUrl, libraryName, libraryVersion, libraryLink);
-        // this.props.userCreateLibrary({ imageIconUrl, libraryName, libraryVersion, libraryLink });
+    handleShowAddLibrary = () => {
+        this.setState({ isAddLibrary: true });
     };
 
-    componentDidMount() {
-        const FEBtn = document.querySelector(`.${cx('FE-btn')}`);
-        if (FEBtn) {
-            FEBtn.classList.add(cx('active'));
-        }
-    }
+    handleEditAddLibrary = () => {
+        this.setState({ isEditLibrary: true });
+    };
 
     render() {
+        const data = this.state.isFE ? FE_LIBRARY_LIST : BE_LIBRARY_LIST;
         return (
-            <div>
-                <div className={cx('library-used')}>
-                    <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
-                    <div className={cx('divide')}>
-                        <Button
-                            className={cx('text', 'FE-btn')}
-                            onClick={(e) => this.handleShowFELibraryList(e)}
-                            ref={this.FEBtnRef}
-                        >
-                            Front-end
-                        </Button>
-                        <Button
-                            className={cx('text', 'BE-btn')}
-                            onClick={(e) => this.handleShowBELibraryList(e)}
-                            ref={this.BEBtnRef}
-                        >
-                            Back-end
-                        </Button>
-                    </div>
-                    <div className={cx('library-list')}>
-                        {this.state.isFE ? (
-                            <LibraryList data={FE_LIBRARY_LIST} />
-                        ) : (
-                            <LibraryList data={BE_LIBRARY_LIST} />
-                        )}
-                    </div>
-
-                    {!this.state.showAddLibrary ? (
-                        <Button className={cx('add-btn')} onClick={() => this.setState({ showAddLibrary: true })}>
-                            <span className={cx('left-icon')}>
-                                <BsPlusCircleDotted />
-                            </span>
-                            <span className={cx('text')}>Thêm thư viện</span>
-                        </Button>
-                    ) : (
-                        <div className={cx('add-library')}>
-                            <div className={cx('info')}>
-                                <div className={cx('img-wrapper')}>
-                                    <Image className={cx('image')} round />
-                                </div>
-                                <input
-                                    type="text"
-                                    className={cx('input-form')}
-                                    placeholder="Nhập tên thư viện"
-                                    value={this.state.libraryName}
-                                    onChange={(e) => this.handleInputLibrary(e, 'libraryName')}
-                                />
-                                <input
-                                    type="text"
-                                    className={cx('input-form')}
-                                    placeholder="Nhập version"
-                                    value={this.state.libraryVersion}
-                                    onChange={(e) => this.handleInputLibrary(e, 'libraryVersion')}
-                                />
-                                <input
-                                    type="text"
-                                    className={cx('input-form')}
-                                    placeholder="Nhập link website (nếu có)"
-                                    value={this.state.libraryLink}
-                                    onChange={(e) => this.handleInputLibrary(e, 'libraryLink')}
-                                />
-                            </div>
-                            <div className={cx('actions')}>
-                                <Button
-                                    className={cx('btn', 'cancel')}
-                                    onClick={() => this.setState({ showAddLibrary: false })}
-                                >
-                                    Hủy
-                                </Button>
-                                <Button className={cx('btn', 'add')} onClick={() => this.handleCreateLibrary()}>
-                                    Thêm
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className={cx('paganition')}>
-                        <Pagination count={5} color="success" size="medium" />
-                    </div>
+            <div className={cx('library-used')}>
+                <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
+                <div className={cx('divide')}>
+                    <Button className={cx('text', 'FE-btn', 'active')} onClick={(e) => this.handleShowFELibraryList(e)}>
+                        Front-end
+                    </Button>
+                    <Button className={cx('text', 'BE-btn')} onClick={(e) => this.handleShowBELibraryList(e)}>
+                        Back-end
+                    </Button>
                 </div>
+                <div className={cx('library-list')}>
+                    {data &&
+                        data.map((lib) => {
+                            return (
+                                <div key={lib.id}>
+                                    {!this.state.isEditLibrary ? (
+                                        <HeadlessTippy
+                                            placement="top-start"
+                                            interactive
+                                            offset={[0, 0]}
+                                            render={(attrs) => (
+                                                <div tabIndex="-1" {...attrs}>
+                                                    <EditButton
+                                                        onAdd={this.handleShowAddLibrary}
+                                                        onEdit={this.handleEditAddLibrary}
+                                                    />
+                                                </div>
+                                            )}
+                                        >
+                                            <Button to={lib.url} className={cx('button')}>
+                                                <Image src={lib.icon} className={cx('image-icon')} />
+                                                <span className={cx('name')}>{lib.name}</span>
+                                                <span className={cx('version')}>{lib.version}</span>
+                                            </Button>
+                                        </HeadlessTippy>
+                                    ) : (
+                                        <div className={cx('add-library')}>
+                                            <div className={cx('info')}>
+                                                <div className={cx('img-wrapper')}>
+                                                    <Image className={cx('image')} round />
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    className={cx('input-form')}
+                                                    placeholder="Nhập tên thư viện"
+                                                    value={this.state.libraryName}
+                                                    onChange={(e) => this.handleInputLibrary(e, 'libraryName')}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    className={cx('input-form')}
+                                                    placeholder="Nhập version"
+                                                    value={this.state.libraryVersion}
+                                                    onChange={(e) => this.handleInputLibrary(e, 'libraryVersion')}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    className={cx('input-form')}
+                                                    placeholder="Nhập link website (nếu có)"
+                                                    value={this.state.libraryLink}
+                                                    onChange={(e) => this.handleInputLibrary(e, 'libraryLink')}
+                                                />
+                                            </div>
+                                            <div className={cx('actions')}>
+                                                <Button
+                                                    className={cx('btn', 'cancel')}
+                                                    onClick={() => this.setState({ isAddLibrary: false })}
+                                                >
+                                                    Hủy
+                                                </Button>
+                                                <Button
+                                                    className={cx('btn', 'add')}
+                                                    onClick={() => this.handleCreateLibrary()}
+                                                >
+                                                    Thêm
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                </div>
+
+                {!this.state.isAddLibrary ? (
+                    <Button className={cx('add-btn')} onClick={() => this.setState({ isAddLibrary: true })}>
+                        <span className={cx('left-icon')}>
+                            <BsPlusCircleDotted />
+                        </span>
+                        <span className={cx('text')}>Thêm thư viện</span>
+                    </Button>
+                ) : (
+                    <div className={cx('add-library')}>
+                        <div className={cx('info')}>
+                            <div className={cx('img-wrapper')}>
+                                <Image className={cx('image')} round />
+                            </div>
+                            <input
+                                type="text"
+                                className={cx('input-form')}
+                                placeholder="Nhập tên thư viện"
+                                value={this.state.libraryName}
+                                onChange={(e) => this.handleInputLibrary(e, 'libraryName')}
+                            />
+                            <input
+                                type="text"
+                                className={cx('input-form')}
+                                placeholder="Nhập version"
+                                value={this.state.libraryVersion}
+                                onChange={(e) => this.handleInputLibrary(e, 'libraryVersion')}
+                            />
+                            <input
+                                type="text"
+                                className={cx('input-form')}
+                                placeholder="Nhập link website (nếu có)"
+                                value={this.state.libraryLink}
+                                onChange={(e) => this.handleInputLibrary(e, 'libraryLink')}
+                            />
+                        </div>
+                        <div className={cx('actions')}>
+                            <Button
+                                className={cx('btn', 'cancel')}
+                                onClick={() => this.setState({ isAddLibrary: false })}
+                            >
+                                Hủy
+                            </Button>
+                            <Button className={cx('btn', 'add')} onClick={() => this.handleCreateLibrary()}>
+                                Thêm
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
+                <Pagination count={5} color="success" size="medium" />
             </div>
         );
     }

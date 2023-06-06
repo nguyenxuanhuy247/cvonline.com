@@ -41,10 +41,49 @@
     }
 
     .library-list {
+        width: 100%;
         min-height: 320px;
         margin-top: 12px;
         display: flex;
         flex-direction: column;
+
+        .button {
+            justify-content: flex-start;
+            column-gap: 4px;
+            font-size: 1.5rem;
+            font-weight: 300;
+            background-color: transparent;
+            padding: 4px 12px;
+            border-radius: 99px;
+            width: 100%;
+
+            &:hover {
+                background-color: rgba(65, 188, 138, 0.1);
+            }
+
+            .image-icon {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                object-fit: contain;
+                border: none;
+                border: 3px solid transparent;
+            }
+
+            .name {
+                @include line-clamp;
+
+                flex: 1;
+                margin-left: 0px;
+                padding-right: 8px;
+                text-align: left;
+                word-break: break-all;
+            }
+
+            .version {
+                margin-left: auto;
+            }
+        }
     }
 
     .add-btn {
@@ -99,6 +138,10 @@
                 font-size: 1.4rem;
                 border: 1px dashed #333;
                 padding: 4px;
+
+                &:hover {
+                    border: 1px solid var(--primary-color);
+                }
             }
         }
 
@@ -113,6 +156,7 @@
                 padding: 8px 12px;
                 color: #fff;
                 border-radius: 4px;
+                cursor: pointer;
 
                 &.cancel {
                     background-color: #212f3f;
