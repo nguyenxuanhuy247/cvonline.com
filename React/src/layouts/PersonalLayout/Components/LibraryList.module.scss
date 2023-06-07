@@ -1,6 +1,7 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .library-used {
+    font-family: var(--alexandria-font);
     display: flex;
     flex-direction: column;
     padding: 8px;
@@ -121,6 +122,15 @@
             flex-direction: column;
             row-gap: 4px;
 
+            .heading {
+                font-size: 1.5rem;
+                font-weight: 400;
+                text-align: center;
+                padding: 12px;
+                color: #fff;
+                background-color: var(--button-bgc-green-01);
+            }
+
             .img-wrapper {
                 border: 1px dashed transparent;
                 align-self: flex-start;
@@ -152,6 +162,7 @@
             column-gap: 12px;
 
             .btn {
+                font-size: 1.4rem;
                 min-width: 80px;
                 padding: 8px 12px;
                 color: #fff;
@@ -173,11 +184,5 @@
                 }
             }
         }
-    }
-
-    .paganition {
-        margin-top: 12px;
-        display: flex;
-        justify-content: center;
     }
 }

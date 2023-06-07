@@ -7,7 +7,7 @@ import Technology from '~/components/Technology/Technology.js';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages, Icons } from '~/components/Image/Images.js';
-import AllUsedLibraries from './AllUsedLibraries';
+import LibraryList from './LibraryList.js';
 
 const cx = className.bind(styles);
 
@@ -84,7 +84,7 @@ class Product extends PureComponent {
                         </div>
                     </div>
                     <div className={cx('col pc-5')}>
-                        <AllUsedLibraries />
+                        <LibraryList />
                     </div>
                 </div>
             </div>

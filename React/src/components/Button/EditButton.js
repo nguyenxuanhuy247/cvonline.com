@@ -20,11 +20,14 @@ class EditButton extends PureComponent {
     }
 
     static propTypes = {
-        name: PropTypes.string,
+        onAdd: PropTypes.func,
+        onEdit: PropTypes.func,
+        onDelete: PropTypes.func,
     };
 
     render() {
-        const { onAdd, onEdit } = this.props;
+        const { onAdd, onEdit, onDelete } = this.props;
+
         return (
             <div className={cx('wrapper')}>
                 <DefaultTippy content="Kéo thả để di chuyển mục">
@@ -46,7 +49,7 @@ class EditButton extends PureComponent {
                 </DefaultTippy>
 
                 <DefaultTippy content="Xóa mục này">
-                    <Button className={cx('btn', 'delete')}>
+                    <Button className={cx('btn', 'delete')} onClick={onDelete}>
                         <AiOutlineDelete />
                     </Button>
                 </DefaultTippy>

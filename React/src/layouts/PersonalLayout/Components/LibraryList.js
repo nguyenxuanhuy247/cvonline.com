@@ -3,76 +3,79 @@ import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import Pagination from '@mui/material/Pagination';
+import Box from '@mui/material/Box';
 import HeadlessTippy from '@tippyjs/react/headless';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import styles from './AllUsedLibraries.module.scss';
+import styles from './LibraryList.module.scss';
 import { Icons } from '~/components/Image/Images.js';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
 import EditButton from '~/components/Button/EditButton';
+import Library from '~/layouts/PersonalLayout/Components/Library.js';
 
 const cx = className.bind(styles);
 
 const FE_LIBRARY_LIST = [
     {
         id: 1,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom React router dom React router dom',
         version: '6.10.0',
     },
     {
         id: 2,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 3,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 4,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 5,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 6,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 7,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 8,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 9,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 10,
-        icon: Icons.Github,
+        image: Icons.Github,
         name: 'React router dom',
         version: '6.10.0',
     },
@@ -81,67 +84,82 @@ const FE_LIBRARY_LIST = [
 const BE_LIBRARY_LIST = [
     {
         id: 1,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 2,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 3,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 4,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 5,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 6,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 7,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 8,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 9,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
     {
         id: 10,
-        icon: Icons.Gitlab,
+        image: Icons.Gitlab,
         name: 'React router dom',
         version: '6.10.0',
     },
 ];
 
-class AllUsedLibraries extends PureComponent {
+const theme = createTheme({
+    components: {
+        // Name of the component
+        MuiButtonBase: {
+            styleOverrides: {
+                // Name of the slot
+                'MuiPaginationItem-circular': {
+                    // Some CSS
+                    color: 'green',
+                },
+            },
+        },
+    },
+});
+
+class LibraryList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -149,10 +167,10 @@ class AllUsedLibraries extends PureComponent {
             isAddLibrary: false,
             isEditLibrary: false,
 
-            imageIconUrl: '',
-            libraryName: '',
-            libraryVersion: '',
-            libraryLink: '',
+            image: '',
+            name: '',
+            version: '',
+            link: '',
         };
     }
 
@@ -178,11 +196,11 @@ class AllUsedLibraries extends PureComponent {
         this.setState({ [name]: value });
     };
 
-    handleShowAddLibrary = () => {
+    handleAddLibrary = () => {
         this.setState({ isAddLibrary: true });
     };
 
-    handleEditAddLibrary = () => {
+    handleEditLibrary = () => {
         this.setState({ isEditLibrary: true });
     };
 
@@ -201,9 +219,9 @@ class AllUsedLibraries extends PureComponent {
                 </div>
                 <div className={cx('library-list')}>
                     {data &&
-                        data.map((lib) => {
+                        data.map((library) => {
                             return (
-                                <div key={lib.id}>
+                                <div key={library.id}>
                                     {!this.state.isEditLibrary ? (
                                         <HeadlessTippy
                                             placement="top-start"
@@ -212,17 +230,18 @@ class AllUsedLibraries extends PureComponent {
                                             render={(attrs) => (
                                                 <div tabIndex="-1" {...attrs}>
                                                     <EditButton
-                                                        onAdd={this.handleShowAddLibrary}
-                                                        onEdit={this.handleEditAddLibrary}
+                                                        onAdd={this.handleAddLibrary}
+                                                        onEdit={this.handleEditLibrary}
                                                     />
                                                 </div>
                                             )}
                                         >
-                                            <Button to={lib.url} className={cx('button')}>
-                                                <Image src={lib.icon} className={cx('image-icon')} />
-                                                <span className={cx('name')}>{lib.name}</span>
-                                                <span className={cx('version')}>{lib.version}</span>
-                                            </Button>
+                                            <Library
+                                                src={library.image}
+                                                name={library.name}
+                                                version={library.version}
+                                                onAdd={this.handleAddLibrary}
+                                            />
                                         </HeadlessTippy>
                                     ) : (
                                         <div className={cx('add-library')}>
@@ -283,6 +302,7 @@ class AllUsedLibraries extends PureComponent {
                 ) : (
                     <div className={cx('add-library')}>
                         <div className={cx('info')}>
+                            <p className={cx('heading')}>Thêm thư viện mới</p>
                             <div className={cx('img-wrapper')}>
                                 <Image className={cx('image')} round />
                             </div>
@@ -322,7 +342,25 @@ class AllUsedLibraries extends PureComponent {
                     </div>
                 )}
 
-                <Pagination count={5} color="success" size="medium" />
+                <Box
+                    sx={{
+                        margin: '24px 0 12px',
+                    }}
+                >
+                    <ThemeProvider theme={theme}>
+                        <Pagination
+                            count={10}
+                            variant="outlined"
+                            size="medium"
+                            // sx={{
+                            //     'Button.MuiPaginationItem-circular': {
+                            //         color: '#000',
+                            //         'border-color': 'green',
+                            //     },
+                            // }}
+                        />
+                    </ThemeProvider>
+                </Box>
             </div>
         );
     }
@@ -338,4 +376,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllUsedLibraries);
+export default connect(mapStateToProps, mapDispatchToProps)(LibraryList);
