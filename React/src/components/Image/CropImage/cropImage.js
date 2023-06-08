@@ -1,82 +1,116 @@
-export const createImage = (url) =>
-    new Promise((resolve, reject) => {
-        const image = new Image();
-        image.addEventListener('load', () => resolve(image));
-        image.addEventListener('error', (error) => reject(error));
-        image.setAttribute('crossOrigin', 'anonymous'); // needed to avoid cross-origin issues on CodeSandbox
-        image.src = url;
-    });
+import { useState, useCallback } from 'react';
+import classnames from 'classnames/bind';
+import Cropper from 'react-easy-crop';
+import Slider from '@mui/material/Slider';
 
-export function getRadianAngle(degreeValue) {
-    return (degreeValue * Math.PI) / 180;
-}
+import getCroppedImg from './getCroppedImg.js';
+import Button from '~/components/Button/Button.js';
+import styles from './CropImage.module.scss';
 
-/**
- * Returns the new bounding area of a rotated rectangle.
- */
-export function rotateSize(width, height, rotation) {
-    const rotRad = getRadianAngle(rotation);
+const cx = classnames.bind(styles);
 
-    return {
-        width: Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
-        height: Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
+const CropImage = ({ src, onClose, onGetUrl, round = false }) => {
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [rotation, setRotation] = useState(0);
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [aspect, setAspect] = useState(1 / 1);
+
+    const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    }, []);
+
+    const cropImage = useCallback(async () => {
+        try {
+            const croppedImage = await getCroppedImg(src, croppedAreaPixels, rotation);
+            return croppedImage;
+        } catch (error) {
+            console.error('An error occurs in CropImage.js', error);
+        }
+    }, [src, croppedAreaPixels, rotation]);
+
+    const handleFinishCropImage = async () => {
+        const url = await cropImage();
+        onGetUrl(url);
     };
-}
 
-/**
- * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
- */
-export default async function getCroppedImg(
-    imageSrc,
-    pixelCrop,
-    rotation = 0,
-    flip = { horizontal: false, vertical: false },
-) {
-    const image = await createImage(imageSrc);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const handleChangeRatioImage = (e) => {
+        console.log(e.target.dataset.ratio);
+        setAspect(e.target.dataset.ratio);
+    };
 
-    if (!ctx) {
-        return null;
-    }
+    return (
+        <div>
+            <div className={cx('crop-container')}>
+                <Cropper
+                    image={src}
+                    crop={crop}
+                    rotation={rotation}
+                    zoom={zoom}
+                    aspect={aspect}
+                    onCropChange={setCrop}
+                    onRotationChange={setRotation}
+                    onCropComplete={onCropComplete}
+                    onZoomChange={setZoom}
+                    cropShape={round ? 'round' : 'react'}
+                />
+            </div>
+            {!round && (
+                <div className={cx('ratio')}>
+                    <p className={cx('ratio-label')}>Tỉ lệ khung hình</p>
+                    <div className={cx('ratio-list')}>
+                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={1 / 1}>
+                            1 : 1
+                        </Button>
+                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={3 / 2}>
+                            3 : 2
+                        </Button>
+                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={4 / 3}>
+                            4 : 3
+                        </Button>
+                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={16 / 9}>
+                            16 : 9
+                        </Button>
+                    </div>
+                </div>
+            )}
+            <div className={cx('slider-controller')}>
+                <div className={cx('slider-container')}>
+                    <label className={cx('slider-label')}>Zoom</label>
+                    <Slider
+                        value={zoom}
+                        min={1}
+                        max={3}
+                        step={0.1}
+                        aria-labelledby="Zoom"
+                        className={cx('slider')}
+                        onChange={(e, zoom) => setZoom(zoom)}
+                    />
+                </div>
+                <div className={cx('slider-container')}>
+                    <label className={cx('slider-label')}>Rotation</label>
+                    <Slider
+                        value={rotation}
+                        min={0}
+                        max={360}
+                        step={1}
+                        aria-labelledby="Rotation"
+                        size="medium"
+                        className={cx('slider')}
+                        onChange={(e, rotation) => setRotation(rotation)}
+                    />
+                </div>
+            </div>
+            <div className={cx('actions')}>
+                <Button className={cx('btn', 'cancel')} onClick={onClose}>
+                    Hủy
+                </Button>
+                <Button className={cx('btn', 'finish')} onClick={handleFinishCropImage}>
+                    Hoàn tất
+                </Button>
+            </div>
+        </div>
+    );
+};
 
-    const rotRad = getRadianAngle(rotation);
-
-    // calculate bounding box of the rotated image
-    const { width: bBoxWidth, height: bBoxHeight } = rotateSize(image.width, image.height, rotation);
-
-    // set canvas size to match the bounding box
-    canvas.width = bBoxWidth;
-    canvas.height = bBoxHeight;
-
-    // translate canvas context to a central location to allow rotating and flipping around the center
-    ctx.translate(bBoxWidth / 2, bBoxHeight / 2);
-    ctx.rotate(rotRad);
-    ctx.scale(flip.horizontal ? -1 : 1, flip.vertical ? -1 : 1);
-    ctx.translate(-image.width / 2, -image.height / 2);
-
-    // draw rotated image
-    ctx.drawImage(image, 0, 0);
-
-    // croppedAreaPixels values are bounding box relative
-    // extract the cropped image using these values
-    const data = ctx.getImageData(pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height);
-
-    // set canvas width to final desired crop size - this will clear existing context
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
-
-    // paste generated rotate image at the top left corner
-    ctx.putImageData(data, 0, 0);
-
-    // As Base64 string
-    // return canvas.toDataURL('image/jpeg');
-
-    // As a blob
-    return new Promise((resolve, reject) => {
-        canvas.toBlob((file) => {
-            file.name = 'cropped.jpeg';
-            resolve(URL.createObjectURL(file));
-        }, 'image/jpeg');
-    });
-}
+export default CropImage;

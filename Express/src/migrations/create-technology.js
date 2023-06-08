@@ -2,18 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('usercv_button', {
+        await queryInterface.createTable('technologies', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
+            type: {
+                type: Sequelize.STRING,
+            },
             key: {
                 type: Sequelize.STRING,
             },
-            image: {
+            FEorBE: {
                 type: Sequelize.STRING,
+            },
+            image: {
+                type: Sequelize.BLOB,
             },
             name: {
                 type: Sequelize.STRING,
@@ -35,6 +41,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('usercv_button');
+        await queryInterface.dropTable('technologies');
     },
 };

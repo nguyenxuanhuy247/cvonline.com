@@ -6,6 +6,7 @@ const initialState = {
     signUpMessage: {},
     isSignIn: false,
     signInMessage: {},
+    libraries: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -71,6 +72,24 @@ const userReducer = (state = initialState, action) => {
                 isSignIn: false,
                 isSignUp: false,
             };
+
+        // LIBRARY
+        case actionNames.CREATE_LIBRARY_START:
+            return {
+                ...state,
+                isLoading: true,
+            };
+        case actionNames.CREATE_LIBRARY_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case actionNames.CREATE_LIBRARY_FAILED:
+            return {
+                ...state,
+                isLoading: false,
+            };
+
         default:
             return state;
     }

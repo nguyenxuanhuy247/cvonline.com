@@ -15,6 +15,7 @@ import * as userActions from '~/store/actions';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
 import EditButton from '~/components/Button/EditButton';
 import Library from '~/layouts/PersonalLayout/Components/Library.js';
+import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 
 const cx = className.bind(styles);
 
@@ -144,21 +145,6 @@ const BE_LIBRARY_LIST = [
     },
 ];
 
-const theme = createTheme({
-    components: {
-        // Name of the component
-        MuiButtonBase: {
-            styleOverrides: {
-                // Name of the slot
-                'MuiPaginationItem-circular': {
-                    // Some CSS
-                    color: 'green',
-                },
-            },
-        },
-    },
-});
-
 class LibraryList extends PureComponent {
     constructor(props) {
         super(props);
@@ -166,6 +152,8 @@ class LibraryList extends PureComponent {
             isFE: true,
             isAddLibrary: false,
             isEditLibrary: false,
+            isModalOpen: false,
+            addedImageUrl: '',
 
             image: '',
             name: '',
@@ -193,6 +181,7 @@ class LibraryList extends PureComponent {
 
     handleInputLibrary = (e, name) => {
         const value = e.target.value;
+        console.log('handleInputLibrary', name, value);
         this.setState({ [name]: value });
     };
 
@@ -202,6 +191,28 @@ class LibraryList extends PureComponent {
 
     handleEditLibrary = () => {
         this.setState({ isEditLibrary: true });
+    };
+
+    getImageUrlFromChangeImageModal = (url) => {
+        this.setState({ addedImageUrl: url });
+    };
+
+    onClose = () => {
+        this.setState({
+            isModalOpen: false,
+        });
+    };
+
+    handleCloseAddLibrary = () => {
+        this.setState({ isAddLibrary: false, addedImageUrl: '' });
+    };
+
+    handleCreateLibrary = () => {
+        const { image, name, version, link } = this.state;
+        const FEorBE = this.state.isFE ? 'FE' : 'BE';
+        const data = { type: 'LIBRARY', key: 'LI', FEorBE: FEorBE, image, name, version, link };
+        console.log(data);
+        this.props.createLibrary(data);
     };
 
     render() {
@@ -254,21 +265,21 @@ class LibraryList extends PureComponent {
                                                     className={cx('input-form')}
                                                     placeholder="Nhập tên thư viện"
                                                     value={this.state.libraryName}
-                                                    onChange={(e) => this.handleInputLibrary(e, 'libraryName')}
+                                                    onChange={(e) => this.handleInputLibrary(e, 'name')}
                                                 />
                                                 <input
                                                     type="text"
                                                     className={cx('input-form')}
                                                     placeholder="Nhập version"
                                                     value={this.state.libraryVersion}
-                                                    onChange={(e) => this.handleInputLibrary(e, 'libraryVersion')}
+                                                    onChange={(e) => this.handleInputLibrary(e, 'version')}
                                                 />
                                                 <input
                                                     type="text"
                                                     className={cx('input-form')}
                                                     placeholder="Nhập link website (nếu có)"
                                                     value={this.state.libraryLink}
-                                                    onChange={(e) => this.handleInputLibrary(e, 'libraryLink')}
+                                                    onChange={(e) => this.handleInputLibrary(e, 'link')}
                                                 />
                                             </div>
                                             <div className={cx('actions')}>
@@ -303,36 +314,58 @@ class LibraryList extends PureComponent {
                     <div className={cx('add-library')}>
                         <div className={cx('info')}>
                             <p className={cx('heading')}>Thêm thư viện mới</p>
-                            <div className={cx('img-wrapper')}>
-                                <Image className={cx('image')} round />
+                            <div className={cx('image-wrapper')}>
+                                <HeadlessTippy
+                                    zIndex="10"
+                                    placement="bottom"
+                                    interactive
+                                    delay={[0, 300]}
+                                    offset={[0, -50]}
+                                    render={(attrs) => (
+                                        <div tabIndex="-1" {...attrs}>
+                                            <div
+                                                className={cx('tooltip')}
+                                                onClick={() => this.setState({ isModalOpen: true })}
+                                            >
+                                                Thêm ảnh
+                                            </div>
+                                        </div>
+                                    )}
+                                >
+                                    <Image src={this.state.addedImageUrl} className={cx('image')} round />
+                                </HeadlessTippy>
+                                {this.state.isModalOpen && (
+                                    <ChangeImageModal
+                                        round={true}
+                                        onClose={this.onClose}
+                                        onGetUrl={this.getImageUrlFromChangeImageModal}
+                                    />
+                                )}
                             </div>
                             <input
                                 type="text"
                                 className={cx('input-form')}
                                 placeholder="Nhập tên thư viện"
                                 value={this.state.libraryName}
-                                onChange={(e) => this.handleInputLibrary(e, 'libraryName')}
+                                onChange={(e) => this.handleInputLibrary(e, 'name')}
                             />
                             <input
                                 type="text"
                                 className={cx('input-form')}
                                 placeholder="Nhập version"
                                 value={this.state.libraryVersion}
-                                onChange={(e) => this.handleInputLibrary(e, 'libraryVersion')}
+                                onChange={(e) => this.handleInputLibrary(e, 'version')}
                             />
                             <input
                                 type="text"
                                 className={cx('input-form')}
                                 placeholder="Nhập link website (nếu có)"
                                 value={this.state.libraryLink}
-                                onChange={(e) => this.handleInputLibrary(e, 'libraryLink')}
+                                onChange={(e) => this.handleInputLibrary(e, 'link')}
                             />
                         </div>
                         <div className={cx('actions')}>
-                            <Button
-                                className={cx('btn', 'cancel')}
-                                onClick={() => this.setState({ isAddLibrary: false })}
-                            >
+                            <Button className={cx('btn', 'cancel')} onClick={() => this.handleCloseAddLibrary()}>
                                 Hủy
                             </Button>
                             <Button className={cx('btn', 'add')} onClick={() => this.handleCreateLibrary()}>
@@ -347,19 +380,34 @@ class LibraryList extends PureComponent {
                         margin: '24px 0 12px',
                     }}
                 >
-                    <ThemeProvider theme={theme}>
-                        <Pagination
-                            count={10}
-                            variant="outlined"
-                            size="medium"
-                            // sx={{
-                            //     'Button.MuiPaginationItem-circular': {
-                            //         color: '#000',
-                            //         'border-color': 'green',
-                            //     },
-                            // }}
-                        />
-                    </ThemeProvider>
+                    <Pagination
+                        count={10}
+                        variant="outlined"
+                        size="medium"
+                        siblingCount={1}
+                        boundaryCount={1}
+                        defaultPage={1}
+                        sx={{
+                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
+                                color: 'var(--primary-color)',
+                                fontSize: '12px',
+                                borderColor: 'var(--green-color-02)',
+                            },
+                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
+                                backgroundColor: 'var(--button-bgc-green-02)',
+                            },
+
+                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected': {
+                                color: '#fff',
+                                backgroundColor: 'var(--button-bgc-green-01)',
+                            },
+
+                            '& css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
+                                color: '#fff',
+                                backgroundColor: 'var(--button-bgc-green-01)',
+                            },
+                        }}
+                    />
                 </Box>
             </div>
         );
@@ -372,7 +420,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        userCreateLibrary: (data) => dispatch(userActions.userSignInStart(data)),
+        createLibrary: (data) => dispatch(userActions.createLibrary(data)),
     };
 };
 

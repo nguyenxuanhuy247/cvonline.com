@@ -17,7 +17,7 @@ import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import ChangeImageModal from '~/components/Modal/ChangeImageModal';
+import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 
 const cx = classnames.bind(styles);
 
@@ -83,6 +83,7 @@ class PersonalLayout extends PureComponent {
             fullName: '',
             isModalOpen: false,
             avatarUrl: '',
+            avatarBase64: '',
         };
     }
 
@@ -137,8 +138,9 @@ class PersonalLayout extends PureComponent {
                                             </HeadlessTippy>
                                             {this.state.isModalOpen && (
                                                 <ChangeImageModal
+                                                    round
                                                     onClose={this.onClose}
-                                                    onGet={this.getAvatarUrlFromChangeImageModal}
+                                                    onGetUrl={this.getAvatarUrlFromChangeImageModal}
                                                 />
                                             )}
                                         </div>

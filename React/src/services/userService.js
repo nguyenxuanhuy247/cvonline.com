@@ -1,6 +1,7 @@
 import axios from '~/config/axios.js';
 
-// Handle Sign Up
+// =============================================================================
+// HANDLE SIGNUP
 export const postSignUp = (userData) => {
     return axios.post(`/signup`, {
         fullName: userData.fullName,
@@ -9,7 +10,7 @@ export const postSignUp = (userData) => {
     });
 };
 
-// Handle Sign In
+// HANDLE SIGNIN
 export const postSignIn = (userEmail, userPassword) => {
     return axios.post(`/signin`, {
         email: userEmail,
@@ -17,6 +18,27 @@ export const postSignIn = (userEmail, userPassword) => {
     });
 };
 
+// =============================================================================
+// CRUD LIBRARY
+export const getLibrary = (inputId) => {
+    return axios.get(`/api/get-all-users?id=${inputId}`);
+};
+
+export const createLibrary = (data) => {
+    return axios.post('/post-technology', data);
+};
+
+export const editLibrary = (data) => {
+    return axios.put('/api/edit-user', data);
+};
+
+export const deleteLibrary = (userId) => {
+    return axios.delete('/api/delete-user', {
+        data: { id: userId },
+    });
+};
+
+// =============================================================================
 export const getAllUsersFromServer = (inputId) => {
     return axios.get(`/api/get-all-users?id=${inputId}`);
 };

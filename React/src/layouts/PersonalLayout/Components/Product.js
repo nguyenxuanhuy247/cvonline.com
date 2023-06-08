@@ -1,6 +1,7 @@
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import className from 'classnames/bind';
+import classnames from 'classnames/bind';
+import HeadlessTippy from '@tippyjs/react/headless';
 
 import styles from './Product.module.scss';
 import Technology from '~/components/Technology/Technology.js';
@@ -8,8 +9,9 @@ import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEdita
 import Image from '~/components/Image/Image.js';
 import { JpgImages, Icons } from '~/components/Image/Images.js';
 import LibraryList from './LibraryList.js';
+import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 
-const cx = className.bind(styles);
+const cx = classnames.bind(styles);
 
 const SOURCE_CODE = [
     {
@@ -47,6 +49,24 @@ const PRO_LANGUAGES = [
     },
 ];
 class Product extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isModalOpen: false,
+            imageUrl: '',
+        };
+    }
+
+    onClose = () => {
+        this.setState({
+            isModalOpen: false,
+        });
+    };
+
+    getImageUrlFromChangeImageModal = (url) => {
+        this.setState({ imageUrl: url });
+    };
+
     render() {
         return (
             <div className={cx('product')}>
@@ -58,8 +78,33 @@ class Product extends PureComponent {
                             </div>
                             <ContentEditableTag className={cx('desc')} placeholder="Mô tả ngắn gọn về sản phẩm" />
                         </div>
-
-                        <Image src={JpgImages.avatar} className={cx('image')} alt="Ảnh sản phẩm" />
+                        <HeadlessTippy
+                            zIndex="10"
+                            placement="bottom"
+                            interactive
+                            delay={[0, 300]}
+                            offset={[0, -200]}
+                            render={(attrs) => (
+                                <div tabIndex="-1" {...attrs}>
+                                    <div className={cx('tooltip')} onClick={() => this.setState({ isModalOpen: true })}>
+                                        Sửa ảnh
+                                    </div>
+                                </div>
+                            )}
+                        >
+                            <Image
+                                src={this.state.imageUrl || JpgImages.avatar}
+                                className={cx('image')}
+                                alt="Ảnh sản phẩm"
+                            />
+                        </HeadlessTippy>
+                        {this.state.isModalOpen && (
+                            <ChangeImageModal
+                                round={false}
+                                onClose={this.onClose}
+                                onGetUrl={this.getImageUrlFromChangeImageModal}
+                            />
+                        )}
                     </div>
                     <div className={cx('col pc-7')}>
                         <div className={cx('section')}>

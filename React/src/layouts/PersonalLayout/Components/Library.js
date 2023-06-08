@@ -49,7 +49,25 @@ class Library extends PureComponent {
                 <div className={cx('info')}>
                     <p className={cx('heading')}>Chỉnh sửa thư viện</p>
                     <div className={cx('img-wrapper')}>
-                        <Image className={cx('image')} round />
+                        <HeadlessTippy
+                            zIndex="10"
+                            placement="bottom"
+                            interactive
+                            delay={[0, 300]}
+                            offset={[0, -30]}
+                            render={(attrs) => (
+                                <div tabIndex="-1" {...attrs}>
+                                    <Button
+                                        className={cx('edit-image-button')}
+                                        onClick={() => this.setState({ isModalOpen: true })}
+                                    >
+                                        Sửa ảnh
+                                    </Button>
+                                </div>
+                            )}
+                        >
+                            <Image className={cx('image')} round />
+                        </HeadlessTippy>
                     </div>
                     <input
                         type="text"

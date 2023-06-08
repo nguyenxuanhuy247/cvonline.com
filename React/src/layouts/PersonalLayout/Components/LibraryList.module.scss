@@ -131,12 +131,25 @@
                 background-color: var(--button-bgc-green-01);
             }
 
-            .img-wrapper {
+            .image-wrapper {
                 border: 1px dashed transparent;
                 align-self: flex-start;
                 width: 100%;
                 display: flex;
                 justify-content: center;
+
+                .tooltip {
+                    font-size: 1.4rem;
+                    padding: 8px;
+                    border-radius: 4px;
+                    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+                    background-color: var(--primary-color);
+                    color: #fff;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
 
                 .image {
                     width: 80px;

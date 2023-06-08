@@ -71,3 +71,32 @@ export const removeSignInMessage = () => ({
 export const userSignOut = () => ({
     type: actionNames.USER_SIGNOUT,
 });
+
+// =================================================================
+// CRUD LIBRARY
+
+export const createLibrary = (data) => {
+    return async (dispatch) => {
+        dispatch({ type: actionNames.CREATE_LIBRARY_START });
+        try {
+            let res = await userService.createLibrary(data);
+            console.log('createLibrary: ', res);
+            if (res?.errCode === 0) {
+                dispatch(createLibrarySuccess());
+            } else {
+                dispatch(createLibraryFailed(res));
+            }
+        } catch (error) {
+            dispatch(createLibraryFailed());
+            console.log('An error in createLibrary() - userActions.js: ', error);
+        }
+    };
+};
+
+export const createLibrarySuccess = () => ({
+    type: actionNames.CREATE_LIBRARY_SUCCESS,
+});
+
+export const createLibraryFailed = () => ({
+    type: actionNames.CREATE_LIBRARY_FAILED,
+});

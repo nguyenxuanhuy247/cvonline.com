@@ -13,15 +13,15 @@ export const handleUserSignIn = async (req, res) => {
     let { email, password } = req.body;
 
     let message = await userService.postUserSignIn(email, password);
-    console.log(message);
 
     return res.status(200).json(message);
 };
 
-// HANDLE GET LIBRARY
-export const handleGetAllLibraries = async (req, res) => {
+// =================================================================
+// HANDLE CRUD TECHNOLOGY
+export const handleGetTechnology = async (req, res) => {
     let id = req.query.id;
-    let library = await userService.handleGetAllLibraries(id);
+    let library = await userService.handleGetTechnology(id);
 
     return res.status(200).json({
         errorCode: 0,
@@ -30,6 +30,14 @@ export const handleGetAllLibraries = async (req, res) => {
     });
 };
 
+export const handleCreateTechnology = async (req, res) => {
+    let data = req.body;
+    let message = await userService.handleCreateTechnology(data);
+
+    return res.status(200).json(message);
+};
+
+// =================================================================
 // Others
 export const handleGetAllUsers = async (req, res) => {
     let userId = req.query.id;

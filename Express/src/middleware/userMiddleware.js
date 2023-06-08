@@ -47,14 +47,29 @@ export const checkReqSignIn = (req, res, next) => {
     next();
 };
 
-// CHECK ID TO GET LIBRARY
-export const checkReqGetLibraries = (req, res, next) => {
+// =================================================================
+// CHECK CRUD LIBRARY
+export const checkReqGetLibrary = (req, res, next) => {
     let { id } = req.query;
 
     if (!id) {
         return res.status(400).json({
             errorCode: 1,
             errorMessage: 'Vui lòng nhập id của thư viện',
+        });
+    }
+
+    next();
+};
+
+export const checkReqPostTechnology = (req, res, next) => {
+    let { name } = req.body;
+    console.log(req.body);
+
+    if (!name) {
+        return res.status(400).json({
+            errorCode: 1,
+            errorMessage: 'Vui lòng nhập tên của thư viện',
         });
     }
 

@@ -15,6 +15,11 @@ const actionNames = Object.freeze({
 
     //user - Sign Out
     USER_SIGNOUT: 'USER_SIGNOUT',
+
+    // Library
+    CREATE_LIBRARY_START: "CREATE_LIBRARY_START",
+    CREATE_LIBRARY_SUCCESS: "CREATE_LIBRARY_SUCCESS",
+    CREATE_LIBRARY_FAILED: "CREATE_LIBRARY_FAILED",
 });
 
 export default actionNames;

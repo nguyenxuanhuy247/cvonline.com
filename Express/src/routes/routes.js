@@ -11,7 +11,9 @@ let initWebRoutes = (app) => {
     router.post('/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
 
-    router.get('/get-all-libraries', userMiddleware.checkReqGetLibraries, userController.handleGetAllLibraries);
+    router.get('/get-technology', userMiddleware.checkReqGetLibrary, userController.handleGetTechnology);
+    router.post('/post-technology', userMiddleware.checkReqPostTechnology, userController.handleCreateTechnology);
+    // router.delete('/post-technology', userController.handleCreateTechnology);
 
     // =================================================================
 

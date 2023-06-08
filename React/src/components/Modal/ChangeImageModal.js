@@ -39,9 +39,9 @@ class ChangeImageModal extends PureComponent {
     };
 
     handleFinishChangeImage = () => {
-        const { onGet, onClose } = this.props;
+        const { onGetUrl, onClose } = this.props;
 
-        onGet(this.state.ImageUrl);
+        onGetUrl(this.state.ImageUrl);
         onClose();
     };
 
@@ -53,12 +53,12 @@ class ChangeImageModal extends PureComponent {
         this.setState({ isOpenCropImageModal: false });
     };
 
-    handleGetUrlFromCropModal = (url) => {
-        this.setState({ ImageUrl: url });
+    handleGetUrlFromCropImageModal = (url) => {
+        this.setState({ isOpenCropImageModal: false, ImageUrl: url });
     };
 
     render() {
-        const { onClose } = this.props;
+        const { onClose, round } = this.props;
         const { isOpenCropImageModal } = this.state;
 
         return !isOpenCropImageModal ? (
@@ -73,44 +73,49 @@ class ChangeImageModal extends PureComponent {
                         </div>
 
                         <div className={cx('modal-body')}>
-                            <div className={cx('grid')}>
-                                <div className={cx('row')}>
-                                    <div className={cx('col pc-9')}>
-                                        <div className={cx('wrapper')}>
-                                            <input
-                                                id="upload"
-                                                type="file"
-                                                hidden
-                                                onChange={(e) => this.handleUploadImage(e)}
+                            <div className={cx('row no-gutters')}>
+                                <div className={cx('col pc-9')}>
+                                    <div className={cx('wrapper')}>
+                                        <input
+                                            id="upload"
+                                            type="file"
+                                            hidden
+                                            onChange={(e) => this.handleUploadImage(e)}
+                                        />
+                                        <label
+                                            htmlFor="upload"
+                                            className={cx('label')}
+                                            style={{
+                                                borderRadius: round ? '999px' : '0',
+                                                aspectRatio: round ? 1 : 'auto',
+                                            }}
+                                        >
+                                            <Image
+                                                src={this.state.ImageUrl || JpgImages.placeholder}
+                                                className={cx('image')}
+                                                alt="Product Image"
                                             />
-                                            <label htmlFor="upload" className={cx('label')}>
-                                                <Image
-                                                    src={this.state.ImageUrl || JpgImages.placeholder}
-                                                    className={cx('image')}
-                                                    alt="Product Image"
-                                                />
-                                            </label>
-                                        </div>
+                                        </label>
                                     </div>
-                                    <div className={cx('col pc-2')}>
-                                        <div className={cx('actions')}>
-                                            <Button
-                                                className={cx('btn', 'crop')}
-                                                onClick={this.handleOpenCropModal}
-                                                disabled={this.state.ImageUrl ? false : true}
-                                            >
-                                                <span className={cx('text')}>Cắt</span>
-                                                <i className={cx('right-icon')}>
-                                                    <MdCrop />
-                                                </i>
-                                            </Button>
-                                            <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
-                                                <span className={cx('text')}>Xóa</span>
-                                                <i className={cx('right-icon')}>
-                                                    <AiTwotoneDelete />
-                                                </i>
-                                            </Button>
-                                        </div>
+                                </div>
+                                <div className={cx('col pc-3')}>
+                                    <div className={cx('actions')}>
+                                        <Button
+                                            className={cx('btn', 'crop')}
+                                            onClick={this.handleOpenCropModal}
+                                            disabled={this.state.ImageUrl ? false : true}
+                                        >
+                                            <span className={cx('text')}>Cắt</span>
+                                            <i className={cx('right-icon')}>
+                                                <MdCrop />
+                                            </i>
+                                        </Button>
+                                        <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
+                                            <span className={cx('text')}>Xóa</span>
+                                            <i className={cx('right-icon')}>
+                                                <AiTwotoneDelete />
+                                            </i>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -129,9 +134,10 @@ class ChangeImageModal extends PureComponent {
             </div>
         ) : (
             <CropImageModal
+                round={round}
                 src={this.state.ImageUrl}
                 onClose={this.handleCloseCropImageModal}
-                onGetUrl={this.handleGetUrlFromCropModal}
+                onGetUrl={this.handleGetUrlFromCropImageModal}
             />
         );
     }

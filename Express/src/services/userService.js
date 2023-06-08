@@ -103,8 +103,10 @@ export const postUserSignIn = async (userEmail, userPassword) => {
     }
 };
 
-// HANDLE GET ALL LIBRARIES
-export const handleGetAllLibraries = (id) => {
+// =================================================================
+// HANDLE CRUD TECHNOLOGY
+
+export const handleGetTechnology = (id) => {
     try {
         let libraries;
         if (id === 'ALL') {
@@ -124,6 +126,39 @@ export const handleGetAllLibraries = (id) => {
     }
 };
 
+export const handleCreateTechnology = async (data) => {
+    try {
+        const { type, key, FEorBE, image, name, version, link } = data;
+
+        let res = {};
+        const [user, created] = await db.Technology.findOrCreate({
+            where: {
+                FEorBE: FEorBE,
+                name: name,
+            },
+            defaults: {
+                type: type,
+                key: key,
+                FEorBE: FEorBE,
+                image: image,
+                version: version,
+                link: link,
+            },
+        });
+
+        if (!created) {
+            res.errorCode = 31;
+            res.errorMessage = `Trường này đã được tạo`;
+        } else {
+            res.errorCode = 0;
+            res.errorMessage = `Bạn vừa tạo thành công`;
+        }
+
+        return res;
+    } catch (error) {
+        console.log('An error in handleCreateTechnology() in userService.js : ', error);
+    }
+};
 
 // =================================================================
 export const handleGetAllUsers = (userId) => {
