@@ -5,145 +5,143 @@ import { BsPlusCircleDotted } from 'react-icons/bs';
 import Pagination from '@mui/material/Pagination';
 import Box from '@mui/material/Box';
 import HeadlessTippy from '@tippyjs/react/headless';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import styles from './LibraryList.module.scss';
-import { Icons } from '~/components/Image/Images.js';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
-import EditButton from '~/components/Button/EditButton';
 import Library from '~/layouts/PersonalLayout/Components/Library.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
+import Loading from '~/components/Modal/Loading.js';
 
 const cx = className.bind(styles);
 
-const FE_LIBRARY_LIST = [
-    {
-        id: 1,
-        image: Icons.Github,
-        name: 'React router dom React router dom React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 2,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 3,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 4,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 5,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 6,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 7,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 8,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 9,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 10,
-        image: Icons.Github,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-];
+// const FE_LIBRARY_LIST = [
+//     {
+//         id: 1,
+//         image: Icons.Github,
+//         name: 'React router dom React router dom React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 2,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 3,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 4,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 5,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 6,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 7,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 8,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 9,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 10,
+//         image: Icons.Github,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+// ];
 
-const BE_LIBRARY_LIST = [
-    {
-        id: 1,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 2,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 3,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 4,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 5,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 6,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 7,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 8,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 9,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-    {
-        id: 10,
-        image: Icons.Gitlab,
-        name: 'React router dom',
-        version: '6.10.0',
-    },
-];
+// const BE_LIBRARY_LIST = [
+//     {
+//         id: 1,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 2,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 3,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 4,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 5,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 6,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 7,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 8,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 9,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+//     {
+//         id: 10,
+//         image: Icons.Gitlab,
+//         name: 'React router dom',
+//         version: '6.10.0',
+//     },
+// ];
 
 class LibraryList extends PureComponent {
     constructor(props) {
@@ -162,35 +160,32 @@ class LibraryList extends PureComponent {
         };
     }
 
-    changeActiveButton = (e, classNameRemoved, isFE) => {
-        const btn = document.querySelector(`.${classNameRemoved}`);
-        if (btn) {
-            this.setState({ isFE: isFE });
-            btn.classList.remove(cx('active'));
-            e.currentTarget.classList.add(cx('active'));
+    handleShowLibraryList = (e) => {
+        const isActive = e.target.classList.contains(cx('active'));
+        const isFE = e.target.id === 'frontend';
+
+        if (!isActive) {
+            const btn = document.querySelector(`.${cx('active')}`);
+            if (btn) {
+                this.setState({ isFE: isFE });
+                btn.classList.remove(cx('active'));
+                e.target.classList.add(cx('active'));
+                this.props.readLibrary(isFE);
+            }
         }
-    };
-
-    handleShowFELibraryList = (e) => {
-        this.changeActiveButton(e, cx('BE-btn'), true);
-    };
-
-    handleShowBELibraryList = (e) => {
-        this.changeActiveButton(e, cx('FE-btn'), false);
     };
 
     handleInputLibrary = (e, name) => {
         const value = e.target.value;
-        console.log('handleInputLibrary', name, value);
         this.setState({ [name]: value });
     };
 
-    handleAddLibrary = () => {
+    handleShowAddLibrary = () => {
         this.setState({ isAddLibrary: true });
     };
 
-    handleEditLibrary = () => {
-        this.setState({ isEditLibrary: true });
+    handleCloseAddLibrary = () => {
+        this.setState({ isAddLibrary: false, addedImageUrl: '' });
     };
 
     getImageUrlFromChangeImageModal = (url) => {
@@ -203,101 +198,73 @@ class LibraryList extends PureComponent {
         });
     };
 
-    handleCloseAddLibrary = () => {
-        this.setState({ isAddLibrary: false, addedImageUrl: '' });
+    handleCreateLibrary = async () => {
+        const { image, name, version, link } = this.state;
+        const side = this.state.isFE ? 'FE' : 'BE';
+        const data = { type: 'LIBRARY', key: 'LI', side, image, name, version, link };
+        await this.props.createLibrary(data, this.state.isFE);
+        await this.props.readLibrary(side);
+        this.handleCloseAddLibrary();
     };
 
-    handleCreateLibrary = () => {
-        const { image, name, version, link } = this.state;
-        const FEorBE = this.state.isFE ? 'FE' : 'BE';
-        const data = { type: 'LIBRARY', key: 'LI', FEorBE: FEorBE, image, name, version, link };
-        console.log(data);
-        this.props.createLibrary(data);
+    handleUpdateLibrary = (state) => {
+        const side = this.state.isFE ? 'FE' : 'BE';
+        const data = {
+            type: 'LIBRARY',
+            key: 'LI',
+            side: side,
+            id: state.id,
+            image: state.image,
+            name: state.name,
+            version: state.version,
+            link: state.link,
+        };
+
+        this.props.updateLibrary(data);
     };
+
+    handleDeleteLibrary = (id) => {
+        const side = this.state.isFE ? 'FE' : 'BE';
+        this.props.deleteLibrary(side, id);
+    };
+
+    componentDidMount() {
+        this.props.readLibrary(this.state.isFE);
+    }
 
     render() {
-        const data = this.state.isFE ? FE_LIBRARY_LIST : BE_LIBRARY_LIST;
+        let { libraryList, isAddLibraryLoading, isGetLibraryLoading } = this.props;
+
         return (
             <div className={cx('library-used')}>
                 <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
                 <div className={cx('divide')}>
-                    <Button className={cx('text', 'FE-btn', 'active')} onClick={(e) => this.handleShowFELibraryList(e)}>
+                    <Button
+                        id="frontend"
+                        className={cx('text', 'active')}
+                        onClick={(e) => this.handleShowLibraryList(e)}
+                    >
                         Front-end
                     </Button>
-                    <Button className={cx('text', 'BE-btn')} onClick={(e) => this.handleShowBELibraryList(e)}>
+                    <Button id="backend" className={cx('text')} onClick={(e) => this.handleShowLibraryList(e)}>
                         Back-end
                     </Button>
                 </div>
                 <div className={cx('library-list')}>
-                    {data &&
-                        data.map((library) => {
+                    {libraryList &&
+                        libraryList.map((library) => {
                             return (
                                 <div key={library.id}>
-                                    {!this.state.isEditLibrary ? (
-                                        <HeadlessTippy
-                                            placement="top-start"
-                                            interactive
-                                            offset={[0, 0]}
-                                            render={(attrs) => (
-                                                <div tabIndex="-1" {...attrs}>
-                                                    <EditButton
-                                                        onAdd={this.handleAddLibrary}
-                                                        onEdit={this.handleEditLibrary}
-                                                    />
-                                                </div>
-                                            )}
-                                        >
-                                            <Library
-                                                src={library.image}
-                                                name={library.name}
-                                                version={library.version}
-                                                onAdd={this.handleAddLibrary}
-                                            />
-                                        </HeadlessTippy>
-                                    ) : (
-                                        <div className={cx('add-library')}>
-                                            <div className={cx('info')}>
-                                                <div className={cx('img-wrapper')}>
-                                                    <Image className={cx('image')} round />
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    className={cx('input-form')}
-                                                    placeholder="Nhập tên thư viện"
-                                                    value={this.state.libraryName}
-                                                    onChange={(e) => this.handleInputLibrary(e, 'name')}
-                                                />
-                                                <input
-                                                    type="text"
-                                                    className={cx('input-form')}
-                                                    placeholder="Nhập version"
-                                                    value={this.state.libraryVersion}
-                                                    onChange={(e) => this.handleInputLibrary(e, 'version')}
-                                                />
-                                                <input
-                                                    type="text"
-                                                    className={cx('input-form')}
-                                                    placeholder="Nhập link website (nếu có)"
-                                                    value={this.state.libraryLink}
-                                                    onChange={(e) => this.handleInputLibrary(e, 'link')}
-                                                />
-                                            </div>
-                                            <div className={cx('actions')}>
-                                                <Button
-                                                    className={cx('btn', 'cancel')}
-                                                    onClick={() => this.setState({ isAddLibrary: false })}
-                                                >
-                                                    Hủy
-                                                </Button>
-                                                <Button
-                                                    className={cx('btn', 'add')}
-                                                    onClick={() => this.handleCreateLibrary()}
-                                                >
-                                                    Thêm
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <Library
+                                        libraryList={libraryList}
+                                        id={library.id}
+                                        src={library.image}
+                                        name={library.name}
+                                        version={library.version}
+                                        onAdd={this.handleShowAddLibrary}
+                                        onUpdate={this.handleUpdateLibrary}
+                                        onDelete={() => this.handleDeleteLibrary(library.id)}
+                                    />
                                 </div>
                             );
                         })}
@@ -372,6 +339,8 @@ class LibraryList extends PureComponent {
                                 Thêm
                             </Button>
                         </div>
+
+                        {isAddLibraryLoading && <Loading className={cx('spinner')} />}
                     </div>
                 )}
 
@@ -402,25 +371,33 @@ class LibraryList extends PureComponent {
                                 backgroundColor: 'var(--button-bgc-green-01)',
                             },
 
-                            '& css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                color: '#fff',
-                                backgroundColor: 'var(--button-bgc-green-01)',
-                            },
+                            '& .MuiPagination-root.css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected:hover':
+                                {
+                                    backgroundColor: 'var(--button-bgc-green-01) !important',
+                                },
                         }}
                     />
                 </Box>
+                {isGetLibraryLoading && <Loading className={cx('spinner')} />}
             </div>
         );
     }
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        libraryList: state.user.libraries,
+        isAddLibraryLoading: state.user.isAddLibraryLoading,
+        isGetLibraryLoading: state.user.isGetLibraryLoading,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createLibrary: (data) => dispatch(userActions.createLibrary(data)),
+        readLibrary: (isFE) => dispatch(userActions.readLibrary(isFE)),
+        createLibrary: (data, isFE) => dispatch(userActions.createLibrary(data, isFE)),
+        updateLibrary: (data, isFE) => dispatch(userActions.updateLibrary(data, isFE)),
+        deleteLibrary: (isFE, id) => dispatch(userActions.deleteLibrary(isFE, id)),
     };
 };
 

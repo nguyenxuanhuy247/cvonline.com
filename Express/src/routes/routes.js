@@ -11,14 +11,15 @@ let initWebRoutes = (app) => {
     router.post('/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
 
-    router.get('/get-technology', userMiddleware.checkReqGetLibrary, userController.handleGetTechnology);
-    router.post('/post-technology', userMiddleware.checkReqPostTechnology, userController.handleCreateTechnology);
-    // router.delete('/post-technology', userController.handleCreateTechnology);
+    router.post('/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
+    router.get('/get-technology', userMiddleware.checkReqGetTechnology, userController.handleGetTechnology);
+    router.put('/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
+    router.delete('/delete-technology', userMiddleware.checkReqDeleteTechnology, userController.handleDeleteTechnology);
 
     // =================================================================
 
-    router.get('/api/get-all-users', userController.handleGetAllUsers);
-    router.delete('/api/delete-user', userController.handleDeleteUser);
+    // router.get('/api/get-all-users', userController.handleGetAllUsers);
+    // router.delete('/api/delete-user', userController.handleDeleteUser);
 
     router.post('/personal/create-library', userController.handleUserSignIn);
 

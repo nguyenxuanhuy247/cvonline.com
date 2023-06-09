@@ -1,5 +1,4 @@
 import { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import PropTypes from 'prop-types';
 import { RiDragMove2Fill } from 'react-icons/ri';
@@ -58,12 +57,4 @@ class EditButton extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {};
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditButton);
+export default EditButton;

@@ -46,7 +46,7 @@ export const postUserSignUp = async (fullName, email, password) => {
         });
 
         if (!created) {
-            userData.errorCode = 31;
+            userData.errorCode = 30;
             userData.errorMessage = `Email của bạn đã được đăng ký. Vui lòng điền email khác`;
         } else {
             userData.errorCode = 0;
@@ -85,15 +85,15 @@ export const postUserSignIn = async (userEmail, userPassword) => {
                     userData.errorMessage = `Bạn đã đăng nhập thành công`;
                     userData.data = user;
                 } else {
-                    userData.errorCode = 12;
+                    userData.errorCode = 32;
                     userData.errorMessage = `Sai mật khẩu. Vui lòng kiểm tra lại`;
                 }
             } else {
-                userData.errorCode = 13;
+                userData.errorCode = 33;
                 userData.errorMessage = `Không tìm thấy người dùng`;
             }
         } else {
-            userData.errorCode = 11;
+            userData.errorCode = 31;
             userData.errorMessage = `Email của bạn không tồn tại trên hệ thống. Vui lòng nhập email khác`;
         }
 
@@ -106,40 +106,21 @@ export const postUserSignIn = async (userEmail, userPassword) => {
 // =================================================================
 // HANDLE CRUD TECHNOLOGY
 
-export const handleGetTechnology = (id) => {
-    try {
-        let libraries;
-        if (id === 'ALL') {
-            users = db.User.findAll();
-        } else if (id !== 'ALL') {
-            users = db.User.findOne({
-                where: { id: id },
-                attributes: {
-                    exclude: ['password'],
-                },
-            });
-        }
-
-        return users;
-    } catch (error) {
-        console.log('An error in handleGetAllUsers() in userService.js : ', error);
-    }
-};
-
+// CREATE TECHNOLOGY
 export const handleCreateTechnology = async (data) => {
     try {
-        const { type, key, FEorBE, image, name, version, link } = data;
+        const { type, key, side, image, name, version, link } = data;
 
-        let res = {};
+        let technology = {};
         const [user, created] = await db.Technology.findOrCreate({
             where: {
-                FEorBE: FEorBE,
+                side: side,
                 name: name,
             },
             defaults: {
                 type: type,
                 key: key,
-                FEorBE: FEorBE,
+                side: side,
                 image: image,
                 version: version,
                 link: link,
@@ -147,58 +128,153 @@ export const handleCreateTechnology = async (data) => {
         });
 
         if (!created) {
-            res.errorCode = 31;
-            res.errorMessage = `Trường này đã được tạo`;
+            technology.errorCode = 31;
+            technology.errorMessage = `Trường này đã được tạo`;
         } else {
-            res.errorCode = 0;
-            res.errorMessage = `Bạn vừa tạo thành công`;
+            technology.errorCode = 0;
+            technology.errorMessage = `Bạn vừa tạo thành công`;
         }
 
-        return res;
+        return {
+            errorCode: 0,
+            errorMessage: `Tải dữ liệu thành công`,
+            data: technology,
+        };
     } catch (error) {
         console.log('An error in handleCreateTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Tải dữ liệu thất bại`,
+        };
+    }
+};
+
+// READ TECHNOLOGY
+export const handleGetTechnology = async (key, side, id) => {
+    try {
+        let technology;
+
+        if (id === 'ALL') {
+            technology = await db.Technology.findAll({
+                where: { key: key, side: side },
+                attributes: ['id', 'image', 'name', 'version', 'link'],
+            });
+        } else if (id !== 'ALL') {
+            technology = await db.Technology.findOne({
+                where: { key: key, side: side, id: id },
+                attributes: ['id', 'image', 'name', 'version', 'link'],
+            });
+        }
+
+        return {
+            errorCode: 0,
+            errorMessage: `Tải dữ liệu thành công`,
+            data: technology,
+        };
+    } catch (error) {
+        console.log('An error in handleGetTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Tải dữ liệu thất bại`,
+        };
+    }
+};
+
+// UPDATE TECHNOLOGY
+export const handleUpdateTechnology = async (data) => {
+    try {
+        await db.Technology.update(
+            {
+                image: data.image,
+                name: data.name,
+                version: data.version,
+                link: data.link,
+            },
+            { where: { id: data.id } },
+        );
+
+        let technologies = await db.Technology.findAll({
+            where: { key: data.key, side: data.side },
+            attributes: ['id', 'image', 'name', 'version', 'link'],
+        });
+
+        return {
+            errorCode: 0,
+            errorMessage: `Sửa dữ liệu thành công`,
+            data: technologies,
+        };
+    } catch (error) {
+        console.log('An error in handleUpdateTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Sửa dữ liệu thất bại`,
+        };
+    }
+};
+
+// DELETE TECHNOLOGY
+export const handleDeleteTechnology = async (key, side, id) => {
+    try {
+        await db.Technology.destroy({ where: { key: key, side: side, id: id } });
+
+        let technologies = await db.Technology.findAll({
+            where: { key: data.key, side: data.side },
+            attributes: ['id', 'image', 'name', 'version', 'link'],
+        });
+
+        return {
+            errorCode: 0,
+            errorMessage: `Xóa thư viện thành công`,
+            data: technologies,
+        };
+    } catch (error) {
+        console.log('An error in handleDeleteTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Xóa thư viện thất bại`,
+        };
     }
 };
 
 // =================================================================
-export const handleGetAllUsers = (userId) => {
-    try {
-        let users;
-        if (userId === 'ALL') {
-            users = db.User.findAll();
-        } else if (userId !== 'ALL') {
-            users = db.User.findOne({
-                where: { id: userId },
-                attributes: {
-                    exclude: ['password'],
-                },
-            });
-        }
+// export const handleGetAllUsers = (userId) => {
+//     try {
+//         let users;
+//         if (userId === 'ALL') {
+//             users = db.User.findAll();
+//         } else if (userId !== 'ALL') {
+//             users = db.User.findOne({
+//                 where: { id: userId },
+//                 attributes: {
+//                     exclude: ['password'],
+//                 },
+//             });
+//         }
 
-        return users;
-    } catch (error) {
-        console.log('An error in handleGetAllUsers() in userService.js : ', error);
-    }
-};
+//         return users;
+//     } catch (error) {
+//         console.log('An error in handleGetAllUsers() in userService.js : ', error);
+//     }
+// };
 
-export const deleteUser = async (userId) => {
-    try {
-        let user = await db.UserInfo.findOne({ where: { id: userId } });
+// export const deleteUser = async (userId) => {
+//     try {
+//         let user = await db.UserInfo.findOne({ where: { id: userId } });
 
-        if (!user) {
-            return {
-                errorCode: 2,
-                errorMessage: 'User not found',
-            };
-        } else {
-            await db.User.destroy({ where: { id: userId } });
+//         if (!user) {
+//             return {
+//                 errorCode: 2,
+//                 errorMessage: 'User not found',
+//             };
+//         } else {
+//             await db.User.destroy({ where: { id: userId } });
 
-            return {
-                errorCode: 0,
-                errorMessage: 'User deleted successfully',
-            };
-        }
-    } catch (error) {
-        console.log('An error in deleteUser() in userService.js : ', error);
-    }
-};
+//             return {
+//                 errorCode: 0,
+//                 errorMessage: 'User deleted successfully',
+//             };
+//         }
+//     } catch (error) {
+//         console.log('An error in deleteUser() in userService.js : ', error);
+//     }
+// };

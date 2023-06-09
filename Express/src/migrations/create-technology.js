@@ -15,7 +15,7 @@ module.exports = {
             key: {
                 type: Sequelize.STRING,
             },
-            FEorBE: {
+            side: {
                 type: Sequelize.STRING,
             },
             image: {

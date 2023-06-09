@@ -20,22 +20,21 @@ export const postSignIn = (userEmail, userPassword) => {
 
 // =============================================================================
 // CRUD LIBRARY
-export const getLibrary = (inputId) => {
-    return axios.get(`/api/get-all-users?id=${inputId}`);
-};
 
 export const createLibrary = (data) => {
     return axios.post('/post-technology', data);
 };
 
-export const editLibrary = (data) => {
-    return axios.put('/api/edit-user', data);
+export const readLibrary = (key, side, id) => {
+    return axios.get(`/get-technology?key=${key}&side=${side}&id=${id}`);
 };
 
-export const deleteLibrary = (userId) => {
-    return axios.delete('/api/delete-user', {
-        data: { id: userId },
-    });
+export const updateLibrary = (data) => {
+    return axios.put('/put-technology', data);
+};
+
+export const deleteLibrary = (key, side, id) => {
+    return axios.delete(`/delete-technology?key=${key}&side=${side}&id=${id}`);
 };
 
 // =============================================================================

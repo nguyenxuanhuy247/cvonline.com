@@ -19,60 +19,94 @@ export const handleUserSignIn = async (req, res) => {
 
 // =================================================================
 // HANDLE CRUD TECHNOLOGY
-export const handleGetTechnology = async (req, res) => {
-    let id = req.query.id;
-    let library = await userService.handleGetTechnology(id);
 
-    return res.status(200).json({
-        errorCode: 0,
-        errorMessage: `OK`,
-        data: users,
-    });
+// CREATE TECHNOLOGY
+export const handleCreateTechnology = async (req, res) => {
+    const data = req.body;
+    const message = await userService.handleCreateTechnology(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else {
+        res.status(500).json(message);
+    }
 };
 
-export const handleCreateTechnology = async (req, res) => {
-    let data = req.body;
-    let message = await userService.handleCreateTechnology(data);
+// READ TECHNOLOGY
+export const handleGetTechnology = async (req, res) => {
+    const { key, side, id } = req.query;
 
-    return res.status(200).json(message);
+    const message = await userService.handleGetTechnology(key, side, id);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else {
+        res.status(500).json(message);
+    }
+};
+
+// UPDATE TECHNOLOGY
+export const handleUpdateTechnology = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.handleUpdateTechnology(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else {
+        res.status(500).json(message);
+    }
+};
+
+// DELETE TECHNOLOGY
+export const handleDeleteTechnology = async (req, res) => {
+    const { key, side, id } = req.query;
+
+    const message = await userService.handleDeleteTechnology(key, side, id);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else {
+        res.status(500).json(message);
+    }
 };
 
 // =================================================================
 // Others
-export const handleGetAllUsers = async (req, res) => {
-    let userId = req.query.id;
+// export const handleGetAllUsers = async (req, res) => {
+//     let userId = req.query.id;
 
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 11,
-            errorMessage: 'Missing required parameter',
-            data: [],
-        });
-    } else {
-        let users = await userService.handleGetAllUsers(userId);
+//     if (!userId) {
+//         return res.status(400).json({
+//             errorCode: 11,
+//             errorMessage: 'Missing required parameter',
+//             data: [],
+//         });
+//     } else {
+//         let users = await userService.handleGetAllUsers(userId);
 
-        return res.status(200).json({
-            errorCode: 0,
-            errorMessage: `OK`,
-            data: users,
-        });
-    }
-};
+//         return res.status(200).json({
+//             errorCode: 0,
+//             errorMessage: `OK`,
+//             data: users,
+//         });
+//     }
+// };
 
-export const handleDeleteUser = async (req, res) => {
-    let userId = req.query.id;
+// export const handleDeleteUser = async (req, res) => {
+//     let userId = req.query.id;
 
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 1,
-            errorMessage: 'Missing required parameter',
-        });
-    } else {
-        let message = await userService.deleteUser(userId);
+//     if (!userId) {
+//         return res.status(400).json({
+//             errorCode: 1,
+//             errorMessage: 'Missing required parameter',
+//         });
+//     } else {
+//         let message = await userService.deleteUser(userId);
 
-        return res.status(200).json({
-            errorCode: message.errorCode,
-            errorMessage: message.errorMessage,
-        });
-    }
-};
+//         return res.status(200).json({
+//             errorCode: message.errorCode,
+//             errorMessage: message.errorMessage,
+//         });
+//     }
+// };

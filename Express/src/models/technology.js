@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Technology.init({
     type: DataTypes.STRING,
     key: DataTypes.STRING,
-    FEorBE: DataTypes.STRING,
+    side: DataTypes.STRING,
     image: DataTypes.BLOB,
     name: DataTypes.STRING,
     version: DataTypes.STRING,

@@ -1,24 +1,24 @@
 // CHECK SIGNUP INFO
 export const checkReqSignUp = (req, res, next) => {
-    let { fullName, email, password } = req.body;
+    const { fullName, email, password } = req.body;
 
     if (!fullName) {
         return res.status(400).json({
-            errorCode: 20,
+            errorCode: 10,
             errorMessage: 'Vui lòng nhập đầy đủ họ và tên của bạn',
         });
     }
 
     if (!email) {
         return res.status(400).json({
-            errorCode: 21,
+            errorCode: 11,
             errorMessage: 'Vui lòng nhập email của bạn',
         });
     }
 
     if (!password) {
         return res.status(400).json({
-            errorCode: 22,
+            errorCode: 12,
             errorMessage: 'Vui lòng nhập mật khẩu của bạn',
         });
     }
@@ -28,18 +28,18 @@ export const checkReqSignUp = (req, res, next) => {
 
 // CHECK SIGNIN INFO
 export const checkReqSignIn = (req, res, next) => {
-    let { email, password } = req.body;
+    const { email, password } = req.body;
 
     if (!email) {
         return res.status(400).json({
-            errorCode: 1,
+            errorCode: 10,
             errorMessage: 'Vui lòng nhập email của bạn',
         });
     }
 
     if (!password) {
         return res.status(400).json({
-            errorCode: 2,
+            errorCode: 11,
             errorMessage: 'Vui lòng nhập mật khẩu của bạn',
         });
     }
@@ -49,27 +49,57 @@ export const checkReqSignIn = (req, res, next) => {
 
 // =================================================================
 // CHECK CRUD LIBRARY
-export const checkReqGetLibrary = (req, res, next) => {
-    let { id } = req.query;
 
-    if (!id) {
+// CREATE LIBRARY
+export const checkReqCreateTechnology = (req, res, next) => {
+    const { name } = req.body;
+
+    if (!name) {
         return res.status(400).json({
-            errorCode: 1,
-            errorMessage: 'Vui lòng nhập id của thư viện',
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập tên của thư viện',
         });
     }
 
     next();
 };
 
-export const checkReqPostTechnology = (req, res, next) => {
-    let { name } = req.body;
-    console.log(req.body);
+// READ LIBRARY
+export const checkReqGetTechnology = (req, res, next) => {
+    const { id } = req.query;
 
-    if (!name) {
+    if (!id) {
         return res.status(400).json({
-            errorCode: 1,
-            errorMessage: 'Vui lòng nhập tên của thư viện',
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id để tải thư viện',
+        });
+    }
+
+    next();
+};
+
+// READ LIBRARY
+export const checkReqUpdateTechnology = (req, res, next) => {
+    const { id } = req.body;
+
+    if (!id) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id để sửa thư viện',
+        });
+    }
+
+    next();
+};
+
+// DELETE LIBRARY
+export const checkReqDeleteTechnology = (req, res, next) => {
+    const { id } = req.query;
+
+    if (!id) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id để xóa thư viện',
         });
     }
 

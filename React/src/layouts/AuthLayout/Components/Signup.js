@@ -196,7 +196,8 @@ class Signup extends Component {
                                 </Button>
                             </div>
                         </div>
-                        <Loading isOpen={isLoading} />
+
+                        {isLoading && <Loading className={cx('spinner')} />}
                     </>
                 )}
             </Route>
