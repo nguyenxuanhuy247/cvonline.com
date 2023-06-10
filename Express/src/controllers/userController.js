@@ -34,9 +34,9 @@ export const handleCreateTechnology = async (req, res) => {
 
 // READ TECHNOLOGY
 export const handleGetTechnology = async (req, res) => {
-    const { key, side, id } = req.query;
+    const data = req.query;
 
-    const message = await userService.handleGetTechnology(key, side, id);
+    const message = await userService.handleGetTechnology(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);
@@ -60,9 +60,9 @@ export const handleUpdateTechnology = async (req, res) => {
 
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (req, res) => {
-    const { key, side, id } = req.query;
+    const data = req.query;
 
-    const message = await userService.handleDeleteTechnology(key, side, id);
+    const message = await userService.handleDeleteTechnology(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);

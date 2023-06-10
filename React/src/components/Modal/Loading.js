@@ -1,14 +1,12 @@
 import { PureComponent } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 
-class Modal extends PureComponent {
+class Loading extends PureComponent {
     render() {
-        const { className } = this.props;
-
         return (
             <div
-                className={className}
                 style={{
+                    ...this.props.styles,
                     inset: 0,
                     backgroundColor: 'rgba(255, 255, 255, 0.6)',
                     display: 'flex',
@@ -22,4 +20,4 @@ class Modal extends PureComponent {
     }
 }
 
-export default Modal;
+export default Loading;

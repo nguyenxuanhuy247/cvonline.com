@@ -7,6 +7,7 @@ import styles from './Library.module.scss';
 import Image from '~/components/Image/Image.js';
 import EditButton from '~/components/Button/EditButton';
 import { JpgImages } from '~/components/Image/Images.js';
+import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 
@@ -48,26 +49,29 @@ class Library extends PureComponent {
     };
 
     handleUpdateLibrary = () => {
-        const data = {
-            image: this.state.image,
-            name: this.state.name,
-            version: this.state.version,
-            link: this.state.link,
-        };
-        this.props.updateLibrary(data, this);
+        this.props.onUpdate(this.state);
+        if (!this.props.isLoading) {
+            this.setState({ isEdit: false });
+        }
     };
 
     render() {
-        const { onAdd, onUpdate, onDelete, href, id, src, name, version } = this.props;
+        const { onAdd, onDelete, href, id, src, name, version, isLoading } = this.props;
 
         return !this.state.isEdit ? (
             <HeadlessTippy
                 placement="top-start"
                 interactive
                 offset={[0, 0]}
+                delay={[0, 300000]}
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
-                        <EditButton onAdd={onAdd} onEdit={() => this.handleShowEditLibrary(id)} onDelete={onDelete} />
+                        <EditButton
+                            className={cx('edit-button')}
+                            onAdd={onAdd}
+                            onEdit={() => this.handleShowEditLibrary(id)}
+                            onDelete={onDelete}
+                        />
                     </div>
                 )}
             >
@@ -128,10 +132,11 @@ class Library extends PureComponent {
                     <Button className={cx('btn', 'cancel')} onClick={() => this.setState({ isEdit: false })}>
                         Hủy
                     </Button>
-                    <Button className={cx('btn', 'add')} onClick={() => onUpdate(this.state)}>
+                    <Button className={cx('btn', 'add')} onClick={() => this.handleUpdateLibrary()}>
                         Cập nhật
                     </Button>
                 </div>
+                {isLoading && <Loading styles={{ position: 'absolute' }} />}
             </div>
         );
     }

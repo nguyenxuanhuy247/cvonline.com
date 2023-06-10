@@ -75,14 +75,15 @@ export const userSignOut = () => ({
 // =================================================================
 // CRUD LIBRARY
 
-// CREATE
-export const createLibrary = (data) => {
+// CREATE LIBRARY
+export const createLibrary = (dataSent) => {
     return async (dispatch) => {
         dispatch({ type: actionNames.CREATE_LIBRARY_START });
         try {
-            let res = await userService.createLibrary(data);
-            if (res?.errCode === 0) {
-                dispatch(createLibrarySuccess());
+            let res = await userService.createLibrary(dataSent);
+            const { errorCode, data } = res;
+            if (errorCode === 0) {
+                dispatch(createLibrarySuccess(data));
             } else {
                 dispatch(createLibraryFailed());
             }
@@ -93,23 +94,24 @@ export const createLibrary = (data) => {
     };
 };
 
-export const createLibrarySuccess = () => ({
+export const createLibrarySuccess = (data) => ({
     type: actionNames.CREATE_LIBRARY_SUCCESS,
+    payload: data,
 });
 
 export const createLibraryFailed = () => ({
     type: actionNames.CREATE_LIBRARY_FAILED,
 });
 
-// READ
+// READ LIBRARY
 export const readLibrary = (side) => {
     return async (dispatch) => {
         dispatch({ type: actionNames.READ_LIBRARY_START });
         try {
             const res = await userService.readLibrary('LI', side, 'ALL');
-            console.log('readLibrary', res);
-            if (res?.errorCode === 0) {
-                dispatch(readLibrarySuccess(res.data));
+            const { errorCode, data } = res;
+            if (errorCode === 0) {
+                dispatch(readLibrarySuccess(data));
             } else {
                 dispatch(readLibraryFailed());
             }
@@ -129,14 +131,15 @@ export const readLibraryFailed = () => ({
     type: actionNames.READ_LIBRARY_FAILED,
 });
 
-// UPDATE
-export const updateLibrary = (data) => {
+// UPDATE LIBRARY
+export const updateLibrary = (dataSent) => {
     return async (dispatch) => {
         dispatch({ type: actionNames.UPDATE_LIBRARY_START });
         try {
-            let res = await userService.updateLibrary(data);
-            if (res?.errCode === 0) {
-                dispatch(updateLibrarySuccess(res.data));
+            let res = await userService.updateLibrary(dataSent);
+            const { errorCode, data } = res;
+            if (errorCode === 0) {
+                dispatch(updateLibrarySuccess(data));
             } else {
                 dispatch(updateLibraryFailed());
             }
@@ -156,14 +159,15 @@ export const updateLibraryFailed = () => ({
     type: actionNames.UPDATE_LIBRARY_FAILED,
 });
 
-// DELETE
+// DELETE LIBRARY
 export const deleteLibrary = (side, id) => {
     return async (dispatch) => {
         dispatch({ type: actionNames.DELETE_LIBRARY_START });
         try {
             let res = await userService.deleteLibrary('LI', side, id);
-            if (res?.errCode === 0) {
-                dispatch(deleteLibrarySuccess());
+            const { errorCode, data } = res;
+            if (errorCode === 0) {
+                dispatch(deleteLibrarySuccess(data));
             } else {
                 dispatch(deleteLibraryFailed());
             }
@@ -174,8 +178,9 @@ export const deleteLibrary = (side, id) => {
     };
 };
 
-export const deleteLibrarySuccess = () => ({
+export const deleteLibrarySuccess = (data) => ({
     type: actionNames.DELETE_LIBRARY_SUCCESS,
+    payload: data,
 });
 
 export const deleteLibraryFailed = () => ({

@@ -111,7 +111,6 @@ export const handleCreateTechnology = async (data) => {
     try {
         const { type, key, side, image, name, version, link } = data;
 
-        let technology = {};
         const [user, created] = await db.Technology.findOrCreate({
             where: {
                 side: side,
@@ -128,30 +127,37 @@ export const handleCreateTechnology = async (data) => {
         });
 
         if (!created) {
-            technology.errorCode = 31;
-            technology.errorMessage = `Trường này đã được tạo`;
-        } else {
-            technology.errorCode = 0;
-            technology.errorMessage = `Bạn vừa tạo thành công`;
+            return {
+                errorCode: 31,
+                errorMessage: `Trường này đã được tạo`,
+            };
         }
+
+        let technologies = await db.Technology.findAll({
+            where: { key: key, side: side },
+            attributes: ['id', 'image', 'name', 'version', 'link'],
+        });
 
         return {
             errorCode: 0,
-            errorMessage: `Tải dữ liệu thành công`,
-            data: technology,
+            errorMessage: `Tạo dữ liệu thành công`,
+            data: technologies,
         };
     } catch (error) {
         console.log('An error in handleCreateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Tải dữ liệu thất bại`,
+            errorMessage: `Tải dữ liệu thất bại, không kết nối được với database`,
         };
     }
 };
 
 // READ TECHNOLOGY
-export const handleGetTechnology = async (key, side, id) => {
+export const handleGetTechnology = async (data) => {
     try {
+        const { key, side, id } = data;
+        console.log('key :', key, 'side :', side, 'id :', id);
+        
         let technology;
 
         if (id === 'ALL') {
@@ -159,12 +165,25 @@ export const handleGetTechnology = async (key, side, id) => {
                 where: { key: key, side: side },
                 attributes: ['id', 'image', 'name', 'version', 'link'],
             });
-        } else if (id !== 'ALL') {
+
+            console.log('findAll: ', technology);
+        }
+
+        if (id !== 'ALL') {
             technology = await db.Technology.findOne({
                 where: { key: key, side: side, id: id },
                 attributes: ['id', 'image', 'name', 'version', 'link'],
             });
+
+            if (!technology) {
+                return {
+                    errorCode: 32,
+                    errorMessage: `Tải dữ liệu thất bại, không tìm thấy dữ liệu khớp id`,
+                };
+            }
         }
+
+        console.log('handleGetTechnology', technology);
 
         return {
             errorCode: 0,
@@ -175,7 +194,7 @@ export const handleGetTechnology = async (key, side, id) => {
         console.log('An error in handleGetTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Tải dữ liệu thất bại`,
+            errorMessage: `Tải dữ liệu thất bại, không kết nối được với database`,
         };
     }
 };
@@ -183,18 +202,19 @@ export const handleGetTechnology = async (key, side, id) => {
 // UPDATE TECHNOLOGY
 export const handleUpdateTechnology = async (data) => {
     try {
+        const { key, side, id, image, name, version, link } = data;
         await db.Technology.update(
             {
-                image: data.image,
-                name: data.name,
-                version: data.version,
-                link: data.link,
+                image: image,
+                name: name,
+                version: version,
+                link: link,
             },
-            { where: { id: data.id } },
+            { where: { id: id } },
         );
 
-        let technologies = await db.Technology.findAll({
-            where: { key: data.key, side: data.side },
+        const technologies = await db.Technology.findAll({
+            where: { key: key, side: side },
             attributes: ['id', 'image', 'name', 'version', 'link'],
         });
 
@@ -207,18 +227,19 @@ export const handleUpdateTechnology = async (data) => {
         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Sửa dữ liệu thất bại`,
+            errorMessage: `Sửa dữ liệu thất bại, không kết nối được với database`,
         };
     }
 };
 
 // DELETE TECHNOLOGY
-export const handleDeleteTechnology = async (key, side, id) => {
+export const handleDeleteTechnology = async (data) => {
     try {
+        const { key, side, id } = data;
         await db.Technology.destroy({ where: { key: key, side: side, id: id } });
 
         let technologies = await db.Technology.findAll({
-            where: { key: data.key, side: data.side },
+            where: { key: key, side: side },
             attributes: ['id', 'image', 'name', 'version', 'link'],
         });
 
@@ -231,7 +252,7 @@ export const handleDeleteTechnology = async (key, side, id) => {
         console.log('An error in handleDeleteTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xóa thư viện thất bại`,
+            errorMessage: `Xóa thư viện thất bại, không kết nối được với database`,
         };
     }
 };

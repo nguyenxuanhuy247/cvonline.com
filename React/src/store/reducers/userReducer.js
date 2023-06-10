@@ -1,9 +1,13 @@
 import actionNames from '../actions/actionNames';
 
 const initialState = {
-    isLoading: false,
-    isAddLibraryLoading: false,
-    isGetLibraryLoading: false,
+    isLoading: {
+        signin: false,
+        signup: false,
+        createLibrary: false,
+        readLibrary: false,
+        updateLibrary: false,
+    },
     isSignUp: false,
     signUpMessage: {},
     isSignIn: false,
@@ -79,61 +83,66 @@ const userReducer = (state = initialState, action) => {
         case actionNames.CREATE_LIBRARY_START:
             return {
                 ...state,
-                isAddLibraryLoading: true,
+                isLoading: { ...state.isLoading, createLibrary: true },
             };
         case actionNames.CREATE_LIBRARY_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, createLibrary: false },
+                libraries: action.payload,
+            };
         case actionNames.CREATE_LIBRARY_FAILED:
             return {
                 ...state,
-                isAddLibraryLoading: false,
+                isLoading: { ...state.isLoading, createLibrary: false },
             };
         case actionNames.READ_LIBRARY_START:
             return {
                 ...state,
-                isAddLibraryLoading: true,
+                isLoading: { ...state.isLoading, readLibrary: true },
             };
         case actionNames.READ_LIBRARY_SUCCESS:
             return {
                 ...state,
-                isGetLibraryLoading: false,
+                isLoading: { ...state.isLoading, readLibrary: false },
                 libraries: action.payload,
             };
         case actionNames.READ_LIBRARY_FAILED:
             return {
                 ...state,
-                isGetLibraryLoading: false,
+                isLoading: { ...state.isLoading, readLibrary: false },
             };
         case actionNames.UPDATE_LIBRARY_START:
             return {
                 ...state,
-                isLoading: true,
+                isLoading: { ...state.isLoading, updateLibrary: true },
             };
         case actionNames.UPDATE_LIBRARY_SUCCESS:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: { ...state.isLoading, updateLibrary: false },
                 libraries: action.payload,
             };
         case actionNames.UPDATE_LIBRARY_FAILED:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: { ...state.isLoading, updateLibrary: false },
             };
         case actionNames.DELETE_LIBRARY_START:
             return {
                 ...state,
-                isLoading: true,
+                isLoading: { ...state.isLoading, readLibrary: true },
             };
         case actionNames.DELETE_LIBRARY_SUCCESS:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: { ...state.isLoading, readLibrary: false },
                 libraries: action.payload,
             };
         case actionNames.DELETE_LIBRARY_FAILED:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: { ...state.isLoading, readLibrary: false },
             };
 
         default:

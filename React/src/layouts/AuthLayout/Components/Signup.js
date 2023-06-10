@@ -209,7 +209,7 @@ const mapStateToProps = (state) => {
     return {
         signUpMessage: state.user.signUpMessage,
         isSignUp: state.user.isSignUp,
-        isLoading: state.user.isLoading,
+        isLoading: state.user.isLoading.signup,
     };
 };
 

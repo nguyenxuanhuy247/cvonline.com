@@ -1,5 +1,14 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
+.edit-button {
+    &:hover {
+        height: 100px;
+        & ~ div[aria-expanded] {
+            --timing: 3s;
+        }
+    }
+}
+
 .button {
     justify-content: flex-start;
     column-gap: 4px;
@@ -10,6 +19,7 @@
     border-radius: 99px;
     width: 100%;
     color: #000;
+    transition: var(--timing);
 
     &:hover {
         background-color: rgba(65, 188, 138, 0.1);

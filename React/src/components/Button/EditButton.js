@@ -24,11 +24,15 @@ class EditButton extends PureComponent {
         onDelete: PropTypes.func,
     };
 
+    handleMouseEnter = (e) => {
+        console.log('Entering: ', e.target);
+    };
+
     render() {
         const { onAdd, onEdit, onDelete } = this.props;
 
         return (
-            <div className={cx('wrapper')}>
+            <div className={cx('wrapper')} onMouseEnter={(e) => this.handleMouseEnter(e)}>
                 <DefaultTippy content="Kéo thả để di chuyển mục">
                     <Button className={cx('btn', 'drag')}>
                         <RiDragMove2Fill />

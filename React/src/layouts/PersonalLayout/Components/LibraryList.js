@@ -17,132 +17,6 @@ import Loading from '~/components/Modal/Loading.js';
 
 const cx = className.bind(styles);
 
-// const FE_LIBRARY_LIST = [
-//     {
-//         id: 1,
-//         image: Icons.Github,
-//         name: 'React router dom React router dom React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 2,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 3,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 4,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 5,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 6,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 7,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 8,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 9,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 10,
-//         image: Icons.Github,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-// ];
-
-// const BE_LIBRARY_LIST = [
-//     {
-//         id: 1,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 2,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 3,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 4,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 5,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 6,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 7,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 8,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 9,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-//     {
-//         id: 10,
-//         image: Icons.Gitlab,
-//         name: 'React router dom',
-//         version: '6.10.0',
-//     },
-// ];
-
 class LibraryList extends PureComponent {
     constructor(props) {
         super(props);
@@ -160,6 +34,11 @@ class LibraryList extends PureComponent {
         };
     }
 
+    side = () => {
+        const side = this.state.isFE ? 'FE' : 'BE';
+        return side;
+    };
+
     handleShowLibraryList = (e) => {
         const isActive = e.target.classList.contains(cx('active'));
         const isFE = e.target.id === 'frontend';
@@ -167,10 +46,9 @@ class LibraryList extends PureComponent {
         if (!isActive) {
             const btn = document.querySelector(`.${cx('active')}`);
             if (btn) {
-                this.setState({ isFE: isFE });
+                this.setState({ isFE: isFE }, () => this.props.readLibrary(this.side()));
                 btn.classList.remove(cx('active'));
                 e.target.classList.add(cx('active'));
-                this.props.readLibrary(isFE);
             }
         }
     };
@@ -200,15 +78,14 @@ class LibraryList extends PureComponent {
 
     handleCreateLibrary = async () => {
         const { image, name, version, link } = this.state;
-        const side = this.state.isFE ? 'FE' : 'BE';
+        const side = this.side();
         const data = { type: 'LIBRARY', key: 'LI', side, image, name, version, link };
         await this.props.createLibrary(data, this.state.isFE);
-        await this.props.readLibrary(side);
         this.handleCloseAddLibrary();
     };
 
     handleUpdateLibrary = (state) => {
-        const side = this.state.isFE ? 'FE' : 'BE';
+        const side = this.side();
         const data = {
             type: 'LIBRARY',
             key: 'LI',
@@ -219,21 +96,20 @@ class LibraryList extends PureComponent {
             version: state.version,
             link: state.link,
         };
-
+        this.setState({ isEdit: false });
         this.props.updateLibrary(data);
     };
 
     handleDeleteLibrary = (id) => {
-        const side = this.state.isFE ? 'FE' : 'BE';
-        this.props.deleteLibrary(side, id);
+        this.props.deleteLibrary(this.side(), id);
     };
 
     componentDidMount() {
-        this.props.readLibrary(this.state.isFE);
+        this.props.readLibrary(this.side());
     }
 
     render() {
-        let { libraryList, isAddLibraryLoading, isGetLibraryLoading } = this.props;
+        let { libraryList, isCreateLibraryLoading, isReadLibraryLoading, isUpdateLibraryLoading } = this.props;
 
         return (
             <div className={cx('library-used')}>
@@ -264,6 +140,7 @@ class LibraryList extends PureComponent {
                                         onAdd={this.handleShowAddLibrary}
                                         onUpdate={this.handleUpdateLibrary}
                                         onDelete={() => this.handleDeleteLibrary(library.id)}
+                                        isLoading={isUpdateLibraryLoading}
                                     />
                                 </div>
                             );
@@ -340,7 +217,7 @@ class LibraryList extends PureComponent {
                             </Button>
                         </div>
 
-                        {isAddLibraryLoading && <Loading className={cx('spinner')} />}
+                        {isCreateLibraryLoading && <Loading styles={{ position: 'absolute' }} />}
                     </div>
                 )}
 
@@ -378,7 +255,7 @@ class LibraryList extends PureComponent {
                         }}
                     />
                 </Box>
-                {isGetLibraryLoading && <Loading className={cx('spinner')} />}
+                {isReadLibraryLoading && <Loading styles={{ position: 'absolute' }} />}
             </div>
         );
     }
@@ -387,8 +264,9 @@ class LibraryList extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         libraryList: state.user.libraries,
-        isAddLibraryLoading: state.user.isAddLibraryLoading,
-        isGetLibraryLoading: state.user.isGetLibraryLoading,
+        isCreateLibraryLoading: state.user.isLoading.createLibrary,
+        isReadLibraryLoading: state.user.isLoading.readLibrary,
+        isUpdateLibraryLoading: state.user.isLoading.updateLibrary,
     };
 };
 

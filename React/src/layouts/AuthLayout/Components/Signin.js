@@ -174,7 +174,7 @@ const mapStateToProps = (state) => {
     return {
         signInMessage: state.user.signInMessage,
         isSignIn: state.user.isSignIn,
-        isLoading: state.user.isLoading,
+        isLoading: state.user.isLoading.signin,
     };
 };
 
