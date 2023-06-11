@@ -1,3 +1,4 @@
+import { deleteLibrary } from '~/services';
 import actionNames from '../actions/actionNames';
 
 const initialState = {
@@ -12,7 +13,24 @@ const initialState = {
     signUpMessage: {},
     isSignIn: false,
     signInMessage: {},
-    libraries: [],
+    createLibrary: {
+        errorCode: undefined,
+        errorMessage: '',
+    },
+    readLibrary: {
+        errorCode: undefined,
+        errorMessage: '',
+        totalPages: 0,
+        libraries: [],
+    },
+    updateLibrary: {
+        errorCode: undefined,
+        errorMessage: '',
+    },
+    deleteLibrary: {
+        errorCode: undefined,
+        errorMessage: '',
+    },
 };
 
 const userReducer = (state = initialState, action) => {
@@ -80,6 +98,7 @@ const userReducer = (state = initialState, action) => {
             };
 
         // LIBRARY
+        // CREATE LIBRARY
         case actionNames.CREATE_LIBRARY_START:
             return {
                 ...state,
@@ -88,14 +107,34 @@ const userReducer = (state = initialState, action) => {
         case actionNames.CREATE_LIBRARY_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, createLibrary: false },
-                libraries: action.payload,
+                isLoading: {
+                    ...state.isLoading,
+                    createLibrary: false,
+                },
+                createLibrary: {
+                    ...state.createLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                },
+                readLibrary: {
+                    totalPages: action.payload.totalPages,
+                },
             };
+
         case actionNames.CREATE_LIBRARY_FAILED:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, createLibrary: false },
+                isLoading: {
+                    ...state.isLoading,
+                    createLibrary: false,
+                },
+                createLibrary: {
+                    ...state.createLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                },
             };
+        // READ LIBRARY
         case actionNames.READ_LIBRARY_START:
             return {
                 ...state,
@@ -105,13 +144,25 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
-                libraries: action.payload,
+                readLibrary: {
+                    ...state.readLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                    totalPages: action.payload.totalPages,
+                    libraries: action.payload.data,
+                },
             };
         case actionNames.READ_LIBRARY_FAILED:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
+                readLibrary: {
+                    ...state.readLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                },
             };
+        // UPDATE LIBRARY
         case actionNames.UPDATE_LIBRARY_START:
             return {
                 ...state,
@@ -121,13 +172,23 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateLibrary: false },
-                libraries: action.payload,
+                updateLibrary: {
+                    ...state.updateLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                },
             };
         case actionNames.UPDATE_LIBRARY_FAILED:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateLibrary: false },
+                updateLibrary: {
+                    ...state.updateLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                },
             };
+        // DELETE LIBRARY
         case actionNames.DELETE_LIBRARY_START:
             return {
                 ...state,
@@ -137,12 +198,21 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
-                libraries: action.payload,
+                deleteLibrary: {
+                    ...state.deleteLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                },
             };
         case actionNames.DELETE_LIBRARY_FAILED:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
+                deleteLibrary: {
+                    ...state.deleteLibrary,
+                    errorCode: action.payload.errorCode,
+                    errorMessage: action.payload.errorMessage,
+                },
             };
 
         default:

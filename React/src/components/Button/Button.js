@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 
 function Button({
     route,
-    url,
+    href,
     disabled = false,
     children,
     isEdit = false,
@@ -42,8 +42,10 @@ function Button({
     if (route) {
         props.to = route;
         Button = Link;
-    } else if (url) {
-        props.href = url;
+    } else if (href) {
+        props.href = href;
+        props.target = '_blank';
+        props.rel = 'noopener';
         Button = 'a';
     }
 
@@ -62,7 +64,7 @@ function Button({
             onMouseOut={() => setEdit(false)}
         >
             {children}
-            {isEdit && edit && <EditButton/>}
+            {isEdit && edit && <EditButton />}
         </Button>
     );
 }

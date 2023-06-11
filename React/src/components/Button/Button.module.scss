@@ -13,4 +13,9 @@
     margin: 0;
     font-size: 1.4rem;
     column-gap: 16px;
+
+    &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
 }

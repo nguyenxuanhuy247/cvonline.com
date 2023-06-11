@@ -24,15 +24,29 @@ class EditButton extends PureComponent {
         onDelete: PropTypes.func,
     };
 
-    handleMouseEnter = (e) => {
-        console.log('Entering: ', e.target);
+    handleMouseEnter = () => {
+        const hoverButton = document.getElementById(`${this.props.id}`);
+        if (hoverButton) {
+            hoverButton.style.backgroundColor = 'rgba(65, 188, 138, 0.1)';
+        }
+    };
+
+    handleMouseLeave = () => {
+        const hoverButton = document.getElementById(this.props.id);
+        if (hoverButton) {
+            hoverButton.style.backgroundColor = 'transparent';
+        }
     };
 
     render() {
         const { onAdd, onEdit, onDelete } = this.props;
 
         return (
-            <div className={cx('wrapper')} onMouseEnter={(e) => this.handleMouseEnter(e)}>
+            <div
+                className={cx('wrapper')}
+                onMouseEnter={() => this.handleMouseEnter()}
+                onMouseLeave={() => this.handleMouseLeave()}
+            >
                 <DefaultTippy content="Kéo thả để di chuyển mục">
                     <Button className={cx('btn', 'drag')}>
                         <RiDragMove2Fill />

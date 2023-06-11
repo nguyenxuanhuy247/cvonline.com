@@ -128,26 +128,26 @@ export const handleCreateTechnology = async (data) => {
 
         if (!created) {
             return {
-                errorCode: 31,
-                errorMessage: `Trường này đã được tạo`,
+                errorCode: 32,
+                errorMessage: `Dữ liệu đã tồn tại trong Database`,
+            };
+        } else {
+            const technologies = await db.Technology.findAll({
+                where: { key: key, side: side },
+                attributes: ['id', 'image', 'name', 'version', 'link'],
+            });
+            const totalPages = Math.ceil(technologies.length / 10);
+            return {
+                errorCode: 0,
+                errorMessage: `Tạo dữ liệu thành công`,
+                totalPages: totalPages,
             };
         }
-
-        let technologies = await db.Technology.findAll({
-            where: { key: key, side: side },
-            attributes: ['id', 'image', 'name', 'version', 'link'],
-        });
-
-        return {
-            errorCode: 0,
-            errorMessage: `Tạo dữ liệu thành công`,
-            data: technologies,
-        };
     } catch (error) {
         console.log('An error in handleCreateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Tải dữ liệu thất bại, không kết nối được với database`,
+            errorMessage: `Không kết nối được với Database`,
         };
     }
 };
@@ -155,21 +155,44 @@ export const handleCreateTechnology = async (data) => {
 // READ TECHNOLOGY
 export const handleGetTechnology = async (data) => {
     try {
-        const { key, side, id } = data;
-        console.log('key :', key, 'side :', side, 'id :', id);
-        
+        const { key, side, id, page, page_size } = data;
+
         let technology;
 
         if (id === 'ALL') {
-            technology = await db.Technology.findAll({
-                where: { key: key, side: side },
-                attributes: ['id', 'image', 'name', 'version', 'link'],
-            });
+            if (page && page_size && page_size > 0) {
+                const pageNumber = parseInt(page);
+                const pageSizeNumber = parseInt(page_size);
 
-            console.log('findAll: ', technology);
-        }
+                const startIndex = (pageNumber - 1) * pageSizeNumber;
 
-        if (id !== 'ALL') {
+                const { count, rows } = await db.Technology.findAndCountAll({
+                    where: { key: key, side: side },
+                    offset: startIndex,
+                    limit: pageSizeNumber,
+                });
+
+                const totalPages = Math.ceil(count / pageSizeNumber);
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Tải dữ liệu phân trang thành công`,
+                    totalPages: totalPages,
+                    data: rows,
+                };
+            } else {
+                technology = await db.Technology.findAll({
+                    where: { key: key, side: side },
+                    attributes: ['id', 'image', 'name', 'version', 'link'],
+                });
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Tải tất cả dữ liệu thành công`,
+                    data: technology,
+                };
+            }
+        } else {
             technology = await db.Technology.findOne({
                 where: { key: key, side: side, id: id },
                 attributes: ['id', 'image', 'name', 'version', 'link'],
@@ -182,19 +205,11 @@ export const handleGetTechnology = async (data) => {
                 };
             }
         }
-
-        console.log('handleGetTechnology', technology);
-
-        return {
-            errorCode: 0,
-            errorMessage: `Tải dữ liệu thành công`,
-            data: technology,
-        };
     } catch (error) {
         console.log('An error in handleGetTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Tải dữ liệu thất bại, không kết nối được với database`,
+            errorMessage: `Không kết nối được với Database`,
         };
     }
 };
@@ -203,31 +218,37 @@ export const handleGetTechnology = async (data) => {
 export const handleUpdateTechnology = async (data) => {
     try {
         const { key, side, id, image, name, version, link } = data;
-        await db.Technology.update(
-            {
-                image: image,
-                name: name,
-                version: version,
-                link: link,
-            },
-            { where: { id: id } },
-        );
 
-        const technologies = await db.Technology.findAll({
-            where: { key: key, side: side },
-            attributes: ['id', 'image', 'name', 'version', 'link'],
+        const result = await db.Technology.findOne({
+            where: { id: id },
         });
 
-        return {
-            errorCode: 0,
-            errorMessage: `Sửa dữ liệu thành công`,
-            data: technologies,
-        };
+        if (result) {
+            await db.Technology.update(
+                {
+                    image: image,
+                    name: name,
+                    version: version,
+                    link: link,
+                },
+                { where: { id: id } },
+            );
+
+            return {
+                errorCode: 0,
+                errorMessage: `Sửa dữ liệu thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy id trong Database`,
+            };
+        }
     } catch (error) {
         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Sửa dữ liệu thất bại, không kết nối được với database`,
+            errorMessage: `Không kết nối được với Database`,
         };
     }
 };
@@ -236,23 +257,29 @@ export const handleUpdateTechnology = async (data) => {
 export const handleDeleteTechnology = async (data) => {
     try {
         const { key, side, id } = data;
-        await db.Technology.destroy({ where: { key: key, side: side, id: id } });
 
-        let technologies = await db.Technology.findAll({
-            where: { key: key, side: side },
-            attributes: ['id', 'image', 'name', 'version', 'link'],
+        const result = await db.Technology.findOne({
+            where: { id: id },
         });
 
-        return {
-            errorCode: 0,
-            errorMessage: `Xóa thư viện thành công`,
-            data: technologies,
-        };
+        if (result) {
+            await db.Technology.destroy({ where: { id: id } });
+
+            return {
+                errorCode: 0,
+                errorMessage: `Xóa thư viện thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy id trong Database`,
+            };
+        }
     } catch (error) {
         console.log('An error in handleDeleteTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xóa thư viện thất bại, không kết nối được với database`,
+            errorMessage: `Không kết nối được với Database`,
         };
     }
 };

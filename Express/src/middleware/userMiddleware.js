@@ -78,7 +78,7 @@ export const checkReqGetTechnology = (req, res, next) => {
     next();
 };
 
-// READ LIBRARY
+// UPDATE LIBRARY
 export const checkReqUpdateTechnology = (req, res, next) => {
     const { id } = req.body;
 

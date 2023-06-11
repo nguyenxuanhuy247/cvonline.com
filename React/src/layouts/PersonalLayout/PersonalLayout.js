@@ -162,9 +162,8 @@ class PersonalLayout extends PureComponent {
                             <div className={cx('col pc-9')}>
                                 <div className={cx('product-list')}>
                                     <Product />
-                                    <Product />
-                                    <Product />
-                                    <Product />
+                                    {/* <Product />
+                                    <Product /> */}
                                 </div>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 import { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
+import DefaultTippy from '@tippyjs/react';
 
 import Button from '~/components/Button/Button.js';
 import styles from './Library.module.scss';
@@ -27,6 +28,7 @@ class Library extends PureComponent {
     handleShowEditLibrary = (id) => {
         let editedLibrary;
         const libraryList = this.props.libraryList;
+ 
         if (libraryList) {
             editedLibrary = libraryList.find((library) => {
                 return library.id === id;
@@ -63,11 +65,10 @@ class Library extends PureComponent {
                 placement="top-start"
                 interactive
                 offset={[0, 0]}
-                delay={[0, 300000]}
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
                         <EditButton
-                            className={cx('edit-button')}
+                            id={`js-hover-button-${id}`}
                             onAdd={onAdd}
                             onEdit={() => this.handleShowEditLibrary(id)}
                             onDelete={onDelete}
@@ -75,11 +76,21 @@ class Library extends PureComponent {
                     </div>
                 )}
             >
-                <Button href={href} className={cx('button')}>
-                    <Image src={src || JpgImages.placeholder} className={cx('image')} />
-                    <span className={cx('name')}>{name}</span>
-                    <span className={cx('version')}>{version}</span>
-                </Button>
+                <HeadlessTippy
+                    placement="bottom"
+                    offset={[0, 4]}
+                    render={(attrs) => (
+                        <div tabIndex="-1" {...attrs}>
+                            {href && <div className={cx('library-href')}>{href}</div>}
+                        </div>
+                    )}
+                >
+                    <Button id={`js-hover-button-${id}`} href={href} className={cx('button')}>
+                        <Image src={src || JpgImages.placeholder} className={cx('image')} />
+                        <span className={cx('name')}>{name}</span>
+                        <span className={cx('version')}>{version}</span>
+                    </Button>
+                </HeadlessTippy>
             </HeadlessTippy>
         ) : (
             <div className={cx('add-library')}>

@@ -81,14 +81,19 @@ export const createLibrary = (dataSent) => {
         dispatch({ type: actionNames.CREATE_LIBRARY_START });
         try {
             let res = await userService.createLibrary(dataSent);
-            const { errorCode, data } = res;
-            if (errorCode === 0) {
-                dispatch(createLibrarySuccess(data));
+            console.log('createLibrary:', res);
+            if (res.errorCode === 0) {
+                dispatch(createLibrarySuccess(res));
             } else {
-                dispatch(createLibraryFailed());
+                dispatch(createLibraryFailed(res));
             }
         } catch (error) {
-            dispatch(createLibraryFailed());
+            dispatch(
+                createLibraryFailed({
+                    errorCode: 41,
+                    errorMessage: `Kiểm tra lại kết nối`,
+                }),
+            );
             console.log('An error in createLibrary() - userActions.js: ', error);
         }
     };
@@ -99,24 +104,29 @@ export const createLibrarySuccess = (data) => ({
     payload: data,
 });
 
-export const createLibraryFailed = () => ({
+export const createLibraryFailed = (data) => ({
     type: actionNames.CREATE_LIBRARY_FAILED,
+    payload: data,
 });
 
 // READ LIBRARY
-export const readLibrary = (side) => {
+export const readLibrary = (side, page, pageSize) => {
     return async (dispatch) => {
         dispatch({ type: actionNames.READ_LIBRARY_START });
         try {
-            const res = await userService.readLibrary('LI', side, 'ALL');
-            const { errorCode, data } = res;
-            if (errorCode === 0) {
-                dispatch(readLibrarySuccess(data));
+            const res = await userService.readLibrary('LI', side, 'ALL', page, pageSize);
+            if (res.errorCode === 0) {
+                dispatch(readLibrarySuccess(res));
             } else {
-                dispatch(readLibraryFailed());
+                dispatch(readLibraryFailed(res));
             }
         } catch (error) {
-            dispatch(readLibraryFailed());
+            dispatch(
+                readLibraryFailed({
+                    errorCode: 41,
+                    errorMessage: `Kiểm tra lại kết nối`,
+                }),
+            );
             console.log('An error in readLibrary() - userActions.js: ', error);
         }
     };
@@ -127,8 +137,9 @@ export const readLibrarySuccess = (data) => ({
     payload: data,
 });
 
-export const readLibraryFailed = () => ({
+export const readLibraryFailed = (data) => ({
     type: actionNames.READ_LIBRARY_FAILED,
+    payload: data,
 });
 
 // UPDATE LIBRARY
@@ -137,14 +148,18 @@ export const updateLibrary = (dataSent) => {
         dispatch({ type: actionNames.UPDATE_LIBRARY_START });
         try {
             let res = await userService.updateLibrary(dataSent);
-            const { errorCode, data } = res;
-            if (errorCode === 0) {
-                dispatch(updateLibrarySuccess(data));
+            if (res.errorCode === 0) {
+                dispatch(updateLibrarySuccess(res));
             } else {
-                dispatch(updateLibraryFailed());
+                dispatch(updateLibraryFailed(res));
             }
         } catch (error) {
-            dispatch(updateLibraryFailed());
+            dispatch(
+                updateLibraryFailed({
+                    errorCode: 41,
+                    errorMessage: `Kiểm tra lại kết nối`,
+                }),
+            );
             console.log('An error in updateLibrary() - userActions.js: ', error);
         }
     };
@@ -155,8 +170,9 @@ export const updateLibrarySuccess = (data) => ({
     payload: data,
 });
 
-export const updateLibraryFailed = () => ({
+export const updateLibraryFailed = (data) => ({
     type: actionNames.UPDATE_LIBRARY_FAILED,
+    payload: data,
 });
 
 // DELETE LIBRARY
@@ -165,14 +181,18 @@ export const deleteLibrary = (side, id) => {
         dispatch({ type: actionNames.DELETE_LIBRARY_START });
         try {
             let res = await userService.deleteLibrary('LI', side, id);
-            const { errorCode, data } = res;
-            if (errorCode === 0) {
-                dispatch(deleteLibrarySuccess(data));
+            if (res.errorCode === 0) {
+                dispatch(deleteLibrarySuccess(res));
             } else {
-                dispatch(deleteLibraryFailed());
+                dispatch(deleteLibraryFailed(res));
             }
         } catch (error) {
-            dispatch(deleteLibraryFailed());
+            dispatch(
+                deleteLibraryFailed({
+                    errorCode: 41,
+                    errorMessage: `Kiểm tra lại kết nối`,
+                }),
+            );
             console.log('An error in deleteLibrary() - userActions.js: ', error);
         }
     };
@@ -183,6 +203,7 @@ export const deleteLibrarySuccess = (data) => ({
     payload: data,
 });
 
-export const deleteLibraryFailed = () => ({
+export const deleteLibraryFailed = (data) => ({
     type: actionNames.DELETE_LIBRARY_FAILED,
+    payload: data,
 });

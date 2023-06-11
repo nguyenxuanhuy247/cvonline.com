@@ -8,7 +8,6 @@ class Loading extends PureComponent {
                 style={{
                     ...this.props.styles,
                     inset: 0,
-                    backgroundColor: 'rgba(255, 255, 255, 0.6)',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',

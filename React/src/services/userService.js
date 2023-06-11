@@ -25,8 +25,8 @@ export const createLibrary = (data) => {
     return axios.post('/post-technology', data);
 };
 
-export const readLibrary = (key, side, id) => {
-    return axios.get(`/get-technology?key=${key}&side=${side}&id=${id}`);
+export const readLibrary = (key, side, id, page, pageSize) => {
+    return axios.get(`/get-technology?key=${key}&side=${side}&id=${id}&page=${page}&page_size=${pageSize}`);
 };
 
 export const updateLibrary = (data) => {

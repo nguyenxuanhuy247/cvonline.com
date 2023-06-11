@@ -25,7 +25,9 @@ class LibraryList extends PureComponent {
             isAddLibrary: false,
             isEditLibrary: false,
             isModalOpen: false,
-            addedImageUrl: '',
+            uploadImageUrl: '',
+            selectedPage: 1,
+            lastPage: 1,
 
             image: '',
             name: '',
@@ -46,7 +48,7 @@ class LibraryList extends PureComponent {
         if (!isActive) {
             const btn = document.querySelector(`.${cx('active')}`);
             if (btn) {
-                this.setState({ isFE: isFE }, () => this.props.readLibrary(this.side()));
+                this.setState({ isFE: isFE, selectedPage: 1 }, () => this.props.readLibrary(this.side(), 1, 10));
                 btn.classList.remove(cx('active'));
                 e.target.classList.add(cx('active'));
             }
@@ -54,7 +56,7 @@ class LibraryList extends PureComponent {
     };
 
     handleInputLibrary = (e, name) => {
-        const value = e.target.value;
+        const value = e.target.value?.trim();
         this.setState({ [name]: value });
     };
 
@@ -63,11 +65,11 @@ class LibraryList extends PureComponent {
     };
 
     handleCloseAddLibrary = () => {
-        this.setState({ isAddLibrary: false, addedImageUrl: '' });
+        this.setState({ isAddLibrary: false, uploadImageUrl: '' });
     };
 
     getImageUrlFromChangeImageModal = (url) => {
-        this.setState({ addedImageUrl: url });
+        this.setState({ uploadImageUrl: url });
     };
 
     onClose = () => {
@@ -80,11 +82,20 @@ class LibraryList extends PureComponent {
         const { image, name, version, link } = this.state;
         const side = this.side();
         const data = { type: 'LIBRARY', key: 'LI', side, image, name, version, link };
-        await this.props.createLibrary(data, this.state.isFE);
-        this.handleCloseAddLibrary();
+        await this.props.createLibrary(data);
+        await this.props.readLibrary(this.side(), this.state.lastPage, 10);
+        
+        this.setState({
+            isAddLibrary: false,
+            selectedPage: this.props.totalPages,
+            image: '',
+            name: '',
+            version: '',
+            link: '',
+        });
     };
 
-    handleUpdateLibrary = (state) => {
+    handleUpdateLibrary = async (state) => {
         const side = this.side();
         const data = {
             type: 'LIBRARY',
@@ -97,19 +108,53 @@ class LibraryList extends PureComponent {
             link: state.link,
         };
         this.setState({ isEdit: false });
-        this.props.updateLibrary(data);
+        await this.props.updateLibrary(data);
+        await this.props.readLibrary(this.side(), this.state.selectedPage, 10);
     };
 
-    handleDeleteLibrary = (id) => {
-        this.props.deleteLibrary(this.side(), id);
+    handleDeleteLibrary = async (id) => {
+        await this.props.deleteLibrary(this.side(), id);
+        await this.props.readLibrary(this.side(), this.state.selectedPage, 10);
+    };
+
+    handleChangepage = (event, value) => {
+        this.setState({ selectedPage: value });
+        this.props.readLibrary(this.side(), value, 10);
     };
 
     componentDidMount() {
-        this.props.readLibrary(this.side());
+        this.props.readLibrary(this.side(), this.state.selectedPage, 10);
+    }
+
+    componentDidUpdate(prevProps) {
+        const { totalPages } = this.props;
+        this.setState({ lastPage: totalPages });
+
+        if (prevProps.totalPages !== totalPages) {
+            // If delete the last library of last page, will move to the previous page
+            if (totalPages < this.state.selectedPage) {
+                this.setState({ selectedPage: totalPages });
+                this.props.readLibrary(this.side(), totalPages, 10);
+            }
+        }
+
+        // If page's quantity is more than 1, libray list's height of page 2, 3, 4,... will be equal to page 1
+        const library = document.querySelector('[id*=js-hover-button]');
+        const libraryList = document.querySelector(`.${cx('library-list')}`);
+
+        if (library && libraryList) {
+            if (totalPages > 1) {
+                const height = library.offsetHeight * 10;
+                libraryList.style.minHeight = `${height}px`;
+            } else {
+                libraryList.style.minHeight = `initial`;
+            }
+        }
     }
 
     render() {
-        let { libraryList, isCreateLibraryLoading, isReadLibraryLoading, isUpdateLibraryLoading } = this.props;
+        const { libraryList, isCreateLibraryLoading, isReadLibraryLoading, isUpdateLibraryLoading, totalPages } =
+            this.props;
 
         return (
             <div className={cx('library-used')}>
@@ -137,6 +182,7 @@ class LibraryList extends PureComponent {
                                         src={library.image}
                                         name={library.name}
                                         version={library.version}
+                                        href={library.link}
                                         onAdd={this.handleShowAddLibrary}
                                         onUpdate={this.handleUpdateLibrary}
                                         onDelete={() => this.handleDeleteLibrary(library.id)}
@@ -176,7 +222,7 @@ class LibraryList extends PureComponent {
                                         </div>
                                     )}
                                 >
-                                    <Image src={this.state.addedImageUrl} className={cx('image')} round />
+                                    <Image src={this.state.uploadImageUrl} className={cx('image')} round />
                                 </HeadlessTippy>
                                 {this.state.isModalOpen && (
                                     <ChangeImageModal
@@ -212,7 +258,11 @@ class LibraryList extends PureComponent {
                             <Button className={cx('btn', 'cancel')} onClick={() => this.handleCloseAddLibrary()}>
                                 Hủy
                             </Button>
-                            <Button className={cx('btn', 'add')} onClick={() => this.handleCreateLibrary()}>
+                            <Button
+                                className={cx('btn', 'add')}
+                                disabled={!this.state.name}
+                                onClick={() => this.handleCreateLibrary()}
+                            >
                                 Thêm
                             </Button>
                         </div>
@@ -224,15 +274,17 @@ class LibraryList extends PureComponent {
                 <Box
                     sx={{
                         margin: '24px 0 12px',
+                        display: 'grid',
+                        placeItems: 'center',
                     }}
                 >
                     <Pagination
-                        count={10}
+                        count={totalPages}
                         variant="outlined"
                         size="medium"
                         siblingCount={1}
                         boundaryCount={1}
-                        defaultPage={1}
+                        page={this.state.selectedPage}
                         sx={{
                             '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
                                 color: 'var(--primary-color)',
@@ -248,11 +300,11 @@ class LibraryList extends PureComponent {
                                 backgroundColor: 'var(--button-bgc-green-01)',
                             },
 
-                            '& .MuiPagination-root.css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected:hover':
-                                {
-                                    backgroundColor: 'var(--button-bgc-green-01) !important',
-                                },
+                            '& .Mui-selected:hover': {
+                                backgroundColor: 'var(--button-bgc-green-01) !important',
+                            },
                         }}
+                        onChange={this.handleChangepage}
                     />
                 </Box>
                 {isReadLibraryLoading && <Loading styles={{ position: 'absolute' }} />}
@@ -263,7 +315,9 @@ class LibraryList extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        libraryList: state.user.libraries,
+        createErrorCode: state.user.createLibrary.errorCode,
+        totalPages: state.user.readLibrary.totalPages,
+        libraryList: state.user.readLibrary.libraries,
         isCreateLibraryLoading: state.user.isLoading.createLibrary,
         isReadLibraryLoading: state.user.isLoading.readLibrary,
         isUpdateLibraryLoading: state.user.isLoading.updateLibrary,
@@ -272,7 +326,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        readLibrary: (isFE) => dispatch(userActions.readLibrary(isFE)),
+        readLibrary: (isFE, page, pageSize) => dispatch(userActions.readLibrary(isFE, page, pageSize)),
         createLibrary: (data, isFE) => dispatch(userActions.createLibrary(data, isFE)),
         updateLibrary: (data, isFE) => dispatch(userActions.updateLibrary(data, isFE)),
         deleteLibrary: (isFE, id) => dispatch(userActions.deleteLibrary(isFE, id)),
