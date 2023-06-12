@@ -21,20 +21,20 @@ export const postSignIn = (userEmail, userPassword) => {
 // =============================================================================
 // CRUD LIBRARY
 
-export const createLibrary = (data) => {
+export const createTechnology = (data) => {
     return axios.post('/post-technology', data);
 };
 
-export const readLibrary = (key, side, id, page, pageSize) => {
-    return axios.get(`/get-technology?key=${key}&side=${side}&id=${id}&page=${page}&page_size=${pageSize}`);
+export const readTechnology = (id, key, side, page, pageSize) => {
+    return axios.get(`/get-technology?id=${id}&key=${key}&side=${side}&page=${page}&page_size=${pageSize}`);
 };
 
-export const updateLibrary = (data) => {
+export const updateTechnology = (data) => {
     return axios.put('/put-technology', data);
 };
 
-export const deleteLibrary = (key, side, id) => {
-    return axios.delete(`/delete-technology?key=${key}&side=${side}&id=${id}`);
+export const deleteTechnology = (id, key, side) => {
+    return axios.delete(`/delete-technology?id=${id}&key=${key}&side=${side}`);
 };
 
 // =============================================================================

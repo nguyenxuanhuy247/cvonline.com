@@ -1,5 +1,6 @@
 import actionNames from './actionNames';
 import * as userService from '~/services';
+import { toast } from 'react-toastify';
 
 // USER SIGN UP
 export const userSignUpStart = (userData) => {
@@ -73,137 +74,109 @@ export const userSignOut = () => ({
 });
 
 // =================================================================
-// CRUD LIBRARY
+// CRUD TECHNOLOGY
 
-// CREATE LIBRARY
-export const createLibrary = (dataSent) => {
+// CREATE TECHNOLOGY
+export const createTechnology = (toastText, actionName, dataSent) => {
     return async (dispatch) => {
-        dispatch({ type: actionNames.CREATE_LIBRARY_START });
+        const actionStart = `CREATE_${actionName}_START`;
+        const actionSuccess = `CREATE_${actionName}_SUCCESS`;
+        const actionFailure = `CREATE_${actionName}_FAILURE`;
+
+        dispatch(CRUDTechnology_Start_Success_Failure(actionStart));
         try {
-            let res = await userService.createLibrary(dataSent);
-            console.log('createLibrary:', res);
+            let res = await userService.createTechnology(dataSent);
             if (res.errorCode === 0) {
-                dispatch(createLibrarySuccess(res));
+                toast.success(`Tạo mới ${toastText} thành công`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
             } else {
-                dispatch(createLibraryFailed(res));
+                toast.error(`Tạo mới ${toastText} thất bại`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
             }
         } catch (error) {
-            dispatch(
-                createLibraryFailed({
-                    errorCode: 41,
-                    errorMessage: `Kiểm tra lại kết nối`,
-                }),
-            );
-            console.log('An error in createLibrary() - userActions.js: ', error);
+            toast.error(error.response.data.errorMessage);
+            dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
+            console.log('An error in createTechnology() - userActions.js: ', error);
         }
     };
 };
 
-export const createLibrarySuccess = (data) => ({
-    type: actionNames.CREATE_LIBRARY_SUCCESS,
-    payload: data,
-});
-
-export const createLibraryFailed = (data) => ({
-    type: actionNames.CREATE_LIBRARY_FAILED,
-    payload: data,
-});
-
-// READ LIBRARY
-export const readLibrary = (side, page, pageSize) => {
+// READ TECHNOLOGY
+export const readTechnology = (toastText, actionName, id, key, side, page, pageSize) => {
     return async (dispatch) => {
-        dispatch({ type: actionNames.READ_LIBRARY_START });
+        const actionStart = `READ_${actionName}_START`;
+        const actionSuccess = `READ_${actionName}_SUCCESS`;
+        const actionFailure = `READ_${actionName}_FAILURE`;
+
+        dispatch(CRUDTechnology_Start_Success_Failure(actionStart));
         try {
-            const res = await userService.readLibrary('LI', side, 'ALL', page, pageSize);
+            const res = await userService.readTechnology(id, key, side, page, pageSize);
+
             if (res.errorCode === 0) {
-                dispatch(readLibrarySuccess(res));
+                dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
             } else {
-                dispatch(readLibraryFailed(res));
+                toast.error(`Tải ${toastText} thất bại`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
             }
         } catch (error) {
-            dispatch(
-                readLibraryFailed({
-                    errorCode: 41,
-                    errorMessage: `Kiểm tra lại kết nối`,
-                }),
-            );
-            console.log('An error in readLibrary() - userActions.js: ', error);
+            toast.error(error.response.data.errorMessage);
+            dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
+            console.log('An error in readTechnology() - userActions.js: ', error);
         }
     };
 };
 
-export const readLibrarySuccess = (data) => ({
-    type: actionNames.READ_LIBRARY_SUCCESS,
-    payload: data,
-});
-
-export const readLibraryFailed = (data) => ({
-    type: actionNames.READ_LIBRARY_FAILED,
-    payload: data,
-});
-
-// UPDATE LIBRARY
-export const updateLibrary = (dataSent) => {
+// UPDATE TECHNOLOGY
+export const updateTechnology = (toastText, actionName, dataSent) => {
     return async (dispatch) => {
-        dispatch({ type: actionNames.UPDATE_LIBRARY_START });
+        const actionStart = `UPDATE_${actionName}_START`;
+        const actionSuccess = `UPDATE_${actionName}_SUCCESS`;
+        const actionFailure = `UPDATE_${actionName}_FAILURE`;
+
+        dispatch(CRUDTechnology_Start_Success_Failure(actionStart));
         try {
-            let res = await userService.updateLibrary(dataSent);
+            let res = await userService.updateTechnology(dataSent);
             if (res.errorCode === 0) {
-                dispatch(updateLibrarySuccess(res));
+                toast.success(`Sửa ${toastText} thành công`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
             } else {
-                dispatch(updateLibraryFailed(res));
+                toast.error(`Sửa ${toastText} thất bại`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
             }
         } catch (error) {
-            dispatch(
-                updateLibraryFailed({
-                    errorCode: 41,
-                    errorMessage: `Kiểm tra lại kết nối`,
-                }),
-            );
-            console.log('An error in updateLibrary() - userActions.js: ', error);
+            toast.error(error.response.data.errorMessage);
+            dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
+            console.log('An error in updateTechnology() - userActions.js: ', error);
         }
     };
 };
 
-export const updateLibrarySuccess = (data) => ({
-    type: actionNames.UPDATE_LIBRARY_SUCCESS,
-    payload: data,
-});
-
-export const updateLibraryFailed = (data) => ({
-    type: actionNames.UPDATE_LIBRARY_FAILED,
-    payload: data,
-});
-
-// DELETE LIBRARY
-export const deleteLibrary = (side, id) => {
+// DELETE TECHNOLOGY
+export const deleteTechnology = (toastText, actionName, id, key, side) => {
     return async (dispatch) => {
-        dispatch({ type: actionNames.DELETE_LIBRARY_START });
+        const actionStart = `DELETE_${actionName}_START`;
+        const actionSuccess = `DELETE_${actionName}_SUCCESS`;
+        const actionFailure = `DELETE_${actionName}_FAILURE`;
+
+        dispatch(CRUDTechnology_Start_Success_Failure(actionStart));
         try {
-            let res = await userService.deleteLibrary('LI', side, id);
+            let res = await userService.deleteTechnology(id, key, side);
             if (res.errorCode === 0) {
-                dispatch(deleteLibrarySuccess(res));
+                toast.success(`Xóa ${toastText} thành công`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
             } else {
-                dispatch(deleteLibraryFailed(res));
+                toast.error(`Xóa ${toastText} thất bại`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
             }
         } catch (error) {
-            dispatch(
-                deleteLibraryFailed({
-                    errorCode: 41,
-                    errorMessage: `Kiểm tra lại kết nối`,
-                }),
-            );
-            console.log('An error in deleteLibrary() - userActions.js: ', error);
+            toast.error(error.response.data.errorMessage);
+            dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
+            console.log('An error in deleteTechnology() - userActions.js: ', error);
         }
     };
 };
 
-export const deleteLibrarySuccess = (data) => ({
-    type: actionNames.DELETE_LIBRARY_SUCCESS,
-    payload: data,
-});
-
-export const deleteLibraryFailed = (data) => ({
-    type: actionNames.DELETE_LIBRARY_FAILED,
+export const CRUDTechnology_Start_Success_Failure = (actionName, data) => ({
+    type: actionNames[actionName],
     payload: data,
 });

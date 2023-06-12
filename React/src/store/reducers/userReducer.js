@@ -1,4 +1,3 @@
-import { deleteLibrary } from '~/services';
 import actionNames from '../actions/actionNames';
 
 const initialState = {
@@ -8,28 +7,26 @@ const initialState = {
         createLibrary: false,
         readLibrary: false,
         updateLibrary: false,
+        createFramework: false,
+        readFramework: false,
+        updateFramework: false,
     },
     isSignUp: false,
     signUpMessage: {},
     isSignIn: false,
     signInMessage: {},
-    createLibrary: {
-        errorCode: undefined,
-        errorMessage: '',
+    errorCode: {
+        createLibrary: undefined,
+        readLibrary: undefined,
+        updateLibrary: undefined,
+        deleteLibrary: undefined,
     },
     readLibrary: {
-        errorCode: undefined,
-        errorMessage: '',
         totalPages: 0,
         libraries: [],
     },
-    updateLibrary: {
-        errorCode: undefined,
-        errorMessage: '',
-    },
-    deleteLibrary: {
-        errorCode: undefined,
-        errorMessage: '',
+    readFramework: {
+        frameworks: [],
     },
 };
 
@@ -103,35 +100,22 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, createLibrary: true },
+                errorCode: {
+                    ...state.errorCode,
+                    createLibrary: undefined,
+                },
             };
         case actionNames.CREATE_LIBRARY_SUCCESS:
+        case actionNames.CREATE_LIBRARY_FAILURE:
             return {
                 ...state,
                 isLoading: {
                     ...state.isLoading,
                     createLibrary: false,
                 },
-                createLibrary: {
-                    ...state.createLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
-                },
-                readLibrary: {
-                    totalPages: action.payload.totalPages,
-                },
-            };
-
-        case actionNames.CREATE_LIBRARY_FAILED:
-            return {
-                ...state,
-                isLoading: {
-                    ...state.isLoading,
-                    createLibrary: false,
-                },
-                createLibrary: {
-                    ...state.createLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
+                errorCode: {
+                    ...state.errorCode,
+                    createLibrary: action.payload.errorCode,
                 },
             };
         // READ LIBRARY
@@ -144,22 +128,22 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
+                errorCode: {
+                    ...state.errorCode,
+                    readLibrary: action.payload.errorCode,
+                },
                 readLibrary: {
-                    ...state.readLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
                     totalPages: action.payload.totalPages,
                     libraries: action.payload.data,
                 },
             };
-        case actionNames.READ_LIBRARY_FAILED:
+        case actionNames.READ_LIBRARY_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
-                readLibrary: {
-                    ...state.readLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
+                errorCode: {
+                    ...state.errorCode,
+                    readLibrary: action.payload.errorCode,
                 },
             };
         // UPDATE LIBRARY
@@ -167,54 +151,66 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateLibrary: true },
-            };
-        case actionNames.UPDATE_LIBRARY_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, updateLibrary: false },
-                updateLibrary: {
-                    ...state.updateLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
+                errorCode: {
+                    ...state.errorCode,
+                    updateLibrary: undefined,
                 },
             };
-        case actionNames.UPDATE_LIBRARY_FAILED:
+        case actionNames.UPDATE_LIBRARY_SUCCESS:
+        case actionNames.UPDATE_LIBRARY_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateLibrary: false },
-                updateLibrary: {
-                    ...state.updateLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
+                errorCode: {
+                    ...state.errorCode,
+                    updateLibrary: action.payload.errorCode,
                 },
             };
         // DELETE LIBRARY
         case actionNames.DELETE_LIBRARY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readLibrary: true },
+                errorCode: {
+                    ...state.errorCode,
+                    deleteLibrary: undefined,
+                },
             };
         case actionNames.DELETE_LIBRARY_SUCCESS:
+        case actionNames.DELETE_LIBRARY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readLibrary: false },
-                deleteLibrary: {
-                    ...state.deleteLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
+                errorCode: {
+                    ...state.errorCode,
+                    deleteLibrary: action.payload.errorCode,
                 },
             };
-        case actionNames.DELETE_LIBRARY_FAILED:
+        // READ FRAMEWORK
+        case actionNames.READ_FRAMEWORK_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readLibrary: false },
-                deleteLibrary: {
-                    ...state.deleteLibrary,
-                    errorCode: action.payload.errorCode,
-                    errorMessage: action.payload.errorMessage,
+                isLoading: { ...state.isLoading, readFramework: true },
+            };
+        case actionNames.READ_FRAMEWORK_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, readFramework: false },
+                errorCode: {
+                    ...state.errorCode,
+                    readLibrary: action.payload.errorCode,
+                },
+                readFramework: {
+                    frameworks: action.payload.data,
                 },
             };
-
+        case actionNames.READ_FRAMEWORK_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, readFramework: false },
+                errorCode: {
+                    ...state.errorCode,
+                    readLibrary: action.payload.errorCode,
+                },
+            };
         default:
             return state;
     }

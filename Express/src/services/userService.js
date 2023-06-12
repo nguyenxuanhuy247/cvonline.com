@@ -111,36 +111,45 @@ export const handleCreateTechnology = async (data) => {
     try {
         const { type, key, side, image, name, version, link } = data;
 
-        const [user, created] = await db.Technology.findOrCreate({
-            where: {
-                side: side,
-                name: name,
-            },
-            defaults: {
+        let whereQuery;
+        if (key === 'LI') {
+            whereQuery = { side: side, name: name };
+        } else {
+            whereQuery = { name: name };
+        }
+
+        const technology = await db.Technology.findOne({
+            where: whereQuery,
+            attributes: ['name'],
+        });
+
+        if (!technology || technology.name !== name) {
+            await db.Technology.create({
                 type: type,
                 key: key,
                 side: side,
                 image: image,
+                name: name,
                 version: version,
                 link: link,
-            },
-        });
+            });
 
-        if (!created) {
-            return {
-                errorCode: 32,
-                errorMessage: `Dữ liệu đã tồn tại trong Database`,
-            };
-        } else {
-            const technologies = await db.Technology.findAll({
-                where: { key: key, side: side },
+            const technologies = await db.Technology.count({
+                where: whereQuery,
                 attributes: ['id', 'image', 'name', 'version', 'link'],
             });
-            const totalPages = Math.ceil(technologies.length / 10);
+
+            const totalPages = Math.ceil(technologies / 10);
+
             return {
                 errorCode: 0,
                 errorMessage: `Tạo dữ liệu thành công`,
                 totalPages: totalPages,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Dữ liệu đã tồn tại trong Database`,
             };
         }
     } catch (error) {
@@ -157,6 +166,13 @@ export const handleGetTechnology = async (data) => {
     try {
         const { key, side, id, page, page_size } = data;
 
+        let whereQuery;
+        if (key === 'LI') {
+            whereQuery = { key: key, side: side };
+        } else {
+            whereQuery = { key: key };
+        }
+
         let technology;
 
         if (id === 'ALL') {
@@ -168,6 +184,7 @@ export const handleGetTechnology = async (data) => {
 
                 const { count, rows } = await db.Technology.findAndCountAll({
                     where: { key: key, side: side },
+                    attributes: ['id', 'image', 'name', 'version', 'link'],
                     offset: startIndex,
                     limit: pageSizeNumber,
                 });
@@ -182,7 +199,7 @@ export const handleGetTechnology = async (data) => {
                 };
             } else {
                 technology = await db.Technology.findAll({
-                    where: { key: key, side: side },
+                    where: whereQuery,
                     attributes: ['id', 'image', 'name', 'version', 'link'],
                 });
 
@@ -198,10 +215,16 @@ export const handleGetTechnology = async (data) => {
                 attributes: ['id', 'image', 'name', 'version', 'link'],
             });
 
-            if (!technology) {
+            if (technology) {
+                return {
+                    errorCode: 0,
+                    errorMessage: `Tải dữ liệu thành công`,
+                    data: technology,
+                };
+            } else {
                 return {
                     errorCode: 32,
-                    errorMessage: `Tải dữ liệu thất bại, không tìm thấy dữ liệu khớp id`,
+                    errorMessage: `Không tìm thấy dữ liệu khớp id`,
                 };
             }
         }
@@ -219,25 +242,32 @@ export const handleUpdateTechnology = async (data) => {
     try {
         const { key, side, id, image, name, version, link } = data;
 
+        // console.log('handleUpdateTechnology:', typeof id, id);
         const result = await db.Technology.findOne({
             where: { id: id },
         });
 
         if (result) {
-            await db.Technology.update(
-                {
-                    image: image,
-                    name: name,
-                    version: version,
-                    link: link,
-                },
-                { where: { id: id } },
-            );
+            const duplicateItem = await db.Technology.findOne({
+                where: { name: name },
+            });
 
-            return {
-                errorCode: 0,
-                errorMessage: `Sửa dữ liệu thành công`,
-            };
+            if (!duplicateItem) {
+                await db.Technology.update(
+                    { image: image, name: name, version: version, link: link },
+                    { where: { id: id } },
+                );
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Sửa dữ liệu thành công`,
+                };
+            } else {
+                return {
+                    errorCode: 33,
+                    errorMessage: `Tên của dữ liệu đã tồn tại trong Database`,
+                };
+            }
         } else {
             return {
                 errorCode: 32,

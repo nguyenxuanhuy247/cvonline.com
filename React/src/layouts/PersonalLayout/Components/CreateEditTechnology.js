@@ -12,7 +12,7 @@ import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 
-class Library extends PureComponent {
+class CreateEditTechnology extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -52,51 +52,19 @@ class Library extends PureComponent {
 
     handleUpdateLibrary = async () => {
         await this.props.onUpdate(this.state);
-        
+
         if (this.props.updateErrorCode === 0) {
             this.setState({ isEdit: false });
         }
     };
 
     render() {
-        const { onAdd, onDelete, href, id, src, name, version, isLoading } = this.props;
+        const { isLoading, technology } = this.props;
 
-        return !this.state.isEdit ? (
-            <HeadlessTippy
-                placement="top-start"
-                interactive
-                offset={[0, 0]}
-                render={(attrs) => (
-                    <div tabIndex="-1" {...attrs}>
-                        <EditButton
-                            id={`js-hover-button-${id}`}
-                            onAdd={onAdd}
-                            onEdit={() => this.handleShowEditLibrary(id)}
-                            onDelete={onDelete}
-                        />
-                    </div>
-                )}
-            >
-                <HeadlessTippy
-                    placement="bottom"
-                    offset={[0, 4]}
-                    render={(attrs) => (
-                        <div tabIndex="-1" {...attrs}>
-                            {href && <div className={cx('library-href')}>{href}</div>}
-                        </div>
-                    )}
-                >
-                    <Button id={`js-hover-button-${id}`} href={href} className={cx('button')}>
-                        <Image src={src || JpgImages.placeholder} className={cx('image')} />
-                        <span className={cx('name')}>{name}</span>
-                        <span className={cx('version')}>{version}</span>
-                    </Button>
-                </HeadlessTippy>
-            </HeadlessTippy>
-        ) : (
-            <div className={cx('add-library')}>
+        return (
+            <div className={cx('create-edit-technology')}>
                 <div className={cx('info')}>
-                    <p className={cx('heading')}>Chỉnh sửa thư viện</p>
+                    <p className={cx('heading')}>Chỉnh sửa {technology}</p>
                     <div className={cx('img-wrapper')}>
                         <HeadlessTippy
                             zIndex="10"
@@ -121,7 +89,7 @@ class Library extends PureComponent {
                     <input
                         type="text"
                         className={cx('input-form')}
-                        placeholder="Nhập tên thư viện"
+                        placeholder={`Nhập tên ${technology}`}
                         value={this.state.name}
                         onChange={(e) => this.handleEditLibrary(e, 'name')}
                     />
@@ -154,4 +122,4 @@ class Library extends PureComponent {
     }
 }
 
-export default Library;
+export default CreateEditTechnology;

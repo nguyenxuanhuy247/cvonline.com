@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
@@ -34,6 +34,8 @@ class LibraryList extends PureComponent {
             version: '',
             link: '',
         };
+
+        this.errorCode = React.createRef();
     }
 
     side = () => {
@@ -83,19 +85,25 @@ class LibraryList extends PureComponent {
         const side = this.side();
         const data = { type: 'LIBRARY', key: 'LI', side, image, name, version, link };
         await this.props.createLibrary(data);
-        await this.props.readLibrary(this.side(), this.state.lastPage, 10);
-        
-        this.setState({
-            isAddLibrary: false,
-            selectedPage: this.props.totalPages,
-            image: '',
-            name: '',
-            version: '',
-            link: '',
-        });
+
+        if (this.errorCode.current === 0) {
+            await this.props.readLibrary(this.side(), this.state.lastPage, 10);
+            await this.props.readLibrary(this.side(), this.state.lastPage, 10);
+            this.setState({
+                isAddLibrary: false,
+                selectedPage: this.props.totalPages,
+                image: '',
+                name: '',
+                version: '',
+                link: '',
+            });
+            this.errorCode.current = null;
+        }
     };
 
     handleUpdateLibrary = async (state) => {
+        const { updateLibrary, readLibrary } = this.props;
+
         const side = this.side();
         const data = {
             type: 'LIBRARY',
@@ -107,14 +115,21 @@ class LibraryList extends PureComponent {
             version: state.version,
             link: state.link,
         };
-        this.setState({ isEdit: false });
-        await this.props.updateLibrary(data);
-        await this.props.readLibrary(this.side(), this.state.selectedPage, 10);
+        await updateLibrary(data);
+
+        if (this.errorCode.current === 0) {
+            await readLibrary(this.side(), this.state.selectedPage, 10);
+            this.errorCode.current = null;
+        }
     };
 
     handleDeleteLibrary = async (id) => {
-        await this.props.deleteLibrary(this.side(), id);
-        await this.props.readLibrary(this.side(), this.state.selectedPage, 10);
+        await this.props.deleteLibrary(id, this.side());
+
+        if (this.errorCode.current === 0) {
+            await this.props.readLibrary(this.side(), this.state.selectedPage, 10);
+            this.errorCode.current = null;
+        }
     };
 
     handleChangepage = (event, value) => {
@@ -127,11 +142,28 @@ class LibraryList extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { totalPages } = this.props;
-        this.setState({ lastPage: totalPages });
+        const { totalPages, updateErrorCode, createErrorCode, deleteErrorCode } = this.props;
+
+        if (prevProps.createErrorCode !== createErrorCode) {
+            this.errorCode.current = createErrorCode;
+        }
+
+        if (prevProps.updateErrorCode !== updateErrorCode) {
+            this.errorCode.current = updateErrorCode;
+        }
+
+        if (prevProps.deleteErrorCode !== deleteErrorCode) {
+            this.errorCode.current = deleteErrorCode;
+        }
 
         if (prevProps.totalPages !== totalPages) {
-            // If delete the last library of last page, will move to the previous page
+            this.setState({
+                lastPage: totalPages,
+            });
+        }
+
+        // If delete the last library of last page, will move to the previous page
+        if (prevProps.totalPages !== totalPages) {
             if (totalPages < this.state.selectedPage) {
                 this.setState({ selectedPage: totalPages });
                 this.props.readLibrary(this.side(), totalPages, 10);
@@ -156,6 +188,13 @@ class LibraryList extends PureComponent {
         const { libraryList, isCreateLibraryLoading, isReadLibraryLoading, isUpdateLibraryLoading, totalPages } =
             this.props;
 
+        let libraryListArray;
+        if (Array.isArray(libraryList)) {
+            libraryListArray = libraryList;
+        } else {
+            libraryListArray = [libraryList];
+        }
+
         return (
             <div className={cx('library-used')}>
                 <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
@@ -172,8 +211,8 @@ class LibraryList extends PureComponent {
                     </Button>
                 </div>
                 <div className={cx('library-list')}>
-                    {libraryList &&
-                        libraryList.map((library) => {
+                    {libraryListArray &&
+                        libraryListArray.map((library) => {
                             return (
                                 <div key={library.id}>
                                     <Library
@@ -187,6 +226,7 @@ class LibraryList extends PureComponent {
                                         onUpdate={this.handleUpdateLibrary}
                                         onDelete={() => this.handleDeleteLibrary(library.id)}
                                         isLoading={isUpdateLibraryLoading}
+                                        updateErrorCode={this.errorCode.current}
                                     />
                                 </div>
                             );
@@ -315,7 +355,9 @@ class LibraryList extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        createErrorCode: state.user.createLibrary.errorCode,
+        createErrorCode: state.user.errorCode.createLibrary,
+        updateErrorCode: state.user.errorCode.updateLibrary,
+        deleteErrorCode: state.user.errorCode.deleteLibrary,
         totalPages: state.user.readLibrary.totalPages,
         libraryList: state.user.readLibrary.libraries,
         isCreateLibraryLoading: state.user.isLoading.createLibrary,
@@ -326,10 +368,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        readLibrary: (isFE, page, pageSize) => dispatch(userActions.readLibrary(isFE, page, pageSize)),
-        createLibrary: (data, isFE) => dispatch(userActions.createLibrary(data, isFE)),
-        updateLibrary: (data, isFE) => dispatch(userActions.updateLibrary(data, isFE)),
-        deleteLibrary: (isFE, id) => dispatch(userActions.deleteLibrary(isFE, id)),
+        readLibrary: (side, page, pageSize) =>
+            dispatch(userActions.readTechnology('thư viện', 'LIBRARY', 'ALL', 'LI', side, page, pageSize)),
+        createLibrary: (data) => dispatch(userActions.createTechnology('thư viện', 'LIBRARY', data)),
+        updateLibrary: (data) => dispatch(userActions.updateTechnology('thư viện', 'LIBRARY', data)),
+        deleteLibrary: (id, side) => dispatch(userActions.deleteTechnology('thư viện', 'LIBRARY', id, 'LI', side)),
     };
 };
 

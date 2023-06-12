@@ -1,3 +1,11 @@
+const actionMaker = (text_1, text_2) => {
+    return {
+        [`${text_1}_${text_2}_START`]: `${text_1}_${text_2}_START`,
+        [`${text_1}_${text_2}_SUCCESS`]: `${text_1}_${text_2}_SUCCESS`,
+        [`${text_1}_${text_2}_FAILURE`]: `${text_1}_${text_2}_FAILURE`,
+    };
+};
+
 const actionNames = Object.freeze({
     // User - Sign In
     USER_SIGNUP_START: 'USER_SIGNUP_START',
@@ -17,21 +25,16 @@ const actionNames = Object.freeze({
     USER_SIGNOUT: 'USER_SIGNOUT',
 
     // Library
-    CREATE_LIBRARY_START: 'CREATE_LIBRARY_START',
-    CREATE_LIBRARY_SUCCESS: 'CREATE_LIBRARY_SUCCESS',
-    CREATE_LIBRARY_FAILED: 'CREATE_LIBRARY_FAILED',
+    ...actionMaker(`CREATE`, `LIBRARY`),
+    ...actionMaker(`READ`, `LIBRARY`),
+    ...actionMaker(`UPDATE`, `LIBRARY`),
+    ...actionMaker(`DELETE`, `LIBRARY`),
 
-    READ_LIBRARY_START: 'READ_LIBRARY_START',
-    READ_LIBRARY_SUCCESS: 'READ_LIBRARY_SUCCESS',
-    READ_LIBRARY_FAILED: 'READ_LIBRARY_FAILED',
-
-    UPDATE_LIBRARY_START: 'UPDATE_LIBRARY_START',
-    UPDATE_LIBRARY_SUCCESS: 'UPDATE_LIBRARY_SUCCESS',
-    UPDATE_LIBRARY_FAILED: 'UPDATE_LIBRARY_FAILED',
-
-    DELETE_LIBRARY_START: 'DELETE_LIBRARY_START',
-    DELETE_LIBRARY_SUCCESS: 'DELETE_LIBRARY_SUCCESS',
-    DELETE_LIBRARY_FAILED: 'DELETE_LIBRARY_FAILED',
+    // Framework
+    ...actionMaker(`CREATE`, `FRAMEWORK`),
+    ...actionMaker(`READ`, `FRAMEWORK`),
+    ...actionMaker(`UPDATE`, `FRAMEWORK`),
+    ...actionMaker(`DELETE`, `FRAMEWORK`),
 });
 
 export default actionNames;

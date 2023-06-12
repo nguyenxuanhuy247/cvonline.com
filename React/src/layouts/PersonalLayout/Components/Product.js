@@ -10,6 +10,7 @@ import Image from '~/components/Image/Image.js';
 import { JpgImages, Icons } from '~/components/Image/Images.js';
 import LibraryList from './LibraryList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
+import * as userActions from '~/store/actions';
 
 const cx = classnames.bind(styles);
 
@@ -67,7 +68,20 @@ class Product extends PureComponent {
         this.setState({ imageUrl: url });
     };
 
+    componentDidMount() {
+        this.props.readFramework();
+    }
+
     render() {
+        const { frameworkList } = this.props;
+
+        let frameworkListArray;
+        if (Array.isArray(frameworkList)) {
+            frameworkListArray = frameworkList;
+        } else {
+            frameworkListArray = [frameworkList];
+        }
+
         return (
             <div className={cx('product')}>
                 <div className={cx('row no-gutters')}>
@@ -98,6 +112,7 @@ class Product extends PureComponent {
                                 alt="Ảnh sản phẩm"
                             />
                         </HeadlessTippy>
+
                         {this.state.isModalOpen && (
                             <ChangeImageModal
                                 round={false}
@@ -124,7 +139,7 @@ class Product extends PureComponent {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Frameworks</span>
                             <div className={cx('list')}>
-                                <Technology data={PRO_LANGUAGES} isEdit draggable />
+                                <Technology data={frameworkListArray} isEdit draggable />
                             </div>
                         </div>
                     </div>
@@ -138,11 +153,18 @@ class Product extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        frameworkList: state.user.readFramework.frameworks,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        readFramework: () => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', 'ALL', 'FW')),
+        createFramework: (data) => dispatch(userActions.createTechnology('framework', 'FRAMEWORK', data)),
+        updateFramework: (data) => dispatch(userActions.updateTechnology('framework', 'FRAMEWORK', data)),
+        deleteFramework: (isFE, id) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', isFE, id)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product);

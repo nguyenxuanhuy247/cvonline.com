@@ -26,9 +26,11 @@ export const handleCreateTechnology = async (req, res) => {
     const message = await userService.handleCreateTechnology(data);
 
     if (message.errorCode === 0) {
-        return res.status(200).json(message);
-    } else {
-        res.status(500).json(message);
+        return res.status(201).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(409).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
     }
 };
 
@@ -40,8 +42,10 @@ export const handleGetTechnology = async (req, res) => {
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);
-    } else {
-        res.status(500).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
     }
 };
 
@@ -53,8 +57,12 @@ export const handleUpdateTechnology = async (req, res) => {
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);
-    } else {
-        res.status(500).json(message);
+    } else if (message.errorCode === 33) {
+        res.status(409).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
     }
 };
 
@@ -66,8 +74,8 @@ export const handleDeleteTechnology = async (req, res) => {
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);
-    } else {
-        res.status(500).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
     }
 };
 

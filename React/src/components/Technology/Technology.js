@@ -8,17 +8,16 @@ import Button from '~/components/Button/Button.js';
 
 const cx = classNames.bind(styles);
 
-export default class Technology extends Component {
+class Technology extends Component {
     constructor(props) {
         super(props);
-        this.state = { list: this.props.data, dragItemIndex: null, dragOverItemIndex: null };
+        this.state = { list: this.props.data || [], dragItemIndex: null, dragOverItemIndex: null };
     }
 
     static propTypes = {
-        to: PropTypes.string,
-        href: PropTypes.string,
-        src: PropTypes.string,
-        alt: PropTypes.string,
+        data: PropTypes.array,
+        edit: PropTypes.bool,
+        draggable: PropTypes.bool,
     };
 
     handleDragStart = (index) => {
@@ -38,6 +37,12 @@ export default class Technology extends Component {
         this.setState({ list: copyList, dragItemIndex: null, dragOverItemIndex: null });
     };
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.data !== this.props.data) {
+            this.setState({ list: this.props.data });
+        }
+    }
+
     render() {
         const { list } = this.state;
         const { isEdit, draggable } = this.props;
@@ -49,7 +54,7 @@ export default class Technology extends Component {
 
         return (
             list &&
-            list.map((item, index) => {
+            list?.map((item, index) => {
                 return (
                     <Button
                         key={index}
@@ -68,3 +73,5 @@ export default class Technology extends Component {
         );
     }
 }
+
+export default Technology;
