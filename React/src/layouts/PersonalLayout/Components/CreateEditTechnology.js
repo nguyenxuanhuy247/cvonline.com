@@ -1,13 +1,10 @@
 import { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
-import DefaultTippy from '@tippyjs/react';
 
+import styles from './CreateEditTechnology.module.scss';
 import Button from '~/components/Button/Button.js';
-import styles from './Library.module.scss';
 import Image from '~/components/Image/Image.js';
-import EditButton from '~/components/Button/EditButton';
-import { JpgImages } from '~/components/Image/Images.js';
 import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
@@ -16,69 +13,55 @@ class CreateEditTechnology extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isEdit: false,
-            id: undefined,
-            image: '',
-            name: '',
-            version: '',
-            link: '',
+            id: this.props?.data?.id || undefined,
+            image: this.props?.data?.image || '',
+            name: this.props?.data?.name || '',
+            version: this.props?.data?.version || '',
+            link: this.props?.data?.link || '',
         };
     }
 
-    handleShowEditLibrary = (id) => {
-        let editedLibrary;
-        const libraryList = this.props.libraryList;
-
-        if (libraryList) {
-            editedLibrary = libraryList.find((library) => {
-                return library.id === id;
-            });
-        }
-
-        this.setState({
-            isEdit: true,
-            id: editedLibrary.id,
-            image: editedLibrary.image,
-            name: editedLibrary.name,
-            version: editedLibrary.version,
-            link: editedLibrary.link,
-        });
+    handleInputTechnology = (e, name) => {
+        const value = e.target.value?.trim();
+        this.setState({ [name]: value });
     };
 
-    handleEditLibrary = (e, state) => {
-        const value = e.target.value;
-        this.setState({ [state]: value });
-    };
+    handleCreateOrUpdateTechnology = async (bool) => {
+        if (bool) {
+            await this.props.onUpdate(this.state);
 
-    handleUpdateLibrary = async () => {
-        await this.props.onUpdate(this.state);
-
-        if (this.props.updateErrorCode === 0) {
-            this.setState({ isEdit: false });
+            if (this.props.errorCode === 0) {
+                this.props.onClose();
+            }
+        } else {
+            await this.props.onCreate(this.state);
+            if (this.props.errorCode === 0) {
+                this.props.onClose();
+            }
         }
     };
 
     render() {
-        const { isLoading, technology } = this.props;
+        const { isEdit, className, isLoading, technology, onClose } = this.props;
 
         return (
-            <div className={cx('create-edit-technology')}>
+            <div className={cx('create-edit-technology', className)}>
                 <div className={cx('info')}>
-                    <p className={cx('heading')}>Chỉnh sửa {technology}</p>
-                    <div className={cx('img-wrapper')}>
+                    <p className={cx('heading')}>{isEdit ? `Chỉnh sửa ${technology}` : `Thêm ${technology} mới`}</p>
+                    <div className={cx('image-wrapper')}>
                         <HeadlessTippy
                             zIndex="10"
                             placement="bottom"
                             interactive
                             delay={[0, 300]}
-                            offset={[0, -30]}
+                            offset={[0, -50]}
                             render={(attrs) => (
                                 <div tabIndex="-1" {...attrs}>
                                     <Button
-                                        className={cx('edit-image-button')}
+                                        className={cx('add-edit-image-button')}
                                         onClick={() => this.setState({ isModalOpen: true })}
                                     >
-                                        Sửa ảnh
+                                        {`${isEdit ? `Sửa ảnh` : `Thêm ảnh`}`}
                                     </Button>
                                 </div>
                             )}
@@ -91,31 +74,33 @@ class CreateEditTechnology extends PureComponent {
                         className={cx('input-form')}
                         placeholder={`Nhập tên ${technology}`}
                         value={this.state.name}
-                        onChange={(e) => this.handleEditLibrary(e, 'name')}
+                        onChange={(e) => this.handleInputTechnology(e, 'name')}
                     />
                     <input
                         type="text"
                         className={cx('input-form')}
                         placeholder="Nhập version"
                         value={this.state.version}
-                        onChange={(e) => this.handleEditLibrary(e, 'version')}
+                        onChange={(e) => this.handleInputTechnology(e, 'version')}
                     />
                     <input
                         type="text"
                         className={cx('input-form')}
                         placeholder="Nhập link website (nếu có)"
                         value={this.state.link}
-                        onChange={(e) => this.handleEditLibrary(e, 'link')}
+                        onChange={(e) => this.handleInputTechnology(e, 'link')}
                     />
                 </div>
                 <div className={cx('actions')}>
-                    <Button className={cx('btn', 'cancel')} onClick={() => this.setState({ isEdit: false })}>
+                    <Button className={cx('btn', 'cancel')} onClick={onClose}>
                         Hủy
                     </Button>
-                    <Button className={cx('btn', 'add')} onClick={() => this.handleUpdateLibrary()}>
-                        Cập nhật
-                    </Button>
+                    <Button
+                        className={cx('btn', 'add')}
+                        onClick={() => this.handleCreateOrUpdateTechnology(isEdit)}
+                    >{`${isEdit ? `Cập nhật` : `Thêm`}`}</Button>
                 </div>
+
                 {isLoading && <Loading styles={{ position: 'absolute' }} />}
             </div>
         );

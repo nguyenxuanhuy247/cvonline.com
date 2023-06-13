@@ -240,34 +240,22 @@ export const handleGetTechnology = async (data) => {
 // UPDATE TECHNOLOGY
 export const handleUpdateTechnology = async (data) => {
     try {
-        const { key, side, id, image, name, version, link } = data;
+        const { id, image, name, version, link } = data;
 
-        // console.log('handleUpdateTechnology:', typeof id, id);
         const result = await db.Technology.findOne({
             where: { id: id },
         });
-
+        console.log('handleUpdateTechnology', result);
         if (result) {
-            const duplicateItem = await db.Technology.findOne({
-                where: { name: name },
-            });
+            await db.Technology.update(
+                { image: image, name: name, version: version, link: link },
+                { where: { id: id } },
+            );
 
-            if (!duplicateItem) {
-                await db.Technology.update(
-                    { image: image, name: name, version: version, link: link },
-                    { where: { id: id } },
-                );
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Sửa dữ liệu thành công`,
-                };
-            } else {
-                return {
-                    errorCode: 33,
-                    errorMessage: `Tên của dữ liệu đã tồn tại trong Database`,
-                };
-            }
+            return {
+                errorCode: 0,
+                errorMessage: `Sửa dữ liệu thành công`,
+            };
         } else {
             return {
                 errorCode: 32,

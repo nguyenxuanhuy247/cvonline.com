@@ -3,17 +3,15 @@ import { connect } from 'react-redux';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import Pagination from '@mui/material/Pagination';
-import Box from '@mui/material/Box';
-import HeadlessTippy from '@tippyjs/react/headless';
 
 import styles from './LibraryList.module.scss';
 import Button from '~/components/Button/Button.js';
-import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
 import Library from '~/layouts/PersonalLayout/Components/Library.js';
-import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import Loading from '~/components/Modal/Loading.js';
+import { TechnologyProvider } from '~/components/Context/Context.js';
+import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
 
 const cx = className.bind(styles);
 
@@ -24,18 +22,14 @@ class LibraryList extends PureComponent {
             isFE: true,
             isAddLibrary: false,
             isEditLibrary: false,
-            isModalOpen: false,
+            isPagination: true,
+            itemsPerPage: 10,
             uploadImageUrl: '',
             selectedPage: 1,
-            lastPage: 1,
-
-            image: '',
-            name: '',
-            version: '',
-            link: '',
         };
 
         this.errorCode = React.createRef();
+        this.lastPage = React.createRef();
     }
 
     side = () => {
@@ -50,9 +44,16 @@ class LibraryList extends PureComponent {
         if (!isActive) {
             const btn = document.querySelector(`.${cx('active')}`);
             if (btn) {
-                this.setState({ isFE: isFE, selectedPage: 1 }, () => this.props.readLibrary(this.side(), 1, 10));
                 btn.classList.remove(cx('active'));
                 e.target.classList.add(cx('active'));
+
+                if (this.state.isPagination) {
+                    this.setState({ isFE: isFE, selectedPage: 1 }, () =>
+                        this.props.readLibrary(this.side(), 1, this.state.itemsPerPage),
+                    );
+                } else {
+                    this.setState({ isFE: isFE, selectedPage: 1 }, () => this.props.readLibrary(this.side()));
+                }
             }
         }
     };
@@ -74,29 +75,37 @@ class LibraryList extends PureComponent {
         this.setState({ uploadImageUrl: url });
     };
 
-    onClose = () => {
-        this.setState({
-            isModalOpen: false,
-        });
-    };
-
-    handleCreateLibrary = async () => {
-        const { image, name, version, link } = this.state;
+    handleCreateLibrary = async (state) => {
         const side = this.side();
-        const data = { type: 'LIBRARY', key: 'LI', side, image, name, version, link };
+        const data = {
+            type: 'LIBRARY',
+            key: 'LI',
+            side,
+            image: state.image,
+            name: state.name,
+            version: state.version,
+            link: state.link,
+        };
+
+        this.errorCode.current = null;
         await this.props.createLibrary(data);
 
         if (this.errorCode.current === 0) {
-            await this.props.readLibrary(this.side(), this.state.lastPage, 10);
-            await this.props.readLibrary(this.side(), this.state.lastPage, 10);
-            this.setState({
-                isAddLibrary: false,
-                selectedPage: this.props.totalPages,
-                image: '',
-                name: '',
-                version: '',
-                link: '',
-            });
+            if (this.state.isPagination) {
+                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
+                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
+                await this.setState({
+                    isAddLibrary: false,
+                    selectedPage: this.lastPage.current,
+                    image: '',
+                    name: '',
+                    version: '',
+                    link: '',
+                });
+            } else {
+                await this.props.readLibrary(this.side());
+            }
+
             this.errorCode.current = null;
         }
     };
@@ -115,58 +124,89 @@ class LibraryList extends PureComponent {
             version: state.version,
             link: state.link,
         };
+
+        this.errorCode.current = null;
         await updateLibrary(data);
 
         if (this.errorCode.current === 0) {
-            await readLibrary(this.side(), this.state.selectedPage, 10);
+            if (this.state.isPagination) {
+                await readLibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
+            } else {
+                await readLibrary(this.side());
+            }
+
             this.errorCode.current = null;
         }
     };
 
     handleDeleteLibrary = async (id) => {
+        this.errorCode.current = null;
         await this.props.deleteLibrary(id, this.side());
 
         if (this.errorCode.current === 0) {
-            await this.props.readLibrary(this.side(), this.state.selectedPage, 10);
+            if (this.state.isPagination) {
+                await this.props.readLibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
+            } else {
+                await this.props.readLibrary(this.side());
+            }
+
             this.errorCode.current = null;
         }
     };
 
-    handleChangepage = (event, value) => {
+    handleChangePage = (event, value) => {
         this.setState({ selectedPage: value });
-        this.props.readLibrary(this.side(), value, 10);
+        this.props.readLibrary(this.side(), value, this.state.itemsPerPage);
+    };
+
+    handleShowAllLibraryList = () => {
+        const showAllButton = document.getElementById('js-show-all');
+        const paginationButton = document.getElementById('js-pagination');
+
+        showAllButton.classList.add(`${cx('active')}`);
+        paginationButton.classList.remove(`${cx('active')}`);
+
+        this.props.readLibrary(this.side());
+        this.setState({ isPagination: false });
+    };
+
+    hanldeShowPagination = async () => {
+        const paginationButton = document.getElementById('select-pag');
+        await this.setState({ isPagination: true, itemsPerPage: paginationButton.value });
+        await this.props.readLibrary(this.side(), 1, this.state.itemsPerPage);
+    };
+
+    handleChangeItemsPerPage = async (e) => {
+        const showAllButton = document.getElementById('js-show-all');
+        const paginationButton = document.getElementById('js-pagination');
+
+        paginationButton.classList.add(`${cx('active')}`);
+        showAllButton.classList.remove(`${cx('active')}`);
+
+        await this.setState({ isPagination: true, itemsPerPage: e.target.value });
+        await this.props.readLibrary(this.side(), 1, this.state.itemsPerPage);
     };
 
     componentDidMount() {
-        this.props.readLibrary(this.side(), this.state.selectedPage, 10);
+        this.props.readLibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
     }
 
     componentDidUpdate(prevProps) {
-        const { totalPages, updateErrorCode, createErrorCode, deleteErrorCode } = this.props;
+        const { totalPages, errorCode } = this.props;
 
-        if (prevProps.createErrorCode !== createErrorCode) {
-            this.errorCode.current = createErrorCode;
-        }
-
-        if (prevProps.updateErrorCode !== updateErrorCode) {
-            this.errorCode.current = updateErrorCode;
-        }
-
-        if (prevProps.deleteErrorCode !== deleteErrorCode) {
-            this.errorCode.current = deleteErrorCode;
+        if (prevProps.errorCode !== errorCode) {
+            this.errorCode.current = errorCode;
         }
 
         if (prevProps.totalPages !== totalPages) {
-            this.setState({
-                lastPage: totalPages,
-            });
+            this.lastPage.current = totalPages;
         }
 
         // If delete the last library of last page, will move to the previous page
         if (prevProps.totalPages !== totalPages) {
             if (totalPages < this.state.selectedPage) {
                 this.setState({ selectedPage: totalPages });
-                this.props.readLibrary(this.side(), totalPages, 10);
+                this.props.readLibrary(this.side(), totalPages, this.state.itemsPerPage);
             }
         }
 
@@ -176,7 +216,7 @@ class LibraryList extends PureComponent {
 
         if (library && libraryList) {
             if (totalPages > 1) {
-                const height = library.offsetHeight * 10;
+                const height = library.offsetHeight * this.state.itemsPerPage;
                 libraryList.style.minHeight = `${height}px`;
             } else {
                 libraryList.style.minHeight = `initial`;
@@ -215,19 +255,24 @@ class LibraryList extends PureComponent {
                         libraryListArray.map((library) => {
                             return (
                                 <div key={library.id}>
-                                    <Library
-                                        libraryList={libraryList}
-                                        id={library.id}
-                                        src={library.image}
-                                        name={library.name}
-                                        version={library.version}
-                                        href={library.link}
-                                        onAdd={this.handleShowAddLibrary}
-                                        onUpdate={this.handleUpdateLibrary}
-                                        onDelete={() => this.handleDeleteLibrary(library.id)}
-                                        isLoading={isUpdateLibraryLoading}
-                                        updateErrorCode={this.errorCode.current}
-                                    />
+                                    <TechnologyProvider
+                                        value={{
+                                            onAdd: this.handleShowAddLibrary,
+                                            onDelete: () => this.handleDeleteLibrary(library.id),
+                                        }}
+                                    >
+                                        <Library
+                                            libraryList={libraryList}
+                                            id={library.id}
+                                            src={library.image}
+                                            name={library.name}
+                                            version={library.version}
+                                            href={library.link}
+                                            onUpdate={this.handleUpdateLibrary}
+                                            isLoading={isUpdateLibraryLoading}
+                                            errorCode={this.errorCode.current}
+                                        />
+                                    </TechnologyProvider>
                                 </div>
                             );
                         })}
@@ -241,112 +286,81 @@ class LibraryList extends PureComponent {
                         <span className={cx('text')}>Thêm thư viện</span>
                     </Button>
                 ) : (
-                    <div className={cx('add-library')}>
-                        <div className={cx('info')}>
-                            <p className={cx('heading')}>Thêm thư viện mới</p>
-                            <div className={cx('image-wrapper')}>
-                                <HeadlessTippy
-                                    zIndex="10"
-                                    placement="bottom"
-                                    interactive
-                                    delay={[0, 300]}
-                                    offset={[0, -50]}
-                                    render={(attrs) => (
-                                        <div tabIndex="-1" {...attrs}>
-                                            <div
-                                                className={cx('tooltip')}
-                                                onClick={() => this.setState({ isModalOpen: true })}
-                                            >
-                                                Thêm ảnh
-                                            </div>
-                                        </div>
-                                    )}
-                                >
-                                    <Image src={this.state.uploadImageUrl} className={cx('image')} round />
-                                </HeadlessTippy>
-                                {this.state.isModalOpen && (
-                                    <ChangeImageModal
-                                        round={true}
-                                        onClose={this.onClose}
-                                        onGetUrl={this.getImageUrlFromChangeImageModal}
-                                    />
-                                )}
-                            </div>
-                            <input
-                                type="text"
-                                className={cx('input-form')}
-                                placeholder="Nhập tên thư viện"
-                                value={this.state.libraryName}
-                                onChange={(e) => this.handleInputLibrary(e, 'name')}
-                            />
-                            <input
-                                type="text"
-                                className={cx('input-form')}
-                                placeholder="Nhập version"
-                                value={this.state.libraryVersion}
-                                onChange={(e) => this.handleInputLibrary(e, 'version')}
-                            />
-                            <input
-                                type="text"
-                                className={cx('input-form')}
-                                placeholder="Nhập link website (nếu có)"
-                                value={this.state.libraryLink}
-                                onChange={(e) => this.handleInputLibrary(e, 'link')}
-                            />
-                        </div>
-                        <div className={cx('actions')}>
-                            <Button className={cx('btn', 'cancel')} onClick={() => this.handleCloseAddLibrary()}>
-                                Hủy
-                            </Button>
-                            <Button
-                                className={cx('btn', 'add')}
-                                disabled={!this.state.name}
-                                onClick={() => this.handleCreateLibrary()}
-                            >
-                                Thêm
-                            </Button>
-                        </div>
-
-                        {isCreateLibraryLoading && <Loading styles={{ position: 'absolute' }} />}
+                    <div style={{ position: 'relative' }}>
+                        <CreateEditTechnology
+                            technology="thư viện"
+                            onClose={this.handleCloseAddLibrary}
+                            onCreate={this.handleCreateLibrary}
+                            errorCode={this.errorCode.current}
+                        />
+                        {isCreateLibraryLoading === 0 && <Loading styles={{ position: 'absolute' }} />}
                     </div>
                 )}
 
-                <Box
-                    sx={{
-                        margin: '24px 0 12px',
-                        display: 'grid',
-                        placeItems: 'center',
-                    }}
-                >
-                    <Pagination
-                        count={totalPages}
-                        variant="outlined"
-                        size="medium"
-                        siblingCount={1}
-                        boundaryCount={1}
-                        page={this.state.selectedPage}
-                        sx={{
-                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                color: 'var(--primary-color)',
-                                fontSize: '12px',
-                                borderColor: 'var(--green-color-02)',
-                            },
-                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                backgroundColor: 'var(--button-bgc-green-02)',
-                            },
-
-                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected': {
-                                color: '#fff',
-                                backgroundColor: 'var(--button-bgc-green-01)',
-                            },
-
-                            '& .Mui-selected:hover': {
-                                backgroundColor: 'var(--button-bgc-green-01) !important',
-                            },
+                {this.state.isPagination && (
+                    <div
+                        style={{
+                            margin: '12px 0 12px',
+                            display: 'grid',
+                            placeItems: 'center',
                         }}
-                        onChange={this.handleChangepage}
-                    />
-                </Box>
+                    >
+                        <Pagination
+                            count={totalPages}
+                            variant="outlined"
+                            size="medium"
+                            siblingCount={1}
+                            boundaryCount={1}
+                            page={this.state.selectedPage}
+                            sx={{
+                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
+                                    color: 'var(--primary-color)',
+                                    fontSize: '12px',
+                                    borderColor: 'var(--green-color-02)',
+                                },
+                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
+                                    backgroundColor: 'var(--button-bgc-green-02)',
+                                },
+
+                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected': {
+                                    color: '#fff',
+                                    backgroundColor: 'var(--button-bgc-green-01)',
+                                },
+
+                                '& .Mui-selected:hover': {
+                                    backgroundColor: 'var(--button-bgc-green-01) !important',
+                                },
+                            }}
+                            onChange={this.handleChangePage}
+                        />
+                    </div>
+                )}
+
+                <div className={cx('display')}>
+                    <Button className={cx('button')} id="js-show-all" onClick={this.handleShowAllLibraryList}>
+                        Hiển thị tất cả
+                    </Button>
+                    <Button
+                        className={cx('button', 'pag-button', 'active')}
+                        id="js-pagination"
+                        onClick={this.hanldeShowPagination}
+                    >
+                        Phân trang
+                        <select
+                            className={cx('select')}
+                            id="select-pag"
+                            onChange={(e) => this.handleChangeItemsPerPage(e)}
+                        >
+                            <option value="10" defaultValue>
+                                10
+                            </option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="40">40</option>
+                            <option value="50">50</option>
+                        </select>
+                    </Button>
+                </div>
                 {isReadLibraryLoading && <Loading styles={{ position: 'absolute' }} />}
             </div>
         );
@@ -355,11 +369,10 @@ class LibraryList extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        createErrorCode: state.user.errorCode.createLibrary,
-        updateErrorCode: state.user.errorCode.updateLibrary,
-        deleteErrorCode: state.user.errorCode.deleteLibrary,
+        errorCode: state.user.errorCode,
         totalPages: state.user.readLibrary.totalPages,
         libraryList: state.user.readLibrary.libraries,
+        // Loading
         isCreateLibraryLoading: state.user.isLoading.createLibrary,
         isReadLibraryLoading: state.user.isLoading.readLibrary,
         isUpdateLibraryLoading: state.user.isLoading.updateLibrary,

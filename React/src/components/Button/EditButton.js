@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import className from 'classnames/bind';
 import PropTypes from 'prop-types';
 import { RiDragMove2Fill } from 'react-icons/ri';
@@ -9,6 +9,7 @@ import DefaultTippy from '@tippyjs/react';
 
 import styles from './EditButton.module.scss';
 import Button from './Button';
+import { TechnologyContext, LibraryContext } from '~/components/Context/Context.js';
 
 const cx = className.bind(styles);
 
@@ -39,38 +40,52 @@ class EditButton extends PureComponent {
     };
 
     render() {
-        const { onAdd, onEdit, onDelete } = this.props;
+        const { onEdit } = this.props;
 
         return (
-            <div
-                className={cx('wrapper')}
-                onMouseEnter={() => this.handleMouseEnter()}
-                onMouseLeave={() => this.handleMouseLeave()}
-            >
-                <DefaultTippy content="Kéo thả để di chuyển mục">
-                    <Button className={cx('btn', 'drag')}>
-                        <RiDragMove2Fill />
-                    </Button>
-                </DefaultTippy>
+            <TechnologyContext.Consumer>
+                {(technology) => (
+                    <div
+                        className={cx('wrapper')}
+                        onMouseEnter={() => this.handleMouseEnter()}
+                        onMouseLeave={() => this.handleMouseLeave()}
+                    >
+                        <DefaultTippy content="Kéo thả để di chuyển mục">
+                            <Button className={cx('btn', 'drag')}>
+                                <RiDragMove2Fill />
+                            </Button>
+                        </DefaultTippy>
 
-                <DefaultTippy content="Thêm mục mới">
-                    <Button className={cx('btn', 'add')} onClick={onAdd}>
-                        <IoIosAddCircleOutline />
-                    </Button>
-                </DefaultTippy>
+                        <DefaultTippy content="Thêm mục mới">
+                            <Button
+                                className={cx('btn', 'add')}
+                                onClick={() => {
+                                    technology?.onAdd?.();
+                                }}
+                            >
+                                <IoIosAddCircleOutline />
+                            </Button>
+                        </DefaultTippy>
 
-                <DefaultTippy content="Sửa mục này">
-                    <Button className={cx('btn', 'add')} onClick={onEdit}>
-                        <TfiPencil />
-                    </Button>
-                </DefaultTippy>
+                        <DefaultTippy content="Sửa mục này">
+                            <Button className={cx('btn', 'add')} onClick={onEdit}>
+                                <TfiPencil />
+                            </Button>
+                        </DefaultTippy>
 
-                <DefaultTippy content="Xóa mục này">
-                    <Button className={cx('btn', 'delete')} onClick={onDelete}>
-                        <AiOutlineDelete />
-                    </Button>
-                </DefaultTippy>
-            </div>
+                        <DefaultTippy content="Xóa mục này">
+                            <Button
+                                className={cx('btn', 'delete')}
+                                onClick={() => {
+                                    technology?.onDelete?.();
+                                }}
+                            >
+                                <AiOutlineDelete />
+                            </Button>
+                        </DefaultTippy>
+                    </div>
+                )}
+            </TechnologyContext.Consumer>
         );
     }
 }

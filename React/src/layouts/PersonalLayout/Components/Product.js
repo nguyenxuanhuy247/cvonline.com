@@ -1,10 +1,10 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 
 import styles from './Product.module.scss';
-import Technology from '~/components/Technology/Technology.js';
+import TechnologyList from '~/layouts/PersonalLayout/Components/TechnologyList.js';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages, Icons } from '~/components/Image/Images.js';
@@ -49,6 +49,7 @@ const PRO_LANGUAGES = [
         name: 'JavaScript',
     },
 ];
+
 class Product extends PureComponent {
     constructor(props) {
         super(props);
@@ -69,7 +70,7 @@ class Product extends PureComponent {
     };
 
     componentDidMount() {
-        this.props.readFramework();
+        this.props.readTechnology('ALL', 'FW');
     }
 
     render() {
@@ -125,21 +126,27 @@ class Product extends PureComponent {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Source code</span>
                             <div className={cx('list')}>
-                                <Technology data={SOURCE_CODE} />
+                                <TechnologyList data={SOURCE_CODE} />
                             </div>
                         </div>
 
                         <div className={cx('section')}>
                             <span className={cx('title')}>Ngôn ngữ lập trình</span>
                             <div className={cx('list')}>
-                                <Technology data={PRO_LANGUAGES} />
+                                <TechnologyList data={PRO_LANGUAGES} />
                             </div>
                         </div>
 
                         <div className={cx('section')}>
                             <span className={cx('title')}>Frameworks</span>
                             <div className={cx('list')}>
-                                <Technology data={frameworkListArray} isEdit draggable />
+                                <TechnologyList
+                                    data={frameworkListArray}
+                                    draggable
+                                    onDelete={this.props.deleteTechnology}
+                                    onRead={() => this.props.readTechnology('ALL', 'FW')}
+                                    technology="framework"
+                                />
                             </div>
                         </div>
                     </div>
@@ -160,10 +167,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        readFramework: () => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', 'ALL', 'FW')),
-        createFramework: (data) => dispatch(userActions.createTechnology('framework', 'FRAMEWORK', data)),
-        updateFramework: (data) => dispatch(userActions.updateTechnology('framework', 'FRAMEWORK', data)),
-        deleteFramework: (isFE, id) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', isFE, id)),
+        readTechnology: (id, key) => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', id, key)),
+        createTechnology: (data) => dispatch(userActions.createTechnology('framework', 'FRAMEWORK', data)),
+        updateTechnology: (data) => dispatch(userActions.updateTechnology('framework', 'FRAMEWORK', data)),
+        deleteTechnology: (id, key) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', id, key)),
     };
 };
 

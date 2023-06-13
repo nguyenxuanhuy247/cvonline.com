@@ -15,12 +15,7 @@ const initialState = {
     signUpMessage: {},
     isSignIn: false,
     signInMessage: {},
-    errorCode: {
-        createLibrary: undefined,
-        readLibrary: undefined,
-        updateLibrary: undefined,
-        deleteLibrary: undefined,
-    },
+    errorCode: undefined,
     readLibrary: {
         totalPages: 0,
         libraries: [],
@@ -100,10 +95,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, createLibrary: true },
-                errorCode: {
-                    ...state.errorCode,
-                    createLibrary: undefined,
-                },
+                errorCode: undefined,
             };
         case actionNames.CREATE_LIBRARY_SUCCESS:
         case actionNames.CREATE_LIBRARY_FAILURE:
@@ -113,10 +105,7 @@ const userReducer = (state = initialState, action) => {
                     ...state.isLoading,
                     createLibrary: false,
                 },
-                errorCode: {
-                    ...state.errorCode,
-                    createLibrary: action.payload.errorCode,
-                },
+                errorCode: action.payload.errorCode,
             };
         // READ LIBRARY
         case actionNames.READ_LIBRARY_START:
@@ -128,10 +117,6 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
-                errorCode: {
-                    ...state.errorCode,
-                    readLibrary: action.payload.errorCode,
-                },
                 readLibrary: {
                     totalPages: action.payload.totalPages,
                     libraries: action.payload.data,
@@ -141,48 +126,33 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readLibrary: false },
-                errorCode: {
-                    ...state.errorCode,
-                    readLibrary: action.payload.errorCode,
-                },
+                errorCode: action.payload.errorCode,
             };
         // UPDATE LIBRARY
         case actionNames.UPDATE_LIBRARY_START:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateLibrary: true },
-                errorCode: {
-                    ...state.errorCode,
-                    updateLibrary: undefined,
-                },
+                errorCode: undefined,
             };
         case actionNames.UPDATE_LIBRARY_SUCCESS:
         case actionNames.UPDATE_LIBRARY_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateLibrary: false },
-                errorCode: {
-                    ...state.errorCode,
-                    updateLibrary: action.payload.errorCode,
-                },
+                errorCode: action.payload.errorCode,
             };
         // DELETE LIBRARY
         case actionNames.DELETE_LIBRARY_START:
             return {
                 ...state,
-                errorCode: {
-                    ...state.errorCode,
-                    deleteLibrary: undefined,
-                },
+                errorCode: undefined,
             };
         case actionNames.DELETE_LIBRARY_SUCCESS:
         case actionNames.DELETE_LIBRARY_FAILURE:
             return {
                 ...state,
-                errorCode: {
-                    ...state.errorCode,
-                    deleteLibrary: action.payload.errorCode,
-                },
+                errorCode: action.payload.errorCode,
             };
         // READ FRAMEWORK
         case actionNames.READ_FRAMEWORK_START:
@@ -194,10 +164,6 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readFramework: false },
-                errorCode: {
-                    ...state.errorCode,
-                    readLibrary: action.payload.errorCode,
-                },
                 readFramework: {
                     frameworks: action.payload.data,
                 },
@@ -206,11 +172,8 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, readFramework: false },
-                errorCode: {
-                    ...state.errorCode,
-                    readLibrary: action.payload.errorCode,
-                },
             };
+
         default:
             return state;
     }

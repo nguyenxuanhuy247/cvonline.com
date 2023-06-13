@@ -1,26 +1,13 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef } from 'react';
 import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import styles from './Button.module.scss';
-import EditButton from './EditButton';
 
 const cx = classNames.bind(styles);
 
-function Button({
-    route,
-    href,
-    disabled = false,
-    children,
-    isEdit = false,
-    className,
-    onClick,
-    forwardRef,
-    ...passProps
-}) {
-    const [edit, setEdit] = useState(false);
-
+function Button({ route, href, disabled = false, children, className, onClick, forwardRef, ...passProps }) {
     const props = {
         onClick,
         ...passProps,
@@ -56,15 +43,8 @@ function Button({
     });
 
     return (
-        <Button
-            className={classes}
-            {...props}
-            ref={forwardRef}
-            onMouseOver={() => setEdit(true)}
-            onMouseOut={() => setEdit(false)}
-        >
+        <Button className={classes} {...props} ref={forwardRef}>
             {children}
-            {isEdit && edit && <EditButton />}
         </Button>
     );
 }

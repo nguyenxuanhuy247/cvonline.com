@@ -86,6 +86,7 @@ export const createTechnology = (toastText, actionName, dataSent) => {
         dispatch(CRUDTechnology_Start_Success_Failure(actionStart));
         try {
             let res = await userService.createTechnology(dataSent);
+            console.log('createTechnology', res);
             if (res.errorCode === 0) {
                 toast.success(`Tạo mới ${toastText} thành công`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
