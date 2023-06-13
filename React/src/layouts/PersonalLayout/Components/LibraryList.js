@@ -10,7 +10,6 @@ import * as userActions from '~/store/actions';
 import PaginationBar from '~/components/Pagination/PaginationBar.js';
 import Library from '~/layouts/PersonalLayout/Components/Library.js';
 import Loading from '~/components/Modal/Loading.js';
-import { TechnologyProvider } from '~/components/Context/Context.js';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
 
 const cx = className.bind(styles);
@@ -171,8 +170,13 @@ class LibraryList extends PureComponent {
     };
 
     hanldeShowPagination = async () => {
-        const paginationButton = document.getElementById('select-pag');
-        await this.setState({ isPagination: true, itemsPerPage: paginationButton.value });
+        const paginationSelect = document.getElementById('select-pag');
+        const showAllButton = document.getElementById('js-show-all');
+        const paginationButton = document.getElementById('js-pagination');
+
+        paginationButton.classList.add(`${cx('active')}`);
+        showAllButton.classList.remove(`${cx('active')}`);
+        await this.setState({ isPagination: true, itemsPerPage: paginationSelect.value });
         await this.props.readLibrary(this.side(), 1, this.state.itemsPerPage);
     };
 
@@ -255,24 +259,19 @@ class LibraryList extends PureComponent {
                         libraryListArray.map((library) => {
                             return (
                                 <div key={library.id}>
-                                    <TechnologyProvider
-                                        value={{
-                                            onAdd: this.handleShowAddLibrary,
-                                            onDelete: () => this.handleDeleteLibrary(library.id),
-                                        }}
-                                    >
-                                        <Library
-                                            libraryList={libraryList}
-                                            id={library.id}
-                                            src={library.image}
-                                            name={library.name}
-                                            version={library.version}
-                                            href={library.link}
-                                            onUpdate={this.handleUpdateLibrary}
-                                            isLoading={isUpdateLibraryLoading}
-                                            errorCode={this.errorCode.current}
-                                        />
-                                    </TechnologyProvider>
+                                    <Library
+                                        libraryList={libraryList}
+                                        id={library.id}
+                                        src={library.image}
+                                        name={library.name}
+                                        version={library.version}
+                                        href={library.link}
+                                        onAdd={this.handleShowAddLibrary}
+                                        onUpdate={this.handleUpdateLibrary}
+                                        onDelete={() => this.handleDeleteLibrary(library.id)}
+                                        isLoading={isUpdateLibraryLoading}
+                                        errorCode={this.errorCode.current}
+                                    />
                                 </div>
                             );
                         })}

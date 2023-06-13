@@ -146,6 +146,7 @@ class Product extends PureComponent {
                                     onDelete={this.props.deleteTechnology}
                                     onRead={() => this.props.readTechnology('ALL', 'FW')}
                                     technology="framework"
+                                    type={'FRAMEWORK'}
                                 />
                             </div>
                         </div>

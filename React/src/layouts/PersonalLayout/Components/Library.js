@@ -51,7 +51,7 @@ class Library extends PureComponent {
     };
 
     render() {
-        const { href, id, src, name, version, isLoading, onUpdate, errorCode } = this.props;
+        const { href, id, src, name, version, isLoading, onAdd, onUpdate, onDelete, errorCode } = this.props;
 
         return !this.state.isEdit ? (
             <HeadlessTippy
@@ -60,7 +60,12 @@ class Library extends PureComponent {
                 offset={[0, 0]}
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
-                        <EditButton id={`js-hover-button-${id}`} onEdit={() => this.handleShowEditLibrary(id)} />
+                        <EditButton
+                            id={`js-hover-button-${id}`}
+                            onAdd={onAdd}
+                            onEdit={() => this.handleShowEditLibrary(id)}
+                            onDelete={onDelete}
+                        />
                     </div>
                 )}
             >

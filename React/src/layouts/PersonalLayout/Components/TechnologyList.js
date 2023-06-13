@@ -12,11 +12,11 @@ import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEdit
 
 const cx = classNames.bind(styles);
 
-class Technology extends Component {
+class TechnologyList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpenCreate: true,
+            isOpenCreate: false,
             list: this.props.data || [],
             dragItemIndex: null,
             dragOverItemIndex: null,
@@ -68,6 +68,46 @@ class Technology extends Component {
         this.setState({ [state]: false });
     };
 
+    handleCreateTechnology = async (state) => {
+        let uniqueData;
+        if (this.props.technology === 'framework') {
+            uniqueData = {
+                type: 'FRAMEWORK',
+                key: 'FW',
+            };
+        }
+
+        const data = {
+            ...uniqueData,
+            image: state.image,
+            name: state.name,
+            version: state.version,
+            link: state.link,
+        };
+
+        this.errorCode.current = null;
+        await this.props.createLibrary(data);
+
+        if (this.errorCode.current === 0) {
+            if (this.state.isPagination) {
+                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
+                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
+                await this.setState({
+                    isAddLibrary: false,
+                    selectedPage: this.lastPage.current,
+                    image: '',
+                    name: '',
+                    version: '',
+                    link: '',
+                });
+            } else {
+                await this.props.readLibrary(this.side());
+            }
+
+            this.errorCode.current = null;
+        }
+    };
+
     handleDeleteTechnology = async (id) => {
         await this.props.onDelete(id, 'FW');
         await this.props.onRead();
@@ -83,13 +123,6 @@ class Technology extends Component {
         const { isOpenCreate, list } = this.state;
         const { draggable, technology } = this.props;
 
-        const buttonProps = {
-            draggable,
-        };
-
-        const createAndEditProps = {
-            technology,
-        };
         return (
             <div className={cx('technology-container')}>
                 {list?.map((technology, index) => (
@@ -113,7 +146,7 @@ class Technology extends Component {
                             >
                                 <Button
                                     className={cx('button')}
-                                    {...buttonProps}
+                                    draggable={draggable}
                                     onDragStart={() => this.handleDragStart(index)}
                                     onDragEnter={() => this.handleDragEnter(index)}
                                     onDragOver={(e) => e.preventDefault()}
@@ -130,7 +163,7 @@ class Technology extends Component {
                 {isOpenCreate && (
                     <CreateEditTechnology
                         className={cx('create-edit-technology')}
-                        {...createAndEditProps}
+                        technology={technology}
                         isEdit={false}
                         onShow={() => this.handleShowCreateOrEditTechnology('create')}
                         onClose={() => this.handleCloseCreateOrEditTechnology('create')}
@@ -141,4 +174,4 @@ class Technology extends Component {
     }
 }
 
-export default Technology;
+export default TechnologyList;
