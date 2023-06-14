@@ -3,7 +3,7 @@ import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 
 import Button from '~/components/Button/Button.js';
-import styles from './Library.module.scss';
+import styles from './Technology.module.scss';
 import Image from '~/components/Image/Image.js';
 import EditButton from '~/components/Button/EditButton';
 import { JpgImages } from '~/components/Image/Images.js';
@@ -12,7 +12,7 @@ import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEdit
 
 const cx = classnames.bind(styles);
 
-class Library extends PureComponent {
+class Technology extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,35 +26,68 @@ class Library extends PureComponent {
         };
     }
 
-    handleShowEditLibrary = (id) => {
-        let selectedLibrary;
-        const libraryList = this.props.libraryList;
+    getParent = (element, selector) => {
+        while (element.parentElement) {
+            if (element.parentElement.matches(selector)) {
+                return element.parentElement;
+            }
+            element = element.parentElement;
+        }
+    };
 
-        if (libraryList) {
-            selectedLibrary = libraryList.find((library) => {
-                return library.id === id;
+    handleShowEditTechnology = (id) => {
+        const item = document.getElementById(`js-technology-item-${id}`);
+        const parentEL = this.getParent(item, '#js-technology-item');
+
+        if (parentEL) {
+            parentEL.style.width = '100%';
+        }
+
+        let selectedtechnology;
+        const technologyList = this.props.technologyList;
+
+        if (technologyList) {
+            selectedtechnology = technologyList.find((technology) => {
+                return technology.id === id;
             });
         }
 
         this.setState({
             isEdit: true,
-            id: selectedLibrary.id,
-            image: selectedLibrary.image,
-            name: selectedLibrary.name,
-            version: selectedLibrary.version,
-            link: selectedLibrary.link,
+            id: selectedtechnology.id,
+            image: selectedtechnology.image,
+            name: selectedtechnology.name,
+            version: selectedtechnology.version,
+            link: selectedtechnology.link,
         });
     };
 
-    handleCloseEditLibrary = () => {
-        this.setState({ isEdit: false });
+    handleCloseEditTechnology = () => {
+        const item = document.querySelector(`.${cx('edit-technology')}`);
+        const parentEL = this.getParent(item, '#js-technology-item');
+        console.log(' isEdit state:', this.state.isEdit);
+
+        if (parentEL) {
+            parentEL.style.width = 'auto';
+        }
+
+        this.setState({ isEdit: false }, () => console.log(' isEdit state:', this.state.isEdit));
     };
 
     render() {
-        const { draggable, href, id, src, name, version, isLoading, onShow, onUpdate, onDelete, errorCode } =
-            this.props;
+        const {
+            draggable = false,
+            href = '',
+            id = undefined,
+            src = '',
+            name = '',
+            isLoading = false,
+            onShow,
+            onUpdate,
+            onDelete,
+            errorCode,
+        } = this.props;
 
-        console.log('Library :', draggable);
         return !this.state.isEdit ? (
             <HeadlessTippy
                 placement="top-start"
@@ -63,9 +96,8 @@ class Library extends PureComponent {
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
                         <EditButton
-                            id={`js-hover-button-${id}`}
                             onShow={onShow}
-                            onEdit={() => this.handleShowEditLibrary(id)}
+                            onEdit={() => this.handleShowEditTechnology(id)}
                             onDelete={onDelete}
                         />
                     </div>
@@ -80,20 +112,20 @@ class Library extends PureComponent {
                         </div>
                     )}
                 >
-                    <Button id={`js-hover-button-${id}`} className={cx('button')} {...this.props} draggable={draggable}>
+                    <Button id={`js-technology-item-${id}`} className={cx('button')} {...this.props}>
                         <Image src={src || JpgImages.placeholder} className={cx('image')} />
                         <span className={cx('name')}>{name}</span>
-                        <span className={cx('version')}>{version}</span>
                     </Button>
                 </HeadlessTippy>
             </HeadlessTippy>
         ) : (
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} className={cx('edit-technology-wrapper')}>
                 <CreateEditTechnology
+                    className={cx('edit-technology')}
                     isEdit
                     data={this.state}
                     technology="thư viện"
-                    onClose={this.handleCloseEditLibrary}
+                    onClose={() => this.handleCloseEditTechnology()}
                     onUpdate={onUpdate}
                     errorCode={errorCode}
                 />
@@ -103,4 +135,4 @@ class Library extends PureComponent {
     }
 }
 
-export default Library;
+export default Technology;

@@ -86,7 +86,6 @@ export const createTechnology = (toastText, actionName, dataSent) => {
         dispatch(CRUDTechnology_Start_Success_Failure(actionStart));
         try {
             let res = await userService.createTechnology(dataSent);
-            console.log('createTechnology', res);
             if (res.errorCode === 0) {
                 toast.success(`Tạo mới ${toastText} thành công`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
@@ -128,7 +127,7 @@ export const readTechnology = (toastText, actionName, id, key, side, page, pageS
 };
 
 // UPDATE TECHNOLOGY
-export const updateTechnology = (toastText, actionName, dataSent) => {
+export const updateTechnology = (toastText, actionName, dataSent, isToastSuccess) => {
     return async (dispatch) => {
         const actionStart = `UPDATE_${actionName}_START`;
         const actionSuccess = `UPDATE_${actionName}_SUCCESS`;
@@ -138,7 +137,7 @@ export const updateTechnology = (toastText, actionName, dataSent) => {
         try {
             let res = await userService.updateTechnology(dataSent);
             if (res.errorCode === 0) {
-                toast.success(`Sửa ${toastText} thành công`);
+                isToastSuccess && toast.success(`Sửa ${toastText} thành công`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
             } else {
                 toast.error(`Sửa ${toastText} thất bại`);

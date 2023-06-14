@@ -29,15 +29,8 @@ class CreateEditTechnology extends PureComponent {
     handleCreateOrUpdateTechnology = async (bool) => {
         if (bool) {
             await this.props.onUpdate(this.state);
-
-            if (this.props.errorCode === 0) {
-                this.props.onClose();
-            }
         } else {
             await this.props.onCreate(this.state);
-            if (this.props.errorCode === 0) {
-                this.props.onClose();
-            }
         }
     };
 
@@ -101,7 +94,7 @@ class CreateEditTechnology extends PureComponent {
                     >{`${isEdit ? `Cập nhật` : `Thêm`}`}</Button>
                 </div>
 
-                {isLoading && <Loading styles={{ position: 'absolute' }} />}
+                {isLoading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );
     }

@@ -1,84 +1,84 @@
-import { Component } from 'react';
-import classNames from 'classnames/bind';
-import PropTypes from 'prop-types';
-import HeadlessTippy from '@tippyjs/react/headless';
+import React, { Component } from 'react';
+import classnames from 'classnames/bind';
 
 import styles from './TechnologyList.module.scss';
-import Image from '~/components/Image/Image.js';
-import Button from '~/components/Button/Button.js';
-import { TechnologyProvider } from '~/components/Context/Context.js';
-import EditButton from '~/components/Button/EditButton';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
+import Technology from '~/layouts/PersonalLayout/Components/Technology.js';
 
-const cx = classNames.bind(styles);
+const cx = classnames.bind(styles);
 
 class TechnologyList extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isOpenCreate: false,
-            list: this.props.data || [],
-            dragItemIndex: null,
-            dragOverItemIndex: null,
+
+            dragItemId: undefined,
+            dragOverItemId: undefined,
         };
+
+        this.errorCode = React.createRef();
+        this.technologyState = React.createRef();
     }
 
-    static propTypes = {
-        data: PropTypes.array,
-        edit: PropTypes.bool,
-        draggable: PropTypes.bool,
+    handleDragStart = (id) => {
+        this.setState({ dragItemId: id }, () => console.log('Drag item : ', id));
     };
 
-    handleDragStart = (index) => {
-        console.log('Drag item : ', index);
-        this.setState({ dragItemIndex: index });
+    handleDragEnter = (id) => {
+        this.setState({ dragOverItemId: id }, () => console.log('Drag Over item : ', id));
     };
 
-    handleDragEnter = (index) => {
-        console.log('Drag Over item : ', index);
-        this.setState({ dragOverItemIndex: index });
-    };
+    handleSort = async () => {
+        const dragItemData = this.props?.technologyList.find((technology) => technology.id === this.state.dragItemId);
+        const dragOverItemData = this.props?.technologyList.find(
+            (technology) => technology.id === this.state.dragOverItemId,
+        );
 
-    handleSort = () => {
-        const copyList = [...this.state.list];
-        const dragItem = copyList.splice(this.state.dragItemIndex, 1);
-        copyList.splice(this.state.dragOverItemIndex, 0, ...dragItem);
-        this.setState({ list: copyList, dragItemIndex: null, dragOverItemIndex: null });
-    };
+        const dragItemChangeData = {
+            type: this.props.type,
+            key: this.props.keyTech,
+            id: dragItemData.id,
+            image: dragOverItemData.image,
+            name: dragOverItemData.name,
+            version: dragOverItemData.version,
+            link: dragOverItemData.link,
+        };
 
-    handleShowCreateOrEditTechnology = (action) => {
-        let state;
-        if (action === 'create') {
-            state = 'isOpenCreate';
-        } else {
-            state = 'isOpenEdit';
+        const dragOverItemChangeData = {
+            type: this.props.type,
+            key: this.props.keyTech,
+            id: dragOverItemData.id,
+            image: dragItemData.image,
+            name: dragItemData.name,
+            version: dragItemData.version,
+            link: dragItemData.link,
+        };
+
+        this.errorCode.current = null;
+        await this.props.updateTechnology(dragItemChangeData);
+
+        this.errorCode.current = null;
+        await this.props.updateTechnology(dragOverItemChangeData);
+
+        if (this.errorCode.current === 0) {
+            await this.props.readTechnology();
+            this.errorCode.current = null;
         }
-
-        this.setState({ [state]: true });
     };
 
-    handleCloseCreateOrEditTechnology = (action) => {
-        let state;
-        if (action === 'create') {
-            state = 'isOpenCreate';
-        } else {
-            state = 'isOpenEdit';
-        }
+    handleShowCreateTechnology = () => {
+        this.setState({ isShowCreate: true });
+    };
 
-        this.setState({ [state]: false });
+    handleCloseCreateTechnology = () => {
+        this.setState({ isShowCreate: false });
     };
 
     handleCreateTechnology = async (state) => {
-        let uniqueData;
-        if (this.props.technology === 'framework') {
-            uniqueData = {
-                type: 'FRAMEWORK',
-                key: 'FW',
-            };
-        }
-
         const data = {
-            ...uniqueData,
+            type: this.props.type,
+            key: this.props.keyTech,
             image: state.image,
             name: state.name,
             version: state.version,
@@ -86,87 +86,99 @@ class TechnologyList extends Component {
         };
 
         this.errorCode.current = null;
-        await this.props.createLibrary(data);
+        await this.props.createTechnology(data);
 
         if (this.errorCode.current === 0) {
-            if (this.state.isPagination) {
-                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
-                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
-                await this.setState({
-                    isAddLibrary: false,
-                    selectedPage: this.lastPage.current,
-                    image: '',
-                    name: '',
-                    version: '',
-                    link: '',
-                });
-            } else {
-                await this.props.readLibrary(this.side());
-            }
+            await this.props.readTechnology();
+            await this.setState({
+                isShowCreate: false,
+                image: '',
+                name: '',
+                version: '',
+                link: '',
+            });
 
+            this.errorCode.current = null;
+        }
+    };
+
+    handleUpdateTechnology = async (state) => {
+        const data = {
+            type: this.props.type,
+            key: this.props.keyTech,
+            id: state.id,
+            image: state.image,
+            name: state.name,
+            link: state.link,
+        };
+
+        this.errorCode.current = null;
+        await this.props.updateTechnology(data, true);
+
+        if (this.errorCode.current === 0) {
+            await this.technologyState.current?.handleCloseEditTechnology?.();
+            await this.props.readTechnology();
             this.errorCode.current = null;
         }
     };
 
     handleDeleteTechnology = async (id) => {
         await this.props.onDelete(id, 'FW');
-        await this.props.onRead();
+        await this.props.readTechnology();
     };
 
     componentDidUpdate(prevProps) {
-        if (prevProps.data !== this.props.data) {
-            this.setState({ list: this.props.data });
+        // Update errorCode when dispatch action
+        if (prevProps.errorCode !== this.props.errorCode) {
+            this.errorCode.current = this.props.errorCode;
         }
     }
 
     render() {
-        const { isOpenCreate, list } = this.state;
-        const { draggable, technology } = this.props;
+        const { draggable, technology, technologyList, isLoading = false } = this.props;
+
+        let technologyListArray;
+        if (Array.isArray(technologyList)) {
+            technologyListArray = technologyList;
+        } else {
+            technologyListArray = [technologyList];
+        }
 
         return (
-            <div className={cx('technology-container')}>
-                {list?.map((technology, index) => (
-                    <TechnologyProvider
-                        key={index}
-                        value={{
-                            onAdd: () => this.handleShowCreateOrEditTechnology('create'),
-                            onDelete: () => this.handleDeleteTechnology(technology.id),
-                        }}
-                    >
-                        <div style={{ display: 'inline-block' }}>
-                            <HeadlessTippy
-                                placement="top-start"
-                                interactive
-                                offset={[0, 0]}
-                                render={(attrs) => (
-                                    <div tabIndex="-1" {...attrs}>
-                                        <EditButton onEdit={() => this.handleShowEditLibrary(technology.id)} />
-                                    </div>
-                                )}
-                            >
-                                <Button
-                                    className={cx('button')}
+            <div className={cx('technology-list')}>
+                {technologyList &&
+                    technologyListArray?.map((technology, index) => {
+                        return (
+                            <div key={index} id="js-technology-item">
+                                <Technology
                                     draggable={draggable}
-                                    onDragStart={() => this.handleDragStart(index)}
-                                    onDragEnter={() => this.handleDragEnter(index)}
+                                    technologyList={technologyListArray}
+                                    id={technology?.id}
+                                    src={technology?.image}
+                                    name={technology?.name}
+                                    href={technology?.link}
+                                    onShow={() => this.handleShowCreateTechnology(technology?.id)}
+                                    onUpdate={this.handleUpdateTechnology}
+                                    isLoading={isLoading}
+                                    errorCode={this.errorCode.current}
+                                    ref={this.technologyState}
+                                    // Drag and drop
+                                    onDragStart={() => this.handleDragStart(technology?.id)}
+                                    onDragEnter={() => this.handleDragEnter(technology?.id)}
                                     onDragOver={(e) => e.preventDefault()}
                                     onDrop={() => this.handleSort()}
-                                >
-                                    <Image src={technology.src} alt={technology.name} className={cx('image')} />
-                                    <span className={cx('name')}>{technology.name}</span>
-                                </Button>
-                            </HeadlessTippy>
-                        </div>
-                    </TechnologyProvider>
-                ))}
+                                />
+                            </div>
+                        );
+                    })}
 
-                {isOpenCreate && (
+                {this.state.isShowCreate && (
                     <CreateEditTechnology
                         className={cx('create-edit-technology')}
                         technology={technology}
                         isEdit={false}
-                        onShow={() => this.handleShowCreateOrEditTechnology('create')}
-                        onClose={() => this.handleCloseCreateOrEditTechnology('create')}
+                        onClose={() => this.handleCloseCreateTechnology()}
+                        onCreate={this.handleCreateTechnology}
                     />
                 )}
             </div>

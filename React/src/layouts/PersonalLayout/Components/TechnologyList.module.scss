@@ -1,41 +1,12 @@
-.technology-container {
+.technology-list {
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
 
     .create-edit-technology {
+        display: block;
         width: 80%;
         margin-left: auto;
         margin-right: auto;
-    }
-}
-
-.button {
-    display: inline-flex;
-    align-items: center;
-    column-gap: 4px;
-    outline: none;
-    background-color: transparent;
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: 1px solid transparent;
-    transition: 0.5s;
-
-    &:hover {
-        border: 1px solid #41bc8a;
-        box-shadow: 0 2px 0 #41bc8a;
-
-        .name {
-            color: #41bc8a;
-        }
-    }
-
-    .image {
-        width: 24px;
-        height: 24px;
-    }
-
-    .name {
-        color: #111;
-        font-size: 1.4rem;
-        font-weight: 400;
     }
 }

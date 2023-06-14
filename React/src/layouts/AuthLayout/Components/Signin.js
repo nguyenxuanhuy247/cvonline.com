@@ -162,7 +162,7 @@ class SignIn extends Component {
                                 </Button>
                             </div>
                         </div>
-                        {isLoading && <Loading className={cx('spinner')} />}
+                        {isLoading && <Loading style={{ position: 'fixed' }} />}
                     </>
                 )}
             </Route>

@@ -210,8 +210,9 @@ export const handleGetTechnology = async (data) => {
                 };
             }
         } else {
+            console.log(whereQuery);
             technology = await db.Technology.findOne({
-                where: { key: key, side: side, id: id },
+                where: { id: id, ...whereQuery },
                 attributes: ['id', 'image', 'name', 'version', 'link'],
             });
 
@@ -240,7 +241,7 @@ export const handleGetTechnology = async (data) => {
 // UPDATE TECHNOLOGY
 export const handleUpdateTechnology = async (data) => {
     try {
-        const { id, image, name, version, link } = data;
+        const { id, image, name, version, link, upId } = data;
 
         const result = await db.Technology.findOne({
             where: { id: id },
@@ -248,7 +249,7 @@ export const handleUpdateTechnology = async (data) => {
         console.log('handleUpdateTechnology', result);
         if (result) {
             await db.Technology.update(
-                { image: image, name: name, version: version, link: link },
+                { image: image, name: name, version: version, link: link, id: upId },
                 { where: { id: id } },
             );
 

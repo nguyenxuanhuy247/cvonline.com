@@ -4,12 +4,8 @@ const initialState = {
     isLoading: {
         signin: false,
         signup: false,
-        createLibrary: false,
-        readLibrary: false,
-        updateLibrary: false,
-        createFramework: false,
-        readFramework: false,
-        updateFramework: false,
+        library: false,
+        framework: false,
     },
     isSignUp: false,
     signUpMessage: {},
@@ -89,34 +85,30 @@ const userReducer = (state = initialState, action) => {
                 isSignUp: false,
             };
 
-        // LIBRARY
         // CREATE LIBRARY
         case actionNames.CREATE_LIBRARY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, createLibrary: true },
+                isLoading: { ...state.isLoading, library: true },
                 errorCode: undefined,
             };
         case actionNames.CREATE_LIBRARY_SUCCESS:
         case actionNames.CREATE_LIBRARY_FAILURE:
             return {
                 ...state,
-                isLoading: {
-                    ...state.isLoading,
-                    createLibrary: false,
-                },
+                isLoading: { ...state.isLoading, library: false },
                 errorCode: action.payload.errorCode,
             };
         // READ LIBRARY
         case actionNames.READ_LIBRARY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readLibrary: true },
+                isLoading: { ...state.isLoading, library: true },
             };
         case actionNames.READ_LIBRARY_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readLibrary: false },
+                isLoading: { ...state.isLoading, library: false },
                 readLibrary: {
                     totalPages: action.payload.totalPages,
                     libraries: action.payload.data,
@@ -125,21 +117,21 @@ const userReducer = (state = initialState, action) => {
         case actionNames.READ_LIBRARY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readLibrary: false },
+                isLoading: { ...state.isLoading, library: false },
                 errorCode: action.payload.errorCode,
             };
         // UPDATE LIBRARY
         case actionNames.UPDATE_LIBRARY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, updateLibrary: true },
+                isLoading: { ...state.isLoading, library: true },
                 errorCode: undefined,
             };
         case actionNames.UPDATE_LIBRARY_SUCCESS:
         case actionNames.UPDATE_LIBRARY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, updateLibrary: false },
+                isLoading: { ...state.isLoading, library: false },
                 errorCode: action.payload.errorCode,
             };
         // DELETE LIBRARY
@@ -154,16 +146,33 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 errorCode: action.payload.errorCode,
             };
+
+        // ================================================================
+
+        // CREATE FRAMEWORK
+        case actionNames.CREATE_FRAMEWORK_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, framework: true },
+                errorCode: undefined,
+            };
+        case actionNames.CREATE_FRAMEWORK_SUCCESS:
+        case actionNames.CREATE_FRAMEWORK_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, framework: false },
+                errorCode: action.payload.errorCode,
+            };
         // READ FRAMEWORK
         case actionNames.READ_FRAMEWORK_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readFramework: true },
+                isLoading: { ...state.isLoading, framework: true },
             };
         case actionNames.READ_FRAMEWORK_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readFramework: false },
+                isLoading: { ...state.isLoading, framework: false },
                 readFramework: {
                     frameworks: action.payload.data,
                 },
@@ -171,9 +180,22 @@ const userReducer = (state = initialState, action) => {
         case actionNames.READ_FRAMEWORK_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, readFramework: false },
+                isLoading: { ...state.isLoading, framework: false },
             };
-
+        // UPDATE FRAMEWORK
+        case actionNames.UPDATE_FRAMEWORK_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, framework: true },
+                errorCode: undefined,
+            };
+        case actionNames.UPDATE_FRAMEWORK_SUCCESS:
+        case actionNames.UPDATE_FRAMEWORK_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, framework: false },
+                errorCode: action.payload.errorCode,
+            };
         default:
             return state;
     }

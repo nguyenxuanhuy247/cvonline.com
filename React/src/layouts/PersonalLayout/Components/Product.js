@@ -70,19 +70,10 @@ class Product extends PureComponent {
     };
 
     componentDidMount() {
-        this.props.readTechnology('ALL', 'FW');
+        this.props.readFramework('ALL', 'FW');
     }
 
     render() {
-        const { frameworkList } = this.props;
-
-        let frameworkListArray;
-        if (Array.isArray(frameworkList)) {
-            frameworkListArray = frameworkList;
-        } else {
-            frameworkListArray = [frameworkList];
-        }
-
         return (
             <div className={cx('product')}>
                 <div className={cx('row no-gutters')}>
@@ -141,18 +132,33 @@ class Product extends PureComponent {
                             <span className={cx('title')}>Frameworks</span>
                             <div className={cx('list')}>
                                 <TechnologyList
-                                    data={frameworkListArray}
                                     draggable
-                                    onDelete={this.props.deleteTechnology}
-                                    onRead={() => this.props.readTechnology('ALL', 'FW')}
                                     technology="framework"
-                                    type={'FRAMEWORK'}
+                                    type="FRAMEWORK"
+                                    keyTech="FW"
+                                    technologyList={this.props.frameworkList}
+                                    onDelete={this.props.deleteFramework}
+                                    isLoading={this.props.isFrameworkLoading}
+                                    errorCode={this.props.errorCode}
+                                    readTechnology={() => this.props.readFramework('ALL', 'FW')}
+                                    createTechnology={this.props.createFramework}
+                                    updateTechnology={this.props.updateFramework}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className={cx('col pc-5')}>
-                        <LibraryList />
+                        <LibraryList
+                            draggable={true}
+                            isLoading={this.props.isLibraryLoading}
+                            errorCode={this.props.errorCode}
+                            totalPages={this.props.totalPages}
+                            libraryList={this.props.libraryList}
+                            readLibrary={this.props.readLibrary}
+                            createLibrary={this.props.createLibrary}
+                            updateLibrary={this.props.updateLibrary}
+                            deleteLibrary={this.props.deleteLibrary}
+                        />
                     </div>
                 </div>
             </div>
@@ -162,16 +168,34 @@ class Product extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
+        errorCode: state.user.errorCode,
+
+        // Library
+        isLibraryLoading: state.user.isLoading.library,
+        totalPages: state.user.readLibrary.totalPages,
+        libraryList: state.user.readLibrary.libraries,
+
+        // Framework
+        isFrameworkLoading: state.user.isLoading.framework,
         frameworkList: state.user.readFramework.frameworks,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        readTechnology: (id, key) => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', id, key)),
-        createTechnology: (data) => dispatch(userActions.createTechnology('framework', 'FRAMEWORK', data)),
-        updateTechnology: (data) => dispatch(userActions.updateTechnology('framework', 'FRAMEWORK', data)),
-        deleteTechnology: (id, key) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', id, key)),
+        // Library
+        readLibrary: (side, page, pageSize) =>
+            dispatch(userActions.readTechnology('thư viện', 'LIBRARY', 'ALL', 'LI', side, page, pageSize)),
+        createLibrary: (data) => dispatch(userActions.createTechnology('thư viện', 'LIBRARY', data)),
+        updateLibrary: (data, isToastSuccess) =>
+            dispatch(userActions.updateTechnology('thư viện', 'LIBRARY', data, isToastSuccess)),
+        deleteLibrary: (id, side) => dispatch(userActions.deleteTechnology('thư viện', 'LIBRARY', id, 'LI', side)),
+
+        // Library
+        readFramework: (id, key) => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', id, key)),
+        createFramework: (data) => dispatch(userActions.createTechnology('framework', 'FRAMEWORK', data)),
+        updateFramework: (data) => dispatch(userActions.updateTechnology('framework', 'FRAMEWORK', data)),
+        deleteFramework: (id, key) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', id, key)),
     };
 };
 

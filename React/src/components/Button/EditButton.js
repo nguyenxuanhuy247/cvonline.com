@@ -34,7 +34,7 @@ class EditButton extends PureComponent {
     };
 
     render() {
-        const { onAdd, onEdit, onDelete } = this.props;
+        const { onShow, onEdit, onDelete } = this.props;
         return (
             <div
                 className={cx('wrapper')}
@@ -48,7 +48,7 @@ class EditButton extends PureComponent {
                 </DefaultTippy>
 
                 <DefaultTippy content="Thêm mục mới">
-                    <Button className={cx('btn', 'add')} onClick={onAdd}>
+                    <Button className={cx('btn', 'add')} onClick={onShow}>
                         <IoIosAddCircleOutline />
                     </Button>
                 </DefaultTippy>
