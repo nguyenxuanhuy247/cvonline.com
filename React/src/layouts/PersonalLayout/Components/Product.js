@@ -135,14 +135,14 @@ class Product extends PureComponent {
                                     draggable
                                     technology="framework"
                                     type="FRAMEWORK"
-                                    keyTech="FW"
-                                    technologyList={this.props.frameworkList}
-                                    onDelete={this.props.deleteFramework}
-                                    isLoading={this.props.isFrameworkLoading}
-                                    errorCode={this.props.errorCode}
-                                    readTechnology={() => this.props.readFramework('ALL', 'FW')}
-                                    createTechnology={this.props.createFramework}
-                                    updateTechnology={this.props.updateFramework}
+                                    keyprop="FW"
+                                    technologylist={this.props.frameworkList}
+                                    ondelete={this.props.deleteFramework}
+                                    isloading={this.props.isFrameworkLoading}
+                                    errorcode={this.props.errorCode}
+                                    readtechnology={() => this.props.readFramework('ALL', 'FW')}
+                                    createtechnology={this.props.createFramework}
+                                    updatetechnology={this.props.updateFramework}
                                 />
                             </div>
                         </div>
@@ -150,14 +150,16 @@ class Product extends PureComponent {
                     <div className={cx('col pc-5')}>
                         <LibraryList
                             draggable={true}
-                            isLoading={this.props.isLibraryLoading}
-                            errorCode={this.props.errorCode}
-                            totalPages={this.props.totalPages}
-                            libraryList={this.props.libraryList}
-                            readLibrary={this.props.readLibrary}
-                            createLibrary={this.props.createLibrary}
-                            updateLibrary={this.props.updateLibrary}
-                            deleteLibrary={this.props.deleteLibrary}
+                            type="LIBRARY"
+                            keyprop="LI"
+                            isloading={this.props.isLibraryLoading}
+                            errorcode={this.props.errorCode}
+                            totalpages={this.props.totalPages}
+                            librarylist={this.props.libraryList}
+                            readlibrary={this.props.readLibrary}
+                            createlibrary={this.props.createLibrary}
+                            updatelibrary={this.props.updateLibrary}
+                            deletelibrary={this.props.deleteLibrary}
                         />
                     </div>
                 </div>

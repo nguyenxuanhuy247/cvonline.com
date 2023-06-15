@@ -7,9 +7,30 @@ import styles from './Button.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Button({ route, href, disabled = false, children, className, onClick, forwardRef, ...passProps }) {
+function Button({
+    route,
+    href,
+    disabled = false,
+    children,
+    className,
+    onClick,
+    ondragstart,
+    ondragenter,
+    ondragover,
+    ondrop,
+    onmouseenter,
+    onmouseleave,
+    forwardRef,
+    ...passProps
+}) {
     const props = {
-        onClick,
+        onClick: onClick,
+        onDragStart: ondragstart,
+        onDragEnter: ondragenter,
+        onDragOver: ondragover,
+        onDrop: ondrop,
+        onMouseEnter: onmouseenter,
+        onMouseLeave: onmouseleave,
         ...passProps,
     };
 
@@ -41,7 +62,8 @@ function Button({ route, href, disabled = false, children, className, onClick, f
         [className]: className,
         disabled,
     });
-    
+
+
     return (
         <Button className={classes} {...props} ref={forwardRef}>
             {children}

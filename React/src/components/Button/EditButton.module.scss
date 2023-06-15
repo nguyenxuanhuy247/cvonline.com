@@ -2,12 +2,13 @@
 
 .wrapper {
     position: absolute;
-    top: 0;
+    top: 0px;
     left: 0;
     transform: translate(0, -100%);
     display: flex;
     column-gap: 4px;
     padding-bottom: 4px;
+    visibility: hidden;
 
     .btn {
         padding: 6px;

@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 
@@ -24,11 +24,13 @@ class Library extends PureComponent {
             version: '',
             link: '',
         };
+
+        this.idTimeout = React.createRef();
     }
 
     handleShowEditLibrary = (id) => {
         let selectedLibrary;
-        const libraryList = this.props.libraryList;
+        const libraryList = this.props.librarylist;
 
         if (libraryList) {
             selectedLibrary = libraryList.find((library) => {
@@ -50,54 +52,101 @@ class Library extends PureComponent {
         this.setState({ isEdit: false });
     };
 
-    render() {
-        const { draggable, href, id, src, name, version, isLoading, onShow, onUpdate, onDelete, errorCode } =
-            this.props;
+    handleShowEditButton = (id) => {
+        const item = document.getElementById(`js-edit-button-${id}`);
+        item.style.visibility = 'visible';
+    };
 
-        console.log('Library :', draggable);
+    handleHideEditButton = (id) => {
+        const item = document.getElementById(`js-edit-button-${id}`);
+
+        this.idTimeout.current = setTimeout(() => (item.style.visibility = 'hidden'), 0);
+    };
+
+    handleMouseHoverEditButton = () => {
+        // Disable hide Edit button
+        clearTimeout(this.idTimeout.current);
+    };
+
+    handleMouseUnHoverEditButton = (id) => {
+        const item = document.getElementById(`js-edit-button-${id}`);
+        if (item) {
+            // Hide edit button
+            item.style.visibility = 'hidden';
+        }
+    };
+
+    componentWillUnmount() {
+        clearTimeout(this.idTimeout.current);
+    }
+
+    render() {
+        const {
+            draggable,
+            href,
+            id,
+            src,
+            name,
+            version,
+            isloading,
+            onshow,
+            onupdate,
+            ondelete,
+            errorcode,
+            ondragstart,
+            ondragenter,
+            ondragover,
+            ondrop,
+        } = this.props;
+
+        const buttonProps = { draggable, href, ondragstart, ondragenter, ondragover, ondrop };
+
         return !this.state.isEdit ? (
             <HeadlessTippy
-                placement="top-start"
-                interactive
-                offset={[0, 0]}
+                placement="bottom"
+                offset={[0, 4]}
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
-                        <EditButton
-                            id={`js-hover-button-${id}`}
-                            onShow={onShow}
-                            onEdit={() => this.handleShowEditLibrary(id)}
-                            onDelete={onDelete}
-                        />
+                        {href && <div className={cx('library-href')}>{href}</div>}
                     </div>
                 )}
             >
-                <HeadlessTippy
-                    placement="bottom"
-                    offset={[0, 4]}
-                    render={(attrs) => (
-                        <div tabIndex="-1" {...attrs}>
-                            {href && <div className={cx('library-href')}>{href}</div>}
-                        </div>
-                    )}
-                >
-                    <Button id={`js-hover-button-${id}`} className={cx('button')} {...this.props} draggable={draggable}>
+                <div style={{ position: 'relative', border: '2px solid transparent', borderRadius: '4px' }}>
+                    <EditButton
+                        id={id}
+                        onshow={onshow}
+                        onedit={() => this.handleShowEditLibrary(id)}
+                        ondelete={ondelete}
+                        ondragstart={ondragstart}
+                        ondrop={ondrop}
+                        ondragenter={ondragenter}
+                        onmouseenter={(e) => this.handleMouseHoverEditButton(e)}
+                        onmouseleave={() => this.handleMouseUnHoverEditButton(id)}
+                    />
+                    <Button
+                        id={`js-button-${id}`}
+                        className={cx('button')}
+                        {...buttonProps}
+                        onmouseenter={() => this.handleShowEditButton(id)}
+                        onmouseleave={() => this.handleHideEditButton(id)}
+                    >
                         <Image src={src || JpgImages.placeholder} className={cx('image')} />
                         <span className={cx('name')}>{name}</span>
                         <span className={cx('version')}>{version}</span>
                     </Button>
-                </HeadlessTippy>
+                </div>
             </HeadlessTippy>
         ) : (
             <div style={{ position: 'relative' }}>
                 <CreateEditTechnology
-                    isEdit
+                    isedit
                     data={this.state}
                     technology="thư viện"
-                    onClose={this.handleCloseEditLibrary}
-                    onUpdate={onUpdate}
-                    errorCode={errorCode}
+                    onclose={this.handleCloseEditLibrary}
+                    onupdate={onupdate}
+                    errorcode={errorcode}
                 />
-                {isLoading && <Loading style={{ position: 'absolute' }} />}
+                {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );
     }

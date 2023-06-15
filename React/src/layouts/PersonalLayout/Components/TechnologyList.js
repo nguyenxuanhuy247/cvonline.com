@@ -18,26 +18,25 @@ class TechnologyList extends Component {
         };
 
         this.errorCode = React.createRef();
-        this.technologyState = React.createRef();
     }
 
     handleDragStart = (id) => {
-        this.setState({ dragItemId: id }, () => console.log('Drag item : ', id));
+        this.setState({ dragItemId: id });
     };
 
     handleDragEnter = (id) => {
-        this.setState({ dragOverItemId: id }, () => console.log('Drag Over item : ', id));
+        this.setState({ dragOverItemId: id });
     };
 
     handleSort = async () => {
-        const dragItemData = this.props?.technologyList.find((technology) => technology.id === this.state.dragItemId);
-        const dragOverItemData = this.props?.technologyList.find(
+        const dragItemData = this.props?.technologylist.find((technology) => technology.id === this.state.dragItemId);
+        const dragOverItemData = this.props?.technologylist.find(
             (technology) => technology.id === this.state.dragOverItemId,
         );
 
         const dragItemChangeData = {
             type: this.props.type,
-            key: this.props.keyTech,
+            key: this.props.keyprop,
             id: dragItemData.id,
             image: dragOverItemData.image,
             name: dragOverItemData.name,
@@ -47,7 +46,7 @@ class TechnologyList extends Component {
 
         const dragOverItemChangeData = {
             type: this.props.type,
-            key: this.props.keyTech,
+            key: this.props.keyprop,
             id: dragOverItemData.id,
             image: dragItemData.image,
             name: dragItemData.name,
@@ -56,13 +55,13 @@ class TechnologyList extends Component {
         };
 
         this.errorCode.current = null;
-        await this.props.updateTechnology(dragItemChangeData);
+        await this.props.updatetechnology(dragItemChangeData);
 
         this.errorCode.current = null;
-        await this.props.updateTechnology(dragOverItemChangeData);
+        await this.props.updatetechnology(dragOverItemChangeData);
 
         if (this.errorCode.current === 0) {
-            await this.props.readTechnology();
+            await this.props.readtechnology();
             this.errorCode.current = null;
         }
     };
@@ -78,7 +77,7 @@ class TechnologyList extends Component {
     handleCreateTechnology = async (state) => {
         const data = {
             type: this.props.type,
-            key: this.props.keyTech,
+            key: this.props.keyprop,
             image: state.image,
             name: state.name,
             version: state.version,
@@ -86,10 +85,10 @@ class TechnologyList extends Component {
         };
 
         this.errorCode.current = null;
-        await this.props.createTechnology(data);
+        await this.props.createtechnology(data);
 
         if (this.errorCode.current === 0) {
-            await this.props.readTechnology();
+            await this.props.readtechnology();
             await this.setState({
                 isShowCreate: false,
                 image: '',
@@ -102,10 +101,10 @@ class TechnologyList extends Component {
         }
     };
 
-    handleUpdateTechnology = async (state) => {
+    handleUpdateTechnology = async (state, closeFn) => {
         const data = {
             type: this.props.type,
-            key: this.props.keyTech,
+            key: this.props.keyprop,
             id: state.id,
             image: state.image,
             name: state.name,
@@ -113,60 +112,59 @@ class TechnologyList extends Component {
         };
 
         this.errorCode.current = null;
-        await this.props.updateTechnology(data, true);
+        await this.props.updatetechnology(data, true);
 
         if (this.errorCode.current === 0) {
-            await this.technologyState.current?.handleCloseEditTechnology?.();
-            await this.props.readTechnology();
+            await closeFn();
+            await this.props.readtechnology();
             this.errorCode.current = null;
         }
     };
 
     handleDeleteTechnology = async (id) => {
-        await this.props.onDelete(id, 'FW');
-        await this.props.readTechnology();
+        await this.props.ondelete(id, 'FW');
+        await this.props.readtechnology();
     };
 
     componentDidUpdate(prevProps) {
         // Update errorCode when dispatch action
-        if (prevProps.errorCode !== this.props.errorCode) {
-            this.errorCode.current = this.props.errorCode;
+        if (prevProps.errorcode !== this.props.errorcode) {
+            this.errorCode.current = this.props.errorcode;
         }
     }
 
     render() {
-        const { draggable, technology, technologyList, isLoading = false } = this.props;
+        const { draggable, technology, technologylist, isloading = false } = this.props;
 
         let technologyListArray;
-        if (Array.isArray(technologyList)) {
-            technologyListArray = technologyList;
+        if (Array.isArray(technologylist)) {
+            technologyListArray = technologylist;
         } else {
-            technologyListArray = [technologyList];
+            technologyListArray = [technologylist];
         }
 
         return (
             <div className={cx('technology-list')}>
-                {technologyList &&
+                {technologylist &&
                     technologyListArray?.map((technology, index) => {
                         return (
                             <div key={index} id="js-technology-item">
                                 <Technology
                                     draggable={draggable}
-                                    technologyList={technologyListArray}
+                                    technologylist={technologyListArray}
                                     id={technology?.id}
                                     src={technology?.image}
                                     name={technology?.name}
                                     href={technology?.link}
-                                    onShow={() => this.handleShowCreateTechnology(technology?.id)}
-                                    onUpdate={this.handleUpdateTechnology}
-                                    isLoading={isLoading}
-                                    errorCode={this.errorCode.current}
-                                    ref={this.technologyState}
+                                    onshow={() => this.handleShowCreateTechnology(technology?.id)}
+                                    onupdate={this.handleUpdateTechnology}
+                                    isloading={isloading}
+                                    errorcode={this.errorCode.current}
                                     // Drag and drop
-                                    onDragStart={() => this.handleDragStart(technology?.id)}
-                                    onDragEnter={() => this.handleDragEnter(technology?.id)}
-                                    onDragOver={(e) => e.preventDefault()}
-                                    onDrop={() => this.handleSort()}
+                                    ondragstart={() => this.handleDragStart(technology?.id)}
+                                    ondragenter={() => this.handleDragEnter(technology?.id)}
+                                    ondragover={(e) => e.preventDefault()}
+                                    ondrop={() => this.handleSort()}
                                 />
                             </div>
                         );

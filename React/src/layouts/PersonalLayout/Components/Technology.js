@@ -44,7 +44,7 @@ class Technology extends PureComponent {
         }
 
         let selectedtechnology;
-        const technologyList = this.props.technologyList;
+        const technologyList = this.props.technologylist;
 
         if (technologyList) {
             selectedtechnology = technologyList.find((technology) => {
@@ -81,12 +81,18 @@ class Technology extends PureComponent {
             id = undefined,
             src = '',
             name = '',
-            isLoading = false,
-            onShow,
-            onUpdate,
-            onDelete,
-            errorCode,
+            isloading = false,
+            onshow,
+            onupdate,
+            ondelete,
+            errorcode,
+            ondragstart,
+            ondragenter,
+            ondragover,
+            ondrop,
         } = this.props;
+
+        const buttonProps = { draggable, href, ondragstart, ondragenter, ondragover, ondrop };
 
         return !this.state.isEdit ? (
             <HeadlessTippy
@@ -96,9 +102,13 @@ class Technology extends PureComponent {
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
                         <EditButton
-                            onShow={onShow}
-                            onEdit={() => this.handleShowEditTechnology(id)}
-                            onDelete={onDelete}
+                            id={`js-technology-item-${id}`}
+                            ondragstart={ondragstart}
+                            ondrop={ondrop}
+                            ondragenter={ondragenter}
+                            onshow={onshow}
+                            onedit={() => this.handleShowEditTechnology(id)}
+                            ondelete={ondelete}
                         />
                     </div>
                 )}
@@ -112,7 +122,7 @@ class Technology extends PureComponent {
                         </div>
                     )}
                 >
-                    <Button id={`js-technology-item-${id}`} className={cx('button')} {...this.props}>
+                    <Button id={`js-technology-item-${id}`} className={cx('button')} {...buttonProps}>
                         <Image src={src || JpgImages.placeholder} className={cx('image')} />
                         <span className={cx('name')}>{name}</span>
                     </Button>
@@ -121,15 +131,15 @@ class Technology extends PureComponent {
         ) : (
             <div style={{ position: 'relative' }} className={cx('edit-technology-wrapper')}>
                 <CreateEditTechnology
-                    className={cx('edit-technology')}
-                    isEdit
+                    classname={cx('edit-technology')}
+                    isedit
                     data={this.state}
                     technology="thư viện"
-                    onClose={() => this.handleCloseEditTechnology()}
-                    onUpdate={onUpdate}
-                    errorCode={errorCode}
+                    onclose={() => this.handleCloseEditTechnology()}
+                    onupdate={onupdate}
+                    errorcode={errorcode}
                 />
-                {isLoading && <Loading style={{ position: 'absolute' }} />}
+                {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );
     }

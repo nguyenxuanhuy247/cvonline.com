@@ -28,19 +28,19 @@ class CreateEditTechnology extends PureComponent {
 
     handleCreateOrUpdateTechnology = async (bool) => {
         if (bool) {
-            await this.props.onUpdate(this.state);
+            await this.props.onupdate(this.state, this.props.onclose);
         } else {
-            await this.props.onCreate(this.state);
+            await this.props.oncreate(this.state);
         }
     };
 
     render() {
-        const { isEdit, className, isLoading, technology, onClose } = this.props;
+        const { isedit, classname, isloading, technology, onclose } = this.props;
 
         return (
-            <div className={cx('create-edit-technology', className)}>
+            <div className={cx('create-edit-technology', classname)}>
                 <div className={cx('info')}>
-                    <p className={cx('heading')}>{isEdit ? `Chỉnh sửa ${technology}` : `Thêm ${technology} mới`}</p>
+                    <p className={cx('heading')}>{isedit ? `Chỉnh sửa ${technology}` : `Thêm ${technology} mới`}</p>
                     <div className={cx('image-wrapper')}>
                         <HeadlessTippy
                             zIndex="10"
@@ -54,7 +54,7 @@ class CreateEditTechnology extends PureComponent {
                                         className={cx('add-edit-image-button')}
                                         onClick={() => this.setState({ isModalOpen: true })}
                                     >
-                                        {`${isEdit ? `Sửa ảnh` : `Thêm ảnh`}`}
+                                        {`${isedit ? `Sửa ảnh` : `Thêm ảnh`}`}
                                     </Button>
                                 </div>
                             )}
@@ -85,16 +85,16 @@ class CreateEditTechnology extends PureComponent {
                     />
                 </div>
                 <div className={cx('actions')}>
-                    <Button className={cx('btn', 'cancel')} onClick={onClose}>
+                    <Button className={cx('btn', 'cancel')} onClick={onclose}>
                         Hủy
                     </Button>
                     <Button
                         className={cx('btn', 'add')}
-                        onClick={() => this.handleCreateOrUpdateTechnology(isEdit)}
-                    >{`${isEdit ? `Cập nhật` : `Thêm`}`}</Button>
+                        onClick={() => this.handleCreateOrUpdateTechnology(isedit)}
+                    >{`${isedit ? `Cập nhật` : `Thêm`}`}</Button>
                 </div>
 
-                {isLoading && <Loading style={{ position: 'absolute' }} />}
+                {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );
     }

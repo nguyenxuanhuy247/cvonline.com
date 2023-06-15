@@ -30,56 +30,59 @@ class LibraryList extends PureComponent {
 
         this.errorCode = React.createRef();
         this.lastPage = React.createRef();
-        this.libraryState = React.createRef();
     }
 
     handleDragStart = (id) => {
-        this.setState({ dragItemId: id }, () => console.log('Drag item : ', id));
+        this.setState({ dragItemId: id });
     };
 
     handleDragEnter = (id) => {
-        this.setState({ dragOverItemId: id }, () => console.log('Drag Over item : ', id));
+        this.setState({ dragOverItemId: id });
     };
 
     handleSort = async () => {
-        const dragItemData = this.props?.libraryList.find((library) => library.id === this.state.dragItemId);
-        const dragOverItemData = this.props?.libraryList.find((library) => library.id === this.state.dragOverItemId);
+        const dragItemData = this.props?.librarylist.find((library) => library.id === this.state.dragItemId);
+        const dragOverItemData = this.props?.librarylist.find((library) => library.id === this.state.dragOverItemId);
 
         const dragItemChangeData = {
             type: this.props.type,
-            key: this.props.keyTech,
-            id: dragItemData.id,
-            image: dragOverItemData.image,
-            name: dragOverItemData.name,
-            version: dragOverItemData.version,
-            link: dragOverItemData.link,
+            key: this.props.keyprop,
+            id: dragItemData?.id,
+            image: dragOverItemData?.image,
+            name: dragOverItemData?.name,
+            version: dragOverItemData?.version,
+            link: dragOverItemData?.link,
         };
 
         const dragOverItemChangeData = {
             type: this.props.type,
-            key: this.props.keyTech,
-            id: dragOverItemData.id,
-            image: dragItemData.image,
-            name: dragItemData.name,
-            version: dragItemData.version,
-            link: dragItemData.link,
+            key: this.props.keyprop,
+            id: dragOverItemData?.id,
+            image: dragItemData?.image,
+            name: dragItemData?.name,
+            version: dragItemData?.version,
+            link: dragItemData?.link,
         };
 
         this.errorCode.current = null;
-        await this.props.updateLibrary(dragItemChangeData);
+        await this.props.updatelibrary(dragItemChangeData);
 
         this.errorCode.current = null;
-        await this.props.updateLibrary(dragOverItemChangeData);
+        await this.props.updatelibrary(dragOverItemChangeData);
 
         if (this.errorCode.current === 0) {
             if (this.state.isPagination) {
-                await this.props.readLibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
+                await this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
             } else {
-                await this.props.readLibrary(this.side());
+                await this.props.readlibrary(this.side());
             }
-
             this.errorCode.current = null;
         }
+
+        await this.setState({
+            dragItemId: undefined,
+            dragOverItemId: undefined,
+        });
     };
 
     side = () => {
@@ -99,10 +102,10 @@ class LibraryList extends PureComponent {
 
                 if (this.state.isPagination) {
                     this.setState({ isFE: isFE, selectedPage: 1 }, () =>
-                        this.props.readLibrary(this.side(), 1, this.state.itemsPerPage),
+                        this.props.readlibrary(this.side(), 1, this.state.itemsPerPage),
                     );
                 } else {
-                    this.setState({ isFE: isFE, selectedPage: 1 }, () => this.props.readLibrary(this.side()));
+                    this.setState({ isFE: isFE, selectedPage: 1 }, () => this.props.readlibrary(this.side()));
                 }
             }
         }
@@ -138,7 +141,7 @@ class LibraryList extends PureComponent {
         };
 
         this.errorCode.current = null;
-        await this.props.createLibrary(data);
+        await this.props.createlibrary(data);
 
         if (this.errorCode.current === 0) {
             if (this.state.isPagination) {
@@ -151,17 +154,17 @@ class LibraryList extends PureComponent {
                     link: '',
                 });
 
-                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
-                await this.props.readLibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
+                await this.props.readlibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
+                await this.props.readlibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
             } else {
-                await this.props.readLibrary(this.side());
+                await this.props.readlibrary(this.side());
             }
 
             this.errorCode.current = null;
         }
     };
 
-    handleUpdateLibrary = async (state) => {
+    handleUpdateLibrary = async (state, closeFn) => {
         const side = this.side();
         const data = {
             type: 'LIBRARY',
@@ -175,15 +178,15 @@ class LibraryList extends PureComponent {
         };
 
         this.errorCode.current = null;
-        await this.props.updateLibrary(data, true);
+        await this.props.updatelibrary(data, true);
 
         if (this.errorCode.current === 0) {
-            await this.libraryState.current?.handleCloseEditLibrary();
+            await closeFn();
 
             if (this.state.isPagination) {
-                await this.props.readLibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
+                await this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
             } else {
-                await this.props.readLibrary(this.side());
+                await this.props.readlibrary(this.side());
             }
 
             this.errorCode.current = null;
@@ -192,13 +195,13 @@ class LibraryList extends PureComponent {
 
     handleDeleteLibrary = async (id) => {
         this.errorCode.current = null;
-        await this.props.deleteLibrary(id, this.side());
+        await this.props.deletelibrary(id, this.side());
 
         if (this.errorCode.current === 0) {
             if (this.state.isPagination) {
-                await this.props.readLibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
+                await this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
             } else {
-                await this.props.readLibrary(this.side());
+                await this.props.readlibrary(this.side());
             }
 
             this.errorCode.current = null;
@@ -207,7 +210,7 @@ class LibraryList extends PureComponent {
 
     handleChangePage = (event, value) => {
         this.setState({ selectedPage: value });
-        this.props.readLibrary(this.side(), value, this.state.itemsPerPage);
+        this.props.readlibrary(this.side(), value, this.state.itemsPerPage);
     };
 
     handleShowAllLibraryList = () => {
@@ -217,7 +220,7 @@ class LibraryList extends PureComponent {
         showAllButton.classList.add(`${cx('active')}`);
         paginationButton.classList.remove(`${cx('active')}`);
 
-        this.props.readLibrary(this.side());
+        this.props.readlibrary(this.side());
         this.setState({ isPagination: false });
     };
 
@@ -231,7 +234,7 @@ class LibraryList extends PureComponent {
         paginationButton.classList.add(`${cx('active')}`);
         showAllButton.classList.remove(`${cx('active')}`);
         await this.setState({ isPagination: true, itemsPerPage: paginationSelect.value });
-        await this.props.readLibrary(this.side(), 1, this.state.itemsPerPage);
+        await this.props.readlibrary(this.side(), 1, this.state.itemsPerPage);
     };
 
     handleChangeItemsPerPage = async (e) => {
@@ -242,18 +245,18 @@ class LibraryList extends PureComponent {
         showAllButton.classList.remove(`${cx('active')}`);
 
         await this.setState({ isPagination: true, itemsPerPage: e.target.value });
-        await this.props.readLibrary(this.side(), 1, this.state.itemsPerPage);
+        await this.props.readlibrary(this.side(), 1, this.state.itemsPerPage);
     };
 
     componentDidMount() {
-        this.props.readLibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
+        this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
     }
 
-    componentDidUpdate(prevProps) {
-        const { totalPages, errorCode } = this.props;
+    componentDidUpdate(prevProps, prevState) {
+        const { totalPages, errorcode } = this.props;
 
-        if (prevProps.errorCode !== errorCode) {
-            this.errorCode.current = errorCode;
+        if (prevProps.errorCode !== errorcode) {
+            this.errorCode.current = errorcode;
         }
 
         this.lastPage.current = totalPages;
@@ -262,12 +265,12 @@ class LibraryList extends PureComponent {
         if (prevProps.totalPages !== totalPages) {
             if (totalPages < this.state.selectedPage) {
                 this.setState({ selectedPage: totalPages });
-                this.props.readLibrary(this.side(), totalPages, this.state.itemsPerPage);
+                this.props.readlibrary(this.side(), totalPages, this.state.itemsPerPage);
             }
         }
 
         // If page's quantity is more than 1, libray list's height of page 2, 3, 4,... will be equal to page 1
-        const library = document.querySelector('[id*=js-hover-button]');
+        const library = document.querySelector('[id*=js-button]');
         const libraryList = document.querySelector(`.${cx('library-list')}`);
 
         if (library && libraryList) {
@@ -278,16 +281,38 @@ class LibraryList extends PureComponent {
                 libraryList.style.minHeight = `initial`;
             }
         }
+
+        if (prevState.dragOverItemId !== this.state.dragOverItemId) {
+            const item = document.getElementById(`js-button-${this.state.dragOverItemId}`);
+            const hoverItems = document.querySelectorAll('[id*=js-button]');
+
+            if (item && hoverItems) {
+                hoverItems.forEach((item) => (item.parentElement.style.borderColor = 'transparent'));
+                item.parentElement.style.borderColor = 'var(--primary-color)';
+            }
+
+            if (this.state.dragOverItemId === undefined) {
+                const allItem = document.querySelectorAll('[id*=js-button]');
+                const allEditItem = document.querySelectorAll('[id*=js-edit-button]');
+
+                allItem.forEach((item) => {
+                    item.parentElement.style.borderColor = 'transparent';
+                    item.style.backgroundColor = 'transparent';
+                });
+
+                allEditItem.forEach((item) => (item.style.visibility = 'hidden'));
+            }
+        }
     }
 
     render() {
-        const { draggable, libraryList, isLoading = false, totalPages } = this.props;
+        const { draggable, librarylist, isloading = false, totalpages } = this.props;
 
         let libraryListArray;
-        if (Array.isArray(libraryList)) {
-            libraryListArray = libraryList;
+        if (Array.isArray(librarylist)) {
+            libraryListArray = librarylist;
         } else {
-            libraryListArray = [libraryList];
+            libraryListArray = [librarylist];
         }
 
         return (
@@ -306,29 +331,28 @@ class LibraryList extends PureComponent {
                     </Button>
                 </div>
                 <div className={cx('library-list')}>
-                    {libraryList &&
+                    {librarylist &&
                         libraryListArray?.map((library) => {
                             return (
-                                <div key={library.id}>
+                                <div key={library?.id}>
                                     <Library
                                         draggable={draggable}
-                                        libraryList={libraryListArray}
-                                        id={library.id}
-                                        src={library.image}
-                                        name={library.name}
-                                        version={library.version}
-                                        href={library.link}
-                                        onShow={this.handleShowCreateLibrary}
-                                        onUpdate={this.handleUpdateLibrary}
-                                        onDelete={() => this.handleDeleteLibrary(library.id)}
-                                        isLoading={isLoading}
-                                        errorCode={this.errorCode.current}
-                                        ref={this.libraryState}
+                                        librarylist={libraryListArray}
+                                        id={library?.id}
+                                        src={library?.image}
+                                        name={library?.name}
+                                        version={library?.version}
+                                        href={library?.link}
+                                        onshow={this.handleShowCreateLibrary}
+                                        onupdate={this.handleUpdateLibrary}
+                                        ondelete={() => this.handleDeleteLibrary(library?.id)}
+                                        isloading={isloading}
+                                        errorcode={this.errorCode.current}
                                         // Drag and drop
-                                        onDragStart={() => this.handleDragStart(library?.id)}
-                                        onDragEnter={() => this.handleDragEnter(library?.id)}
-                                        onDragOver={(e) => e.preventDefault()}
-                                        onDrop={() => this.handleSort()}
+                                        ondragstart={() => this.handleDragStart(library?.id)}
+                                        ondragenter={() => this.handleDragEnter(library?.id)}
+                                        ondragover={(e) => e.preventDefault()}
+                                        ondrop={() => this.handleSort()}
                                     />
                                 </div>
                             );
@@ -346,11 +370,11 @@ class LibraryList extends PureComponent {
                     <div style={{ position: 'relative' }}>
                         <CreateEditTechnology
                             technology="thư viện"
-                            errorCode={this.errorCode.current}
-                            onClose={this.handleCloseCreateLibrary}
-                            onCreate={this.handleCreateLibrary}
+                            errorcode={this.errorCode.current}
+                            onclose={this.handleCloseCreateLibrary}
+                            oncreate={this.handleCreateLibrary}
                         />
-                        {isLoading && <Loading style={{ position: 'absolute' }} />}
+                        {isloading && <Loading style={{ position: 'absolute' }} />}
                     </div>
                 )}
 
@@ -363,7 +387,7 @@ class LibraryList extends PureComponent {
                         }}
                     >
                         <Pagination
-                            count={totalPages}
+                            count={totalpages}
                             variant="outlined"
                             size="medium"
                             siblingCount={1}
@@ -418,7 +442,7 @@ class LibraryList extends PureComponent {
                         </select>
                     </Button>
                 </div>
-                {isLoading && <Loading style={{ position: 'absolute' }} />}
+                {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );
     }
