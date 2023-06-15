@@ -16,20 +16,13 @@ class LibraryList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isFE: true,
-            isAddLibrary: false,
-            isEditLibrary: false,
-            isPagination: true,
-            itemsPerPage: 10,
             uploadImageUrl: '',
-            selectedPage: 1,
 
             dragItemId: undefined,
             dragOverItemId: undefined,
         };
 
         this.errorCode = React.createRef();
-        this.lastPage = React.createRef();
     }
 
     handleDragStart = (id) => {
@@ -88,27 +81,6 @@ class LibraryList extends PureComponent {
     side = () => {
         const side = this.state.isFE ? 'FE' : 'BE';
         return side;
-    };
-
-    handleShowLibraryList = (e) => {
-        const isActive = e.target.classList.contains(cx('active'));
-        const isFE = e.target.id === 'frontend';
-
-        if (!isActive) {
-            const btn = document.querySelector(`.${cx('active')}`);
-            if (btn) {
-                btn.classList.remove(cx('active'));
-                e.target.classList.add(cx('active'));
-
-                if (this.state.isPagination) {
-                    this.setState({ isFE: isFE, selectedPage: 1 }, () =>
-                        this.props.readlibrary(this.side(), 1, this.state.itemsPerPage),
-                    );
-                } else {
-                    this.setState({ isFE: isFE, selectedPage: 1 }, () => this.props.readlibrary(this.side()));
-                }
-            }
-        }
     };
 
     handleInputLibrary = (e, name) => {
@@ -208,80 +180,12 @@ class LibraryList extends PureComponent {
         }
     };
 
-    handleChangePage = (event, value) => {
-        this.setState({ selectedPage: value });
-        this.props.readlibrary(this.side(), value, this.state.itemsPerPage);
-    };
-
-    handleShowAllLibraryList = () => {
-        const showAllButton = document.getElementById('js-show-all');
-        const paginationButton = document.getElementById('js-pagination');
-
-        showAllButton.classList.add(`${cx('active')}`);
-        paginationButton.classList.remove(`${cx('active')}`);
-
-        this.props.readlibrary(this.side());
-        this.setState({ isPagination: false });
-    };
-
-    hanldeShowPagination = async () => {
-        const paginationSelect = document.getElementById('select-pag');
-        const showAllButton = document.getElementById('js-show-all');
-        const paginationButton = document.getElementById('js-pagination');
-
-        paginationSelect.onclick = (e) => e.stopPropagation();
-
-        paginationButton.classList.add(`${cx('active')}`);
-        showAllButton.classList.remove(`${cx('active')}`);
-        await this.setState({ isPagination: true, itemsPerPage: paginationSelect.value });
-        await this.props.readlibrary(this.side(), 1, this.state.itemsPerPage);
-    };
-
-    handleChangeItemsPerPage = async (e) => {
-        const showAllButton = document.getElementById('js-show-all');
-        const paginationButton = document.getElementById('js-pagination');
-
-        paginationButton.classList.add(`${cx('active')}`);
-        showAllButton.classList.remove(`${cx('active')}`);
-
-        await this.setState({ isPagination: true, itemsPerPage: e.target.value });
-        await this.props.readlibrary(this.side(), 1, this.state.itemsPerPage);
-    };
-
-    componentDidMount() {
-        this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
-    }
-
     componentDidUpdate(prevProps, prevState) {
-        const { totalPages, errorcode } = this.props;
-
-        if (prevProps.errorCode !== errorcode) {
-            this.errorCode.current = errorcode;
+        if (prevProps.errorCode !== this.props.errorcode) {
+            this.errorCode.current = this.props.errorcode;
         }
 
-        this.lastPage.current = totalPages;
-
-        // If delete the last library of last page, will move to the previous page
-        if (prevProps.totalPages !== totalPages) {
-            if (totalPages < this.state.selectedPage) {
-                this.setState({ selectedPage: totalPages });
-                this.props.readlibrary(this.side(), totalPages, this.state.itemsPerPage);
-            }
-        }
-
-        // If page's quantity is more than 1, libray list's height of page 2, 3, 4,... will be equal to page 1
-        const library = document.querySelector('[id*=js-button]');
-        const libraryList = document.querySelector(`.${cx('library-list')}`);
-
-        if (library && libraryList) {
-            if (totalPages > 1) {
-                const height = library.offsetHeight * this.state.itemsPerPage;
-                libraryList.style.minHeight = `${height}px`;
-            } else {
-                libraryList.style.minHeight = `initial`;
-            }
-        }
-
+        // Pick button and replace item
         if (prevState.dragOverItemId !== this.state.dragOverItemId) {
             const item = document.getElementById(`js-button-${this.state.dragOverItemId}`);
             const hoverItems = document.querySelectorAll('[id*=js-button]');
@@ -306,48 +210,38 @@ class LibraryList extends PureComponent {
     }
 
     render() {
-        const { draggable, librarylist, isloading = false, totalpages } = this.props;
+        const { draggable, technology, technologylist, isloading = false } = this.props;
 
         let libraryListArray;
-        if (Array.isArray(librarylist)) {
-            libraryListArray = librarylist;
+        if (Array.isArray(technologylist)) {
+            libraryListArray = technologylist;
         } else {
-            libraryListArray = [librarylist];
+            libraryListArray = [technologylist];
         }
 
         return (
-            <div className={cx('library-used')}>
-                <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
-                <div className={cx('divide')}>
-                    <Button
-                        id="frontend"
-                        className={cx('text', 'active')}
-                        onClick={(e) => this.handleShowLibraryList(e)}
-                    >
-                        Front-end
-                    </Button>
-                    <Button id="backend" className={cx('text')} onClick={(e) => this.handleShowLibraryList(e)}>
-                        Back-end
-                    </Button>
-                </div>
-                <div className={cx('library-list')}>
-                    {librarylist &&
+            <React.Fragment>
+                <div className={cx('technology-list', { 'non-library-list': technology !== 'library' })}>
+                    {technologylist &&
                         libraryListArray?.map((library) => {
                             return (
                                 <div key={library?.id}>
                                     <Library
                                         draggable={draggable}
+                                        technology={technology}
                                         librarylist={libraryListArray}
+                                        // Technology info
                                         id={library?.id}
                                         src={library?.image}
                                         name={library?.name}
                                         version={library?.version}
                                         href={library?.link}
+                                        // Event
+                                        isloading={isloading}
+                                        errorcode={this.errorCode.current}
                                         onshow={this.handleShowCreateLibrary}
                                         onupdate={this.handleUpdateLibrary}
                                         ondelete={() => this.handleDeleteLibrary(library?.id)}
-                                        isloading={isloading}
-                                        errorcode={this.errorCode.current}
                                         // Drag and drop
                                         ondragstart={() => this.handleDragStart(library?.id)}
                                         ondragenter={() => this.handleDragEnter(library?.id)}
@@ -360,15 +254,19 @@ class LibraryList extends PureComponent {
                 </div>
 
                 {!this.state.isAddLibrary ? (
-                    <Button className={cx('add-btn')} onClick={() => this.setState({ isAddLibrary: true })}>
+                    <Button
+                        className={cx('add-new-technology-button')}
+                        onClick={() => this.setState({ isAddLibrary: true })}
+                    >
                         <span className={cx('left-icon')}>
                             <BsPlusCircleDotted />
                         </span>
                         <span className={cx('text')}>Thêm thư viện</span>
                     </Button>
                 ) : (
-                    <div style={{ position: 'relative' }}>
+                    <div style={{ position: 'relative', width: '100%' }}>
                         <CreateEditTechnology
+                            className={cx('add-new-technology-form', { 'non-library-form': technology !== 'library' })}
                             technology="thư viện"
                             errorcode={this.errorCode.current}
                             onclose={this.handleCloseCreateLibrary}
@@ -377,73 +275,7 @@ class LibraryList extends PureComponent {
                         {isloading && <Loading style={{ position: 'absolute' }} />}
                     </div>
                 )}
-
-                {this.state.isPagination && (
-                    <div
-                        style={{
-                            margin: '12px 0 12px',
-                            display: 'grid',
-                            placeItems: 'center',
-                        }}
-                    >
-                        <Pagination
-                            count={totalpages}
-                            variant="outlined"
-                            size="medium"
-                            siblingCount={1}
-                            boundaryCount={1}
-                            page={this.state.selectedPage}
-                            sx={{
-                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                    color: 'var(--primary-color)',
-                                    fontSize: '12px',
-                                    borderColor: 'var(--green-color-02)',
-                                },
-                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                    backgroundColor: 'var(--button-bgc-green-02)',
-                                },
-
-                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected': {
-                                    color: '#fff',
-                                    backgroundColor: 'var(--button-bgc-green-01)',
-                                },
-
-                                '& .Mui-selected:hover': {
-                                    backgroundColor: 'var(--button-bgc-green-01) !important',
-                                },
-                            }}
-                            onChange={this.handleChangePage}
-                        />
-                    </div>
-                )}
-
-                <div className={cx('display')}>
-                    <Button className={cx('button')} id="js-show-all" onClick={this.handleShowAllLibraryList}>
-                        Hiển thị tất cả
-                    </Button>
-                    <Button
-                        className={cx('button', 'pag-button', 'active')}
-                        id="js-pagination"
-                        onClick={this.hanldeShowPagination}
-                    >
-                        <label className={cx('label')}>Phân trang</label>
-                        <select
-                            className={cx('select')}
-                            id="select-pag"
-                            onChange={(e) => this.handleChangeItemsPerPage(e)}
-                        >
-                            <option value="10" defaultValue>
-                                10
-                            </option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                            <option value="40">40</option>
-                            <option value="50">50</option>
-                        </select>
-                    </Button>
-                </div>
-                {isloading && <Loading style={{ position: 'absolute' }} />}
-            </div>
+            </React.Fragment>
         );
     }
 }

@@ -51,6 +51,29 @@
     .version {
         margin-left: auto;
     }
+
+    &.non-library-button {
+        display: inline-flex;
+        align-items: center;
+        column-gap: 4px;
+        outline: none;
+        background-color: transparent;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        transition: 0.5s;
+        border: 1px solid #41bc8a;
+
+        &:hover {
+            border: 1px solid #41bc8a;
+            box-shadow: 0 2px 0 #41bc8a;
+            background-color: #fff !important;
+
+            .name {
+                color: #41bc8a;
+            }
+        }
+    }
 }
 
 .add-library {

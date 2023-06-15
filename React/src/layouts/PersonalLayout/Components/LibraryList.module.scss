@@ -1,275 +1,46 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
-.library-used {
-    font-family: var(--alexandria-font);
+.technology-list {
+    width: 100%;
+    margin-top: 12px;
     display: flex;
     flex-direction: column;
+
+    &.non-library-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+.add-new-technology-button {
+    margin: 12px 0;
+    text-align: center;
     padding: 8px;
-    border: 1px solid var(--primary-color);
-    position: relative;
+    color: var(--primary-color);
+    background-color: var(--button-bgc-green-02);
+    border-radius: 4px;
+    font-size: 20px;
 
-    .library-heading {
-        font-size: 1.8rem;
-        font-weight: 600;
-        padding: 8px 8px;
-        text-align: center;
-        color: var(--primary-color);
+    &:hover {
+        cursor: pointer;
+        color: #fff;
+        background-color: var(--button-bgc-green-01);
     }
 
-    .divide {
-        margin-top: 8px;
-        display: flex;
-        justify-content: space-evenly;
-
-        .text {
-            flex: 1;
-            display: inline-block;
-            padding: 8px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            border: 1px solid currentColor;
-            background-color: #fff;
-            border-radius: 0;
-            cursor: pointer;
-
-            &.active {
-                color: #fff;
-                border: 1px solid var(--primary-color);
-                background-color: var(--primary-color);
-            }
-        }
+    .left-icon {
+        display: grid;
+        place-items: center;
     }
 
-    .library-list {
-        width: 100%;
-        margin-top: 12px;
-        display: flex;
-        flex-direction: column;
-
-        .button {
-            justify-content: flex-start;
-            column-gap: 4px;
-            font-size: 1.5rem;
-            font-weight: 300;
-            background-color: transparent;
-            padding: 4px 12px;
-            border-radius: 99px;
-            width: 100%;
-
-            &:hover {
-                background-color: rgba(65, 188, 138, 0.1);
-            }
-
-            .image-icon {
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                object-fit: contain;
-                border: none;
-                border: 3px solid transparent;
-            }
-
-            .name {
-                @include line-clamp;
-
-                flex: 1;
-                margin-left: 0px;
-                padding-right: 8px;
-                text-align: left;
-                word-break: break-all;
-            }
-
-            .version {
-                margin-left: auto;
-            }
-        }
+    .text {
+        font-size: 1.4rem;
     }
+}
 
-    .add-btn {
-        margin: 12px 0;
-        text-align: center;
-        padding: 8px;
-        color: var(--primary-color);
-        background-color: var(--button-bgc-green-02);
-        border-radius: 4px;
-        font-size: 20px;
-
-        &:hover {
-            cursor: pointer;
-            color: #fff;
-            background-color: var(--button-bgc-green-01);
-        }
-
-        .left-icon {
-            display: grid;
-            place-items: center;
-        }
-
-        .text {
-            font-size: 1.4rem;
-        }
-    }
-
-    .add-library {
-        margin-top: 12px;
-        padding: 8px;
-        border: 1px dashed #333;
-        position: relative;
-
-        .info {
-            display: flex;
-            flex-direction: column;
-            row-gap: 4px;
-
-            .heading {
-                font-size: 1.5rem;
-                font-weight: 400;
-                text-align: center;
-                padding: 12px;
-                color: #fff;
-                background-color: var(--button-bgc-green-01);
-            }
-
-            .image-wrapper {
-                border: 1px dashed transparent;
-                align-self: flex-start;
-                width: 100%;
-                display: flex;
-                justify-content: center;
-
-                .tooltip {
-                    font-size: 1.4rem;
-                    padding: 8px;
-                    border-radius: 4px;
-                    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-                    background-color: var(--primary-color);
-                    color: #fff;
-
-                    &:hover {
-                        cursor: pointer;
-                    }
-                }
-
-                .image {
-                    width: 80px;
-                    height: 80px;
-                }
-            }
-
-            .input-form {
-                font-size: 1.4rem;
-                border: 1px dashed #333;
-                padding: 4px;
-
-                &:hover {
-                    border: 1px solid var(--primary-color);
-                }
-            }
-        }
-
-        .actions {
-            margin-top: 12px;
-            display: flex;
-            justify-content: center;
-            column-gap: 12px;
-
-            .btn {
-                font-size: 1.4rem;
-                min-width: 80px;
-                padding: 8px 12px;
-                color: #fff;
-                border-radius: 4px;
-                cursor: pointer;
-
-                &.cancel {
-                    background-color: #212f3f;
-                }
-
-                &.add {
-                    background-color: var(--primary-color);
-
-                    &:hover {
-                        .add-library {
-                            border: 1px solid var(--primary-color);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    .display {
-        margin-top: 12px;
-        display: flex;
-
-        .button {
-            flex: 1;
-            display: inline-block;
-            padding: 8px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            border: 1px solid currentColor;
-            background-color: #fff;
-            border-radius: 0;
-            padding: 4px;
-            height: 32px;
-            cursor: pointer;
-
-            &.pag-button {
-                display: flex;
-                column-gap: 0;
-
-                &.label {
-                    flex: 1;
-                    height: 100%;
-                    text-align: center;
-                }
-            }
-
-            &.active {
-                color: #fff;
-                border: 1px solid var(--primary-color);
-                background-color: var(--primary-color);
-
-                .select {
-                    color: #fff;
-                    background-color: var(--primary-color);
-
-                    & > option {
-                        background-color: #fff;
-                        color: var(--primary-color);
-                        cursor: pointer;
-                    }
-                }
-            }
-
-            .label {
-                flex: 1;
-                width: 100%;
-                line-height: 100%;
-                cursor: pointer;
-                text-align: right;
-                margin-right: 4px;
-            }
-
-            .select {
-                border: 1px dotted var(--primary-color);
-                display: grid;
-                place-items: center;
-                height: 100%;
-                font-size: 1.5rem;
-                font-weight: 600;
-                color: var(--primary-color);
-
-                &:hover {
-                    cursor: pointer;
-                    border-style: solid;
-                }
-            }
-        }
+.add-new-technology-form {
+    &.non-library-form {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
     }
 }

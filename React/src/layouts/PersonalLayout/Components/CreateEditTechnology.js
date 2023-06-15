@@ -35,10 +35,10 @@ class CreateEditTechnology extends PureComponent {
     };
 
     render() {
-        const { isedit, classname, isloading, technology, onclose } = this.props;
+        const { isedit, className, isloading, technology, onclose } = this.props;
 
         return (
-            <div className={cx('create-edit-technology', classname)}>
+            <div className={cx('create-edit-technology', className)}>
                 <div className={cx('info')}>
                     <p className={cx('heading')}>{isedit ? `Chỉnh sửa ${technology}` : `Thêm ${technology} mới`}</p>
                     <div className={cx('image-wrapper')}>

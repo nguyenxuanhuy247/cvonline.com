@@ -83,6 +83,7 @@ class Library extends PureComponent {
     render() {
         const {
             draggable,
+            technology,
             href,
             id,
             src,
@@ -125,7 +126,7 @@ class Library extends PureComponent {
                     />
                     <Button
                         id={`js-button-${id}`}
-                        className={cx('button')}
+                        className={cx('button', { 'non-library-button': technology !== 'library' })}
                         {...buttonProps}
                         onmouseenter={() => this.handleShowEditButton(id)}
                         onmouseleave={() => this.handleHideEditButton(id)}
