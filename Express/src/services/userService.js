@@ -134,17 +134,21 @@ export const handleCreateTechnology = async (data) => {
                 link: link,
             });
 
-            const technologies = await db.Technology.count({
-                where: whereQuery,
-                attributes: ['id', 'image', 'name', 'version', 'link'],
-            });
+            let whereQuery;
+            if (key === 'LI') {
+                whereQuery = { key: key, side: side };
+            } else {
+                whereQuery = { key: key };
+            }
 
-            const totalPages = Math.ceil(technologies / 10);
+            const totalRows = await db.Technology.count({
+                where: whereQuery,
+            });
 
             return {
                 errorCode: 0,
                 errorMessage: `Tạo dữ liệu thành công`,
-                totalPages: totalPages,
+                totalRows: totalRows,
             };
         } else {
             return {
@@ -210,7 +214,6 @@ export const handleGetTechnology = async (data) => {
                 };
             }
         } else {
-            console.log(whereQuery);
             technology = await db.Technology.findOne({
                 where: { id: id, ...whereQuery },
                 attributes: ['id', 'image', 'name', 'version', 'link'],
@@ -242,11 +245,11 @@ export const handleGetTechnology = async (data) => {
 export const handleUpdateTechnology = async (data) => {
     try {
         const { id, image, name, version, link, upId } = data;
-
+        console.log('Update technology', { id, image, name, version, link, upId });
         const result = await db.Technology.findOne({
             where: { id: id },
         });
-        console.log('handleUpdateTechnology', result);
+
         if (result) {
             await db.Technology.update(
                 { image: image, name: name, version: version, link: link, id: upId },
@@ -284,9 +287,22 @@ export const handleDeleteTechnology = async (data) => {
         if (result) {
             await db.Technology.destroy({ where: { id: id } });
 
+            let whereQuery;
+            if (key === 'LI') {
+                whereQuery = { key: key, side: side };
+            } else {
+                whereQuery = { key: key };
+            }
+
+            const totalRows = await db.Technology.count({
+                where: whereQuery,
+            });
+
+            console.log('Total Rows: ', totalRows);
             return {
                 errorCode: 0,
                 errorMessage: `Xóa thư viện thành công`,
+                totalRows: totalRows,
             };
         } else {
             return {

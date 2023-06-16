@@ -22,7 +22,7 @@ class CreateEditTechnology extends PureComponent {
     }
 
     handleInputTechnology = (e, name) => {
-        const value = e.target.value?.trim();
+        const value = e.target.value;
         this.setState({ [name]: value });
     };
 
@@ -35,10 +35,10 @@ class CreateEditTechnology extends PureComponent {
     };
 
     render() {
-        const { isedit, className, isloading, technology, onclose } = this.props;
-
+        const { id, isedit, className, isloading, technology, onclose } = this.props;
+        console.log('render :', this.state.name);
         return (
-            <div className={cx('create-edit-technology', className)}>
+            <div className={cx('create-edit-technology', className)} id={id}>
                 <div className={cx('info')}>
                     <p className={cx('heading')}>{isedit ? `Chỉnh sửa ${technology}` : `Thêm ${technology} mới`}</p>
                     <div className={cx('image-wrapper')}>
@@ -70,6 +70,7 @@ class CreateEditTechnology extends PureComponent {
                         onChange={(e) => this.handleInputTechnology(e, 'name')}
                     />
                     <input
+                        hidden={technology !== 'thư viện'}
                         type="text"
                         className={cx('input-form')}
                         placeholder="Nhập version"

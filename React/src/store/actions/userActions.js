@@ -89,14 +89,17 @@ export const createTechnology = (toastText, actionName, dataSent) => {
             if (res.errorCode === 0) {
                 toast.success(`Tạo mới ${toastText} thành công`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
+                return res;
             } else {
                 toast.error(`Tạo mới ${toastText} thất bại`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
+                return res;
             }
         } catch (error) {
             toast.error(error.response.data.errorMessage);
             dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
             console.log('An error in createTechnology() - userActions.js: ', error);
+            return error.response.data;
         }
     };
 };
@@ -139,14 +142,17 @@ export const updateTechnology = (toastText, actionName, dataSent, isToastSuccess
             if (res.errorCode === 0) {
                 isToastSuccess && toast.success(`Sửa ${toastText} thành công`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
+                return res.errorCode;
             } else {
                 toast.error(`Sửa ${toastText} thất bại`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
+                return res.errorCode;
             }
         } catch (error) {
             toast.error(error.response.data.errorMessage);
             dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
             console.log('An error in updateTechnology() - userActions.js: ', error);
+            return error.response.data.errorCode;
         }
     };
 };
@@ -164,14 +170,17 @@ export const deleteTechnology = (toastText, actionName, id, key, side) => {
             if (res.errorCode === 0) {
                 toast.success(`Xóa ${toastText} thành công`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
+                return res;
             } else {
                 toast.error(`Xóa ${toastText} thất bại`);
                 dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
+                return res;
             }
         } catch (error) {
             toast.error(error.response.data.errorMessage);
             dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
             console.log('An error in deleteTechnology() - userActions.js: ', error);
+            return error.response.data;
         }
     };
 };

@@ -80,13 +80,29 @@ export const checkReqGetTechnology = (req, res, next) => {
 
 // UPDATE LIBRARY
 export const checkReqUpdateTechnology = (req, res, next) => {
-    const { id } = req.body;
+    const { id, type, image, name, version } = req.body;
 
     if (!id) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id để sửa thư viện',
         });
+    }
+
+    if (type === 'LIBRARY') {
+        if (!(name || version)) {
+            return res.status(400).json({
+                errorCode: 11,
+                errorMessage: 'Hãy thực hiện thao tác xóa',
+            });
+        }
+    } else {
+        if (!name) {
+            return res.status(400).json({
+                errorCode: 12,
+                errorMessage: 'Hãy thực hiện thao tác xóa',
+            });
+        }
     }
 
     next();

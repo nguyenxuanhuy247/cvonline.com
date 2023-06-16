@@ -30,6 +30,18 @@ const actionNames = Object.freeze({
     ...actionMaker(`UPDATE`, `LIBRARY`),
     ...actionMaker(`DELETE`, `LIBRARY`),
 
+    // Source Code
+    ...actionMaker(`CREATE`, `SOURCECODE`),
+    ...actionMaker(`READ`, `SOURCECODE`),
+    ...actionMaker(`UPDATE`, `SOURCECODE`),
+    ...actionMaker(`DELETE`, `SOURCECODE`),
+
+    // Programming Language
+    ...actionMaker(`CREATE`, `PROGRAMMINGLANGUAGE`),
+    ...actionMaker(`READ`, `PROGRAMMINGLANGUAGE`),
+    ...actionMaker(`UPDATE`, `PROGRAMMINGLANGUAGE`),
+    ...actionMaker(`DELETE`, `PROGRAMMINGLANGUAGE`),
+
     // Framework
     ...actionMaker(`CREATE`, `FRAMEWORK`),
     ...actionMaker(`READ`, `FRAMEWORK`),

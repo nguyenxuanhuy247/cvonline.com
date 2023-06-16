@@ -19,26 +19,25 @@ class Library extends PureComponent {
             isEdit: false,
 
             id: undefined,
-            image: '',
-            name: '',
-            version: '',
-            link: '',
+            image: undefined,
+            name: undefined,
+            version: undefined,
+            link: undefined,
         };
 
         this.idTimeout = React.createRef();
     }
 
-    handleShowEditLibrary = (id) => {
+    handleShowEditLibrary = async (id) => {
         let selectedLibrary;
         const libraryList = this.props.librarylist;
-
         if (libraryList) {
             selectedLibrary = libraryList.find((library) => {
                 return library.id === id;
             });
         }
 
-        this.setState({
+        await this.setState({
             isEdit: true,
             id: selectedLibrary.id,
             image: selectedLibrary.image,
@@ -46,6 +45,15 @@ class Library extends PureComponent {
             version: selectedLibrary.version,
             link: selectedLibrary.link,
         });
+
+        const editTechnologyContainer = document.getElementById(`js-edit-technology-container-${id}`);
+        const editTechnology = document.getElementById(`js-edit-technology-${id}`);
+
+        if (editTechnologyContainer && editTechnology && this.props.technology !== 'thư viện') {
+            editTechnologyContainer.style.width = '100%';
+            editTechnology.style.width = '80%';
+            editTechnology.style.margin = '12px auto';
+        }
     };
 
     handleCloseEditLibrary = () => {
@@ -84,6 +92,7 @@ class Library extends PureComponent {
         const {
             draggable,
             technology,
+            type,
             href,
             id,
             src,
@@ -93,7 +102,6 @@ class Library extends PureComponent {
             onshow,
             onupdate,
             ondelete,
-            errorcode,
             ondragstart,
             ondragenter,
             ondragover,
@@ -112,9 +120,13 @@ class Library extends PureComponent {
                     </div>
                 )}
             >
-                <div style={{ position: 'relative', border: '2px solid transparent', borderRadius: '4px' }}>
+                <div
+                    id={`js-button-container-${type}-${id}`}
+                    style={{ position: 'relative', border: '2px solid transparent', borderRadius: '4px' }}
+                >
                     <EditButton
-                        id={id}
+                        id={`${type}-${id}`}
+                        type={type}
                         onshow={onshow}
                         onedit={() => this.handleShowEditLibrary(id)}
                         ondelete={ondelete}
@@ -122,30 +134,32 @@ class Library extends PureComponent {
                         ondrop={ondrop}
                         ondragenter={ondragenter}
                         onmouseenter={(e) => this.handleMouseHoverEditButton(e)}
-                        onmouseleave={() => this.handleMouseUnHoverEditButton(id)}
+                        onmouseleave={() => this.handleMouseUnHoverEditButton(`${type}-${id}`)}
                     />
                     <Button
-                        id={`js-button-${id}`}
-                        className={cx('button', { 'non-library-button': technology !== 'library' })}
+                        id={`js-button-${type}-${id}`}
+                        className={cx('button', { 'non-library-button': technology !== 'thư viện' })}
                         {...buttonProps}
-                        onmouseenter={() => this.handleShowEditButton(id)}
-                        onmouseleave={() => this.handleHideEditButton(id)}
+                        onmouseenter={() => this.handleShowEditButton(`${type}-${id}`)}
+                        onmouseleave={() => this.handleHideEditButton(`${type}-${id}`)}
                     >
-                        <Image src={src || JpgImages.placeholder} className={cx('image')} />
-                        <span className={cx('name')}>{name}</span>
-                        <span className={cx('version')}>{version}</span>
+                        {typeof src === 'string' && (
+                            <Image src={src || JpgImages.placeholder} className={cx('image')} />
+                        )}
+                        {name && <span className={cx('name')}>{name}</span>}
+                        {version && <span className={cx('version')}>{version}</span>}
                     </Button>
                 </div>
             </HeadlessTippy>
         ) : (
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} id={`js-edit-technology-container-${id}`}>
                 <CreateEditTechnology
+                    id={`js-edit-technology-${id}`}
                     isedit
                     data={this.state}
-                    technology="thư viện"
+                    technology={technology}
                     onclose={this.handleCloseEditLibrary}
                     onupdate={onupdate}
-                    errorcode={errorcode}
                 />
                 {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>

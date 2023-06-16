@@ -15,7 +15,12 @@ class EditButton extends PureComponent {
     handleMouseEnter = (id) => {
         const hoverButton = document.getElementById(`js-button-${id}`);
         if (hoverButton) {
-            hoverButton.style.backgroundColor = 'rgba(65, 188, 138, 0.1)';
+            if (this.props.type === 'LIBRARY') {
+                hoverButton.style.backgroundColor = 'rgba(65, 188, 138, 0.1)';
+            } else {
+                hoverButton.style.outline = '3px solid #a0f4d2';
+                hoverButton.style.color = '#41bc8a';
+            }
         }
 
         this.props.onmouseenter();
@@ -24,12 +29,18 @@ class EditButton extends PureComponent {
     handleMouseLeave = (id) => {
         const hoverButton = document.getElementById(`js-button-${id}`);
         if (hoverButton) {
-            hoverButton.style.backgroundColor = 'transparent';
+            if (this.props.type === 'LIBRARY') {
+                hoverButton.style.backgroundColor = 'transparent';
+            } else {
+                console.log('hoverButton.style :', hoverButton.style)
+                hoverButton.style.outline = 'none';
+                hoverButton.style.color = '#000';
+            }
         }
 
         const editItem = document.getElementById(`js-edit-button-${id}`);
 
-        Array.from(editItem?.children).forEach((item, index) => {
+        Array.from(editItem?.children).forEach((item) => {
             if (item.getAttribute('dragHidden') === 'true') {
                 item.style.display = 'inline-flex';
             }
@@ -56,19 +67,17 @@ class EditButton extends PureComponent {
     };
 
     handleMouseUp = (id) => {
-        const editItem = document.getElementById(`js-edit-button-${id}`);
+        const editItem = document.getElementById([`js-edit-button-${id}`]);
 
-        Array.from(editItem?.children).forEach((item, index) => {
+        Array.from(editItem?.children).forEach((item) => {
             if (item.getAttribute('drag') === 'true') {
                 item.style.display = 'inline-flex';
             }
         });
-
-        this.props.ondrop();
     };
 
     render() {
-        const { id, ondrop, onshow, onedit, ondelete } = this.props;
+        const { id, onshow, onedit, ondelete } = this.props;
         return (
             <div
                 id={`js-edit-button-${id}`}

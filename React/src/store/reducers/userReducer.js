@@ -6,19 +6,18 @@ const initialState = {
         signup: false,
         library: false,
         framework: false,
+        sourcecode: false,
+        programminglanguage: false,
     },
     isSignUp: false,
     signUpMessage: {},
     isSignIn: false,
     signInMessage: {},
-    errorCode: undefined,
-    readLibrary: {
-        totalPages: 0,
-        libraries: [],
-    },
-    readFramework: {
-        frameworks: [],
-    },
+    libraries: [],
+    pageQuantityLibrary: 0,
+    frameworks: [],
+    sourceCodes: [],
+    programmingLanguages: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -90,14 +89,12 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, library: true },
-                errorCode: undefined,
             };
         case actionNames.CREATE_LIBRARY_SUCCESS:
         case actionNames.CREATE_LIBRARY_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, library: false },
-                errorCode: action.payload.errorCode,
             };
         // READ LIBRARY
         case actionNames.READ_LIBRARY_START:
@@ -109,44 +106,114 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, library: false },
-                readLibrary: {
-                    totalPages: action.payload.totalPages,
-                    libraries: action.payload.data,
-                },
+                libraries: action.payload.data,
+                pageQuantityLibrary: action.payload.totalPages,
             };
         case actionNames.READ_LIBRARY_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, library: false },
-                errorCode: action.payload.errorCode,
             };
         // UPDATE LIBRARY
         case actionNames.UPDATE_LIBRARY_START:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, library: true },
-                errorCode: undefined,
             };
         case actionNames.UPDATE_LIBRARY_SUCCESS:
         case actionNames.UPDATE_LIBRARY_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, library: false },
-                errorCode: action.payload.errorCode,
-            };
-        // DELETE LIBRARY
-        case actionNames.DELETE_LIBRARY_START:
-            return {
-                ...state,
-                errorCode: undefined,
-            };
-        case actionNames.DELETE_LIBRARY_SUCCESS:
-        case actionNames.DELETE_LIBRARY_FAILURE:
-            return {
-                ...state,
-                errorCode: action.payload.errorCode,
             };
 
+        // ================================================================
+
+        // CREATE PROGRAMMING LANGUAGE
+        case actionNames.CREATE_PROGRAMMINGLANGUAGE_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, programminglanguage: true },
+            };
+        case actionNames.CREATE_PROGRAMMINGLANGUAGE_SUCCESS:
+        case actionNames.CREATE_PROGRAMMINGLANGUAGE_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, programminglanguage: false },
+            };
+        // READ PROGRAMMING LANGUAGE
+        case actionNames.READ_PROGRAMMINGLANGUAGE_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, programminglanguage: true },
+            };
+        case actionNames.READ_PROGRAMMINGLANGUAGE_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, programminglanguage: false },
+                programmingLanguages: action.payload.data,
+            };
+        case actionNames.READ_PROGRAMMINGLANGUAGE_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, programminglanguage: false },
+            };
+        // UPDATE PROGRAMMING LANGUAGE
+        case actionNames.UPDATE_PROGRAMMINGLANGUAGE_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, programminglanguage: true },
+            };
+        case actionNames.UPDATE_PROGRAMMINGLANGUAGE_SUCCESS:
+        case actionNames.UPDATE_PROGRAMMINGLANGUAGE_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, programminglanguage: false },
+            };
+
+        // ================================================================
+
+        // CREATE SOURCE CODE
+        case actionNames.CREATE_SOURCECODE_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sourcecode: true },
+            };
+        case actionNames.CREATE_SOURCECODE_SUCCESS:
+        case actionNames.CREATE_SOURCECODE_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sourcecode: false },
+            };
+        // READ SOURCE CODE
+        case actionNames.READ_SOURCECODE_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sourcecode: true },
+            };
+        case actionNames.READ_SOURCECODE_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sourcecode: false },
+                sourcecodes: action.payload.data,
+            };
+        case actionNames.READ_SOURCECODE_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sourcecode: false },
+            };
+        // UPDATE SOURCE CODE
+        case actionNames.UPDATE_SOURCECODE_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sourcecode: true },
+            };
+        case actionNames.UPDATE_SOURCECODE_SUCCESS:
+        case actionNames.UPDATE_SOURCECODE_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sourcecode: false },
+            };
         // ================================================================
 
         // CREATE FRAMEWORK
@@ -154,14 +221,12 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, framework: true },
-                errorCode: undefined,
             };
         case actionNames.CREATE_FRAMEWORK_SUCCESS:
         case actionNames.CREATE_FRAMEWORK_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, framework: false },
-                errorCode: action.payload.errorCode,
             };
         // READ FRAMEWORK
         case actionNames.READ_FRAMEWORK_START:
@@ -173,9 +238,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, framework: false },
-                readFramework: {
-                    frameworks: action.payload.data,
-                },
+                frameworks: action.payload.data,
             };
         case actionNames.READ_FRAMEWORK_FAILURE:
             return {
@@ -187,14 +250,12 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, framework: true },
-                errorCode: undefined,
             };
         case actionNames.UPDATE_FRAMEWORK_SUCCESS:
         case actionNames.UPDATE_FRAMEWORK_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, framework: false },
-                errorCode: action.payload.errorCode,
             };
         default:
             return state;

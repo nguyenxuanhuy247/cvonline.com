@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
-import Pagination from '@mui/material/Pagination';
 
 import styles from './LibraryList.module.scss';
 import '~/components/GlobalStyles/Pagination.scss';
@@ -25,252 +24,246 @@ class LibraryList extends PureComponent {
         this.errorCode = React.createRef();
     }
 
+    // Drag and drop API
     handleDragStart = (id) => {
         this.setState({ dragItemId: id });
     };
 
     handleDragEnter = (id) => {
         this.setState({ dragOverItemId: id });
+
+        const item = document.getElementById(`js-button-container-${this.props.type}-${id}`);
+        if (item) {
+            item.parentElement.childNodes.forEach((node) => {
+                node.style.borderColor = 'transparent';
+                node.style.backgroundColor = 'transparent';
+            });
+            
+            item.style.borderColor = 'var(--primary-color)';
+        }
     };
 
     handleSort = async () => {
-        const dragItemData = this.props?.librarylist.find((library) => library.id === this.state.dragItemId);
-        const dragOverItemData = this.props?.librarylist.find((library) => library.id === this.state.dragOverItemId);
-
-        const dragItemChangeData = {
-            type: this.props.type,
-            key: this.props.keyprop,
-            id: dragItemData?.id,
-            image: dragOverItemData?.image,
-            name: dragOverItemData?.name,
-            version: dragOverItemData?.version,
-            link: dragOverItemData?.link,
-        };
-
-        const dragOverItemChangeData = {
-            type: this.props.type,
-            key: this.props.keyprop,
-            id: dragOverItemData?.id,
-            image: dragItemData?.image,
-            name: dragItemData?.name,
-            version: dragItemData?.version,
-            link: dragItemData?.link,
-        };
-
-        this.errorCode.current = null;
-        await this.props.updatelibrary(dragItemChangeData);
-
-        this.errorCode.current = null;
-        await this.props.updatelibrary(dragOverItemChangeData);
-
-        if (this.errorCode.current === 0) {
-            if (this.state.isPagination) {
-                await this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
-            } else {
-                await this.props.readlibrary(this.side());
+        // Display all edit buttons after sorting
+        const dragStartItem = document.getElementById([`js-edit-button-${this.props.type}-${this.state.dragItemId}`]);
+        Array.from(dragStartItem?.children).forEach((item) => {
+            if (item.getAttribute('drag') === 'true') {
+                item.style.display = 'inline-flex';
             }
-            this.errorCode.current = null;
+        });
+
+        const dragItemData = this.props?.technologylist?.find((technology) => technology.id === this.state.dragItemId);
+        const dragOverItemData = this.props?.technologylist?.find(
+            (technology) => technology.id === this.state.dragOverItemId,
+        );
+
+        if (dragItemData && dragOverItemData) {
+            const dragItemChangeData = {
+                type: this.props?.type,
+                key: this.props?.keyprop,
+                id: dragItemData?.id,
+                image: dragOverItemData?.image,
+                name: dragOverItemData?.name,
+                version: dragOverItemData?.version,
+                link: dragOverItemData?.link,
+            };
+
+            const dragOverItemChangeData = {
+                type: this.props?.type,
+                key: this.props?.keyprop,
+                id: dragOverItemData?.id,
+                image: dragItemData?.image,
+                name: dragItemData?.name,
+                version: dragItemData?.version,
+                link: dragItemData?.link,
+            };
+
+            if (this.props.technology === 'thư viện') {
+                const errorCode = await this.props.sortupdatetechnology(dragItemChangeData);
+
+                if (errorCode === 0) {
+                    const errorCode = await this.props.sortupdatetechnology(dragOverItemChangeData);
+
+                    if (errorCode === 0) {
+                        const { isPagination, side, selectedPage, itemsPerPage } = this.props.dataforsort;
+                        if (isPagination) {
+                            await this.props.readtechnology(side, selectedPage, itemsPerPage);
+                        } else {
+                            await this.props.readtechnology(side);
+                        }
+                    }
+
+                    await this.setState({
+                        dragItemId: undefined,
+                        dragOverItemId: undefined,
+                    });
+                }
+            } else {
+                const errorCode = await this.props.updatetechnology(dragItemChangeData);
+
+                if (errorCode === 0) {
+                    const errorCode = await this.props.updatetechnology(dragOverItemChangeData);
+
+                    if (errorCode === 0) {
+                        await this.props.readtechnology();
+                    }
+
+                    await this.setState({
+                        dragItemId: undefined,
+                        dragOverItemId: undefined,
+                    });
+                }
+            }
         }
 
-        await this.setState({
-            dragItemId: undefined,
-            dragOverItemId: undefined,
-        });
+        const item = document.getElementById(`js-button-container-${this.props.type}-${this.state.dragOverItemId}`);
+        if (item) {
+            item.style.borderColor = 'transparent';
+        }
     };
 
-    side = () => {
-        const side = this.state.isFE ? 'FE' : 'BE';
-        return side;
+    // CRUD
+    handleShowCreateTechnology = () => {
+        this.setState({ isCreateTechnology: true });
     };
 
-    handleInputLibrary = (e, name) => {
-        const value = e.target.value?.trim();
-        this.setState({ [name]: value });
-    };
-
-    handleShowCreateLibrary = () => {
-        this.setState({ isAddLibrary: true });
-    };
-
-    handleCloseCreateLibrary = () => {
-        this.setState({ isAddLibrary: false, uploadImageUrl: '' });
+    handleCloseCreateTechnology = () => {
+        this.setState({ isCreateTechnology: false, uploadImageUrl: '' });
     };
 
     getImageUrlFromChangeImageModal = (url) => {
         this.setState({ uploadImageUrl: url });
     };
 
-    handleCreateLibrary = async (state) => {
-        const side = this.side();
+    // CRUD Technology
+    handleCreateTechnology = async (state) => {
         const data = {
-            type: 'LIBRARY',
-            key: 'LI',
-            side,
+            type: this.props?.type,
+            key: this.props?.keyprop,
             image: state.image,
-            name: state.name,
-            version: state.version,
+            name: state.name?.trim(),
+            version: state.version?.trim(),
             link: state.link,
         };
 
-        this.errorCode.current = null;
-        await this.props.createlibrary(data);
+        const { errorCode } = await this.props.createtechnology(data);
 
-        if (this.errorCode.current === 0) {
-            if (this.state.isPagination) {
-                await this.setState({
-                    isAddLibrary: false,
-                    selectedPage: this.lastPage.current,
-                    image: '',
-                    name: '',
-                    version: '',
-                    link: '',
-                });
+        if (errorCode === 0) {
+            await this.setState({
+                isCreateTechnology: false,
+                image: '',
+                name: '',
+                version: '',
+                link: '',
+            });
 
-                await this.props.readlibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
-                await this.props.readlibrary(this.side(), this.lastPage.current, this.state.itemsPerPage);
-            } else {
-                await this.props.readlibrary(this.side());
+            if (this.props.technology !== 'thư viện') {
+                await this.props.readtechnology();
             }
-
-            this.errorCode.current = null;
         }
     };
 
-    handleUpdateLibrary = async (state, closeFn) => {
-        const side = this.side();
+    handleUpdateTechnology = async (state, closeFn) => {
         const data = {
-            type: 'LIBRARY',
-            key: 'LI',
-            side: side,
+            type: this.props?.type,
+            key: this.props?.keyprop,
             id: state.id,
             image: state.image,
-            name: state.name,
-            version: state.version,
+            name: state.name?.trim(),
+            version: state.version?.trim(),
             link: state.link,
         };
 
-        this.errorCode.current = null;
-        await this.props.updatelibrary(data, true);
+        const errorCode = await this.props.updatetechnology(data, true);
 
-        if (this.errorCode.current === 0) {
+        if (errorCode === 0) {
             await closeFn();
 
-            if (this.state.isPagination) {
-                await this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
-            } else {
-                await this.props.readlibrary(this.side());
+            if (this.props.technology !== 'thư viện') {
+                await this.props.readtechnology();
             }
-
-            this.errorCode.current = null;
         }
     };
 
-    handleDeleteLibrary = async (id) => {
-        this.errorCode.current = null;
-        await this.props.deletelibrary(id, this.side());
+    handleDeleteTechnology = async (id) => {
+        const { errorCode } = await this.props.deletetechnology(id);
 
-        if (this.errorCode.current === 0) {
-            if (this.state.isPagination) {
-                await this.props.readlibrary(this.side(), this.state.selectedPage, this.state.itemsPerPage);
-            } else {
-                await this.props.readlibrary(this.side());
+        if (errorCode === 0) {
+            if (this.props.technology !== 'thư viện') {
+                await this.props.readtechnology();
             }
-
-            this.errorCode.current = null;
         }
     };
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.errorCode !== this.props.errorcode) {
-            this.errorCode.current = this.props.errorcode;
-        }
-
-        // Pick button and replace item
-        if (prevState.dragOverItemId !== this.state.dragOverItemId) {
-            const item = document.getElementById(`js-button-${this.state.dragOverItemId}`);
-            const hoverItems = document.querySelectorAll('[id*=js-button]');
-
-            if (item && hoverItems) {
-                hoverItems.forEach((item) => (item.parentElement.style.borderColor = 'transparent'));
-                item.parentElement.style.borderColor = 'var(--primary-color)';
-            }
-
-            if (this.state.dragOverItemId === undefined) {
-                const allItem = document.querySelectorAll('[id*=js-button]');
-                const allEditItem = document.querySelectorAll('[id*=js-edit-button]');
-
-                allItem.forEach((item) => {
-                    item.parentElement.style.borderColor = 'transparent';
-                    item.style.backgroundColor = 'transparent';
-                });
-
-                allEditItem.forEach((item) => (item.style.visibility = 'hidden'));
-            }
-        }
-    }
 
     render() {
-        const { draggable, technology, technologylist, isloading = false } = this.props;
+        const { id, draggable, type, technology, technologylist, isloading = false } = this.props;
 
-        let libraryListArray;
+        let technologyListArray;
         if (Array.isArray(technologylist)) {
-            libraryListArray = technologylist;
+            technologyListArray = technologylist;
         } else {
-            libraryListArray = [technologylist];
+            technologyListArray = [technologylist];
         }
 
         return (
             <React.Fragment>
-                <div className={cx('technology-list', { 'non-library-list': technology !== 'library' })}>
+                <div id={id} className={cx('technology-list', { 'non-library-list': technology !== 'thư viện' })}>
                     {technologylist &&
-                        libraryListArray?.map((library) => {
+                        technologyListArray?.map((library) => {
                             return (
-                                <div key={library?.id}>
-                                    <Library
-                                        draggable={draggable}
-                                        technology={technology}
-                                        librarylist={libraryListArray}
-                                        // Technology info
-                                        id={library?.id}
-                                        src={library?.image}
-                                        name={library?.name}
-                                        version={library?.version}
-                                        href={library?.link}
-                                        // Event
-                                        isloading={isloading}
-                                        errorcode={this.errorCode.current}
-                                        onshow={this.handleShowCreateLibrary}
-                                        onupdate={this.handleUpdateLibrary}
-                                        ondelete={() => this.handleDeleteLibrary(library?.id)}
-                                        // Drag and drop
-                                        ondragstart={() => this.handleDragStart(library?.id)}
-                                        ondragenter={() => this.handleDragEnter(library?.id)}
-                                        ondragover={(e) => e.preventDefault()}
-                                        ondrop={() => this.handleSort()}
-                                    />
-                                </div>
+                                <Library
+                                    key={library?.id}
+                                    draggable={draggable}
+                                    technology={technology}
+                                    librarylist={technologyListArray}
+                                    // Technology info
+                                    id={library?.id}
+                                    type={type}
+                                    src={library?.image}
+                                    name={library?.name}
+                                    version={library?.version}
+                                    href={library?.link}
+                                    // Event
+                                    isloading={isloading}
+                                    errorcode={this.errorCode.current}
+                                    onshow={this.handleShowCreateTechnology}
+                                    onupdate={this.handleUpdateTechnology}
+                                    ondelete={() => this.handleDeleteTechnology(library?.id)}
+                                    // Drag and drop
+                                    ondragstart={() => this.handleDragStart(library?.id)}
+                                    ondragenter={() => this.handleDragEnter(library?.id)}
+                                    ondragover={(e) => e.preventDefault()}
+                                    ondrop={this.handleSort}
+                                />
                             );
                         })}
+                    {isloading && <Loading style={{ position: 'absolute' }} />}
                 </div>
 
-                {!this.state.isAddLibrary ? (
-                    <Button
-                        className={cx('add-new-technology-button')}
-                        onClick={() => this.setState({ isAddLibrary: true })}
+                {!this.state.isCreateTechnology ? (
+                    <div
+                        className={cx('add-new-technology-button-container', {
+                            'non-library-button-container': technology !== 'thư viện',
+                        })}
                     >
-                        <span className={cx('left-icon')}>
-                            <BsPlusCircleDotted />
-                        </span>
-                        <span className={cx('text')}>Thêm thư viện</span>
-                    </Button>
+                        <Button
+                            className={cx('add-new-technology-button')}
+                            onClick={() => this.handleShowCreateTechnology()}
+                        >
+                            <span className={cx('left-icon')}>
+                                <BsPlusCircleDotted />
+                            </span>
+                            <span className={cx('text')}>{`Thêm ${technology}`}</span>
+                        </Button>
+                    </div>
                 ) : (
                     <div style={{ position: 'relative', width: '100%' }}>
                         <CreateEditTechnology
-                            className={cx('add-new-technology-form', { 'non-library-form': technology !== 'library' })}
-                            technology="thư viện"
+                            className={cx('add-new-technology-form', { 'non-library-form': technology !== 'thư viện' })}
+                            technology={technology}
                             errorcode={this.errorCode.current}
-                            onclose={this.handleCloseCreateLibrary}
-                            oncreate={this.handleCreateLibrary}
+                            onclose={this.handleCloseCreateTechnology}
+                            oncreate={this.handleCreateTechnology}
                         />
                         {isloading && <Loading style={{ position: 'absolute' }} />}
                     </div>

@@ -8,7 +8,7 @@ import styles from './Product.module.scss';
 import TechnologyList from '~/layouts/PersonalLayout/Components/TechnologyList.js';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
-import { JpgImages, Icons } from '~/components/Image/Images.js';
+import { JpgImages } from '~/components/Image/Images.js';
 import LibraryList from './LibraryList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
@@ -17,55 +17,17 @@ import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 
-const SOURCE_CODE = [
-    {
-        id: 1,
-        src: Icons.Github,
-        name: 'Github',
-    },
-    {
-        id: 2,
-        src: Icons.Gitlab,
-        name: 'Gitlab',
-    },
-];
-
-const PRO_LANGUAGES = [
-    {
-        id: 1,
-        src: Icons.HTML,
-        name: 'HTML',
-    },
-    {
-        id: 2,
-        src: Icons.CSS,
-        name: 'CSS',
-    },
-    {
-        id: 3,
-        src: Icons.HTML,
-        name: 'Python',
-    },
-    {
-        id: 4,
-        src: Icons.CSS,
-        name: 'JavaScript',
-    },
-];
-
 class Product extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             isFE: true,
-            isAddLibrary: false,
-            isEditLibrary: false,
             isPagination: true,
-            itemsPerPage: 10,
-            uploadImageUrl: '',
             selectedPage: 1,
+            itemsPerPage: 10,
 
             isModalOpen: false,
+            uploadImageUrl: '',
             imageUrl: '',
         };
 
@@ -88,8 +50,8 @@ class Product extends PureComponent {
     };
 
     handleShowLibraryList = (e) => {
-        const isActive = e.target.classList.contains(cx('active'));
-        const isFE = e.target.id === 'frontend';
+        const isActive = e.currentTarget.classList.contains(cx('active'));
+        const isFE = e.currentTarget.id === 'js-frontend-button';
 
         if (!isActive) {
             const btn = document.querySelector(`.${cx('active')}`);
@@ -115,22 +77,21 @@ class Product extends PureComponent {
 
     handleShowAllLibraryList = () => {
         const showAllButton = document.getElementById('js-show-all');
+        if (!showAllButton.classList.contains(`${cx('active')}`)) {
+            this.props.readLibrary(this.FEorBESide());
+            this.setState({ isPagination: false });
+        }
+
         const paginationButton = document.getElementById('js-pagination');
 
         showAllButton.classList.add(`${cx('active')}`);
         paginationButton.classList.remove(`${cx('active')}`);
-
-        this.props.readLibrary(this.FEorBESide());
-        this.setState({ isPagination: false });
     };
 
     hanldeShowPagination = async () => {
-        const paginationSelect = document.getElementById('js-select-pag');
+        const paginationSelect = document.getElementById('js-select-pagination');
         const showAllButton = document.getElementById('js-show-all');
         const paginationButton = document.getElementById('js-pagination');
-        console.log('paginationSelect', paginationSelect);
-        console.log('showAllButton', showAllButton);
-        console.log('paginationButton', paginationButton);
 
         paginationSelect.onclick = (e) => e.stopPropagation();
 
@@ -151,39 +112,111 @@ class Product extends PureComponent {
         await this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage);
     };
 
+    // CRUD Library
+    handleCreateLibrary = async (data) => {
+        const side = this.FEorBESide();
+        const libraryData = {
+            side: side,
+            ...data,
+        };
+
+        const { errorCode, totalRows } = await this.props.createLibrary(libraryData);
+
+        if (errorCode === 0) {
+            if (this.state.isPagination) {
+                const lastPage = Math.ceil(totalRows / this.state.itemsPerPage);
+                await this.setState({
+                    selectedPage: lastPage,
+                });
+                await this.props.readLibrary(side, lastPage, this.state.itemsPerPage);
+            } else {
+                await this.props.readLibrary(side);
+            }
+
+            return { errorCode };
+        } else {
+            return { errorCode };
+        }
+    };
+
+    handleUpdateLibrary = async (data) => {
+        const side = this.FEorBESide();
+        const libraryData = {
+            side: side,
+            ...data,
+        };
+
+        const errorCode = await this.props.updateLibrary(libraryData, true);
+
+        if (errorCode === 0) {
+            if (this.state.isPagination) {
+                await this.props.readLibrary(side, this.state.selectedPage, this.state.itemsPerPage);
+            } else {
+                await this.props.readLibrary(side);
+            }
+
+            return errorCode;
+        } else {
+            return errorCode;
+        }
+    };
+
+    handleDeleteLibrary = async (id) => {
+        const side = this.FEorBESide();
+        const { errorCode, totalRows } = await this.props.deleteLibrary(id, side);
+
+        if (errorCode === 0) {
+            if (this.state.isPagination) {
+                const lastPage = Math.ceil(totalRows / this.state.itemsPerPage);
+                if (lastPage < this.state.selectedPage) {
+                    this.setState({ selectedPage: lastPage });
+                    this.props.readLibrary(side, lastPage, this.state.itemsPerPage);
+                }
+
+                await this.props.readLibrary(side, lastPage, this.state.itemsPerPage);
+            } else {
+                await this.props.readLibrary(side);
+            }
+
+            return { errorCode };
+        } else {
+            return { errorCode };
+        }
+    };
+
+    // =================================================================
+
     componentDidMount() {
         this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
-        this.props.readFramework('ALL', 'FW');
+        this.props.readFramework('ALL');
+        this.props.readSourceCode('ALL');
+        this.props.readProgrammingLanguage('ALL');
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { totalpages } = this.props;
-
-        this.lastPage.current = totalpages;
-
-        // If delete the last library of last page, will move to the previous page
-        if (prevProps.totalpages !== totalpages) {
-            if (totalpages < this.state.selectedPage) {
-                this.setState({ selectedPage: totalpages });
-                this.props.readlibrary(this.side(), totalpages, this.state.itemsPerPage);
-            }
-        }
-
         // If page's quantity is more than 1, libray list's height of page 2, 3, 4,... will be equal to page 1
-        const library = document.querySelector('[id*=js-button]');
-        const libraryList = document.querySelector(`.${cx('library-list')}`);
+        if (prevProps.pageQuantityLibrary !== this.state.pageQuantityLibrary) {
+            const libraryList = document.getElementById('js-library-list');
 
-        if (library && libraryList) {
-            if (totalpages > 1) {
-                const height = library.offsetHeight * this.state.itemsPerPage;
-                libraryList.style.minHeight = `${height}px`;
-            } else {
-                libraryList.style.minHeight = `initial`;
+            if (libraryList) {
+                if (this.props.pageQuantityLibrary > 1) {
+                    const height = libraryList.childNodes[0].offsetHeight * this.state.itemsPerPage;
+                    libraryList.style.minHeight = `${height}px`;
+                } else {
+                    libraryList.style.minHeight = `initial`;
+                }
             }
         }
     }
 
     render() {
+        const dataForReadLibraryAfterSorting = {
+            isPagination: this.state.isPagination,
+            side: this.FEorBESide(),
+            selectedPage: this.state.selectedPage,
+            itemsPerPage: this.state.itemsPerPage,
+        };
+
         return (
             <div className={cx('product')}>
                 <div className={cx('row no-gutters')}>
@@ -227,34 +260,42 @@ class Product extends PureComponent {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Source code</span>
                             <div className={cx('list')}>
-                                <TechnologyList data={SOURCE_CODE} />
+                                <LibraryList
+                                    draggable
+                                    technology="source code"
+                                    type="SOURCECODE"
+                                    keyprop="SC"
+                                    technologylist={this.props.sourceCodeList}
+                                    isloading={this.props.isSourceCodeLoading}
+                                    readtechnology={() => this.props.readSourceCode('ALL')}
+                                    createtechnology={this.props.createSourceCode}
+                                    updatetechnology={this.props.updateSourceCode}
+                                    deletetechnology={this.props.deleteSourceCode}
+                                />
                             </div>
                         </div>
 
                         <div className={cx('section')}>
                             <span className={cx('title')}>Ngôn ngữ lập trình</span>
                             <div className={cx('list')}>
-                                <TechnologyList data={PRO_LANGUAGES} />
+                                <LibraryList
+                                    draggable
+                                    technology="Ngôn ngữ lập trình"
+                                    type="PROGRAMMINGLANGUAGE"
+                                    keyprop="PL"
+                                    technologylist={this.props.programmingLanguageList}
+                                    isloading={this.props.isProgrammingLanguageLoading}
+                                    readtechnology={() => this.props.readProgrammingLanguage('ALL')}
+                                    createtechnology={this.props.createProgrammingLanguage}
+                                    updatetechnology={this.props.updateProgrammingLanguage}
+                                    deletetechnology={this.props.deleteProgrammingLanguage}
+                                />
                             </div>
                         </div>
 
                         <div className={cx('section')}>
                             <span className={cx('title')}>Frameworks</span>
                             <div className={cx('list')}>
-                                <TechnologyList
-                                    draggable
-                                    technology="framework"
-                                    type="FRAMEWORK"
-                                    keyprop="FW"
-                                    technologylist={this.props.frameworkList}
-                                    ondelete={this.props.deleteFramework}
-                                    isloading={this.props.isFrameworkLoading}
-                                    errorcode={this.props.errorCode}
-                                    readtechnology={() => this.props.readFramework('ALL', 'FW')}
-                                    createtechnology={this.props.createFramework}
-                                    updatetechnology={this.props.updateFramework}
-                                />
-
                                 <LibraryList
                                     draggable
                                     technology="framework"
@@ -262,8 +303,7 @@ class Product extends PureComponent {
                                     keyprop="FW"
                                     technologylist={this.props.frameworkList}
                                     isloading={this.props.isFrameworkLoading}
-                                    errorcode={this.props.errorCode}
-                                    readtechnology={() => this.props.readFramework('ALL', 'FW')}
+                                    readtechnology={() => this.props.readFramework('ALL')}
                                     createtechnology={this.props.createFramework}
                                     updatetechnology={this.props.updateFramework}
                                     deletetechnology={this.props.deleteFramework}
@@ -276,32 +316,34 @@ class Product extends PureComponent {
                             <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
                             <div className={cx('divide')}>
                                 <Button
-                                    id="frontend"
-                                    className={cx('text', 'active')}
+                                    id="js-frontend-button"
+                                    className={cx('library-select-button', 'active')}
                                     onClick={(e) => this.handleShowLibraryList(e)}
                                 >
                                     Front-end
                                 </Button>
                                 <Button
-                                    id="backend"
-                                    className={cx('text')}
+                                    id="js-backend-button"
+                                    className={cx('library-select-button')}
                                     onClick={(e) => this.handleShowLibraryList(e)}
                                 >
                                     Back-end
                                 </Button>
                             </div>
                             <LibraryList
+                                id="js-library-list"
                                 draggable
-                                technology="library"
+                                technology="thư viện"
                                 type="LIBRARY"
                                 keyprop="LI"
                                 isloading={this.props.isLibraryLoading}
-                                errorcode={this.props.errorCode}
                                 technologylist={this.props.libraryList}
-                                readlibrary={this.props.readLibrary}
-                                createlibrary={this.props.createLibrary}
-                                updatelibrary={this.props.updateLibrary}
-                                deletelibrary={this.props.deleteLibrary}
+                                readtechnology={this.props.readLibrary}
+                                createtechnology={this.handleCreateLibrary}
+                                updatetechnology={this.handleUpdateLibrary}
+                                deletetechnology={this.handleDeleteLibrary}
+                                sortupdatetechnology={this.props.updateLibrary}
+                                dataforsort={dataForReadLibraryAfterSorting}
                             />
 
                             {this.state.isPagination && (
@@ -313,7 +355,7 @@ class Product extends PureComponent {
                                     }}
                                 >
                                     <Pagination
-                                        count={this.props.totalPages}
+                                        count={this.props.pageQuantityLibrary}
                                         variant="outlined"
                                         size="medium"
                                         siblingCount={1}
@@ -359,7 +401,7 @@ class Product extends PureComponent {
                                     <label className={cx('label')}>Phân trang</label>
                                     <select
                                         className={cx('select')}
-                                        id="js-select-pag"
+                                        id="js-select-pagination"
                                         onChange={(e) => this.handleChangeItemsPerPage(e)}
                                     >
                                         <option value="10" defaultValue>
@@ -372,7 +414,7 @@ class Product extends PureComponent {
                                     </select>
                                 </Button>
                             </div>
-                            {this.props.isLibraryLoading && <Loading style={{ position: 'absolute' }} />}
+                            {/* {this.props.isLibraryLoading && <Loading style={{ position: 'absolute' }} />} */}
                         </div>
                     </div>
                 </div>
@@ -383,16 +425,22 @@ class Product extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        errorCode: state.user.errorCode,
-
         // Library
         isLibraryLoading: state.user.isLoading.library,
-        totalPages: state.user.readLibrary.totalPages,
-        libraryList: state.user.readLibrary.libraries,
+        libraryList: state.user.libraries,
+        pageQuantityLibrary: state.user.pageQuantityLibrary,
+
+        // Source code
+        isSourceCodeLoading: state.user.isLoading.sourcecode,
+        sourceCodeList: state.user.sourcecodes,
+
+        // Programming language
+        isProgrammingLanguageLoading: state.user.isLoading.programminglanguage,
+        programmingLanguageList: state.user.programmingLanguages,
 
         // Framework
         isFrameworkLoading: state.user.isLoading.framework,
-        frameworkList: state.user.readFramework.frameworks,
+        frameworkList: state.user.frameworks,
     };
 };
 
@@ -406,11 +454,27 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(userActions.updateTechnology('thư viện', 'LIBRARY', data, isToastSuccess)),
         deleteLibrary: (id, side) => dispatch(userActions.deleteTechnology('thư viện', 'LIBRARY', id, 'LI', side)),
 
-        // Library
-        readFramework: (id, key) => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', id, key)),
+        // Source code
+        readSourceCode: (id) => dispatch(userActions.readTechnology('Source Code', 'SOURCECODE', id, 'SC')),
+        createSourceCode: (data) => dispatch(userActions.createTechnology('Source Code', 'SOURCECODE', data)),
+        updateSourceCode: (data) => dispatch(userActions.updateTechnology('Source Code', 'SOURCECODE', data)),
+        deleteSourceCode: (id) => dispatch(userActions.deleteTechnology('Source Code', 'SOURCECODE', id, 'SC')),
+
+        // Source code
+        readProgrammingLanguage: (id) =>
+            dispatch(userActions.readTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', id, 'PL')),
+        createProgrammingLanguage: (data) =>
+            dispatch(userActions.createTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', data)),
+        updateProgrammingLanguage: (data) =>
+            dispatch(userActions.updateTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', data)),
+        deleteProgrammingLanguage: (id) =>
+            dispatch(userActions.deleteTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', id, 'PL')),
+
+        // Framework
+        readFramework: (id) => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', id, 'FW')),
         createFramework: (data) => dispatch(userActions.createTechnology('framework', 'FRAMEWORK', data)),
         updateFramework: (data) => dispatch(userActions.updateTechnology('framework', 'FRAMEWORK', data)),
-        deleteFramework: (id, key) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', id, key)),
+        deleteFramework: (id) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', id, 'FW')),
     };
 };
 
