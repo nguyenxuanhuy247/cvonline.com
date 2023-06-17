@@ -13,29 +13,18 @@ const cx = className.bind(styles);
 
 class EditButton extends PureComponent {
     handleMouseEnter = (id) => {
-        const hoverButton = document.getElementById(`js-button-${id}`);
-        if (hoverButton) {
-            if (this.props.type === 'LIBRARY') {
-                hoverButton.style.backgroundColor = 'rgba(65, 188, 138, 0.1)';
-            } else {
-                hoverButton.style.outline = '3px solid #a0f4d2';
-                hoverButton.style.color = '#41bc8a';
-            }
+        const button = document.getElementById(`js-button-${id}`);
+        if (button) {
+            button.classList.add(this.props.classHover);
         }
 
         this.props.onmouseenter();
     };
 
     handleMouseLeave = (id) => {
-        const hoverButton = document.getElementById(`js-button-${id}`);
-        if (hoverButton) {
-            if (this.props.type === 'LIBRARY') {
-                hoverButton.style.backgroundColor = 'transparent';
-            } else {
-                console.log('hoverButton.style :', hoverButton.style)
-                hoverButton.style.outline = 'none';
-                hoverButton.style.color = '#000';
-            }
+        const button = document.getElementById(`js-button-${id}`);
+        if (button) {
+            button.classList.remove(this.props.classHover);
         }
 
         const editItem = document.getElementById(`js-edit-button-${id}`);
@@ -66,14 +55,20 @@ class EditButton extends PureComponent {
         }
     };
 
-    handleMouseUp = (id) => {
-        const editItem = document.getElementById([`js-edit-button-${id}`]);
+    handleMouseUp = async (id) => {
+        const result = await this.props.ondrop();
+        // console.log('ON DROP :', result);
 
-        Array.from(editItem?.children).forEach((item) => {
-            if (item.getAttribute('drag') === 'true') {
-                item.style.display = 'inline-flex';
-            }
-        });
+        const editItem = document.getElementById([`js-edit-button-${id}`]);
+        if (result === 0) {
+            editItem.style.display = 'none';
+        } else {
+            Array.from(editItem?.children).forEach((item) => {
+                if (item.getAttribute('drag') === 'true') {
+                    item.style.display = 'inline-flex';
+                }
+            });
+        }
     };
 
     render() {
@@ -91,6 +86,8 @@ class EditButton extends PureComponent {
                         className={cx('btn', 'drag')}
                         onMouseDown={() => this.handleMouseDown(id)}
                         onMouseUp={() => this.handleMouseUp(id)}
+                        onDragEnd={() => console.log('drag')}
+                        onDragStart={() => console.log('drag')}
                     >
                         <RiDragMove2Fill />
                     </Button>

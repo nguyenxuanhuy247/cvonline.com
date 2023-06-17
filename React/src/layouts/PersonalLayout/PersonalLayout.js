@@ -87,7 +87,7 @@ class PersonalLayout extends PureComponent {
         };
     }
 
-    onClose = () => {
+    handleCloseChangeImageModal = () => {
         this.setState({
             isModalOpen: false,
         });
@@ -129,7 +129,7 @@ class PersonalLayout extends PureComponent {
                                             >
                                                 <Image
                                                     className={cx('avatar')}
-                                                    src={this.state.avatarUrl || JpgImages.avatar}
+                                                    src={this.state.avatarUrl || JpgImages.JpgImages}
                                                     width="170px"
                                                     height="170px"
                                                     alt={`${fullName}`}
@@ -139,7 +139,7 @@ class PersonalLayout extends PureComponent {
                                             {this.state.isModalOpen && (
                                                 <ChangeImageModal
                                                     round
-                                                    onClose={this.onClose}
+                                                    onClose={this.handleCloseChangeImageModal}
                                                     onGetUrl={this.getAvatarUrlFromChangeImageModal}
                                                 />
                                             )}

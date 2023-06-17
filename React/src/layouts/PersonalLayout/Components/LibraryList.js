@@ -22,28 +22,35 @@ class LibraryList extends PureComponent {
         };
 
         this.errorCode = React.createRef();
+        this.libraryRef = React.createRef();
     }
 
     // Drag and drop API
     handleDragStart = (id) => {
         this.setState({ dragItemId: id });
+        const button = document.getElementById(`js-button-${this.props.type}-${id}`);
+        console.log(button);
     };
 
     handleDragEnter = (id) => {
         this.setState({ dragOverItemId: id });
 
-        const item = document.getElementById(`js-button-container-${this.props.type}-${id}`);
-        if (item) {
-            item.parentElement.childNodes.forEach((node) => {
-                node.style.borderColor = 'transparent';
-                node.style.backgroundColor = 'transparent';
+        const allButtons = document.querySelectorAll(`[id*=js-button-${this.props.type}]`);
+        const button = document.getElementById(`js-button-${this.props.type}-${id}`);
+
+        if (allButtons) {
+            allButtons.forEach((button) => {
+                button.classList.remove(cx('hover-drag-sort'));
             });
-            
-            item.style.borderColor = 'var(--primary-color)';
+
+            if (button) {
+                button.classList.add(cx('hover-drag-sort'));
+            }
         }
     };
 
     handleSort = async () => {
+        console.log('handleSort : ', this.state.dragOverItemId);
         // Display all edit buttons after sorting
         const dragStartItem = document.getElementById([`js-edit-button-${this.props.type}-${this.state.dragItemId}`]);
         Array.from(dragStartItem?.children).forEach((item) => {
@@ -52,6 +59,7 @@ class LibraryList extends PureComponent {
             }
         });
 
+        // Exchange info between 2 buttons
         const dragItemData = this.props?.technologylist?.find((technology) => technology.id === this.state.dragItemId);
         const dragOverItemData = this.props?.technologylist?.find(
             (technology) => technology.id === this.state.dragOverItemId,
@@ -116,10 +124,36 @@ class LibraryList extends PureComponent {
             }
         }
 
-        const item = document.getElementById(`js-button-container-${this.props.type}-${this.state.dragOverItemId}`);
-        if (item) {
-            item.style.borderColor = 'transparent';
+        const dragButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragItemId}`);
+        const dragOverButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragOverItemId}`);
+        const dragEditButton = document.getElementById(`js-edit-button-${this.props.type}-${this.state.dragItemId}`);
+        const dragOverEditButton = document.getElementById(
+            `js-edit-button-${this.props.type}-${this.state.dragOverItemId}`,
+        );
+
+        if (dragButton && dragOverButton && dragEditButton && dragOverEditButton) {
+            dragButton.classList.remove(cx('hover-drag-sort'));
+            dragOverButton.classList.remove(cx('hover-drag-sort'));
+
+            dragEditButton.style.visibility = 'hidden';
+            dragOverEditButton.style.visibility = 'hidden';
         }
+
+        // const dragButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragItemId}`);
+        // const dragOverButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragOverItemId}`);
+        // const dragEditButton = document.getElementById(`js-edit-button-${this.props.type}-${this.state.dragItemId}`);
+        // const dragOverEditButton = document.getElementById(
+        //     `js-edit-button-${this.props.type}-${this.state.dragOverItemId}`,
+        // );
+
+        // if (dragButton && dragOverButton && dragEditButton && dragOverEditButton) {
+        //     dragButton.classList.remove(cx('hover-drag-sort'));
+        //     dragOverButton.classList.remove(cx('hover-drag-sort'));
+        //     dragOverButton.classList.add(cx('hover'));
+
+        //     dragEditButton.style.visibility = 'hidden';
+        //     dragOverEditButton.style.visibility = 'visible';
+        // }
     };
 
     // CRUD
@@ -206,12 +240,14 @@ class LibraryList extends PureComponent {
         }
 
         return (
-            <React.Fragment>
+            <div style={{ position: 'relative', width: '100%' }}>
                 <div id={id} className={cx('technology-list', { 'non-library-list': technology !== 'thư viện' })}>
                     {technologylist &&
                         technologyListArray?.map((library) => {
                             return (
                                 <Library
+                                    buttonClass={cx('button')}
+                                    hoverButtonClass={cx('hover')}
                                     key={library?.id}
                                     draggable={draggable}
                                     technology={technology}
@@ -230,14 +266,15 @@ class LibraryList extends PureComponent {
                                     onupdate={this.handleUpdateTechnology}
                                     ondelete={() => this.handleDeleteTechnology(library?.id)}
                                     // Drag and drop
+                                    ondrag={() => this.handleDrag()}
                                     ondragstart={() => this.handleDragStart(library?.id)}
+                                    ondragend={() => console.log('drag')}
                                     ondragenter={() => this.handleDragEnter(library?.id)}
                                     ondragover={(e) => e.preventDefault()}
                                     ondrop={this.handleSort}
                                 />
                             );
                         })}
-                    {isloading && <Loading style={{ position: 'absolute' }} />}
                 </div>
 
                 {!this.state.isCreateTechnology ? (
@@ -268,7 +305,8 @@ class LibraryList extends PureComponent {
                         {isloading && <Loading style={{ position: 'absolute' }} />}
                     </div>
                 )}
-            </React.Fragment>
+                {isloading && <Loading style={{ position: 'absolute' }} />}
+            </div>
         );
     }
 }

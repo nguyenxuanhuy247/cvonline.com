@@ -67,10 +67,12 @@
             .modal-body {
                 flex: 1;
                 border-bottom: 1px solid #ccc;
-                padding: 0;
+                display: flex;
+                align-items: center;
+                padding: 20px;
 
-                .wrapper {
-                    padding: 12px 0 12px 40px;
+                .image-display {
+                    padding: 0 40px;
 
                     .label {
                         width: 100%;
@@ -96,8 +98,16 @@
                     flex-direction: column;
                     justify-content: center;
                     row-gap: 12px;
-                    width: 120px;
-                    margin: 0 auto;
+                    width: 180px;
+                    cursor: pointer;
+
+                    .change {
+                        background-color: blue;
+
+                        .label {
+                            cursor: pointer;
+                        }
+                    }
 
                     .crop {
                         background-color: var(--primary-color);
@@ -105,6 +115,11 @@
 
                     .delete {
                         background-color: red;
+                    }
+
+                    .right-icon {
+                        display: grid;
+                        place-items: center;
                     }
                 }
             }

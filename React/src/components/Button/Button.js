@@ -18,6 +18,8 @@ function Button({
     ondragenter,
     ondragover,
     ondrop,
+    ondrag,
+    ondragend = () => {},
     onmouseenter,
     onmouseleave,
     forwardRef,
@@ -26,9 +28,11 @@ function Button({
     const props = {
         onClick: onClick,
         onDragStart: ondragstart,
+        onDrag: ondrag,
         onDragEnter: ondragenter,
         onDragOver: ondragover,
         onDrop: ondrop,
+        onDragEnd: ondragend,
         onMouseEnter: onmouseenter,
         onMouseLeave: onmouseleave,
         ...passProps,
@@ -63,8 +67,11 @@ function Button({
         disabled,
     });
 
+    const handleDragEnd = async () => {
+    };
+
     return (
-        <Button className={classes} {...props} ref={forwardRef}>
+        <Button className={classes} {...props} ref={forwardRef} onDragEnd={handleDragEnd}>
             {children}
         </Button>
     );

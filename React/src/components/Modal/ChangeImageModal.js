@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { AiFillCloseSquare } from 'react-icons/ai';
 import { MdCrop } from 'react-icons/md';
 import { AiTwotoneDelete } from 'react-icons/ai';
+import { ImUpload3 } from 'react-icons/im';
 
 import styles from './ChangeImageModal.module.scss';
 import Button from '~/components/Button/Button.js';
@@ -26,11 +27,13 @@ class ChangeImageModal extends PureComponent {
         ImageUrl: PropTypes.string,
     };
 
-    handleUploadImage = (e) => {
-        const file = e.target.files[0];
+    handleUploadImage = async () => {
+        const inputEl = document.getElementById('upload');
+        const file = await inputEl.files[0];
+        console.log('upload :', file);
         if (file) {
-            const urlObj = URL.createObjectURL(file);
-            this.setState({ ImageUrl: urlObj });
+            const urlObj = await URL.createObjectURL(file);
+            await this.setState({ ImageUrl: urlObj });
         }
     };
 
@@ -73,52 +76,52 @@ class ChangeImageModal extends PureComponent {
                         </div>
 
                         <div className={cx('modal-body')}>
-                            <div className={cx('row no-gutters')}>
-                                <div className={cx('col pc-9')}>
-                                    <div className={cx('wrapper')}>
-                                        <input
-                                            id="upload"
-                                            type="file"
-                                            hidden
-                                            onChange={(e) => this.handleUploadImage(e)}
-                                        />
-                                        <label
-                                            htmlFor="upload"
-                                            className={cx('label')}
-                                            style={{
-                                                borderRadius: round ? '999px' : '0',
-                                                aspectRatio: round ? 1 : 'auto',
-                                            }}
-                                        >
-                                            <Image
-                                                src={this.state.ImageUrl || JpgImages.placeholder}
-                                                className={cx('image')}
-                                                alt="Product Image"
-                                            />
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className={cx('col pc-3')}>
-                                    <div className={cx('actions')}>
-                                        <Button
-                                            className={cx('btn', 'crop')}
-                                            onClick={this.handleOpenCropModal}
-                                            disabled={this.state.ImageUrl ? false : true}
-                                        >
-                                            <span className={cx('text')}>Cắt</span>
-                                            <i className={cx('right-icon')}>
-                                                <MdCrop />
-                                            </i>
-                                        </Button>
-                                        <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
-                                            <span className={cx('text')}>Xóa</span>
-                                            <i className={cx('right-icon')}>
-                                                <AiTwotoneDelete />
-                                            </i>
-                                        </Button>
-                                    </div>
+                            <div className={cx('image-display')}>
+                                <div
+                                    className={cx('label')}
+                                    style={{
+                                        borderRadius: round ? '999px' : '0',
+                                        aspectRatio: round ? 1 : 'auto',
+                                    }}
+                                >
+                                    <Image
+                                        src={this.state.ImageUrl}
+                                        className={cx('image')}
+                                        alt="Product Image"
+                                    />
                                 </div>
                             </div>
+                            <div className={cx('actions')}>
+                                <Button className={cx('btn', 'change')} onChange={this.handleUploadImage}>
+                                    <label className={cx('label')} htmlFor="upload">
+                                        Tải ảnh
+                                        <input id="upload" type="file" hidden />
+                                    </label>
+                                    <i className={cx('right-icon')}>
+                                        <ImUpload3 />
+                                    </i>
+                                </Button>
+                                <Button
+                                    className={cx('btn', 'crop')}
+                                    onClick={this.handleOpenCropModal}
+                                    disabled={this.state.ImageUrl ? false : true}
+                                >
+                                    <span className={cx('text')}>Cắt ảnh</span>
+                                    <i className={cx('right-icon')}>
+                                        <MdCrop />
+                                    </i>
+                                </Button>
+                                <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
+                                    <span className={cx('text')}>Xóa ảnh</span>
+                                    <i className={cx('right-icon')}>
+                                        <AiTwotoneDelete />
+                                    </i>
+                                </Button>
+                            </div>
+                            {/* <div className={cx('row no-gutters')}>
+                                <div className={cx('col pc-9')}></div>
+                                <div className={cx('col pc-3')}></div>
+                            </div> */}
                         </div>
 
                         <div className={cx('modal-footer')}>

@@ -6,6 +6,8 @@ import styles from './CreateEditTechnology.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import Loading from '~/components/Modal/Loading.js';
+import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
+import { CommonUtils } from '~/utils/CommonUtils.js';
 
 const cx = classnames.bind(styles);
 
@@ -20,6 +22,17 @@ class CreateEditTechnology extends PureComponent {
             link: this.props?.data?.link || '',
         };
     }
+
+    handleGetImageUrlFromChangeImageModal = async (url) => {
+        await CommonUtils.getBase64(url);
+        await this.setState({ image: url });
+    };
+
+    handleCloseChangeImageModal = () => {
+        this.setState({
+            isModalOpen: false,
+        });
+    };
 
     handleInputTechnology = (e, name) => {
         const value = e.target.value;
@@ -59,8 +72,15 @@ class CreateEditTechnology extends PureComponent {
                                 </div>
                             )}
                         >
-                            <Image className={cx('image')} round />
+                            <Image className={cx('image')} src={this.state.image} round />
                         </HeadlessTippy>
+                        {this.state.isModalOpen && (
+                            <ChangeImageModal
+                                round
+                                onClose={this.handleCloseChangeImageModal}
+                                onGetUrl={this.handleGetImageUrlFromChangeImageModal}
+                            />
+                        )}
                     </div>
                     <input
                         type="text"

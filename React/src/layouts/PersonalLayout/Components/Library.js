@@ -60,15 +60,30 @@ class Library extends PureComponent {
         this.setState({ isEdit: false });
     };
 
-    handleShowEditButton = (id) => {
-        const item = document.getElementById(`js-edit-button-${id}`);
-        item.style.visibility = 'visible';
+    handleHoverButtonAndShowEditButton = (id) => {
+        const editButton = document.getElementById(`js-edit-button-${id}`);
+        const button = document.getElementById(`js-button-${id}`);
+
+        if (button) {
+            button.classList.add(this.props.hoverButtonClass);
+
+            if (editButton) {
+                editButton.style.visibility = 'visible';
+            }
+        }
     };
 
-    handleHideEditButton = (id) => {
-        const item = document.getElementById(`js-edit-button-${id}`);
+    handleUnhoverButtonAndHideEditButton = (id) => {
+        const editButton = document.getElementById(`js-edit-button-${id}`);
+        const button = document.getElementById(`js-button-${id}`);
 
-        this.idTimeout.current = setTimeout(() => (item.style.visibility = 'hidden'), 0);
+        if (editButton) {
+            this.idTimeout.current = setTimeout(() => (editButton.style.visibility = 'hidden'), 0);
+        }
+
+        if (button) {
+            button.classList.remove(this.props.hoverButtonClass);
+        }
     };
 
     handleMouseHoverEditButton = () => {
@@ -90,6 +105,8 @@ class Library extends PureComponent {
 
     render() {
         const {
+            buttonClass,
+            hoverButtonClass,
             draggable,
             technology,
             type,
@@ -102,14 +119,22 @@ class Library extends PureComponent {
             onshow,
             onupdate,
             ondelete,
+            ondrag,
             ondragstart,
             ondragenter,
             ondragover,
             ondrop,
         } = this.props;
 
-        const buttonProps = { draggable, href, ondragstart, ondragenter, ondragover, ondrop };
-
+        const buttonProps = {
+            draggable,
+            href,
+            ondrag,
+            ondragstart,
+            ondragenter,
+            ondragover,
+            ondrop,
+        };
         return !this.state.isEdit ? (
             <HeadlessTippy
                 placement="bottom"
@@ -120,10 +145,7 @@ class Library extends PureComponent {
                     </div>
                 )}
             >
-                <div
-                    id={`js-button-container-${type}-${id}`}
-                    style={{ position: 'relative', border: '2px solid transparent', borderRadius: '4px' }}
-                >
+                <div id={`js-button-container-${type}-${id}`} className={cx('button-container')}>
                     <EditButton
                         id={`${type}-${id}`}
                         type={type}
@@ -135,13 +157,15 @@ class Library extends PureComponent {
                         ondragenter={ondragenter}
                         onmouseenter={(e) => this.handleMouseHoverEditButton(e)}
                         onmouseleave={() => this.handleMouseUnHoverEditButton(`${type}-${id}`)}
+                        classHover={hoverButtonClass}
                     />
                     <Button
                         id={`js-button-${type}-${id}`}
-                        className={cx('button', { 'non-library-button': technology !== 'thư viện' })}
+                        className={cx(buttonClass, { 'non-library-button': technology !== 'thư viện' })}
                         {...buttonProps}
-                        onmouseenter={() => this.handleShowEditButton(`${type}-${id}`)}
-                        onmouseleave={() => this.handleHideEditButton(`${type}-${id}`)}
+                        ondrop={ondrop}
+                        onmouseenter={() => this.handleHoverButtonAndShowEditButton(`${type}-${id}`)}
+                        onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(`${type}-${id}`)}
                     >
                         {typeof src === 'string' && (
                             <Image src={src || JpgImages.placeholder} className={cx('image')} />
