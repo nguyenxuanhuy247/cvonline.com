@@ -8,6 +8,7 @@ import styles from './Button.module.scss';
 const cx = classNames.bind(styles);
 
 function Button({
+    id,
     route,
     href,
     disabled = false,
@@ -15,24 +16,22 @@ function Button({
     className,
     onClick,
     ondragstart,
+    ondragend,
     ondragenter,
     ondragover,
     ondrop,
-    ondrag,
-    ondragend = () => {},
     onmouseenter,
     onmouseleave,
     forwardRef,
     ...passProps
 }) {
     const props = {
+        id: id,
         onClick: onClick,
         onDragStart: ondragstart,
-        onDrag: ondrag,
         onDragEnter: ondragenter,
         onDragOver: ondragover,
         onDrop: ondrop,
-        onDragEnd: ondragend,
         onMouseEnter: onmouseenter,
         onMouseLeave: onmouseleave,
         ...passProps,
@@ -67,11 +66,12 @@ function Button({
         disabled,
     });
 
-    const handleDragEnd = async () => {
+    const handleDragEnd = () => {
+        ondragend()
     };
 
     return (
-        <Button className={classes} {...props} ref={forwardRef} onDragEnd={handleDragEnd}>
+        <Button className={classes} {...props} ref={forwardRef} onDragEnd={() => handleDragEnd()}>
             {children}
         </Button>
     );

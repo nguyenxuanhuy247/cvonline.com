@@ -75,6 +75,7 @@ class CreateEditTechnology extends PureComponent {
                         {this.state.isModalOpen && (
                             <ChangeImageModal
                                 round
+                                src={this.state.image}
                                 onClose={this.handleCloseChangeImageModal}
                                 onGetUrl={this.handleGetImageUrlFromChangeImageModal}
                             />

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
+import { Buffer } from 'buffer';
 
 import styles from './LibraryList.module.scss';
 import '~/components/GlobalStyles/Pagination.scss';
@@ -28,8 +29,30 @@ class LibraryList extends PureComponent {
     // Drag and drop API
     handleDragStart = (id) => {
         this.setState({ dragItemId: id });
-        const button = document.getElementById(`js-button-${this.props.type}-${id}`);
-        console.log(button);
+    };
+
+    handleDragEnd = () => {
+        // Remove all effect and hide edit button
+        const dragButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragItemId}`);
+        const dragOverButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragOverItemId}`);
+        const dragEditButton = document.getElementById(`js-edit-button-${this.props.type}-${this.state.dragItemId}`);
+        const dragOverEditButton = document.getElementById(
+            `js-edit-button-${this.props.type}-${this.state.dragOverItemId}`,
+        );
+
+        if (dragButton && dragOverButton && dragEditButton && dragOverEditButton) {
+            dragButton.classList.remove(cx('hover-drag-sort'));
+            dragOverButton.classList.remove(cx('hover-drag-sort'));
+
+            Array.from(dragEditButton?.children).forEach((item) => {
+                if (item.getAttribute('drag') === 'true') {
+                    item.style.display = 'inline-flex';
+                }
+            });
+
+            dragEditButton.style.visibility = 'hidden';
+            dragOverEditButton.style.visibility = 'hidden';
+        }
     };
 
     handleDragEnter = (id) => {
@@ -50,15 +73,6 @@ class LibraryList extends PureComponent {
     };
 
     handleSort = async () => {
-        console.log('handleSort : ', this.state.dragOverItemId);
-        // Display all edit buttons after sorting
-        const dragStartItem = document.getElementById([`js-edit-button-${this.props.type}-${this.state.dragItemId}`]);
-        Array.from(dragStartItem?.children).forEach((item) => {
-            if (item.getAttribute('drag') === 'true') {
-                item.style.display = 'inline-flex';
-            }
-        });
-
         // Exchange info between 2 buttons
         const dragItemData = this.props?.technologylist?.find((technology) => technology.id === this.state.dragItemId);
         const dragOverItemData = this.props?.technologylist?.find(
@@ -66,11 +80,22 @@ class LibraryList extends PureComponent {
         );
 
         if (dragItemData && dragOverItemData) {
+            let dragImageBase64;
+            let dragOverImageBase64;
+
+            if (dragItemData.image) {
+                dragImageBase64 = Buffer.from(dragItemData.image, 'base64').toString('binary');
+            }
+
+            if (dragOverItemData.image) {
+                dragOverImageBase64 = Buffer.from(dragOverItemData.image, 'base64').toString('binary');
+            }
+
             const dragItemChangeData = {
                 type: this.props?.type,
                 key: this.props?.keyprop,
                 id: dragItemData?.id,
-                image: dragOverItemData?.image,
+                image: dragOverImageBase64,
                 name: dragOverItemData?.name,
                 version: dragOverItemData?.version,
                 link: dragOverItemData?.link,
@@ -80,7 +105,7 @@ class LibraryList extends PureComponent {
                 type: this.props?.type,
                 key: this.props?.keyprop,
                 id: dragOverItemData?.id,
-                image: dragItemData?.image,
+                image: dragImageBase64,
                 name: dragItemData?.name,
                 version: dragItemData?.version,
                 link: dragItemData?.link,
@@ -122,21 +147,6 @@ class LibraryList extends PureComponent {
                     });
                 }
             }
-        }
-
-        const dragButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragItemId}`);
-        const dragOverButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragOverItemId}`);
-        const dragEditButton = document.getElementById(`js-edit-button-${this.props.type}-${this.state.dragItemId}`);
-        const dragOverEditButton = document.getElementById(
-            `js-edit-button-${this.props.type}-${this.state.dragOverItemId}`,
-        );
-
-        if (dragButton && dragOverButton && dragEditButton && dragOverEditButton) {
-            dragButton.classList.remove(cx('hover-drag-sort'));
-            dragOverButton.classList.remove(cx('hover-drag-sort'));
-
-            dragEditButton.style.visibility = 'hidden';
-            dragOverEditButton.style.visibility = 'hidden';
         }
     };
 
@@ -213,6 +223,16 @@ class LibraryList extends PureComponent {
         }
     };
 
+    componentDidUpdate(prevState) {
+        // if (prevState.dragItemId !== this.state.dragItemId) {
+        //     const allButtons = document.querySelectorAll(`[id*=js-button-${this.props.type}]`);
+        //     const allEditButtons = document.querySelectorAll(`[id*=js-edit-button-${this.props.type}]`);
+
+        //     allButtons.forEach((button) => button.classList.remove(cx('hover')));
+        //     allEditButtons.forEach((editButton) => (editButton.style.visibility = 'hidden'));
+        // }
+    }
+
     render() {
         const { id, draggable, type, technology, technologylist, isloading = false } = this.props;
 
@@ -250,8 +270,8 @@ class LibraryList extends PureComponent {
                                     onupdate={this.handleUpdateTechnology}
                                     ondelete={() => this.handleDeleteTechnology(library?.id)}
                                     // Drag and drop
-                                    ondrag={() => this.handleDrag()}
                                     ondragstart={() => this.handleDragStart(library?.id)}
+                                    ondragend={this.handleDragEnd}
                                     ondragenter={() => this.handleDragEnter(library?.id)}
                                     ondragover={(e) => e.preventDefault()}
                                     ondrop={this.handleSort}

@@ -69,7 +69,6 @@ class Library extends PureComponent {
     handleHoverButtonAndShowEditButton = (id) => {
         const editButton = document.getElementById(`js-edit-button-${id}`);
         const button = document.getElementById(`js-button-${id}`);
-
         if (button) {
             button.classList.add(this.props.hoverButtonClass);
 
@@ -125,7 +124,6 @@ class Library extends PureComponent {
             onshow,
             onupdate,
             ondelete,
-            ondrag,
             ondragstart,
             ondragenter,
             ondragover,
@@ -135,7 +133,6 @@ class Library extends PureComponent {
         const buttonProps = {
             draggable,
             href,
-            ondrag,
             ondragstart,
             ondragenter,
             ondragover,
@@ -165,6 +162,7 @@ class Library extends PureComponent {
                         onedit={() => this.handleShowEditLibrary(id)}
                         ondelete={ondelete}
                         ondragstart={ondragstart}
+                        ondragend={this.props.ondragend}
                         ondrop={ondrop}
                         ondragenter={ondragenter}
                         onmouseenter={(e) => this.handleMouseHoverEditButton(e)}
@@ -176,6 +174,7 @@ class Library extends PureComponent {
                         className={cx(buttonClass, { 'non-library-button': technology !== 'thư viện' })}
                         {...buttonProps}
                         ondrop={ondrop}
+                        ondragend={this.props.ondragend}
                         onmouseenter={() => this.handleHoverButtonAndShowEditButton(`${type}-${id}`)}
                         onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(`${type}-${id}`)}
                     >

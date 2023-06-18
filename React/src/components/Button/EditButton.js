@@ -52,17 +52,25 @@ class EditButton extends PureComponent {
 
         if (item) {
             item.onmousedown = this.props.ondragstart();
+
+            item.onmouseup = function () {
+                console.log('UP');
+                item.previousElementSibling.classList.remove(this.props.classHover);
+                editItem.previousElementSibling.style.visibility = 'hidden';
+
+                const allButtons = document.querySelectorAll(`[id*=js-button-${this.props.type}]`);
+                const allEditButtons = document.querySelectorAll(`[id*=js-edit-button-${this.props.type}]`);
+
+                allButtons.forEach((button) => button.classList.remove(cx('hover')));
+                allEditButtons.forEach((editButton) => (editButton.style.visibility = 'hidden'));
+            };
         }
     };
 
     handleMouseUp = async (id) => {
-        const result = await this.props.ondrop();
-        // console.log('ON DROP :', result);
-
         const editItem = document.getElementById([`js-edit-button-${id}`]);
-        if (result === 0) {
-            editItem.style.display = 'none';
-        } else {
+
+        if (editItem) {
             Array.from(editItem?.children).forEach((item) => {
                 if (item.getAttribute('drag') === 'true') {
                     item.style.display = 'inline-flex';
@@ -82,12 +90,12 @@ class EditButton extends PureComponent {
             >
                 <DefaultTippy content="Kéo thả để di chuyển mục">
                     <Button
+                        id={id}
                         draggable
                         className={cx('btn', 'drag')}
                         onMouseDown={() => this.handleMouseDown(id)}
                         onMouseUp={() => this.handleMouseUp(id)}
-                        onDragEnd={() => console.log('drag')}
-                        onDragStart={() => console.log('drag')}
+                        ondragend={this.props.ondragend}
                     >
                         <RiDragMove2Fill />
                     </Button>
