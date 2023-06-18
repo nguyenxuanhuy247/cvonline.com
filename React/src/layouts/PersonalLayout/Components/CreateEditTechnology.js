@@ -7,7 +7,6 @@ import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import Loading from '~/components/Modal/Loading.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
-import { CommonUtils } from '~/utils/CommonUtils.js';
 
 const cx = classnames.bind(styles);
 
@@ -24,7 +23,6 @@ class CreateEditTechnology extends PureComponent {
     }
 
     handleGetImageUrlFromChangeImageModal = async (url) => {
-        await CommonUtils.getBase64(url);
         await this.setState({ image: url });
     };
 
@@ -49,7 +47,7 @@ class CreateEditTechnology extends PureComponent {
 
     render() {
         const { id, isedit, className, isloading, technology, onclose } = this.props;
-        console.log('render :', this.state.name);
+
         return (
             <div className={cx('create-edit-technology', className)} id={id}>
                 <div className={cx('info')}>

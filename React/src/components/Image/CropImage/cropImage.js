@@ -16,6 +16,7 @@ const CropImage = ({ src, onClose, onGetUrl, round = false }) => {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [aspect, setAspect] = useState(1 / 1);
 
+
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);

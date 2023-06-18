@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
+import { Buffer } from 'buffer';
 
 import Button from '~/components/Button/Button.js';
 import styles from './Library.module.scss';
@@ -37,10 +38,15 @@ class Library extends PureComponent {
             });
         }
 
+        let imageBase64;
+        if (selectedLibrary.image) {
+            imageBase64 = Buffer.from(selectedLibrary.image, 'base64').toString('binary');
+        }
+
         await this.setState({
             isEdit: true,
             id: selectedLibrary.id,
-            image: selectedLibrary.image,
+            image: imageBase64,
             name: selectedLibrary.name,
             version: selectedLibrary.version,
             link: selectedLibrary.link,
@@ -135,6 +141,12 @@ class Library extends PureComponent {
             ondragover,
             ondrop,
         };
+
+        let imageUrl;
+        if (src) {
+            imageUrl = Buffer.from(src, 'base64').toString('binary');
+        }
+
         return !this.state.isEdit ? (
             <HeadlessTippy
                 placement="bottom"
@@ -167,9 +179,7 @@ class Library extends PureComponent {
                         onmouseenter={() => this.handleHoverButtonAndShowEditButton(`${type}-${id}`)}
                         onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(`${type}-${id}`)}
                     >
-                        {typeof src === 'string' && (
-                            <Image src={src || JpgImages.placeholder} className={cx('image')} />
-                        )}
+                        {imageUrl && <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />}
                         {name && <span className={cx('name')}>{name}</span>}
                         {version && <span className={cx('version')}>{version}</span>}
                     </Button>

@@ -125,7 +125,6 @@ export const handleCreateTechnology = async (data) => {
 
         if (!technology || technology.name !== name) {
             await db.Technology.create({
-                type: type,
                 key: key,
                 side: side,
                 image: image,
@@ -245,16 +244,22 @@ export const handleGetTechnology = async (data) => {
 export const handleUpdateTechnology = async (data) => {
     try {
         const { id, image, name, version, link, upId } = data;
-        console.log('Update technology', { id, image, name, version, link, upId });
+
         const result = await db.Technology.findOne({
             where: { id: id },
+            raw: false,
         });
 
         if (result) {
-            await db.Technology.update(
-                { image: image, name: name, version: version, link: link, id: upId },
-                { where: { id: id } },
-            );
+            if (image) {
+                result.image = image;
+            }
+            result.name = name;
+            result.version = version;
+            result.link = link;
+            result.id = upId;
+
+            await result.save();
 
             return {
                 errorCode: 0,
@@ -274,6 +279,39 @@ export const handleUpdateTechnology = async (data) => {
         };
     }
 };
+
+// export const handleUpdateTechnology = async (data) => {
+//     try {
+//         const { id, image, name, version, link, upId } = data;
+
+//         const result = await db.Technology.findOne({
+//             where: { id: id },
+//         });
+
+//         if (result) {
+//             await db.Technology.update(
+//                 { image: image, name: name, version: version, link: link, id: upId },
+//                 { where: { id: id } },
+//             );
+
+//             return {
+//                 errorCode: 0,
+//                 errorMessage: `Sửa dữ liệu thành công`,
+//             };
+//         } else {
+//             return {
+//                 errorCode: 32,
+//                 errorMessage: `Không tìm thấy id trong Database`,
+//             };
+//         }
+//     } catch (error) {
+//         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
+//         return {
+//             errorCode: 31,
+//             errorMessage: `Không kết nối được với Database`,
+//         };
+//     }
+// };
 
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (data) => {

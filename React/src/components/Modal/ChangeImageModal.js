@@ -9,8 +9,8 @@ import { ImUpload3 } from 'react-icons/im';
 import styles from './ChangeImageModal.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
-import { JpgImages } from '~/components/Image/Images.js';
 import CropImageModal from './CropImageModal.js';
+import CommonUtils from '~/utils/CommonUtils.js';
 
 const cx = classnames.bind(styles);
 
@@ -23,17 +23,13 @@ class ChangeImageModal extends PureComponent {
         };
     }
 
-    static propTypes = {
-        ImageUrl: PropTypes.string,
-    };
-
     handleUploadImage = async () => {
         const inputEl = document.getElementById('upload');
         const file = await inputEl.files[0];
-        console.log('upload :', file);
+
         if (file) {
-            const urlObj = await URL.createObjectURL(file);
-            await this.setState({ ImageUrl: urlObj });
+            const urlBase64 = await CommonUtils.getBase64(file);
+            await this.setState({ ImageUrl: urlBase64 });
         }
     };
 
@@ -57,6 +53,7 @@ class ChangeImageModal extends PureComponent {
     };
 
     handleGetUrlFromCropImageModal = (url) => {
+        console.log('handleGetUrlFromCropImageModal :', url);
         this.setState({ isOpenCropImageModal: false, ImageUrl: url });
     };
 
@@ -84,11 +81,7 @@ class ChangeImageModal extends PureComponent {
                                         aspectRatio: round ? 1 : 'auto',
                                     }}
                                 >
-                                    <Image
-                                        src={this.state.ImageUrl}
-                                        className={cx('image')}
-                                        alt="Product Image"
-                                    />
+                                    <Image src={this.state.ImageUrl} className={cx('image')} alt="Product Image" />
                                 </div>
                             </div>
                             <div className={cx('actions')}>

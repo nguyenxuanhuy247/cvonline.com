@@ -99,6 +99,29 @@
 //     }
 // }
 
+.image {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: none;
+    border: 3px solid transparent;
+}
+
+.name {
+    @include line-clamp;
+
+    flex: 1;
+    margin-left: 0px;
+    text-align: left;
+    word-break: break-all;
+}
+
+.version {
+    padding-left: 8px;
+    margin-left: auto;
+}
+
 .add-library {
     margin: 12px 0;
     padding: 8px;

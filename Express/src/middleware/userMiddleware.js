@@ -90,14 +90,14 @@ export const checkReqUpdateTechnology = (req, res, next) => {
     }
 
     if (type === 'LIBRARY') {
-        if (!(name || version)) {
+        if (!(image || name || version)) {
             return res.status(400).json({
                 errorCode: 11,
                 errorMessage: 'Hãy thực hiện thao tác xóa',
             });
         }
     } else {
-        if (!name) {
+        if (!(image || name)) {
             return res.status(400).json({
                 errorCode: 12,
                 errorMessage: 'Hãy thực hiện thao tác xóa',

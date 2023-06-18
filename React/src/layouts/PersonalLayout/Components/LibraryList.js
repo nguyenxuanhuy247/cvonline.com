@@ -138,22 +138,6 @@ class LibraryList extends PureComponent {
             dragEditButton.style.visibility = 'hidden';
             dragOverEditButton.style.visibility = 'hidden';
         }
-
-        // const dragButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragItemId}`);
-        // const dragOverButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragOverItemId}`);
-        // const dragEditButton = document.getElementById(`js-edit-button-${this.props.type}-${this.state.dragItemId}`);
-        // const dragOverEditButton = document.getElementById(
-        //     `js-edit-button-${this.props.type}-${this.state.dragOverItemId}`,
-        // );
-
-        // if (dragButton && dragOverButton && dragEditButton && dragOverEditButton) {
-        //     dragButton.classList.remove(cx('hover-drag-sort'));
-        //     dragOverButton.classList.remove(cx('hover-drag-sort'));
-        //     dragOverButton.classList.add(cx('hover'));
-
-        //     dragEditButton.style.visibility = 'hidden';
-        //     dragOverEditButton.style.visibility = 'visible';
-        // }
     };
 
     // CRUD
@@ -268,7 +252,6 @@ class LibraryList extends PureComponent {
                                     // Drag and drop
                                     ondrag={() => this.handleDrag()}
                                     ondragstart={() => this.handleDragStart(library?.id)}
-                                    ondragend={() => console.log('drag')}
                                     ondragenter={() => this.handleDragEnter(library?.id)}
                                     ondragover={(e) => e.preventDefault()}
                                     ondrop={this.handleSort}
