@@ -78,6 +78,24 @@ export const handleDeleteTechnology = async (req, res) => {
 };
 
 // =================================================================
+
+// SEARCH TECHNOLOGY
+
+export const handleSearchLibrary = async (req, res) => {
+    const data = req.query;
+
+    const message = await userService.handleSearchLibrary(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
+// =================================================================
 // Others
 // export const handleGetAllUsers = async (req, res) => {
 //     let userId = req.query.id;

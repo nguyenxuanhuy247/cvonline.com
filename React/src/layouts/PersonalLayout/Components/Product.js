@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 import Pagination from '@mui/material/Pagination';
+import { HiOutlineSearch } from 'react-icons/hi';
+import _ from 'lodash';
 
 import styles from './Product.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
@@ -28,6 +30,8 @@ class Product extends PureComponent {
             isModalOpen: false,
             uploadImageUrl: '',
             imageUrl: '',
+            sortBy: 'asc',
+            libraryList: this.props?.libraryList,
         };
 
         this.lastPage = React.createRef();
@@ -193,6 +197,21 @@ class Product extends PureComponent {
 
     // =================================================================
 
+    handleSortLibraryName = (e) => {
+        if (e.target.value === 'AZ') {
+            this.setState({ sortBy: 'asc' });
+        }
+
+        if (e.target.value === 'ZA') {
+            this.setState({ sortBy: 'desc' });
+        }
+    };
+
+    handleFilterLibrary = (e) => {
+        console.log(e.target.value);
+    };
+    // =================================================================
+
     componentDidMount() {
         this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
         this.props.readFramework('ALL');
@@ -221,6 +240,17 @@ class Product extends PureComponent {
             selectedPage: this.state.selectedPage,
             itemsPerPage: this.state.itemsPerPage,
         };
+
+        const copyLibraryList = [...this.props.libraryList];
+        const sortedDataLibraryList = _.orderBy(
+            copyLibraryList,
+            [
+                (value) => {
+                    return value.name.toLowerCase();
+                },
+            ],
+            [this.state.sortBy],
+        );
 
         return (
             <div className={cx('product')}>
@@ -318,13 +348,30 @@ class Product extends PureComponent {
                     </div>
                     <div className={cx('col pc-5')}>
                         <div className={cx('library-used')}>
-                            <div>
-                                <span>Tìm kiếm</span>
-                                <input type="text" />
-                            </div>
-                            <div>
-                                <span>Sắp xếp</span>
-                                <input type="text" />
+                            <div className={cx('library-filter-sort')}>
+                                <div className={cx('library-filter')}>
+                                    <span className={cx('library-filter-icon')}>
+                                        <HiOutlineSearch />
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className={cx('library-filter-search')}
+                                        spellCheck="false"
+                                        onInput={(e) => this.handleFilterLibrary(e)}
+                                    />
+                                </div>
+                                <div className={cx('library-sort')}>
+                                    <span className={cx('library-sort-heading')}>Sắp xếp </span>
+                                    <select
+                                        className={cx('library-sort-select')}
+                                        onChange={(e) => this.handleSortLibraryName(e)}
+                                    >
+                                        <option value="AZ" defaultValue={'AZ'}>
+                                            A - Z
+                                        </option>
+                                        <option value="ZA">Z - A</option>
+                                    </select>
+                                </div>
                             </div>
                             <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
                             <div className={cx('divide')}>
@@ -343,6 +390,36 @@ class Product extends PureComponent {
                                     Back-end
                                 </Button>
                             </div>
+                            <div className={cx('display')}>
+                                <Button
+                                    className={cx('button')}
+                                    id="js-show-all-button"
+                                    onClick={this.handleShowAllLibraryList}
+                                >
+                                    Hiển thị tất cả
+                                </Button>
+                                <Button
+                                    className={cx('button', 'pag-button', 'active')}
+                                    id="js-pagination-button"
+                                    onClick={this.hanldeShowPagination}
+                                >
+                                    <label className={cx('label')}>Phân trang</label>
+                                    <select
+                                        className={cx('select')}
+                                        id="js-pagination-select"
+                                        onChange={(e) => this.handleChangeItemsPerPage(e)}
+                                    >
+                                        <option value="10" defaultValue>
+                                            10
+                                        </option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </Button>
+                            </div>
+
                             <TechnologyList
                                 id="js-library-list"
                                 draggable
@@ -350,7 +427,7 @@ class Product extends PureComponent {
                                 type="LIBRARY"
                                 keyprop="LI"
                                 isloading={this.props.isLibraryLoading}
-                                technologylist={this.props.libraryList}
+                                technologylist={sortedDataLibraryList}
                                 readtechnology={this.props.readLibrary}
                                 createtechnology={this.handleCreateLibrary}
                                 updatetechnology={this.handleUpdateLibrary}
@@ -397,37 +474,6 @@ class Product extends PureComponent {
                                     />
                                 </div>
                             )}
-
-                            <div className={cx('display')}>
-                                <Button
-                                    className={cx('button')}
-                                    id="js-show-all-button"
-                                    onClick={this.handleShowAllLibraryList}
-                                >
-                                    Hiển thị tất cả
-                                </Button>
-                                <Button
-                                    className={cx('button', 'pag-button', 'active')}
-                                    id="js-pagination-button"
-                                    onClick={this.hanldeShowPagination}
-                                >
-                                    <label className={cx('label')}>Phân trang</label>
-                                    <select
-                                        className={cx('select')}
-                                        id="js-pagination-select"
-                                        onChange={(e) => this.handleChangeItemsPerPage(e)}
-                                    >
-                                        <option value="10" defaultValue>
-                                            10
-                                        </option>
-                                        <option value="20">20</option>
-                                        <option value="30">30</option>
-                                        <option value="40">40</option>
-                                        <option value="50">50</option>
-                                    </select>
-                                </Button>
-                            </div>
-                            {/* {this.props.isLibraryLoading && <Loading style={{ position: 'absolute' }} />} */}
                         </div>
                     </div>
                 </div>

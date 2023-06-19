@@ -1,5 +1,6 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -280,39 +281,6 @@ export const handleUpdateTechnology = async (data) => {
     }
 };
 
-// export const handleUpdateTechnology = async (data) => {
-//     try {
-//         const { id, image, name, version, link, upId } = data;
-
-//         const result = await db.Technology.findOne({
-//             where: { id: id },
-//         });
-
-//         if (result) {
-//             await db.Technology.update(
-//                 { image: image, name: name, version: version, link: link, id: upId },
-//                 { where: { id: id } },
-//             );
-
-//             return {
-//                 errorCode: 0,
-//                 errorMessage: `Sửa dữ liệu thành công`,
-//             };
-//         } else {
-//             return {
-//                 errorCode: 32,
-//                 errorMessage: `Không tìm thấy id trong Database`,
-//             };
-//         }
-//     } catch (error) {
-//         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
-//         return {
-//             errorCode: 31,
-//             errorMessage: `Không kết nối được với Database`,
-//         };
-//     }
-// };
-
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (data) => {
     try {
@@ -350,6 +318,37 @@ export const handleDeleteTechnology = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleDeleteTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
+        };
+    }
+};
+
+// =================================================================
+
+export const handleSearchLibrary = async (data) => {
+    try {
+        const { key, side, keyword } = data;
+
+        const libraries = await db.Technology.findAll({
+            where: {
+                key: key,
+                side: side,
+                name: { [Op.like]: `%${keyword}%` },
+            },
+            attributes: ['id', 'image', 'name', 'version', 'link'],
+        });
+
+        if (libraries) {
+            return {
+                errorCode: 0,
+                errorMessage: `Tải dữ liệu thành công`,
+                totalPages: libraries,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleGetTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
             errorMessage: `Không kết nối được với Database`,
