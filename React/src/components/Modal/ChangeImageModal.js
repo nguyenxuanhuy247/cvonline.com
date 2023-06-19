@@ -1,6 +1,5 @@
 import { PureComponent } from 'react';
 import classnames from 'classnames/bind';
-import PropTypes from 'prop-types';
 import { AiFillCloseSquare } from 'react-icons/ai';
 import { MdCrop } from 'react-icons/md';
 import { AiTwotoneDelete } from 'react-icons/ai';
@@ -11,6 +10,7 @@ import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import CropImageModal from './CropImageModal.js';
 import CommonUtils from '~/utils/CommonUtils.js';
+import { toast } from 'react-toastify';
 
 const cx = classnames.bind(styles);
 
@@ -28,8 +28,14 @@ class ChangeImageModal extends PureComponent {
         const file = await inputEl.files[0];
 
         if (file) {
-            const urlBase64 = await CommonUtils.getBase64(file);
-            await this.setState({ imageUrl: urlBase64 });
+            if (file.size / (1024 * 1024) <= 5) {
+                const urlBase64 = await CommonUtils.getBase64(file);
+                await this.setState({ imageUrl: urlBase64 });
+            } else {
+                toast.error(`Kích thước ảnh lớn hơn 5MB. Vui lòng chọn ảnh khác`);
+            }
+        } else {
+            toast.error(`Tải ảnh thất bại`);
         }
     };
 
@@ -53,7 +59,6 @@ class ChangeImageModal extends PureComponent {
     };
 
     handleGetUrlFromCropImageModal = (url) => {
-        console.log('handleGetUrlFromCropImageModal :', url);
         this.setState({ isOpenCropImageModal: false, imageUrl: url });
     };
 

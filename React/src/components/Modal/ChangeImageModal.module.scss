@@ -73,6 +73,7 @@
                 padding: 20px;
 
                 .image-display {
+                    flex: 1;
                     padding: 0 40px;
 
                     .label {
@@ -99,7 +100,7 @@
                     flex-direction: column;
                     justify-content: center;
                     row-gap: 12px;
-                    width: 180px;
+                    width: 140px;
                     cursor: pointer;
 
                     .change {

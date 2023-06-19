@@ -1,6 +1,7 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
+import { Buffer } from 'buffer';
 
 import Button from '~/components/Button/Button.js';
 import styles from './Technology.module.scss';
@@ -19,125 +20,186 @@ class Technology extends PureComponent {
             isEdit: false,
 
             id: undefined,
-            image: '',
-            name: '',
-            version: '',
-            link: '',
+            image: undefined,
+            name: undefined,
+            version: undefined,
+            link: undefined,
         };
+
+        this.idTimeout = React.createRef();
     }
 
-    getParent = (element, selector) => {
-        while (element.parentElement) {
-            if (element.parentElement.matches(selector)) {
-                return element.parentElement;
-            }
-            element = element.parentElement;
-        }
-    };
-
-    handleShowEditTechnology = (id) => {
-        const item = document.getElementById(`js-technology-item-${id}`);
-        const parentEL = this.getParent(item, '#js-technology-item');
-
-        if (parentEL) {
-            parentEL.style.width = '100%';
-        }
-
-        let selectedtechnology;
-        const technologyList = this.props.technologylist;
-
-        if (technologyList) {
-            selectedtechnology = technologyList.find((technology) => {
-                return technology.id === id;
+    handleShowEditLibrary = async (id) => {
+        let selectedLibrary;
+        const libraryList = this.props.librarylist;
+        if (libraryList) {
+            selectedLibrary = libraryList.find((library) => {
+                return library.id === id;
             });
         }
 
-        this.setState({
-            isEdit: true,
-            id: selectedtechnology.id,
-            image: selectedtechnology.image,
-            name: selectedtechnology.name,
-            version: selectedtechnology.version,
-            link: selectedtechnology.link,
-        });
-    };
-
-    handleCloseEditTechnology = () => {
-        const item = document.querySelector(`.${cx('edit-technology')}`);
-        const parentEL = this.getParent(item, '#js-technology-item');
-        console.log(' isEdit state:', this.state.isEdit);
-
-        if (parentEL) {
-            parentEL.style.width = 'auto';
+        let imageBase64;
+        if (selectedLibrary.image) {
+            imageBase64 = Buffer.from(selectedLibrary.image, 'base64').toString('binary');
         }
 
-        this.setState({ isEdit: false }, () => console.log(' isEdit state:', this.state.isEdit));
+        await this.setState({
+            isEdit: true,
+            id: selectedLibrary.id,
+            image: imageBase64,
+            name: selectedLibrary.name,
+            version: selectedLibrary.version,
+            link: selectedLibrary.link,
+        });
+
+        const editTechnologyContainer = document.getElementById(`js-edit-technology-container-${id}`);
+        const editTechnology = document.getElementById(`js-edit-technology-${id}`);
+
+        if (editTechnologyContainer && editTechnology && this.props.type !== 'LIBRARY') {
+            editTechnologyContainer.style.width = '100%';
+            editTechnology.style.width = '80%';
+            editTechnology.style.margin = '12px auto';
+        }
     };
+
+    handleCloseEditLibrary = () => {
+        this.setState({ isEdit: false });
+    };
+
+    handleHoverButtonAndShowEditButton = (id) => {
+        const editButton = document.getElementById(`js-edit-button-${id}`);
+        const button = document.getElementById(`js-button-${id}`);
+        if (button) {
+            button.classList.remove(this.props.hoverSortButtonClass);
+            button.classList.add(this.props.hoverButtonClass);
+
+            if (editButton) {
+                editButton.style.visibility = 'visible';
+            }
+        }
+    };
+
+    handleUnhoverButtonAndHideEditButton = (id) => {
+        const editButton = document.getElementById(`js-edit-button-${id}`);
+        const button = document.getElementById(`js-button-${id}`);
+
+        if (editButton) {
+            this.idTimeout.current = setTimeout(() => (editButton.style.visibility = 'hidden'), 0);
+        }
+
+        if (button) {
+            button.classList.remove(this.props.hoverButtonClass);
+        }
+    };
+
+    handleMouseHoverEditButton = () => {
+        // Disable hide Edit button
+        clearTimeout(this.idTimeout.current);
+    };
+
+    handleMouseUnHoverEditButton = (id) => {
+        const item = document.getElementById(`js-edit-button-${id}`);
+        if (item) {
+            // Hide edit button
+            item.style.visibility = 'hidden';
+        }
+    };
+
+    componentWillUnmount() {
+        clearTimeout(this.idTimeout.current);
+    }
 
     render() {
         const {
-            draggable = false,
-            href = '',
-            id = undefined,
-            src = '',
-            name = '',
-            isloading = false,
+            buttonClass,
+            hoverButtonClass,
+            draggable,
+            technology,
+            type,
+            href,
+            id,
+            src,
+            name,
+            version,
+            isloading,
             onshow,
             onupdate,
             ondelete,
-            errorcode,
             ondragstart,
+            ondragend,
             ondragenter,
             ondragover,
             ondrop,
         } = this.props;
 
-        const buttonProps = { draggable, href, ondragstart, ondragenter, ondragover, ondrop };
+        const buttonProps = {
+            draggable,
+            href,
+            ondragstart,
+            ondragend,
+            ondragenter,
+            ondragover,
+            ondrop,
+        };
+
+        let imageUrl;
+        if (src) {
+            imageUrl = Buffer.from(src, 'base64').toString('binary');
+        }
 
         return !this.state.isEdit ? (
             <HeadlessTippy
-                placement="top-start"
-                interactive
-                offset={[0, 0]}
+                placement="bottom"
+                offset={[0, 4]}
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
-                        <EditButton
-                            id={`js-technology-item-${id}`}
-                            ondragstart={ondragstart}
-                            ondrop={ondrop}
-                            ondragenter={ondragenter}
-                            onshow={onshow}
-                            onedit={() => this.handleShowEditTechnology(id)}
-                            ondelete={ondelete}
-                        />
+                        {href && <div className={cx('library-href')}>{href}</div>}
                     </div>
                 )}
             >
-                <HeadlessTippy
-                    placement="bottom"
-                    offset={[0, 4]}
-                    render={(attrs) => (
-                        <div tabIndex="-1" {...attrs}>
-                            {href && <div className={cx('library-href')}>{href}</div>}
-                        </div>
-                    )}
-                >
-                    <Button id={`js-technology-item-${id}`} className={cx('button')} {...buttonProps}>
-                        <Image src={src || JpgImages.placeholder} className={cx('image')} />
-                        <span className={cx('name')}>{name}</span>
+                <div id={`js-button-container-${type}-${id}`} className={cx('button-container')}>
+                    <EditButton
+                        id={`${type}-${id}`}
+                        type={type}
+                        onshow={onshow}
+                        onedit={() => this.handleShowEditLibrary(id)}
+                        ondelete={ondelete}
+                        ondragstart={ondragstart}
+                        ondragend={this.props.ondragend}
+                        ondrop={ondrop}
+                        ondragenter={ondragenter}
+                        onmouseenter={(e) => this.handleMouseHoverEditButton(e)}
+                        onmouseleave={() => this.handleMouseUnHoverEditButton(`${type}-${id}`)}
+                        classHover={hoverButtonClass}
+                    />
+                    <Button
+                        id={`js-button-${type}-${id}`}
+                        className={cx(buttonClass, { 'non-library-button': type !== 'LIBRARY' })}
+                        {...buttonProps}
+                        onmouseenter={() => this.handleHoverButtonAndShowEditButton(`${type}-${id}`)}
+                        onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(`${type}-${id}`)}
+                    >
+                        {type !== 'LIBRARY' ? (
+                            imageUrl && <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
+                        ) : (
+                            <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
+                        )}
+
+                        {name && <span className={cx('name')}>{name}</span>}
+                        {version && <span className={cx('version')}>{version}</span>}
                     </Button>
-                </HeadlessTippy>
+                </div>
             </HeadlessTippy>
         ) : (
-            <div style={{ position: 'relative' }} className={cx('edit-technology-wrapper')}>
+            <div style={{ position: 'relative' }} id={`js-edit-technology-container-${id}`}>
                 <CreateEditTechnology
-                    classname={cx('edit-technology')}
+                    id={`js-edit-technology-${id}`}
                     isedit
                     data={this.state}
-                    technology="thư viện"
-                    onclose={() => this.handleCloseEditTechnology()}
+                    type={type}
+                    technology={technology}
+                    onclose={this.handleCloseEditLibrary}
                     onupdate={onupdate}
-                    errorcode={errorcode}
                 />
                 {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>

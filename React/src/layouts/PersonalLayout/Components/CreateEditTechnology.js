@@ -46,7 +46,7 @@ class CreateEditTechnology extends PureComponent {
     };
 
     render() {
-        const { id, isedit, className, isloading, technology, onclose } = this.props;
+        const { id, isedit, className, isloading, type, technology, onclose } = this.props;
 
         return (
             <div className={cx('create-edit-technology', className)} id={id}>
@@ -82,6 +82,7 @@ class CreateEditTechnology extends PureComponent {
                         )}
                     </div>
                     <input
+                        id={`js-autofocus-input-${this.props.type}`}
                         type="text"
                         className={cx('input-form')}
                         placeholder={`Nhập tên ${technology}`}
@@ -89,7 +90,7 @@ class CreateEditTechnology extends PureComponent {
                         onChange={(e) => this.handleInputTechnology(e, 'name')}
                     />
                     <input
-                        hidden={technology !== 'thư viện'}
+                        hidden={type !== 'LIBRARY'}
                         type="text"
                         className={cx('input-form')}
                         placeholder="Nhập version"

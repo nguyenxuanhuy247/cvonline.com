@@ -5,15 +5,14 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import Pagination from '@mui/material/Pagination';
 
 import styles from './Product.module.scss';
-import TechnologyList from '~/layouts/PersonalLayout/Components/TechnologyList.js';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import LibraryList from './LibraryList.js';
+import TechnologyList from './TechnologyList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
-import Loading from '~/components/Modal/Loading.js';
+// import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 
@@ -76,39 +75,47 @@ class Product extends PureComponent {
     };
 
     handleShowAllLibraryList = () => {
-        const showAllButton = document.getElementById('js-show-all');
+        const showAllButton = document.getElementById('js-show-all-button');
         if (!showAllButton.classList.contains(`${cx('active')}`)) {
             this.props.readLibrary(this.FEorBESide());
             this.setState({ isPagination: false });
         }
 
-        const paginationButton = document.getElementById('js-pagination');
+        const paginationButton = document.getElementById('js-pagination-button');
 
         showAllButton.classList.add(`${cx('active')}`);
         paginationButton.classList.remove(`${cx('active')}`);
     };
 
     hanldeShowPagination = async () => {
-        const paginationSelect = document.getElementById('js-select-pagination');
-        const showAllButton = document.getElementById('js-show-all');
-        const paginationButton = document.getElementById('js-pagination');
+        const showAllButton = document.getElementById('js-show-all-button');
+        const paginationButton = document.getElementById('js-pagination-button');
+        const paginationSelect = document.getElementById('js-pagination-select');
 
-        paginationSelect.onclick = (e) => e.stopPropagation();
+        if (paginationSelect) {
+            paginationSelect.onclick = (e) => e.stopPropagation();
+        }
 
-        paginationButton.classList.add(`${cx('active')}`);
-        showAllButton.classList.remove(`${cx('active')}`);
-        await this.setState({ isPagination: true, itemsPerPage: paginationSelect.value });
+        if (paginationButton) {
+            paginationButton.classList.add(`${cx('active')}`);
+        }
+
+        if (showAllButton) {
+            showAllButton.classList.remove(`${cx('active')}`);
+        }
+
+        await this.setState({ isPagination: true, selectedPage: 1, itemsPerPage: paginationSelect.value });
         await this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage);
     };
 
     handleChangeItemsPerPage = async (e) => {
-        const showAllButton = document.getElementById('js-show-all');
-        const paginationButton = document.getElementById('js-pagination');
+        const showAllButton = document.getElementById('js-show-all-button');
+        const paginationButton = document.getElementById('js-pagination-button');
 
         paginationButton.classList.add(`${cx('active')}`);
         showAllButton.classList.remove(`${cx('active')}`);
 
-        await this.setState({ isPagination: true, itemsPerPage: e.target.value });
+        await this.setState({ isPagination: true, selectedPage: 1, itemsPerPage: e.target.value });
         await this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage);
     };
 
@@ -193,18 +200,16 @@ class Product extends PureComponent {
         this.props.readProgrammingLanguage('ALL');
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate() {
         // If page's quantity is more than 1, libray list's height of page 2, 3, 4,... will be equal to page 1
-        if (prevProps.pageQuantityLibrary !== this.state.pageQuantityLibrary) {
-            const libraryList = document.getElementById('js-library-list');
+        const libraryList = document.getElementById('js-library-list');
 
-            if (libraryList) {
-                if (this.props.pageQuantityLibrary > 1) {
-                    const height = libraryList.childNodes[0].offsetHeight * this.state.itemsPerPage;
-                    libraryList.style.minHeight = `${height}px`;
-                } else {
-                    libraryList.style.minHeight = `initial`;
-                }
+        if (libraryList) {
+            if (this.props.pageQuantityLibrary > 1) {
+                const height = libraryList.childNodes[0].offsetHeight * this.state.itemsPerPage;
+                libraryList.style.minHeight = `${height}px`;
+            } else {
+                libraryList.style.minHeight = `initial`;
             }
         }
     }
@@ -260,7 +265,7 @@ class Product extends PureComponent {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Source code</span>
                             <div className={cx('list')}>
-                                <LibraryList
+                                <TechnologyList
                                     draggable
                                     technology="source code"
                                     type="SOURCECODE"
@@ -278,7 +283,7 @@ class Product extends PureComponent {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Ngôn ngữ lập trình</span>
                             <div className={cx('list')}>
-                                <LibraryList
+                                <TechnologyList
                                     draggable
                                     technology="Ngôn ngữ lập trình"
                                     type="PROGRAMMINGLANGUAGE"
@@ -296,7 +301,7 @@ class Product extends PureComponent {
                         <div className={cx('section')}>
                             <span className={cx('title')}>Frameworks</span>
                             <div className={cx('list')}>
-                                <LibraryList
+                                <TechnologyList
                                     draggable
                                     technology="framework"
                                     type="FRAMEWORK"
@@ -313,6 +318,14 @@ class Product extends PureComponent {
                     </div>
                     <div className={cx('col pc-5')}>
                         <div className={cx('library-used')}>
+                            <div>
+                                <span>Tìm kiếm</span>
+                                <input type="text" />
+                            </div>
+                            <div>
+                                <span>Sắp xếp</span>
+                                <input type="text" />
+                            </div>
                             <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
                             <div className={cx('divide')}>
                                 <Button
@@ -330,7 +343,7 @@ class Product extends PureComponent {
                                     Back-end
                                 </Button>
                             </div>
-                            <LibraryList
+                            <TechnologyList
                                 id="js-library-list"
                                 draggable
                                 technology="thư viện"
@@ -388,20 +401,20 @@ class Product extends PureComponent {
                             <div className={cx('display')}>
                                 <Button
                                     className={cx('button')}
-                                    id="js-show-all"
+                                    id="js-show-all-button"
                                     onClick={this.handleShowAllLibraryList}
                                 >
                                     Hiển thị tất cả
                                 </Button>
                                 <Button
                                     className={cx('button', 'pag-button', 'active')}
-                                    id="js-pagination"
+                                    id="js-pagination-button"
                                     onClick={this.hanldeShowPagination}
                                 >
                                     <label className={cx('label')}>Phân trang</label>
                                     <select
                                         className={cx('select')}
-                                        id="js-select-pagination"
+                                        id="js-pagination-select"
                                         onChange={(e) => this.handleChangeItemsPerPage(e)}
                                     >
                                         <option value="10" defaultValue>
