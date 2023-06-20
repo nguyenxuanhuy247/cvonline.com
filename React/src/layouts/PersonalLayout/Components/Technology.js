@@ -185,7 +185,7 @@ class Technology extends PureComponent {
                             <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
                         )}
 
-                        {name && <span className={cx('name')}>{name}</span>}
+                        {name && <span className={cx('name')}  id={`js-button-name-${type}-${id}`} >{name}</span>}
                         {version && <span className={cx('version')}>{version}</span>}
                     </Button>
                 </div>

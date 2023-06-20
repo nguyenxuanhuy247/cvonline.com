@@ -30,8 +30,10 @@ class Product extends PureComponent {
             isModalOpen: false,
             uploadImageUrl: '',
             imageUrl: '',
-            sortBy: 'asc',
-            libraryList: this.props?.libraryList,
+            sortBy: '',
+
+            isSearch: false,
+            searchLibraryList: [],
         };
 
         this.lastPage = React.createRef();
@@ -71,6 +73,12 @@ class Product extends PureComponent {
                 }
             }
         }
+
+        const inputSearchLibrary = document.getElementById(`js-input-search-library`);
+        if (inputSearchLibrary) {
+            inputSearchLibrary.value = '';
+            this.setState({ isSearch: false });
+        }
     };
 
     handleChangePage = (event, value) => {
@@ -108,7 +116,7 @@ class Product extends PureComponent {
             showAllButton.classList.remove(`${cx('active')}`);
         }
 
-        await this.setState({ isPagination: true, selectedPage: 1, itemsPerPage: paginationSelect.value });
+        await this.setState({ isPagination: true, selectedPage: 1, itemsPerPage: paginationSelect?.value });
         await this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage);
     };
 
@@ -122,6 +130,8 @@ class Product extends PureComponent {
         await this.setState({ isPagination: true, selectedPage: 1, itemsPerPage: e.target.value });
         await this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage);
     };
+
+    // =================================================================
 
     // CRUD Library
     handleCreateLibrary = async (data) => {
@@ -198,18 +208,68 @@ class Product extends PureComponent {
     // =================================================================
 
     handleSortLibraryName = (e) => {
-        if (e.target.value === 'AZ') {
+        if (e.target.value === 'NO') {
+            this.setState({ sortBy: '' });
+        } else if (e.target.value === 'AZ') {
             this.setState({ sortBy: 'asc' });
-        }
-
-        if (e.target.value === 'ZA') {
+        } else if (e.target.value === 'ZA') {
             this.setState({ sortBy: 'desc' });
         }
     };
 
-    handleFilterLibrary = (e) => {
-        console.log(e.target.value);
+    handleSearchLibrary = async (e) => {
+        await this.setState({ isSearch: true });
+        await this.props.readLibrary(this.FEorBESide());
+        const value = e.target.value?.trim();
+
+        if (value) {
+            _.forEach(this.props.libraryList, function (lib) {
+                const buttonContainer = document.getElementById(`js-button-container-LIBRARY-${lib.id}`);
+                const libraryName = document.getElementById(`js-button-name-LIBRARY-${lib.id}`);
+
+                if (buttonContainer && libraryName) {
+                    buttonContainer.style.display = 'none';
+
+                    const regex = new RegExp(value, 'gi');
+                    const name = lib.name.replace(/(<mark style={{ backgroundColor: 'yellow'}}>|<\/mark>)/gim, '');
+                    const newName = name.replace(regex, `<mark  style={{ backgroundColor: 'yellow'}}>$&</mark>`);
+
+                    if (name !== newName) {
+                        libraryName.innerHTML = newName;
+                        buttonContainer.style.display = 'inline-flex';
+                    }
+                }
+            });
+
+            const searchLibraryList = document.getElementById(`js-search-library-list`);
+            const displayNoneLibrary = searchLibraryList.querySelectorAll(`[style*=none]`);
+            const resultNotFound = document.getElementById(`js-result-not-found`);
+
+            if (resultNotFound) {
+                resultNotFound.remove();
+            }
+
+            if (searchLibraryList) {
+                if (displayNoneLibrary.length === this.props.libraryList.length) {
+                    const notFoundElement = document.createElement('p');
+                    notFoundElement.className = cx('search-result-not-found');
+                    notFoundElement.id = `js-result-not-found`;
+                    notFoundElement.innerText = 'Không tìm thấy kết quả';
+
+                    searchLibraryList.appendChild(notFoundElement);
+                }
+            }
+        } else {
+            await this.setState({ isSearch: false });
+
+            if (this.state.isPagination) {
+                await this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
+            } else {
+                await this.props.readLibrary(this.FEorBESide());
+            }
+        }
     };
+
     // =================================================================
 
     componentDidMount() {
@@ -239,18 +299,21 @@ class Product extends PureComponent {
             side: this.FEorBESide(),
             selectedPage: this.state.selectedPage,
             itemsPerPage: this.state.itemsPerPage,
+            sortBy: this.state.sortBy,
         };
 
-        const copyLibraryList = [...this.props.libraryList];
-        const sortedDataLibraryList = _.orderBy(
-            copyLibraryList,
-            [
-                (value) => {
-                    return value.name.toLowerCase();
-                },
-            ],
-            [this.state.sortBy],
-        );
+        const copyLibraryList = this.props.libraryList;
+        const sortedDataLibraryList = this.state.sortBy
+            ? _.orderBy(
+                  [...copyLibraryList],
+                  [
+                      (value) => {
+                          return value.name?.toLowerCase();
+                      },
+                  ],
+                  [this.state.sortBy],
+              )
+            : copyLibraryList;
 
         return (
             <div className={cx('product')}>
@@ -354,10 +417,11 @@ class Product extends PureComponent {
                                         <HiOutlineSearch />
                                     </span>
                                     <input
+                                        id="js-input-search-library"
                                         type="text"
                                         className={cx('library-filter-search')}
                                         spellCheck="false"
-                                        onInput={(e) => this.handleFilterLibrary(e)}
+                                        onInput={(e) => this.handleSearchLibrary(e)}
                                     />
                                 </div>
                                 <div className={cx('library-sort')}>
@@ -366,9 +430,8 @@ class Product extends PureComponent {
                                         className={cx('library-sort-select')}
                                         onChange={(e) => this.handleSortLibraryName(e)}
                                     >
-                                        <option value="AZ" defaultValue={'AZ'}>
-                                            A - Z
-                                        </option>
+                                        <option value="NO">---</option>
+                                        <option value="AZ">A - Z</option>
                                         <option value="ZA">Z - A</option>
                                     </select>
                                 </div>
@@ -390,87 +453,110 @@ class Product extends PureComponent {
                                     Back-end
                                 </Button>
                             </div>
-                            <div className={cx('display')}>
-                                <Button
-                                    className={cx('button')}
-                                    id="js-show-all-button"
-                                    onClick={this.handleShowAllLibraryList}
-                                >
-                                    Hiển thị tất cả
-                                </Button>
-                                <Button
-                                    className={cx('button', 'pag-button', 'active')}
-                                    id="js-pagination-button"
-                                    onClick={this.hanldeShowPagination}
-                                >
-                                    <label className={cx('label')}>Phân trang</label>
-                                    <select
-                                        className={cx('select')}
-                                        id="js-pagination-select"
-                                        onChange={(e) => this.handleChangeItemsPerPage(e)}
-                                    >
-                                        <option value="10" defaultValue>
-                                            10
-                                        </option>
-                                        <option value="20">20</option>
-                                        <option value="30">30</option>
-                                        <option value="40">40</option>
-                                        <option value="50">50</option>
-                                    </select>
-                                </Button>
-                            </div>
 
-                            <TechnologyList
-                                id="js-library-list"
-                                draggable
-                                technology="thư viện"
-                                type="LIBRARY"
-                                keyprop="LI"
-                                isloading={this.props.isLibraryLoading}
-                                technologylist={sortedDataLibraryList}
-                                readtechnology={this.props.readLibrary}
-                                createtechnology={this.handleCreateLibrary}
-                                updatetechnology={this.handleUpdateLibrary}
-                                deletetechnology={this.handleDeleteLibrary}
-                                sortupdatetechnology={this.props.updateLibrary}
-                                dataforsort={dataForReadLibraryAfterSorting}
-                            />
+                            {!this.state.isSearch ? (
+                                <div>
+                                    <div className={cx('display')}>
+                                        <Button
+                                            className={cx('button')}
+                                            id="js-show-all-button"
+                                            onClick={this.handleShowAllLibraryList}
+                                        >
+                                            Hiển thị tất cả
+                                        </Button>
+                                        <Button
+                                            className={cx('button', 'pag-button', 'active')}
+                                            id="js-pagination-button"
+                                            onClick={this.hanldeShowPagination}
+                                        >
+                                            <label className={cx('label')}>Phân trang</label>
+                                            <select
+                                                className={cx('select')}
+                                                id="js-pagination-select"
+                                                onChange={(e) => this.handleChangeItemsPerPage(e)}
+                                            >
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                                <option value="30">30</option>
+                                                <option value="40">40</option>
+                                                <option value="50">50</option>
+                                            </select>
+                                        </Button>
+                                    </div>
 
-                            {this.state.isPagination && (
-                                <div
-                                    style={{
-                                        margin: '12px 0 12px',
-                                        display: 'grid',
-                                        placeItems: 'center',
-                                    }}
-                                >
-                                    <Pagination
-                                        count={this.props.pageQuantityLibrary}
-                                        variant="outlined"
-                                        size="medium"
-                                        siblingCount={1}
-                                        boundaryCount={1}
-                                        page={this.state.selectedPage}
-                                        sx={{
-                                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                                color: 'var(--primary-color)',
-                                                fontSize: '12px',
-                                                borderColor: 'var(--green-color-02)',
-                                            },
-                                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                                backgroundColor: 'var(--button-bgc-green-02)',
-                                            },
+                                    <TechnologyList
+                                        id="js-library-list"
+                                        draggable
+                                        technology="thư viện"
+                                        type="LIBRARY"
+                                        keyprop="LI"
+                                        isloading={this.props.isLibraryLoading}
+                                        technologylist={sortedDataLibraryList}
+                                        readtechnology={this.props.readLibrary}
+                                        createtechnology={this.handleCreateLibrary}
+                                        updatetechnology={this.handleUpdateLibrary}
+                                        deletetechnology={this.handleDeleteLibrary}
+                                        sortupdatetechnology={this.props.updateLibrary}
+                                        dataforsort={dataForReadLibraryAfterSorting}
+                                    />
 
-                                            '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected': {
-                                                color: '#fff',
-                                                backgroundColor: 'var(--button-bgc-green-01)',
-                                            },
+                                    {this.state.isPagination && (
+                                        <div
+                                            style={{
+                                                margin: '12px 0 12px',
+                                                display: 'grid',
+                                                placeItems: 'center',
+                                            }}
+                                        >
+                                            <Pagination
+                                                count={this.props.pageQuantityLibrary}
+                                                variant="outlined"
+                                                size="medium"
+                                                siblingCount={1}
+                                                boundaryCount={1}
+                                                page={this.state.selectedPage}
+                                                sx={{
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
+                                                        color: 'var(--primary-color)',
+                                                        fontSize: '12px',
+                                                        borderColor: 'var(--green-color-02)',
+                                                    },
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
+                                                        backgroundColor: 'var(--button-bgc-green-02)',
+                                                    },
 
-                                            '& .Mui-selected:hover': {
-                                                backgroundColor: 'var(--button-bgc-green-01) !important',
-                                            },
-                                        }}
-                                        onChange={this.handleChangePage}
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
+                                                        {
+                                                            color: '#fff',
+                                                            backgroundColor: 'var(--button-bgc-green-01)',
+                                                        },
+
+                                                    '& .Mui-selected:hover': {
+                                                        backgroundColor: 'var(--button-bgc-green-01) !important',
+                                                    },
+                                                }}
+                                                onChange={this.handleChangePage}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div>
+                                    <TechnologyList
+                                        issearch
+                                        id="js-search-library-list"
+                                        draggable
+                                        technology="thư viện"
+                                        type="LIBRARY"
+                                        keyprop="LI"
+                                        isloading={this.props.isLibraryLoading}
+                                        technologylist={sortedDataLibraryList}
+                                        readtechnology={this.props.readLibrary}
+                                        createtechnology={this.handleCreateLibrary}
+                                        updatetechnology={this.handleUpdateLibrary}
+                                        deletetechnology={this.handleDeleteLibrary}
+                                        sortupdatetechnology={this.props.updateLibrary}
+                                        dataforsort={dataForReadLibraryAfterSorting}
                                     />
                                 </div>
                             )}

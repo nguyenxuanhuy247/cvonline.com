@@ -109,7 +109,8 @@
                 overflow: hidden;
 
                 &:hover {
-                    outline: 2px solid var(--primary-color);
+                    border: 1px solid var(--green-color-02);
+                    outline: 2px solid var(--green-color-02);
                 }
 
                 .library-filter-icon {
@@ -266,4 +267,10 @@
             }
         }
     }
+}
+
+.search-result-not-found {
+    text-align: center;
+    font-size: 1.6rem;
+    padding: 4px;
 }

@@ -121,17 +121,3 @@ export const checkReqDeleteTechnology = (req, res, next) => {
 
     next();
 };
-
-// SEARCH LIBRARY
-export const checkReqSearchTechnology = (req, res, next) => {
-    const { keyword } = req.query;
-    
-    if (!keyword) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập từ khóa',
-        });
-    }
-
-    next();
-};

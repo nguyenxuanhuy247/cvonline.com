@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { Buffer } from 'buffer';
+import { toast } from 'react-toastify';
 
 import styles from './TechnologyList.module.scss';
 import '~/components/GlobalStyles/Pagination.scss';
@@ -9,8 +10,6 @@ import Button from '~/components/Button/Button.js';
 import Technology from '~/layouts/PersonalLayout/Components/Technology.js';
 import Loading from '~/components/Modal/Loading.js';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
-import CommonUtils from '~/utils/CommonUtils.js';
-import { JpgImages } from '~/components/Image/Images.js';
 
 const cx = className.bind(styles);
 
@@ -75,6 +74,14 @@ class TechnologyList extends PureComponent {
     };
 
     handleSort = async () => {
+        if (this.props.dataforsort.sortBy) {
+            toast.error(
+                `Danh sách đang được sắp xếp từ ${this.props.dataforsort.sortBy === 'desc' ? 'Z đến A' : 'A đến Z'}`,
+            );
+            return;
+        }
+
+        console.log(123);
         // Exchange info between 2 buttons
         const dragItemData = this.props?.technologylist?.find((technology) => technology.id === this.state.dragItemId);
         const dragOverItemData = this.props?.technologylist?.find(
@@ -275,7 +282,7 @@ class TechnologyList extends PureComponent {
                         })}
                 </div>
 
-                {!this.state.isCreateTechnology ? (
+                {!this.props.issearch && !this.state.isCreateTechnology ? (
                     <div
                         className={cx('add-new-technology-button-container', {
                             'non-library-button-container': type !== 'LIBRARY',
@@ -292,17 +299,19 @@ class TechnologyList extends PureComponent {
                         </Button>
                     </div>
                 ) : (
-                    <div style={{ position: 'relative', width: '100%' }}>
-                        <CreateEditTechnology
-                            className={cx('add-new-technology-form', { 'non-library-form': type !== 'LIBRARY' })}
-                            technology={technology}
-                            type={type}
-                            errorcode={this.errorCode.current}
-                            onclose={this.handleCloseCreateTechnology}
-                            oncreate={this.handleCreateTechnology}
-                        />
-                        {isloading && <Loading style={{ position: 'absolute' }} />}
-                    </div>
+                    !this.props.issearch && (
+                        <div style={{ position: 'relative', width: '100%' }}>
+                            <CreateEditTechnology
+                                className={cx('add-new-technology-form', { 'non-library-form': type !== 'LIBRARY' })}
+                                technology={technology}
+                                type={type}
+                                errorcode={this.errorCode.current}
+                                onclose={this.handleCloseCreateTechnology}
+                                oncreate={this.handleCreateTechnology}
+                            />
+                            {isloading && <Loading style={{ position: 'absolute' }} />}
+                        </div>
+                    )
                 )}
                 {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
