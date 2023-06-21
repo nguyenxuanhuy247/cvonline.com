@@ -32,9 +32,6 @@ class Signup extends Component {
     id = React.createRef();
 
     handleChangeInputField = (event, inputName) => {
-        if (inputName === 'email') {
-            this.props.removeSignUpMessage();
-        }
         this.setState({ [inputName]: event.target.value });
     };
 
@@ -43,7 +40,6 @@ class Signup extends Component {
     };
 
     handleValidateForm = () => {
-        this.props.removeSignUpMessage();
         Validator(
             {
                 formSelector: `.${cx('form-signup')}`,
@@ -82,7 +78,6 @@ class Signup extends Component {
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
-        let { errorCode, errorMessage } = this.props.signUpMessage;
         let { isLoading } = this.props;
         const { delayRedirect } = this.state;
 
@@ -96,14 +91,6 @@ class Signup extends Component {
                             <form className={cx('form-signup')} autoComplete="on">
                                 <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
                                 <p className={cx('title')}>Chào mừng bạn đến với CV.com</p>
-
-                                <div className={cx('error-message')}>
-                                    {this.state.email && errorMessage && (
-                                        <p className={`${cx('alert', errorCode ? 'alert-fail' : 'alert-success')}`}>
-                                            {this.state.email && errorMessage}
-                                        </p>
-                                    )}
-                                </div>
 
                                 <div className={cx('form-group')}>
                                     <div className={cx('form-input')}>
@@ -207,7 +194,6 @@ class Signup extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        signUpMessage: state.user.signUpMessage,
         isSignUp: state.user.isSignUp,
         isLoading: state.user.isLoading.signup,
     };
@@ -216,7 +202,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         userSignUp: (dataUser) => dispatch(userActions.userSignUpStart(dataUser)),
-        removeSignUpMessage: () => dispatch(userActions.removeSignUpMessage()),
     };
 };
 

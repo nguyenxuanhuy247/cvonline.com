@@ -1,4 +1,3 @@
-
 .body {
     background-color: #f0f2f5;
 
@@ -60,20 +59,36 @@
             }
 
             .full-name {
+                margin-top: 24px;
                 text-align: center;
                 font-size: 2.5rem;
                 line-height: 1.5;
                 font-weight: 600;
-                margin: 30px 0 12px;
             }
 
-            .job-title {
-                display: block;
-                font-size: 2rem;
-                line-height: 1.5;
-                text-align: center;
+            .select-job-title {
+                margin-bottom: 20px;
+                width: 100%;
+                font-weight: 400;
+                background-color: transparent;
+                padding: 4px;
                 color: #fff;
-                margin-bottom: 30px;
+                font-size: 2.2rem;
+                text-align: center;
+                border: 1px dashed transparent;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+
+                &:hover {
+                    cursor: pointer;
+                    border: 1px dashed #ccc;
+                }
+
+                .option-job-title {
+                    display: block;
+                    color: #000;
+                }
             }
 
             .separate {

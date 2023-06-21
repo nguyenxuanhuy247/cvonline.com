@@ -8,31 +8,55 @@ export const userSignUpStart = (userData) => {
         dispatch({ type: actionNames.USER_SIGNUP_START });
         try {
             let res = await userService.postSignUp(userData);
-            if (res?.errorCode === 0) {
-                dispatch(userSignUpSuccess(res));
+            const { errorCode, errorMessage } = res;
+            if (errorCode === 0) {
+                toast.success(`${errorMessage}`, {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'colored',
+                });
+                dispatch(userSignUpSuccess());
             } else {
-                dispatch(userSignUpFail(res));
+                toast.error(`${errorMessage}`, {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'colored',
+                });
+                dispatch(userSignUpFail());
             }
         } catch (error) {
+            toast.error(error.response.data.errorMessage, {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'colored',
+            });
             dispatch(userSignUpFail());
             console.log('An error in userSignUpStart() - userActions.js: ', error);
         }
     };
 };
 
-export const userSignUpSuccess = (data) => ({
+export const userSignUpSuccess = () => ({
     type: actionNames.USER_SIGNUP_SUCCESS,
-    payload: data,
 });
 
-export const userSignUpFail = (data) => ({
+export const userSignUpFail = () => ({
     type: actionNames.USER_SIGNUP_FAIL,
-    payload: data || { errorCode: 1, errorMessage: 'Không kết nối được với máy chủ. Vui lòng thử lại sau' },
-});
-
-export const removeSignUpMessage = () => ({
-    type: actionNames.REMOVE_SIGNUP_MESSAGE,
-    payload: {},
 });
 
 // USER SIGN IN
@@ -41,31 +65,56 @@ export const userSignInStart = (userData) => {
         dispatch({ type: actionNames.USER_SIGNIN_START });
         try {
             let res = await userService.postSignIn(userData.email, userData.password);
-            if (res?.errorCode === 0) {
-                dispatch(userSignInSuccess(res));
+            const { errorCode, errorMessage, data } = res;
+            if (errorCode === 0) {
+                toast.success(`${errorMessage}`, {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'colored',
+                });
+                dispatch(userSignInSuccess(data));
             } else {
-                dispatch(userSignInFail(res));
+                toast.error(`${errorMessage}`, {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'colored',
+                });
+                dispatch(userSignInFail());
             }
         } catch (error) {
+            toast.error(error.response.data.errorMessage, {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'colored',
+            });
             dispatch(userSignInFail());
             console.log('An error in userSignInStart() - userActions.js: ', error);
         }
     };
 };
 
-export const userSignInSuccess = (data) => ({
+export const userSignInSuccess = (user) => ({
     type: actionNames.USER_SIGNIN_SUCCESS,
-    payload: data,
+    payload: user,
 });
 
-export const userSignInFail = (data) => ({
+export const userSignInFail = () => ({
     type: actionNames.USER_SIGNIN_FAIL,
-    payload: data || { errorCode: 1, errorMessage: 'Không kết nối được với máy chủ. Vui lòng thử lại sau' },
-});
-
-export const removeSignInMessage = () => ({
-    type: actionNames.REMOVE_SIGNIN_MESSAGE,
-    payload: {},
 });
 
 // USER SIGN OUT

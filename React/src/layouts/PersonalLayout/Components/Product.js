@@ -260,7 +260,7 @@ class Product extends PureComponent {
                 }
             }
         } else {
-            await this.setState({ isSearch: false });
+            await this.setState({ isSearch: false, isPagination: true });
 
             if (this.state.isPagination) {
                 await this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
@@ -417,6 +417,7 @@ class Product extends PureComponent {
                                         <HiOutlineSearch />
                                     </span>
                                     <input
+                                        autoComplete="off"
                                         id="js-input-search-library"
                                         type="text"
                                         className={cx('library-filter-search')}
@@ -541,24 +542,22 @@ class Product extends PureComponent {
                                     )}
                                 </div>
                             ) : (
-                                <div>
-                                    <TechnologyList
-                                        issearch
-                                        id="js-search-library-list"
-                                        draggable
-                                        technology="thư viện"
-                                        type="LIBRARY"
-                                        keyprop="LI"
-                                        isloading={this.props.isLibraryLoading}
-                                        technologylist={sortedDataLibraryList}
-                                        readtechnology={this.props.readLibrary}
-                                        createtechnology={this.handleCreateLibrary}
-                                        updatetechnology={this.handleUpdateLibrary}
-                                        deletetechnology={this.handleDeleteLibrary}
-                                        sortupdatetechnology={this.props.updateLibrary}
-                                        dataforsort={dataForReadLibraryAfterSorting}
-                                    />
-                                </div>
+                                <TechnologyList
+                                    issearch
+                                    id="js-search-library-list"
+                                    draggable
+                                    technology="thư viện"
+                                    type="LIBRARY"
+                                    keyprop="LI"
+                                    isloading={this.props.isLibraryLoading}
+                                    technologylist={sortedDataLibraryList}
+                                    readtechnology={this.props.readLibrary}
+                                    createtechnology={this.handleCreateLibrary}
+                                    updatetechnology={this.handleUpdateLibrary}
+                                    deletetechnology={this.handleDeleteLibrary}
+                                    sortupdatetechnology={this.props.updateLibrary}
+                                    dataforsort={dataForReadLibraryAfterSorting}
+                                />
                             )}
                         </div>
                     </div>

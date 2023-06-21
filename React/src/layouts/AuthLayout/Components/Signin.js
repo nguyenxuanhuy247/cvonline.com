@@ -33,12 +33,10 @@ class SignIn extends Component {
     id = React.createRef();
 
     handleOnChangeEmail = (event) => {
-        this.props.removeSignInMessage();
         this.setState({ email: event.target.value });
     };
 
     handleOnChangePassword = (event) => {
-        this.props.removeSignInMessage();
         this.setState({ password: event.target.value });
     };
 
@@ -47,7 +45,6 @@ class SignIn extends Component {
     };
 
     handleValidateForm = () => {
-        this.props.removeSignInMessage();
         Validator(
             {
                 formSelector: `.${cx('form-signin')}`,
@@ -81,7 +78,6 @@ class SignIn extends Component {
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
-        let { errorCode, errorMessage } = this.props.signInMessage;
         let { isLoading } = this.props;
         const { delayRedirect } = this.state;
 
@@ -95,14 +91,6 @@ class SignIn extends Component {
                             <form className={cx('form-signin')} autoomplete="on">
                                 <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
                                 <p className={cx('title')}>Chào mừng bạn đã quay trở lại</p>
-
-                                <div className={cx('error-message')}>
-                                    {errorMessage && (
-                                        <p className={`${cx('alert', errorCode ? 'alert-fail' : 'alert-success')}`}>
-                                            {errorMessage}
-                                        </p>
-                                    )}
-                                </div>
 
                                 <div className={cx('form-group')}>
                                     <div className={cx('form-input')}>
@@ -172,7 +160,6 @@ class SignIn extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        signInMessage: state.user.signInMessage,
         isSignIn: state.user.isSignIn,
         isLoading: state.user.isLoading.signin,
     };
@@ -181,7 +168,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         userSignIn: (userData) => dispatch(userActions.userSignInStart(userData)),
-        removeSignInMessage: () => dispatch(userActions.removeSignInMessage()),
     };
 };
 

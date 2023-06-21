@@ -30,6 +30,8 @@ class Technology extends PureComponent {
     }
 
     handleShowEditLibrary = async (id) => {
+        this.props.oncloseCreate();
+
         let selectedLibrary;
         const libraryList = this.props.librarylist;
         if (libraryList) {
@@ -62,7 +64,7 @@ class Technology extends PureComponent {
         }
     };
 
-    handleCloseEditLibrary = () => {
+    handleCloseEditTechnology = () => {
         this.setState({ isEdit: false });
     };
 
@@ -185,7 +187,11 @@ class Technology extends PureComponent {
                             <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
                         )}
 
-                        {name && <span className={cx('name')}  id={`js-button-name-${type}-${id}`} >{name}</span>}
+                        {name && (
+                            <span className={cx('name')} id={`js-button-name-${type}-${id}`}>
+                                {name}
+                            </span>
+                        )}
                         {version && <span className={cx('version')}>{version}</span>}
                     </Button>
                 </div>
@@ -198,7 +204,7 @@ class Technology extends PureComponent {
                     data={this.state}
                     type={type}
                     technology={technology}
-                    onclose={this.handleCloseEditLibrary}
+                    onclose={this.handleCloseEditTechnology}
                     onupdate={onupdate}
                 />
                 {isloading && <Loading style={{ position: 'absolute' }} />}

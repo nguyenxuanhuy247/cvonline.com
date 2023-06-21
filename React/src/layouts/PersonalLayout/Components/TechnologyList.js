@@ -3,6 +3,7 @@ import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { Buffer } from 'buffer';
 import { toast } from 'react-toastify';
+import DefaultTippy from '@tippyjs/react';
 
 import styles from './TechnologyList.module.scss';
 import '~/components/GlobalStyles/Pagination.scss';
@@ -23,8 +24,7 @@ class TechnologyList extends PureComponent {
             dragOverItemId: undefined,
         };
 
-        this.errorCode = React.createRef();
-        this.libraryRef = React.createRef();
+        this.technologyRef = React.createRef();
     }
 
     // Drag and drop API
@@ -74,14 +74,17 @@ class TechnologyList extends PureComponent {
     };
 
     handleSort = async () => {
-        if (this.props.dataforsort.sortBy) {
-            toast.error(
-                `Danh sách đang được sắp xếp từ ${this.props.dataforsort.sortBy === 'desc' ? 'Z đến A' : 'A đến Z'}`,
-            );
-            return;
+        if (this.props.type === 'LIBRARY') {
+            if (this.props.dataforsort.sortBy) {
+                toast.error(
+                    `Danh sách đang được sắp xếp từ ${
+                        this.props.dataforsort.sortBy === 'desc' ? 'Z đến A' : 'A đến Z'
+                    }`,
+                );
+                return;
+            }
         }
 
-        console.log(123);
         // Exchange info between 2 buttons
         const dragItemData = this.props?.technologylist?.find((technology) => technology.id === this.state.dragItemId);
         const dragOverItemData = this.props?.technologylist?.find(
@@ -120,7 +123,7 @@ class TechnologyList extends PureComponent {
                 link: dragItemData?.link,
             };
 
-            if (this.props.technology === 'thư viện') {
+            if (this.props.type === 'LIBRARY') {
                 const errorCode = await this.props.sortupdatetechnology(dragItemChangeData);
 
                 if (errorCode === 0) {
@@ -128,10 +131,15 @@ class TechnologyList extends PureComponent {
 
                     if (errorCode === 0) {
                         const { isPagination, side, selectedPage, itemsPerPage } = this.props.dataforsort;
-                        if (isPagination) {
-                            await this.props.readtechnology(side, selectedPage, itemsPerPage);
-                        } else {
+
+                        if (this.props.issearch) {
                             await this.props.readtechnology(side);
+                        } else {
+                            if (isPagination) {
+                                await this.props.readtechnology(side, selectedPage, itemsPerPage);
+                            } else {
+                                await this.props.readtechnology(side);
+                            }
                         }
                     }
 
@@ -161,6 +169,9 @@ class TechnologyList extends PureComponent {
 
     // CRUD
     handleShowCreateTechnology = async () => {
+        const closeEditTechnology = this.technologyRef.current.handleCloseEditLibrary;
+        closeEditTechnology();
+
         await this.setState({ isCreateTechnology: true });
         const autofocusInputElement = document.getElementById(`js-autofocus-input-${this.props.type}`);
         autofocusInputElement.focus();
@@ -251,6 +262,7 @@ class TechnologyList extends PureComponent {
                         technologyListArray?.map((library) => {
                             return (
                                 <Technology
+                                    ref={this.technologyRef}
                                     buttonClass={cx('button')}
                                     hoverButtonClass={cx('hover')}
                                     hoverSortButtonClass={cx('hover-drag-sort')}
@@ -267,10 +279,10 @@ class TechnologyList extends PureComponent {
                                     href={library?.link}
                                     // Event
                                     isloading={isloading}
-                                    errorcode={this.errorCode.current}
                                     onshow={this.handleShowCreateTechnology}
                                     onupdate={this.handleUpdateTechnology}
                                     ondelete={() => this.handleDeleteTechnology(library?.id)}
+                                    oncloseCreate={this.handleCloseCreateTechnology}
                                     // Drag and drop
                                     ondragstart={() => this.handleDragStart(library?.id)}
                                     ondragend={this.handleDragEnd}
@@ -280,39 +292,52 @@ class TechnologyList extends PureComponent {
                                 />
                             );
                         })}
+                    {type !== 'LIBRARY' && !this.state.isCreateTechnology && (
+                        <DefaultTippy content={`Thêm ${technology} mới `}>
+                            <Button
+                                className={cx('add-new-technology')}
+                                onClick={() => this.handleShowCreateTechnology()}
+                            >
+                                <span className={cx('add-new-technology-icon')}>
+                                    <BsPlusCircleDotted />
+                                </span>
+                            </Button>
+                        </DefaultTippy>
+                    )}
                 </div>
 
-                {!this.props.issearch && !this.state.isCreateTechnology ? (
-                    <div
-                        className={cx('add-new-technology-button-container', {
-                            'non-library-button-container': type !== 'LIBRARY',
-                        })}
-                    >
-                        <Button
-                            className={cx('add-new-technology-button')}
-                            onClick={() => this.handleShowCreateTechnology()}
-                        >
-                            <span className={cx('left-icon')}>
-                                <BsPlusCircleDotted />
-                            </span>
-                            <span className={cx('text')}>{`Thêm ${technology}`}</span>
-                        </Button>
-                    </div>
-                ) : (
-                    !this.props.issearch && (
-                        <div style={{ position: 'relative', width: '100%' }}>
-                            <CreateEditTechnology
-                                className={cx('add-new-technology-form', { 'non-library-form': type !== 'LIBRARY' })}
-                                technology={technology}
-                                type={type}
-                                errorcode={this.errorCode.current}
-                                onclose={this.handleCloseCreateTechnology}
-                                oncreate={this.handleCreateTechnology}
-                            />
-                            {isloading && <Loading style={{ position: 'absolute' }} />}
-                        </div>
-                    )
-                )}
+                {!this.props.issearch && !this.state.isCreateTechnology
+                    ? type === 'LIBRARY' && (
+                          <div
+                              className={cx('add-new-technology-button-container', {
+                                  'non-library-button-container': type !== 'LIBRARY',
+                              })}
+                          >
+                              <Button
+                                  className={cx('add-new-technology-button')}
+                                  onClick={() => this.handleShowCreateTechnology()}
+                              >
+                                  <span className={cx('left-icon')}>
+                                      <BsPlusCircleDotted />
+                                  </span>
+                                  <span className={cx('text')}>
+                                      {type !== 'LIBRARY' ? `Thêm` : `Thêm ${technology}`}
+                                  </span>
+                              </Button>
+                          </div>
+                      )
+                    : !this.props.issearch && (
+                          <div style={{ position: 'relative', width: '100%' }}>
+                              <CreateEditTechnology
+                                  className={cx('add-new-technology-form', { 'non-library-form': type !== 'LIBRARY' })}
+                                  technology={technology}
+                                  type={type}
+                                  onclose={this.handleCloseCreateTechnology}
+                                  oncreate={this.handleCreateTechnology}
+                              />
+                              {isloading && <Loading style={{ position: 'absolute' }} />}
+                          </div>
+                      )}
                 {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );

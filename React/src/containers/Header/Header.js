@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import className from 'classnames/bind';
+import { PureComponent } from 'react';
+import classnames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultTippy from '@tippyjs/react';
@@ -17,26 +17,23 @@ import SearchBar from '~/containers/Header/SearchBar.js';
 
 import { MENU_AVATAR_DATA } from '~/components/Popover/Menu/MenuData.js';
 
-const cx = className.bind(styles);
+const cx = classnames.bind(styles);
 
-class Header extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            fullName: 'Nguyễn Xuân Huy',
-        };
-    }
+class Header extends PureComponent {
+    handleChangeActiveButton = (e) => {
+        const isActive = e.target.classList.contains(cx('active'));
+        if (!isActive) {
+            const allButtons = document.querySelectorAll(`.${cx('btn')}`);
+            if (allButtons) {
+                console.log(allButtons);
+                allButtons.forEach((button) => {
+                    button.classList.remove(cx('active'));
+                });
+            }
 
-    handleChangeActiveButton = (e, classNameRemoved) => {
-        document.querySelector(`.${classNameRemoved}`).classList.remove(cx('active'));
-        e.currentTarget.classList.add(cx('active'));
-    };
-
-    componentDidMount() {
-        if (!this.props.isSignIn) {
-            document.querySelector(`.${cx('signin')}`).classList.add(cx('active'));
+            e.currentTarget.classList.add(cx('active'));
         }
-    }
+    };
 
     render = () => {
         return (
@@ -51,15 +48,15 @@ class Header extends Component {
                     <div className={cx('actions')}>
                         <Button
                             route={path.SIGNIN}
-                            className={cx('signin', 'btn')}
-                            onMouseOver={(e) => this.handleChangeActiveButton(e, cx('signup'))}
+                            className={cx('btn', 'active')}
+                            onMouseOver={(e) => this.handleChangeActiveButton(e)}
                         >
                             Đăng nhập
                         </Button>
                         <Button
                             route={path.SIGNUP}
-                            className={cx('signup', 'btn')}
-                            onMouseOver={(e) => this.handleChangeActiveButton(e, cx('signin'))}
+                            className={cx('btn')}
+                            onMouseOver={(e) => this.handleChangeActiveButton(e)}
                         >
                             Đăng ký
                         </Button>
@@ -84,10 +81,10 @@ class Header extends Component {
                                     src={JpgImages.avatar}
                                     wrapperClass={cx('wapper')}
                                     className={cx('avatar')}
-                                    alt="Nguyễn Xuân Huy"
+                                    alt={this.props?.fullName}
                                     round
                                 />
-                                <span className={cx('fullname')}>Nguyễn Xuân Huy</span>
+                                <span className={cx('fullname')}>{this.props?.fullName}</span>
                             </Button>
                         </Menu>
                     </div>
@@ -100,7 +97,7 @@ class Header extends Component {
 const mapStateToProps = (state) => {
     return {
         isSignIn: state.user.isSignIn,
-        signInMessage: state.user.signInMessage.data,
+        fullName: state.user.user?.fullName,
     };
 };
 

@@ -55,6 +55,26 @@
         }
     }
 
+    .add-new-technology {
+        padding: 4px 12px;
+        background-color: var(--button-bgc-green-02);
+
+        .add-new-technology-icon {
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: var(--button-bgc-green-01);
+            
+            .add-new-technology-icon {
+                color: #fff;
+            }
+        }
+    }
 }
 
 .add-new-technology-button-container {

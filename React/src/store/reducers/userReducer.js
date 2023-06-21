@@ -10,9 +10,8 @@ const initialState = {
         programminglanguage: false,
     },
     isSignUp: false,
-    signUpMessage: {},
     isSignIn: false,
-    signInMessage: {},
+    user: null,
     libraries: [],
     pageQuantityLibrary: 0,
     frameworks: [],
@@ -26,54 +25,39 @@ const userReducer = (state = initialState, action) => {
         case actionNames.USER_SIGNUP_START:
             return {
                 ...state,
-                isLoading: true,
+                isLoading: { ...state.isLoading, signup: true },
             };
         case actionNames.USER_SIGNUP_SUCCESS:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: { ...state.isLoading, signup: false },
                 isSignUp: true,
-                signUpMessage: action.payload,
             };
         case actionNames.USER_SIGNUP_FAIL:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: { ...state.isLoading, signup: false },
                 isSignUp: false,
-                signUpMessage: action.payload,
-            };
-        case actionNames.REMOVE_SIGNUP_MESSAGE:
-            return {
-                ...state,
-                isSignUp: false,
-                signUpMessage: action.payload,
             };
 
         // USER SIGN IN
         case actionNames.USER_SIGNIN_START:
             return {
                 ...state,
-                isLoading: true,
+                isLoading: { ...state.isLoading, signin: true },
             };
         case actionNames.USER_SIGNIN_SUCCESS:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: { ...state.isLoading, signin: false },
                 isSignIn: true,
-                signInMessage: action.payload,
+                user: action.payload,
             };
         case actionNames.USER_SIGNIN_FAIL:
             return {
                 ...state,
                 isSignIn: false,
-                isLoading: false,
-                signInMessage: action.payload,
-            };
-        case actionNames.REMOVE_SIGNIN_MESSAGE:
-            return {
-                ...state,
-                isSignIn: false,
-                signInMessage: action.payload,
+                isLoading: { ...state.isLoading, signin: false },
             };
 
         // USER SIGN OUT

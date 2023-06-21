@@ -21,26 +21,12 @@ class PersonalInfo extends PureComponent {
                 <p className={cx('text')}>{title}</p>
                 <div className={cx('content')}>
                     {data &&
-                        data.map((item) => {
-                            if (item.headlessTippy) {
-                                return (
-                                    <div key={item.id} className={cx('info')}>
-                                        <span className={cx('icon')}>{item.icon}</span>
-                                        <ContentEditableTag
-                                            className={cx('info-text')}
-                                            placeholder={item.placeholder}
-                                        />
-                                    </div>
-                                );
-                            }
-
-                            return (
-                                <div key={item.id} className={cx('info')}>
-                                    <span className={cx('icon')}>{item.icon}</span>
-                                    <ContentEditableTag className={cx('info-text')} placeholder={item.placeholder} />
-                                </div>
-                            );
-                        })}
+                        data.map((item) => (
+                            <div key={item.id} className={cx('info')}>
+                                <span className={cx('icon')}>{item.icon}</span>
+                                <ContentEditableTag className={cx('info-text')} placeholder={item.placeholder} />
+                            </div>
+                        ))}
                 </div>
             </div>
         );

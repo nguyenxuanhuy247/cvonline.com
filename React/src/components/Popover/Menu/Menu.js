@@ -87,7 +87,7 @@ class Menu extends Component {
         return (
             <TippyHeadless
                 interactive
-                delay={[0, 100000]}
+                delay={[0, 500]}
                 hideOnClick
                 placement="bottom-end"
                 render={() => this.handleShowMenuContent()}

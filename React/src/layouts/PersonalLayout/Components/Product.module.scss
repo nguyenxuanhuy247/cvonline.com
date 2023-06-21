@@ -225,6 +225,11 @@
                     }
                 }
 
+                .select {
+                    color: #fff;
+                    background-color: #fff;
+                }
+
                 &.active {
                     color: #fff;
                     border: 1px solid var(--primary-color);
@@ -232,6 +237,7 @@
 
                     .select {
                         color: #fff;
+                        border: 1px dashed #fff;
                         background-color: var(--primary-color);
 
                         & > option {

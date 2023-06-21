@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 class ContentEditableTag extends PureComponent {
     render = () => {
-        const { className = '', placeholder = 'Vui lòng nhập trường này' } = this.props;
+        const { content, className = '', placeholder = 'Vui lòng nhập trường này' } = this.props;
 
         return (
             <div
@@ -14,6 +14,8 @@ class ContentEditableTag extends PureComponent {
                 placeholder={placeholder}
                 spellCheck="false"
                 tabIndex="0"
+                onMouseEnter={(e) => e.target.focus()}
+                dangerouslySetInnerHTML={{ __html: content }}
             ></div>
         );
     };
