@@ -19,7 +19,7 @@ export const postSignIn = (userEmail, userPassword) => {
 };
 
 // =============================================================================
-// CRUD LIBRARY
+// CRUD TECHNOLOGY
 
 export const createTechnology = (data) => {
     return axios.post('/post-technology', data);
@@ -38,10 +38,12 @@ export const deleteTechnology = (id, key, side) => {
 };
 
 // =============================================================================
-export const getAllUsersFromServer = (inputId) => {
-    return axios.get(`/api/get-all-users?id=${inputId}`);
+// CRUD USER INFORMATION
+
+export const readUserInformation = (id) => {
+    return axios.get(`/get-user-information?id=${id}`);
 };
 
-export const deleteUser = (inputId) => {
-    return axios.delete(`/api/delete-user?id=${inputId}`);
+export const updateUserInformation = (data) => {
+    return axios.put('/put-user-information', data);
 };

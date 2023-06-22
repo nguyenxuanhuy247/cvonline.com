@@ -165,12 +165,16 @@ class TechnologyList extends PureComponent {
                 }
             }
         }
+
+        if (this.props.type === 'LIBRARY') {
+            this.props.searchLibrary();
+        }
     };
 
-    // CRUD
+    // Show / Hide Create Technology container
     handleShowCreateTechnology = async () => {
-        const closeEditTechnology = this.technologyRef.current.handleCloseEditLibrary;
-        closeEditTechnology();
+        const closeEditTechnology = this.technologyRef.current?.handleCloseEditTechnology;
+        closeEditTechnology?.();
 
         await this.setState({ isCreateTechnology: true });
         const autofocusInputElement = document.getElementById(`js-autofocus-input-${this.props.type}`);
@@ -195,7 +199,7 @@ class TechnologyList extends PureComponent {
             version: state.version?.trim(),
             link: state.link,
         };
-
+        
         const { errorCode } = await this.props.createtechnology(data);
 
         if (errorCode === 0) {

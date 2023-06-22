@@ -1,25 +1,14 @@
-import Github from '~/assets/icons/github.png';
-import Gitlab from '~/assets/icons/gitlab.png';
-import HTML from '~/assets/icons/HTML.png';
-import CSS from '~/assets/icons/CSS.png';
-
 import findJob from '~/assets/img/find-job.png';
 import makeCV from '~/assets/img/make-cv.png';
 import secSafe from '~/assets/img/sec-safe.png';
 
 import avatar from '~/assets/img/avatar.jpg';
 import placeholder from '~/assets/img/img-placeholder.jpg';
-
-export const Icons = {
-    Github,
-    Gitlab,
-    HTML,
-    CSS,
-};
+import avatarPlaceholder from '~/assets/img/avatar-placeholder.jpg';
 
 export const PngImages = { findJob, makeCV, secSafe };
 
-export const JpgImages = { avatar, placeholder };
+export const JpgImages = { avatar, placeholder, avatarPlaceholder };
 
 export const AccountIcon = () => {
     return (

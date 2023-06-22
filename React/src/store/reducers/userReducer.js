@@ -4,19 +4,20 @@ const initialState = {
     isLoading: {
         signin: false,
         signup: false,
+        user: false,
         library: false,
-        framework: false,
         sourcecode: false,
-        programminglanguage: false,
+        BETechnology: false,
+        FETechnology: false,
     },
     isSignUp: false,
     isSignIn: false,
     user: null,
     libraries: [],
     pageQuantityLibrary: 0,
-    frameworks: [],
+    BETechnologies: [],
     sourceCodes: [],
-    programmingLanguages: [],
+    FETechnologies: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -68,6 +69,39 @@ const userReducer = (state = initialState, action) => {
                 isSignUp: false,
             };
 
+        // =================================================================
+        // READ USER INFORMATION
+        case actionNames.READ_USER_INFORMATION_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, user: true },
+            };
+        case actionNames.READ_USER_INFORMATION_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, user: false },
+                user: action.payload.data,
+            };
+        case actionNames.READ_USER_INFORMATION_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, user: false },
+            };
+
+        // UPDATE USER INFORMATION
+        case actionNames.UPDATE_USER_INFORMATION_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, user: true },
+            };
+        case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
+        case actionNames.UPDATE_USER_INFORMATION_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, user: false },
+            };
+
+        // =================================================================
         // CREATE LIBRARY
         case actionNames.CREATE_LIBRARY_START:
             return {
@@ -113,46 +147,46 @@ const userReducer = (state = initialState, action) => {
 
         // ================================================================
 
-        // CREATE PROGRAMMING LANGUAGE
-        case actionNames.CREATE_PROGRAMMINGLANGUAGE_START:
+        // CREATE FRONTEND ECHNOLOGY
+        case actionNames.CREATE_FRONTEND_TECHNOLOGY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, programminglanguage: true },
+                isLoading: { ...state.isLoading, FETechnology: true },
             };
-        case actionNames.CREATE_PROGRAMMINGLANGUAGE_SUCCESS:
-        case actionNames.CREATE_PROGRAMMINGLANGUAGE_FAILURE:
+        case actionNames.CREATE_FRONTEND_TECHNOLOGY_SUCCESS:
+        case actionNames.CREATE_FRONTEND_TECHNOLOGY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, programminglanguage: false },
+                isLoading: { ...state.isLoading, FETechnology: false },
             };
-        // READ PROGRAMMING LANGUAGE
-        case actionNames.READ_PROGRAMMINGLANGUAGE_START:
+        // READ FRONTEND ECHNOLOGY
+        case actionNames.READ_FRONTEND_TECHNOLOGY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, programminglanguage: true },
+                isLoading: { ...state.isLoading, FETechnology: true },
             };
-        case actionNames.READ_PROGRAMMINGLANGUAGE_SUCCESS:
+        case actionNames.READ_FRONTEND_TECHNOLOGY_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, programminglanguage: false },
-                programmingLanguages: action.payload.data,
+                isLoading: { ...state.isLoading, FETechnology: false },
+                FETechnologies: action.payload.data,
             };
-        case actionNames.READ_PROGRAMMINGLANGUAGE_FAILURE:
+        case actionNames.READ_FRONTEND_TECHNOLOGY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, programminglanguage: false },
+                isLoading: { ...state.isLoading, FETechnology: false },
             };
-        // UPDATE PROGRAMMING LANGUAGE
-        case actionNames.UPDATE_PROGRAMMINGLANGUAGE_START:
+        // UPDATE FRONTEND ECHNOLOGY
+        case actionNames.UPDATE_FRONTEND_TECHNOLOGY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, programminglanguage: true },
+                isLoading: { ...state.isLoading, FETechnology: true },
             };
-        case actionNames.UPDATE_PROGRAMMINGLANGUAGE_SUCCESS:
-        case actionNames.UPDATE_PROGRAMMINGLANGUAGE_FAILURE:
+        case actionNames.UPDATE_FRONTEND_TECHNOLOGY_SUCCESS:
+        case actionNames.UPDATE_FRONTEND_TECHNOLOGY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, programminglanguage: false },
+                isLoading: { ...state.isLoading, FETechnology: false },
             };
 
         // ================================================================
@@ -200,46 +234,46 @@ const userReducer = (state = initialState, action) => {
             };
         // ================================================================
 
-        // CREATE FRAMEWORK
-        case actionNames.CREATE_FRAMEWORK_START:
+        // CREATE BACKEND TECHNOLOGY
+        case actionNames.CREATE_BACKEND_TECHNOLOGY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, framework: true },
+                isLoading: { ...state.isLoading, BETechnology: true },
             };
-        case actionNames.CREATE_FRAMEWORK_SUCCESS:
-        case actionNames.CREATE_FRAMEWORK_FAILURE:
+        case actionNames.CREATE_BACKEND_TECHNOLOGY_SUCCESS:
+        case actionNames.CREATE_BACKEND_TECHNOLOGY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, framework: false },
+                isLoading: { ...state.isLoading, BETechnology: false },
             };
-        // READ FRAMEWORK
-        case actionNames.READ_FRAMEWORK_START:
+        // READ BACKEND TECHNOLOGY
+        case actionNames.READ_BACKEND_TECHNOLOGY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, framework: true },
+                isLoading: { ...state.isLoading, BETechnology: true },
             };
-        case actionNames.READ_FRAMEWORK_SUCCESS:
+        case actionNames.READ_BACKEND_TECHNOLOGY_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, framework: false },
-                frameworks: action.payload.data,
+                isLoading: { ...state.isLoading, BETechnology: false },
+                BETechnologies: action.payload.data,
             };
-        case actionNames.READ_FRAMEWORK_FAILURE:
+        case actionNames.READ_BACKEND_TECHNOLOGY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, framework: false },
+                isLoading: { ...state.isLoading, BETechnology: false },
             };
-        // UPDATE FRAMEWORK
-        case actionNames.UPDATE_FRAMEWORK_START:
+        // UPDATE BACKEND TECHNOLOGY
+        case actionNames.UPDATE_BACKEND_TECHNOLOGY_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, framework: true },
+                isLoading: { ...state.isLoading, BETechnology: true },
             };
-        case actionNames.UPDATE_FRAMEWORK_SUCCESS:
-        case actionNames.UPDATE_FRAMEWORK_FAILURE:
+        case actionNames.UPDATE_BACKEND_TECHNOLOGY_SUCCESS:
+        case actionNames.UPDATE_BACKEND_TECHNOLOGY_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, framework: false },
+                isLoading: { ...state.isLoading, BETechnology: false },
             };
         default:
             return state;

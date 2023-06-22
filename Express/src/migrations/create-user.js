@@ -36,16 +36,7 @@ module.exports = {
             jobPosition: {
                 type: Sequelize.STRING,
             },
-            university: {
-                type: Sequelize.STRING,
-            },
-            faculty: {
-                type: Sequelize.STRING,
-            },
-            english: {
-                type: Sequelize.STRING,
-            },
-            japanese: {
+            languages: {
                 type: Sequelize.STRING,
             },
             createdAt: {

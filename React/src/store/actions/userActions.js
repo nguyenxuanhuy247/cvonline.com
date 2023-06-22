@@ -238,3 +238,64 @@ export const CRUDTechnology_Start_Success_Failure = (actionName, data) => ({
     type: actionNames[actionName],
     payload: data,
 });
+
+// =================================================================
+// CRUD USER INFORMATION
+
+// READ USER INFORMATION
+export const readUserInformation = (toastText, actionName, id) => {
+    return async (dispatch) => {
+        const actionStart = `READ_${actionName}_START`;
+        const actionSuccess = `READ_${actionName}_SUCCESS`;
+        const actionFailure = `READ_${actionName}_FAILURE`;
+
+        dispatch(CRUDUserInformation_Start_Success_Failure(actionStart));
+        try {
+            const res = await userService.readUserInformation(id);
+
+            if (res.errorCode === 0) {
+                dispatch(CRUDUserInformation_Start_Success_Failure(actionSuccess, res));
+            } else {
+                toast.error(`Tải ${toastText} thất bại`);
+                dispatch(CRUDUserInformation_Start_Success_Failure(actionFailure, res));
+            }
+        } catch (error) {
+            toast.error(error.response.data.errorMessage);
+            dispatch(CRUDUserInformation_Start_Success_Failure(actionFailure, error.response.data));
+            console.log('An error in readUserInformation() - userActions.js: ', error);
+        }
+    };
+};
+
+// UPDATE USER INFORMATION
+export const updateUserInformation = (toastText, actionName, dataSent, isToastSuccess) => {
+    return async (dispatch) => {
+        const actionStart = `UPDATE_${actionName}_START`;
+        const actionSuccess = `UPDATE_${actionName}_SUCCESS`;
+        const actionFailure = `UPDATE_${actionName}_FAILURE`;
+
+        dispatch(CRUDTechnology_Start_Success_Failure(actionStart));
+        try {
+            let res = await userService.updateUserInformation(dataSent);
+            if (res.errorCode === 0) {
+                isToastSuccess && toast.success(`Sửa ${toastText} thành công`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionSuccess, res));
+                return res.errorCode;
+            } else {
+                toast.error(`Sửa ${toastText} thất bại`);
+                dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
+                return res.errorCode;
+            }
+        } catch (error) {
+            toast.error(error.response.data.errorMessage);
+            dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
+            console.log('An error in updateTechnology() - userActions.js: ', error);
+            return error.response.data.errorCode;
+        }
+    };
+};
+
+export const CRUDUserInformation_Start_Success_Failure = (actionName, data) => ({
+    type: actionNames[actionName],
+    payload: data,
+});

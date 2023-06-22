@@ -14,7 +14,6 @@ import TechnologyList from './TechnologyList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
-// import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 
@@ -217,55 +216,59 @@ class Product extends PureComponent {
         }
     };
 
-    handleSearchLibrary = async (e) => {
-        await this.setState({ isSearch: true });
-        await this.props.readLibrary(this.FEorBESide());
-        const value = e.target.value?.trim();
+    handleSearchLibrary = async () => {
+        const inputSearchLibrary = document.getElementById(`js-input-search-library`);
+        if (inputSearchLibrary) {
+            const value = inputSearchLibrary.value?.trim();
 
-        if (value) {
-            _.forEach(this.props.libraryList, function (lib) {
-                const buttonContainer = document.getElementById(`js-button-container-LIBRARY-${lib.id}`);
-                const libraryName = document.getElementById(`js-button-name-LIBRARY-${lib.id}`);
+            await this.setState({ isSearch: true });
+            await this.props.readLibrary(this.FEorBESide());
 
-                if (buttonContainer && libraryName) {
-                    buttonContainer.style.display = 'none';
+            if (value) {
+                _.forEach(this.props.libraryList, function (lib) {
+                    const buttonContainer = document.getElementById(`js-button-container-LIBRARY-${lib.id}`);
+                    const libraryName = document.getElementById(`js-button-name-LIBRARY-${lib.id}`);
 
-                    const regex = new RegExp(value, 'gi');
-                    const name = lib.name.replace(/(<mark style={{ backgroundColor: 'yellow'}}>|<\/mark>)/gim, '');
-                    const newName = name.replace(regex, `<mark  style={{ backgroundColor: 'yellow'}}>$&</mark>`);
+                    if (buttonContainer && libraryName) {
+                        buttonContainer.style.display = 'none';
 
-                    if (name !== newName) {
-                        libraryName.innerHTML = newName;
-                        buttonContainer.style.display = 'inline-flex';
+                        const regex = new RegExp(value, 'gi');
+                        const name = lib.name.replace(/(<mark style={{ backgroundColor: 'yellow'}}>|<\/mark>)/gim, '');
+                        const newName = name.replace(regex, `<mark  style={{ backgroundColor: 'yellow'}}>$&</mark>`);
+
+                        if (name !== newName) {
+                            libraryName.innerHTML = newName;
+                            buttonContainer.style.display = 'inline-flex';
+                        }
+                    }
+                });
+
+                const searchLibraryList = document.getElementById(`js-search-library-list`);
+                const displayNoneLibrary = searchLibraryList.querySelectorAll(`[style*=none]`);
+                const resultNotFound = document.getElementById(`js-result-not-found`);
+
+                if (resultNotFound) {
+                    resultNotFound.remove();
+                }
+
+                if (searchLibraryList) {
+                    if (displayNoneLibrary.length === this.props.libraryList.length) {
+                        const notFoundElement = document.createElement('p');
+                        notFoundElement.className = cx('search-result-not-found');
+                        notFoundElement.id = `js-result-not-found`;
+                        notFoundElement.innerText = 'Không tìm thấy kết quả';
+
+                        searchLibraryList.appendChild(notFoundElement);
                     }
                 }
-            });
-
-            const searchLibraryList = document.getElementById(`js-search-library-list`);
-            const displayNoneLibrary = searchLibraryList.querySelectorAll(`[style*=none]`);
-            const resultNotFound = document.getElementById(`js-result-not-found`);
-
-            if (resultNotFound) {
-                resultNotFound.remove();
-            }
-
-            if (searchLibraryList) {
-                if (displayNoneLibrary.length === this.props.libraryList.length) {
-                    const notFoundElement = document.createElement('p');
-                    notFoundElement.className = cx('search-result-not-found');
-                    notFoundElement.id = `js-result-not-found`;
-                    notFoundElement.innerText = 'Không tìm thấy kết quả';
-
-                    searchLibraryList.appendChild(notFoundElement);
-                }
-            }
-        } else {
-            await this.setState({ isSearch: false, isPagination: true });
-
-            if (this.state.isPagination) {
-                await this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
             } else {
-                await this.props.readLibrary(this.FEorBESide());
+                await this.setState({ isSearch: false, isPagination: true });
+
+                if (this.state.isPagination) {
+                    await this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
+                } else {
+                    await this.props.readLibrary(this.FEorBESide());
+                }
             }
         }
     };
@@ -274,9 +277,9 @@ class Product extends PureComponent {
 
     componentDidMount() {
         this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
-        this.props.readFramework('ALL');
+        this.props.readBETechnology('ALL');
         this.props.readSourceCode('ALL');
-        this.props.readProgrammingLanguage('ALL');
+        this.props.readFETechnology('ALL');
     }
 
     componentDidUpdate() {
@@ -330,7 +333,7 @@ class Product extends PureComponent {
                             placement="bottom"
                             interactive
                             delay={[0, 300]}
-                            offset={[0, -200]}
+                            offset={[0, -300]}
                             render={(attrs) => (
                                 <div tabIndex="-1" {...attrs}>
                                     <div className={cx('tooltip')} onClick={() => this.setState({ isModalOpen: true })}>
@@ -374,37 +377,37 @@ class Product extends PureComponent {
                         </div>
 
                         <div className={cx('section')}>
-                            <span className={cx('title')}>Ngôn ngữ lập trình</span>
+                            <span className={cx('title')}>Công nghệ sử dụng - Frontend</span>
                             <div className={cx('list')}>
                                 <TechnologyList
                                     draggable
-                                    technology="Ngôn ngữ lập trình"
-                                    type="PROGRAMMINGLANGUAGE"
-                                    keyprop="PL"
-                                    technologylist={this.props.programmingLanguageList}
-                                    isloading={this.props.isProgrammingLanguageLoading}
-                                    readtechnology={() => this.props.readProgrammingLanguage('ALL')}
-                                    createtechnology={this.props.createProgrammingLanguage}
-                                    updatetechnology={this.props.updateProgrammingLanguage}
-                                    deletetechnology={this.props.deleteProgrammingLanguage}
+                                    technology="công nghệ sử dụng"
+                                    type="FRONTEND_TECHNOLOGY"
+                                    keyprop="FT"
+                                    technologylist={this.props.FETechnologies}
+                                    isloading={this.props.isFETechnologyLoading}
+                                    readtechnology={() => this.props.readFETechnology('ALL')}
+                                    createtechnology={this.props.createFETechnology}
+                                    updatetechnology={this.props.updateFETechnology}
+                                    deletetechnology={this.props.deleteFETechnology}
                                 />
                             </div>
                         </div>
 
                         <div className={cx('section')}>
-                            <span className={cx('title')}>Frameworks</span>
+                            <span className={cx('title')}>Công nghệ sử dụng - Backend</span>
                             <div className={cx('list')}>
                                 <TechnologyList
                                     draggable
-                                    technology="framework"
-                                    type="FRAMEWORK"
-                                    keyprop="FW"
-                                    technologylist={this.props.frameworkList}
-                                    isloading={this.props.isFrameworkLoading}
-                                    readtechnology={() => this.props.readFramework('ALL')}
-                                    createtechnology={this.props.createFramework}
-                                    updatetechnology={this.props.updateFramework}
-                                    deletetechnology={this.props.deleteFramework}
+                                    technology="công nghệ sử dụng"
+                                    type="BACKEND_TECHNOLOGY"
+                                    keyprop="BT"
+                                    technologylist={this.props.BETechnologies}
+                                    isloading={this.props.isBETechnologyLoading}
+                                    readtechnology={() => this.props.readBETechnology('ALL')}
+                                    createtechnology={this.props.createBETechnology}
+                                    updatetechnology={this.props.updateBETechnology}
+                                    deletetechnology={this.props.deleteBETechnology}
                                 />
                             </div>
                         </div>
@@ -422,7 +425,7 @@ class Product extends PureComponent {
                                         type="text"
                                         className={cx('library-filter-search')}
                                         spellCheck="false"
-                                        onInput={(e) => this.handleSearchLibrary(e)}
+                                        onInput={this.handleSearchLibrary}
                                     />
                                 </div>
                                 <div className={cx('library-sort')}>
@@ -555,6 +558,7 @@ class Product extends PureComponent {
                                     createtechnology={this.handleCreateLibrary}
                                     updatetechnology={this.handleUpdateLibrary}
                                     deletetechnology={this.handleDeleteLibrary}
+                                    searchLibrary={this.handleSearchLibrary}
                                     sortupdatetechnology={this.props.updateLibrary}
                                     dataforsort={dataForReadLibraryAfterSorting}
                                 />
@@ -578,13 +582,13 @@ const mapStateToProps = (state) => {
         isSourceCodeLoading: state.user.isLoading.sourcecode,
         sourceCodeList: state.user.sourcecodes,
 
-        // Programming language
-        isProgrammingLanguageLoading: state.user.isLoading.programminglanguage,
-        programmingLanguageList: state.user.programmingLanguages,
+        // FE Technology
+        isFETechnologyLoading: state.user.isLoading.FETechnology,
+        FETechnologies: state.user.FETechnologies,
 
-        // Framework
-        isFrameworkLoading: state.user.isLoading.framework,
-        frameworkList: state.user.frameworks,
+        // BE Technology
+        isBETechnologyLoading: state.user.isLoading.BETechnology,
+        BETechnologies: state.user.BETechnologies,
     };
 };
 
@@ -604,21 +608,25 @@ const mapDispatchToProps = (dispatch) => {
         updateSourceCode: (data) => dispatch(userActions.updateTechnology('Source Code', 'SOURCECODE', data)),
         deleteSourceCode: (id) => dispatch(userActions.deleteTechnology('Source Code', 'SOURCECODE', id, 'SC')),
 
-        // Source code
-        readProgrammingLanguage: (id) =>
-            dispatch(userActions.readTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', id, 'PL')),
-        createProgrammingLanguage: (data) =>
-            dispatch(userActions.createTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', data)),
-        updateProgrammingLanguage: (data) =>
-            dispatch(userActions.updateTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', data)),
-        deleteProgrammingLanguage: (id) =>
-            dispatch(userActions.deleteTechnology('Ngôn ngữ lập trình', 'PROGRAMMINGLANGUAGE', id, 'PL')),
+        // FE Technology
+        readFETechnology: (id) =>
+            dispatch(userActions.readTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', id, 'FT')),
+        createFETechnology: (data) =>
+            dispatch(userActions.createTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', data)),
+        updateFETechnology: (data) =>
+            dispatch(userActions.updateTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', data)),
+        deleteFETechnology: (id) =>
+            dispatch(userActions.deleteTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', id, 'FT')),
 
-        // Framework
-        readFramework: (id) => dispatch(userActions.readTechnology('framework', 'FRAMEWORK', id, 'FW')),
-        createFramework: (data) => dispatch(userActions.createTechnology('framework', 'FRAMEWORK', data)),
-        updateFramework: (data) => dispatch(userActions.updateTechnology('framework', 'FRAMEWORK', data)),
-        deleteFramework: (id) => dispatch(userActions.deleteTechnology('framework', 'FRAMEWORK', id, 'FW')),
+        // BE Technology
+        readBETechnology: (id) =>
+            dispatch(userActions.readTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', id, 'BT')),
+        createBETechnology: (data) =>
+            dispatch(userActions.createTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', data)),
+        updateBETechnology: (data) =>
+            dispatch(userActions.updateTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', data)),
+        deleteBETechnology: (id) =>
+            dispatch(userActions.deleteTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', id, 'BT')),
     };
 };
 

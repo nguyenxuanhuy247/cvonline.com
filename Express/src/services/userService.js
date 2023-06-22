@@ -1,6 +1,5 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
-import { Op } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -56,8 +55,6 @@ export const postUserSignUp = async (fullName, email, password) => {
                 errorMessage: `Tài khoản được tạo thành công`,
             };
         }
-
-        return userData;
     } catch (error) {
         console.log('An error in postUserSignUp() in userService.js : ', error);
         return {
@@ -77,7 +74,9 @@ export const postUserSignIn = async (userEmail, userPassword) => {
             // Get user's data again prevent someone from deleting/changing data
             let user = await db.User.findOne({
                 where: { email: userEmail },
-                attributes: ['email', 'password', 'fullName'],
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt'],
+                },
             });
 
             if (user) {
@@ -120,7 +119,7 @@ export const postUserSignIn = async (userEmail, userPassword) => {
 };
 
 // =================================================================
-// HANDLE CRUD TECHNOLOGY
+// CRUD TECHNOLOGY
 
 // CREATE TECHNOLOGY
 export const handleCreateTechnology = async (data) => {
@@ -141,6 +140,7 @@ export const handleCreateTechnology = async (data) => {
 
         if (!technology || technology.name !== name) {
             await db.Technology.create({
+                type: type,
                 key: key,
                 side: side,
                 image: image,
@@ -259,7 +259,7 @@ export const handleGetTechnology = async (data) => {
 // UPDATE TECHNOLOGY
 export const handleUpdateTechnology = async (data) => {
     try {
-        const { id, image, name, version, link, upId } = data;
+        const { id, image, name, version, link } = data;
 
         const result = await db.Technology.findOne({
             where: { id: id },
@@ -273,7 +273,6 @@ export const handleUpdateTechnology = async (data) => {
             result.name = name;
             result.version = version;
             result.link = link;
-            result.id = upId;
 
             await result.save();
 
@@ -333,6 +332,77 @@ export const handleDeleteTechnology = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleDeleteTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
+        };
+    }
+};
+
+// =================================================================
+// CRUD USER INFORMATION
+
+// READ USER INFORMATION
+export const handleGetUserInformation = async (data) => {
+    try {
+        const { id } = data;
+
+        let user = await db.User.findOne({
+            where: { id: id },
+            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        });
+        if (user) {
+            return {
+                errorCode: 0,
+                errorMessage: `Tải dữ liệu người dùng thành công`,
+                data: user,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy thông tin người dùng`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleGetUserInformation() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
+        };
+    }
+};
+
+// UPDATE USER INFORMATION
+export const handleUpdateUserInformation = async (data) => {
+    try {
+        const { id, avatar, name } = data;
+
+        const user = await db.User.findOne({
+            where: { id: id },
+            raw: false,
+        });
+
+        if (user) {
+            if (avatar) {
+                user.avatar = avatar;
+            } else if (name) {
+                user.name = name;
+            }
+
+            await user.save();
+
+            return {
+                errorCode: 0,
+                errorMessage: `Sửa thông tin người dùng thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy id người dùng trong Database`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleUpdateUserInformation() in userService.js : ', error);
         return {
             errorCode: 31,
             errorMessage: `Không kết nối được với Database`,

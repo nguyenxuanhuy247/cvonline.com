@@ -1,10 +1,12 @@
 import { SignOutIcon, AccountIcon, LanguageIcon} from '~/components/Image/Images.js';
 import { BsArrowRight } from 'react-icons/bs';
+import { FaUserTie } from 'react-icons/fa';
+import { HiLanguage } from 'react-icons/hi';
 
 export const MENU_AVATAR_DATA = [
     {
         id: 11,
-        leftIcon: <AccountIcon />,
+        leftIcon: <FaUserTie />,
         title: 'Tài khoản',
         rightIcon: <BsArrowRight />,
         to: '/feedback',

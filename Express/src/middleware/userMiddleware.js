@@ -48,9 +48,9 @@ export const checkReqSignIn = (req, res, next) => {
 };
 
 // =================================================================
-// CHECK CRUD LIBRARY
+// CHECK CRUD TECHNOLOGY
 
-// CREATE LIBRARY
+// CREATE TECHNOLOGY
 export const checkReqCreateTechnology = (req, res, next) => {
     const { name } = req.body;
 
@@ -64,7 +64,7 @@ export const checkReqCreateTechnology = (req, res, next) => {
     next();
 };
 
-// READ LIBRARY
+// READ TECHNOLOGY
 export const checkReqGetTechnology = (req, res, next) => {
     const { id } = req.query;
 
@@ -78,7 +78,7 @@ export const checkReqGetTechnology = (req, res, next) => {
     next();
 };
 
-// UPDATE LIBRARY
+// UPDATE TECHNOLOGY
 export const checkReqUpdateTechnology = (req, res, next) => {
     const { id, type, image, name, version } = req.body;
 
@@ -108,7 +108,7 @@ export const checkReqUpdateTechnology = (req, res, next) => {
     next();
 };
 
-// DELETE LIBRARY
+// DELETE TECHNOLOGY
 export const checkReqDeleteTechnology = (req, res, next) => {
     const { id } = req.query;
 
@@ -116,6 +116,36 @@ export const checkReqDeleteTechnology = (req, res, next) => {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id để xóa thư viện',
+        });
+    }
+
+    next();
+};
+
+// =================================================================
+// CHECK CRUD USER INFORMATION
+
+// READ TECHNOLOGY
+export const checkReqGetUserInformation = (req, res, next) => {
+    const { id } = req.query;
+
+    if (!id) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id để tải thông tin người dùng',
+        });
+    }
+
+    next();
+};
+
+// UPDATE TECHNOLOGY
+export const checkReqUpdateUserInformation = (req, res, next) => {
+    const { id } = req.body;
+    if (!id) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id để sửa thông tin người dùng',
         });
     }
 

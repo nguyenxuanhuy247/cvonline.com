@@ -16,9 +16,8 @@ let initWebRoutes = (app) => {
     router.put('/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
     router.delete('/delete-technology', userMiddleware.checkReqDeleteTechnology, userController.handleDeleteTechnology);
 
-    // =================================================================
-
-    router.post('/personal/create-library', userController.handleUserSignIn);
+    router.get('/get-user-information', userMiddleware.checkReqGetUserInformation, userController.handleGetUserInformation);
+    router.put('/put-user-information', userMiddleware.checkReqUpdateUserInformation, userController.handleUpdateUserInformation);
 
     return app.use('/', router);
 };

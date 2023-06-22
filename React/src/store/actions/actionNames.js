@@ -20,29 +20,35 @@ const actionNames = Object.freeze({
     //user - Sign Out
     USER_SIGNOUT: 'USER_SIGNOUT',
 
-    // Library
+    // USER INFORMATION
+    ...actionMaker(`CREATE`, `USER_INFORMATION`),
+    ...actionMaker(`READ`, `USER_INFORMATION`),
+    ...actionMaker(`UPDATE`, `USER_INFORMATION`),
+    ...actionMaker(`DELETE`, `USER_INFORMATION`),
+
+    // LIBRARY
     ...actionMaker(`CREATE`, `LIBRARY`),
     ...actionMaker(`READ`, `LIBRARY`),
     ...actionMaker(`UPDATE`, `LIBRARY`),
     ...actionMaker(`DELETE`, `LIBRARY`),
 
-    // Source Code
+    // SOURCE CODE
     ...actionMaker(`CREATE`, `SOURCECODE`),
     ...actionMaker(`READ`, `SOURCECODE`),
     ...actionMaker(`UPDATE`, `SOURCECODE`),
     ...actionMaker(`DELETE`, `SOURCECODE`),
 
-    // Programming Language
-    ...actionMaker(`CREATE`, `PROGRAMMINGLANGUAGE`),
-    ...actionMaker(`READ`, `PROGRAMMINGLANGUAGE`),
-    ...actionMaker(`UPDATE`, `PROGRAMMINGLANGUAGE`),
-    ...actionMaker(`DELETE`, `PROGRAMMINGLANGUAGE`),
+    // FRONTEND TECHNOLOGY
+    ...actionMaker(`CREATE`, `FRONTEND_TECHNOLOGY`),
+    ...actionMaker(`READ`, `FRONTEND_TECHNOLOGY`),
+    ...actionMaker(`UPDATE`, `FRONTEND_TECHNOLOGY`),
+    ...actionMaker(`DELETE`, `FRONTEND_TECHNOLOGY`),
 
-    // Framework
-    ...actionMaker(`CREATE`, `FRAMEWORK`),
-    ...actionMaker(`READ`, `FRAMEWORK`),
-    ...actionMaker(`UPDATE`, `FRAMEWORK`),
-    ...actionMaker(`DELETE`, `FRAMEWORK`),
+    // BACKEND TECHNOLOGY
+    ...actionMaker(`CREATE`, `BACKEND_TECHNOLOGY`),
+    ...actionMaker(`READ`, `BACKEND_TECHNOLOGY`),
+    ...actionMaker(`UPDATE`, `BACKEND_TECHNOLOGY`),
+    ...actionMaker(`DELETE`, `BACKEND_TECHNOLOGY`),
 });
 
 export default actionNames;

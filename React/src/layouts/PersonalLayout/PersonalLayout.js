@@ -1,32 +1,34 @@
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-import { RiEnglishInput } from 'react-icons/ri';
 import { TbLanguageHiragana } from 'react-icons/tb';
+import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
+import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
+import { MdEmail } from 'react-icons/md';
+import { BsPlusCircleDotted } from 'react-icons/bs';
 import HeadlessTippy from '@tippyjs/react/headless';
+import DefaultTippy from '@tippyjs/react';
 
 import Header from '~/containers/Header/Header.js';
 import Product from '~/layouts/PersonalLayout/Components/Product.js';
-import PersonalInfo from '~/layouts/PersonalLayout/Components/PersonalInfo.js';
-import PersonalInformation from '~/layouts/PersonalLayout/Components/PersonalInformation.js';
 
 import styles from './PersonalLayout.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
+import Button from '~/components/Button/Button.js';
+import * as userActions from '~/store/actions';
 
 const cx = classnames.bind(styles);
 
 const LANGUAGES = [
     {
         id: 1,
-        icon: <RiEnglishInput />,
         placeholder: 'Tiếng anh',
     },
     {
         id: 2,
-        icon: <TbLanguageHiragana />,
         placeholder: 'Tiếng nhật',
     },
 ];
@@ -38,6 +40,9 @@ class PersonalLayout extends PureComponent {
             isModalOpen: false,
             avatarUrl: '',
             avatarBase64: '',
+
+            visible: false,
+            dateOfBirth: '',
         };
     }
 
@@ -48,8 +53,18 @@ class PersonalLayout extends PureComponent {
     };
 
     getAvatarUrlFromChangeImageModal = (url) => {
+        const data = { id: this.props?.user?.id, avatar: url };
+        this.props.updateUserInformation(data);
         this.setState({ avatarUrl: url });
     };
+
+    handleInputUserInformation = (e, name) => {
+        this.setState({ name: e.target.innerHTML });
+    };
+
+    componentDidMount() {
+        this.props.readUserInformation(this.props?.user?.id);
+    }
 
     render = () => {
         return (
@@ -81,7 +96,7 @@ class PersonalLayout extends PureComponent {
                                             >
                                                 <Image
                                                     className={cx('avatar')}
-                                                    src={this.state.avatarUrl || JpgImages.JpgImages}
+                                                    src={this.state.avatarUrl || JpgImages.avatarPlaceholder}
                                                     width="170px"
                                                     height="170px"
                                                     alt={`${this.props?.user?.fullName}`}
@@ -107,19 +122,133 @@ class PersonalLayout extends PureComponent {
                                         <option className={cx('option-job-title')}>Frontend developer</option>
                                         <option className={cx('option-job-title')}>Backend developer</option>
                                     </select>
+
                                     <div className={cx('separate')}></div>
-                                    <PersonalInformation email={this.props?.user?.email} />
-                                    <div></div>
+
+                                    <div className={cx('candidate-info')}>
+                                        <p className={cx('text')}>Thông tin cá nhân</p>
+                                        <div className={cx('content')}>
+                                            <div className={cx('info')}>
+                                                <span className={cx('icon')}>
+                                                    <BsFillCalendarDayFill />
+                                                </span>
+                                                <ContentEditableTag
+                                                    content={this.props?.user?.dateOfBirth}
+                                                    className={cx('info-text')}
+                                                    placeholder="Ngày tháng năm sinh"
+                                                    oninput={(e) => this.handleInputUserInformation(e, 'dateOfBirth')}
+                                                />
+                                            </div>
+                                            <div className={cx('info')}>
+                                                <span className={cx('icon')}>
+                                                    <FaUserCircle />
+                                                </span>
+                                                <ContentEditableTag
+                                                    content={this.props?.user?.gender}
+                                                    className={cx('info-text')}
+                                                    placeholder="Giới tính"
+                                                />
+                                            </div>
+                                            <div className={cx('info')}>
+                                                <span className={cx('icon')}>
+                                                    <BsFillTelephoneFill />
+                                                </span>
+                                                <ContentEditableTag
+                                                    content={this.props?.user?.phoneNumber}
+                                                    className={cx('info-text')}
+                                                    placeholder="Số điện thoại"
+                                                />
+                                            </div>
+                                            <div className={cx('info')}>
+                                                <span className={cx('icon')}>
+                                                    <MdEmail />
+                                                </span>
+                                                <ContentEditableTag
+                                                    content={this.props?.user?.email}
+                                                    className={cx('info-text')}
+                                                    placeholder="Email"
+                                                />
+                                            </div>
+                                            <div className={cx('info')}>
+                                                <span className={cx('icon')}>
+                                                    <FaAddressBook />
+                                                </span>
+                                                <ContentEditableTag
+                                                    content={this.props?.user?.address}
+                                                    className={cx('info-text')}
+                                                    placeholder="Địa chỉ"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div className={cx('separate')}></div>
-                                    <PersonalInfo title="Trình độ ngoại ngữ" data={LANGUAGES} />
+
+                                    <div className={cx('candidate-info')}>
+                                        <p className={cx('text')}>Trình độ ngoại ngữ</p>
+                                        <div className={cx('content')}>
+                                            {LANGUAGES &&
+                                                LANGUAGES.map((item) => (
+                                                    <div key={item.id} className={cx('info')}>
+                                                        <span className={cx('icon')}>
+                                                            <TbLanguageHiragana />
+                                                        </span>
+
+                                                        <DefaultTippy
+                                                            content="Nhập chứng chỉ hoặc trình độ tương đương"
+                                                            arrow={false}
+                                                        >
+                                                            <ContentEditableTag
+                                                                className={cx('info-text')}
+                                                                placeholder={item.placeholder}
+                                                            />
+                                                        </DefaultTippy>
+                                                    </div>
+                                                ))}
+                                        </div>
+                                        <div className={cx('add-new-language-container')}>
+                                            {!this.state.visible ? (
+                                                <DefaultTippy content="Thêm ngoại ngữ" arrow={false}>
+                                                    <Button
+                                                        className={cx('add-new-language')}
+                                                        onClick={() => this.setState({ visible: true })}
+                                                    >
+                                                        <span className={cx('add-new-language-icon')}>
+                                                            <BsPlusCircleDotted />
+                                                        </span>
+                                                    </Button>
+                                                </DefaultTippy>
+                                            ) : (
+                                                <div className={cx('add-language-container')}>
+                                                    <label className={cx('add-language-label')}>Thêm ngoại ngữ</label>
+                                                    <input
+                                                        className={cx('add-language-input')}
+                                                        placeholder="Nhập chứng chỉ"
+                                                    />
+                                                    <div className={cx('add-language-actions')}>
+                                                        <Button
+                                                            className={cx('btn', 'cancel')}
+                                                            onClick={() => this.setState({ visible: false })}
+                                                        >
+                                                            Hủy
+                                                        </Button>
+                                                        <Button
+                                                            className={cx('btn', 'add')}
+                                                            onClick={() => this.setState({ visible: true })}
+                                                        >
+                                                            Thêm
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className={cx('col pc-9')}>
                                 <div className={cx('product-list')}>
                                     <Product />
-                                    {/* <Product />
-                                    <Product /> */}
                                 </div>
                             </div>
                         </div>
@@ -137,7 +266,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        readUserInformation: (id) =>
+            dispatch(userActions.readUserInformation('thông tin người dùng', 'USER_INFORMATION', id)),
+        updateUserInformation: (data) =>
+            dispatch(userActions.updateUserInformation('thông tin người dùng', 'USER_INFORMATION', data, true)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalLayout);

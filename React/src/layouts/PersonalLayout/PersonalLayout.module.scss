@@ -97,6 +97,134 @@
                 border-radius: 10px;
                 margin: 12px 0;
             }
+
+            .candidate-info {
+                padding: 12px 0;
+
+                .text {
+                    font-size: 1.8rem;
+                    font-weight: 600;
+                }
+
+                .content {
+                    margin-top: 12px;
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 8px;
+
+                    .info {
+                        display: flex;
+                        padding-left: 8px;
+
+                        .icon {
+                            height: 30px;
+                            width: 30px;
+                            border-radius: 50%;
+                            background-color: var(--primary-color);
+                            margin-right: 8px;
+                            padding: 4px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-shrink: 0;
+                            color: #fff;
+                        }
+
+                        .info-text {
+                            width: 100%;
+                            font-size: 1.5rem;
+                            line-height: 1.6;
+                            font-weight: 300;
+                            word-break: break-all;
+                        }
+                    }
+                }
+
+                .add-new-language-container {
+                    margin-top: 16px;
+                    display: grid;
+                    place-items: center;
+
+                    .add-new-language {
+                        padding: 4px 12px;
+                        background-color: var(--button-bgc-green-02);
+
+                        .add-new-language-icon {
+                            display: grid;
+                            place-items: center;
+                            font-size: 24px;
+                            color: var(--primary-color);
+                        }
+
+                        &:hover {
+                            cursor: pointer;
+                            background-color: var(--button-bgc-green-01);
+
+                            .add-new-language-icon {
+                                color: #fff;
+                            }
+                        }
+                    }
+
+                    .add-language-container {
+                        display: flex;
+                        flex-direction: column;
+                        background-color: #fff;
+                        font-family: var(--alexandria-font);
+                        padding: 8px;
+
+                        .add-language-label {
+                            font-size: 1.5rem;
+                            font-weight: 400;
+                            text-align: center;
+                            padding: 8px;
+                            color: #fff;
+                            background-color: var(--button-bgc-green-01);
+                        }
+
+                        .add-language-input {
+                            margin-top: 12px;
+                            font-size: 1.4rem;
+                            border: 1px dashed #333;
+                            padding: 4px;
+
+                            &:hover {
+                                border: 1px solid var(--primary-color);
+                            }
+                        }
+
+                        .add-language-actions {
+                            margin-top: 12px;
+                            display: flex;
+                            justify-content: center;
+                            column-gap: 12px;
+
+                            .btn {
+                                font-size: 1.4rem;
+                                min-width: 80px;
+                                padding: 8px 12px;
+                                color: #fff;
+                                border-radius: 4px;
+                                cursor: pointer;
+
+                                &.cancel {
+                                    background-color: #212f3f;
+                                }
+
+                                &.add {
+                                    background-color: var(--primary-color);
+
+                                    &:hover {
+                                        .add-library {
+                                            border: 1px solid var(--primary-color);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         .product-list {

@@ -29,7 +29,7 @@ class Technology extends PureComponent {
         this.idTimeout = React.createRef();
     }
 
-    handleShowEditLibrary = async (id) => {
+    handleShowEditTechnology = async (id) => {
         this.props.oncloseCreate();
 
         let selectedLibrary;
@@ -164,7 +164,7 @@ class Technology extends PureComponent {
                         id={`${type}-${id}`}
                         type={type}
                         onshow={onshow}
-                        onedit={() => this.handleShowEditLibrary(id)}
+                        onedit={() => this.handleShowEditTechnology(id)}
                         ondelete={ondelete}
                         ondragstart={ondragstart}
                         ondragend={this.props.ondragend}
