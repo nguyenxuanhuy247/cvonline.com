@@ -10,7 +10,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             avatar: {
-                type: Sequelize.STRING,
+                type: Sequelize.BLOB('long'),
             },
             fullName: {
                 type: Sequelize.STRING,
@@ -37,7 +37,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             languages: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT('long'),
             },
             createdAt: {
                 allowNull: false,

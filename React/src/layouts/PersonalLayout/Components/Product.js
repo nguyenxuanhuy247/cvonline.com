@@ -326,7 +326,7 @@ class Product extends PureComponent {
                             <div className={cx('work-exp')}>
                                 <ContentEditableTag className={cx('exp')} placeholder="Tên sản phẩm" />
                             </div>
-                            <ContentEditableTag className={cx('desc')} placeholder="Mô tả ngắn gọn về sản phẩm" />
+                            <ContentEditableTag className={cx('desc')} placeholder="Mô tả sản phẩm" />
                         </div>
                         <HeadlessTippy
                             zIndex="10"
@@ -377,7 +377,7 @@ class Product extends PureComponent {
                         </div>
 
                         <div className={cx('section')}>
-                            <span className={cx('title')}>Công nghệ sử dụng - Frontend</span>
+                            <span className={cx('title')}>Công nghệ sử dụng ở Frontend</span>
                             <div className={cx('list')}>
                                 <TechnologyList
                                     draggable
@@ -395,7 +395,7 @@ class Product extends PureComponent {
                         </div>
 
                         <div className={cx('section')}>
-                            <span className={cx('title')}>Công nghệ sử dụng - Backend</span>
+                            <span className={cx('title')}>Công nghệ sử dụng ở Backend</span>
                             <div className={cx('list')}>
                                 <TechnologyList
                                     draggable

@@ -375,7 +375,10 @@ export const handleGetUserInformation = async (data) => {
 // UPDATE USER INFORMATION
 export const handleUpdateUserInformation = async (data) => {
     try {
-        const { id, avatar, name } = data;
+        const { id, avatar, fullName, dateOfBirth } = data;
+
+        const newData = { ...data };
+        delete newData.id;
 
         const user = await db.User.findOne({
             where: { id: id },
@@ -383,10 +386,10 @@ export const handleUpdateUserInformation = async (data) => {
         });
 
         if (user) {
-            if (avatar) {
-                user.avatar = avatar;
-            } else if (name) {
-                user.name = name;
+            for (let prop in newData) {
+                if (newData[prop] !== undefined) {
+                    user[prop] = newData[prop];
+                }
             }
 
             await user.save();

@@ -12,9 +12,9 @@ class ContentEditableTag extends PureComponent {
                 eventProps[event] = this.props[key];
             }
         }
-        console.log(eventProps);
+
         return (
-            <div
+            <p
                 {...eventProps}
                 className={`${className}`}
                 style={{ padding: '0.1em 0.4em' }}
@@ -26,7 +26,9 @@ class ContentEditableTag extends PureComponent {
                 tabIndex="0"
                 onMouseEnter={(e) => e.target.focus()}
                 dangerouslySetInnerHTML={{ __html: content }}
-            ></div>
+            >
+                {/* {content} */}
+            </p>
         );
     };
 }
