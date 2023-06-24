@@ -412,3 +412,75 @@ export const handleUpdateUserInformation = async (data) => {
         };
     }
 };
+
+// =================================================================
+// CRUD USER INFORMATION
+
+export const handleGetProduct = async (data) => {
+    try {
+        const { id } = data;
+
+        // let allData = await db.User.findAll({
+        //     where: { id: id },
+        //     attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        //     include: [
+        //         {
+        //             model: db.Product,
+        //             attributes: { exclude: ['createdAt', 'updatedAt'] },
+        //             include: [
+        //                 {
+        //                     model: db.Technology,
+        //                     attributes: { exclude: ['createdAt', 'updatedAt'] },
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     raw: true,
+        //     nest: true,
+        // });
+
+        let allProduct = await db.Product.findAll({
+            where: { userId: id },
+            attributes: ['id', 'name', 'desc', 'image'],
+        });
+
+        let result = allProduct.map((product) => {
+            let newProduct = { ...product };
+            const TechArr = () => {
+                return new Promise((resolve, reject) => {
+                    const result = db.Technology.findAll({
+                        where: { productId: product.id },
+                        attributes: { exclude: ['createdAt', 'updatedAt'] },
+                    });
+                    resolve(result);
+                });
+            };
+
+            TechArr().then((data) => {
+                newProduct.Technology = data;
+                return newProduct;
+            });
+            console.log('newProduct', newProduct);
+            return product;
+        });
+
+        if (result) {
+            return {
+                errorCode: 0,
+                errorMessage: `Tải dữ liệu người dùng thành công`,
+                data: result,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy thông tin người dùng`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleGetProduct() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
+        };
+    }
+};

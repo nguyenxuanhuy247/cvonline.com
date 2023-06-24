@@ -10,7 +10,7 @@ const publicRoutes = [];
 const authenticatedRoutes = [
     { path: path.SIGNIN, component: AuthLayout, Authenticated: false },
     { path: path.SIGNUP, component: AuthLayout, Authenticated: false },
-    { path: path.HOME, component: CVLayout, Authenticated: false },
+    { path: path.HOME, component: CVLayout, Authenticated: true },
 ];
 
 export { publicRoutes, authenticatedRoutes };

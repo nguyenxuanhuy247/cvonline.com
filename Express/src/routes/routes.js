@@ -1,13 +1,10 @@
 import express from 'express';
-// Middlewares
 import * as userMiddleware from '~/middleware';
-// Controllers
 import * as userController from '~/controllers';
 
 let router = express.Router();
 
 let initWebRoutes = (app) => {
-    // User API
     router.post('/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
 
@@ -18,6 +15,9 @@ let initWebRoutes = (app) => {
 
     router.get('/get-user-information', userMiddleware.checkReqGetUserInformation, userController.handleGetUserInformation);
     router.put('/put-user-information', userMiddleware.checkReqUpdateUserInformation, userController.handleUpdateUserInformation);
+
+    
+    router.get('/get-product', userController.handleGetProduct);
 
     return app.use('/', router);
 };

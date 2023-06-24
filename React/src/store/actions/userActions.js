@@ -171,7 +171,7 @@ export const readTechnology = (toastText, actionName, id, key, side, page, pageS
                 dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, res));
             }
         } catch (error) {
-            toast.error(error.response.data.errorMessage);
+            toast.error(error.response?.data?.errorMessage);
             dispatch(CRUDTechnology_Start_Success_Failure(actionFailure, error.response.data));
             console.log('An error in readTechnology() - userActions.js: ', error);
         }

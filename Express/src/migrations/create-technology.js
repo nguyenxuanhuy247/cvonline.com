@@ -30,8 +30,11 @@ module.exports = {
             link: {
                 type: Sequelize.STRING,
             },
+            userId: {
+                type: Sequelize.INTEGER,
+            },
             productId: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             createdAt: {
                 allowNull: false,

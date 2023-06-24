@@ -87,6 +87,14 @@ class PersonalLayout extends PureComponent {
     };
 
     async componentDidMount() {
+        const textarea = document.getElementById('js-languages-input');
+        console.log(textarea.value);
+        textarea?.addEventListener('change', function () {
+            console.log(123);
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
         await this.props.readUserInformation(this.props?.user?.id);
 
         // Convert Buffer Image type to Base 64 and finally Binary
@@ -96,12 +104,6 @@ class PersonalLayout extends PureComponent {
             binaryImage = Buffer.from(avatar, 'base64').toString('binary');
             this.setState({ avatar: binaryImage });
         }
-
-        const textarea = document.getElementById('js-languages-input');
-        textarea?.addEventListener('input', function () {
-            this.style.height = 'auto';
-            this.style.height = this.scrollHeight + 'px';
-        });
 
         this.languagesRef.current = this.state.languages;
     }
