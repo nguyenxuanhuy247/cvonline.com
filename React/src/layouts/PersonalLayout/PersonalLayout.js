@@ -87,15 +87,15 @@ class PersonalLayout extends PureComponent {
     };
 
     async componentDidMount() {
+        console.log('aaaaaaaaaaaaa ', this.props?.userInfo?.id);
+        await this.props.readCVLayout(this.props?.userInfo?.id);
+
         const textarea = document.getElementById('js-languages-input');
-        console.log(textarea.value);
         textarea?.addEventListener('change', function () {
             console.log(123);
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         });
-
-        await this.props.readUserInformation(this.props?.user?.id);
 
         // Convert Buffer Image type to Base 64 and finally Binary
         let binaryImage;
@@ -109,6 +109,7 @@ class PersonalLayout extends PureComponent {
     }
 
     render = () => {
+        console.log(this.props.technologyList);
         return (
             <div className={cx('body')}>
                 <Header />
@@ -275,6 +276,9 @@ class PersonalLayout extends PureComponent {
                             <div className={cx('col pc-9')}>
                                 <div className={cx('product-list')}>
                                     <Product />
+                                    {this.props.products?.map((product, index) => {
+                                        return <Product key={index} />;
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -287,12 +291,15 @@ class PersonalLayout extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user.user,
+        userInfo: state.user.user,
+        productsList: state.user.products,
+        technologyList: state.user.technologies,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        readCVLayout: (id) => dispatch(userActions.readCVLayout('CV cá nhân', 'CV_LAYOUT', id)),
         readUserInformation: (id) =>
             dispatch(userActions.readUserInformation('thông tin người dùng', 'USER_INFORMATION', id)),
         updateUserInformation: (toastText, data) =>

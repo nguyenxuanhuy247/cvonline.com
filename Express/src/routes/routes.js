@@ -13,11 +13,18 @@ let initWebRoutes = (app) => {
     router.put('/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
     router.delete('/delete-technology', userMiddleware.checkReqDeleteTechnology, userController.handleDeleteTechnology);
 
-    router.get('/get-user-information', userMiddleware.checkReqGetUserInformation, userController.handleGetUserInformation);
-    router.put('/put-user-information', userMiddleware.checkReqUpdateUserInformation, userController.handleUpdateUserInformation);
+    router.get(
+        '/get-user-information',
+        userMiddleware.checkReqGetUserInformation,
+        userController.handleGetUserInformation,
+    );
+    router.put(
+        '/put-user-information',
+        userMiddleware.checkReqUpdateUserInformation,
+        userController.handleUpdateUserInformation,
+    );
 
-    
-    router.get('/get-product', userController.handleGetProduct);
+    router.get('/get-cv-layout', userMiddleware.checkReqGetCVLayout, userController.handleGetCVLayout);
 
     return app.use('/', router);
 };

@@ -125,7 +125,7 @@ export const checkReqDeleteTechnology = (req, res, next) => {
 // =================================================================
 // CHECK CRUD USER INFORMATION
 
-// READ TECHNOLOGY
+// READ USER INFORMATION
 export const checkReqGetUserInformation = (req, res, next) => {
     const { id } = req.query;
 
@@ -139,13 +139,28 @@ export const checkReqGetUserInformation = (req, res, next) => {
     next();
 };
 
-// UPDATE TECHNOLOGY
+// UPDATE USER INFORMATION
 export const checkReqUpdateUserInformation = (req, res, next) => {
     const { id } = req.body;
     if (!id) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id để sửa thông tin người dùng',
+        });
+    }
+
+    next();
+};
+
+// =================================================================
+// CHECK READ CV LAYOUT
+export const checkReqGetCVLayout = (req, res, next) => {
+    const { id } = req.query;
+
+    if (!id) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id người dùng để tải CV Layout',
         });
     }
 

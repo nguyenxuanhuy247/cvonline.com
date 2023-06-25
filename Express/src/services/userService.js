@@ -1,5 +1,6 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
+import product from '~/models/product';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -351,6 +352,7 @@ export const handleGetUserInformation = async (data) => {
             where: { id: id },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         });
+
         if (user) {
             return {
                 errorCode: 0,
@@ -414,62 +416,80 @@ export const handleUpdateUserInformation = async (data) => {
 };
 
 // =================================================================
-// CRUD USER INFORMATION
-
-export const handleGetProduct = async (data) => {
+// READ CV LAYOUT
+export const handleGetCVLayout = async (data) => {
     try {
         const { id } = data;
 
-        // let allData = await db.User.findAll({
-        //     where: { id: id },
-        //     attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
-        //     include: [
-        //         {
-        //             model: db.Product,
-        //             attributes: { exclude: ['createdAt', 'updatedAt'] },
-        //             include: [
-        //                 {
-        //                     model: db.Technology,
-        //                     attributes: { exclude: ['createdAt', 'updatedAt'] },
-        //                 },
-        //             ],
-        //         },
-        //     ],
-        //     raw: true,
-        //     nest: true,
-        // });
-
-        let allProduct = await db.Product.findAll({
-            where: { userId: id },
-            attributes: ['id', 'name', 'desc', 'image'],
+        let user = await db.User.findOne({
+            where: { id: id },
+            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         });
 
-        let result = allProduct.map((product) => {
-            let newProduct = { ...product };
-            const TechArr = () => {
-                return new Promise((resolve, reject) => {
-                    const result = db.Technology.findAll({
-                        where: { productId: product.id },
-                        attributes: { exclude: ['createdAt', 'updatedAt'] },
-                    });
-                    resolve(result);
-                });
-            };
-
-            TechArr().then((data) => {
-                newProduct.Technology = data;
-                return newProduct;
+        if (user) {
+            let products = await db.Product.findAll({
+                where: { userId: id },
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
             });
-            console.log('newProduct', newProduct);
-            return product;
-        });
 
-        if (result) {
-            return {
-                errorCode: 0,
-                errorMessage: `Tải dữ liệu người dùng thành công`,
-                data: result,
-            };
+            if (products) {
+                let newProducts = [];
+
+                for (let index in products) {
+                    newProducts[index] = { productInfo: { ...products[index] } };
+
+                    const { count, rows } = await db.Technology.findAndCountAll({
+                        where: { userId: id, productId: products[index].id, key: 'LI', side: 'FE' },
+                        attributes: { exclude: ['createdAt', 'updatedAt'] },
+                        offset: 0,
+                        limit: 10,
+                    });
+
+                    if (rows) {
+                        const technologies = {
+                            sourceCodeList: [],
+                            FETechnologyList: [],
+                            BETechnologyList: [],
+                            libraryList: [],
+                        };
+
+                        for (let i in rows) {
+                            switch (rows[i].key) {
+                                case 'LI':
+                                    technologies.libraryList.push(rows[i]);
+                                    break;
+                                case 'SC':
+                                    technologies.sourceCodeList.push(rows[i]);
+                                    break;
+                                case 'FT':
+                                    technologies.FETechnologyList.push(rows[i]);
+                                    break;
+                                case 'BT':
+                                    technologies.BETechnologyList.push(rows[i]);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        newProducts[index].technologies = technologies;
+                    }
+                }
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Tải dữ toàn bộ dữ liệu của người dùng thành công`,
+                    data: {
+                        userInfo: user,
+                        products: newProducts,
+                    },
+                };
+            } else {
+                return {
+                    errorCode: 34,
+                    errorMessage: `Không tìm thấy công nghệ của sản phẩm`,
+                };
+            }
         } else {
             return {
                 errorCode: 32,
@@ -477,7 +497,7 @@ export const handleGetProduct = async (data) => {
             };
         }
     } catch (error) {
-        console.log('An error in handleGetProduct() in userService.js : ', error);
+        console.log('An error in handleGetCVLayout() in userService.js : ', error);
         return {
             errorCode: 31,
             errorMessage: `Không kết nối được với Database`,

@@ -7,18 +7,21 @@ const actionMaker = (text_1, text_2) => {
 };
 
 const actionNames = Object.freeze({
-    // User - Sign In
+    // USER SIGN IN
     USER_SIGNUP_START: 'USER_SIGNUP_START',
     USER_SIGNUP_SUCCESS: 'USER_SIGNUP_SUCCESS',
     USER_SIGNUP_FAIL: 'USER_SIGNUP_FAIL',
 
-    //user - Sign Up
+    // USER SIGN UP
     USER_SIGNIN_START: 'USER_SIGNIN_START',
     USER_SIGNIN_SUCCESS: 'USER_SIGNIN_SUCCESS',
     USER_SIGNIN_FAIL: 'USER_SIGNIN_FAIL',
 
-    //user - Sign Out
+    // USER SIGN OUT
     USER_SIGNOUT: 'USER_SIGNOUT',
+
+    // USER INFORMATION
+    ...actionMaker(`READ`, `CV_LAYOUT`),
 
     // USER INFORMATION
     ...actionMaker(`CREATE`, `USER_INFORMATION`),

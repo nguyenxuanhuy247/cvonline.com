@@ -128,16 +128,15 @@ export const handleUpdateUserInformation = async (req, res) => {
 // CRUD PRODUCT
 
 // READ PRODUCT
-export const handleGetProduct = async (req, res) => {
+export const handleGetCVLayout = async (req, res) => {
     const data = req.query;
 
-    const message = await userService.handleGetProduct(data);
-
+    const message = await userService.handleGetCVLayout(data);
     if (message.errorCode === 0) {
         return res.status(200).json(message);
     } else if (message.errorCode === 31) {
         res.status(503).json(message);
-    } else if (message.errorCode === 32) {
+    } else if (message.errorCode === 32 || message.errorCode === 33 || message.errorCode === 34) {
         res.status(404).json(message);
     }
 };

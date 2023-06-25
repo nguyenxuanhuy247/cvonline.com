@@ -47,3 +47,10 @@ export const readUserInformation = (id) => {
 export const updateUserInformation = (data) => {
     return axios.put('/put-user-information', data);
 };
+
+// =============================================================================
+// READ CV LAYOUT
+
+export const readCVLayout = (id) => {
+    return axios.get(`/get-cv-layout?id=${id}`);
+};
