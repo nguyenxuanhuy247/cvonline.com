@@ -5,11 +5,11 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import Pagination from '@mui/material/Pagination';
 import { HiOutlineSearch } from 'react-icons/hi';
 import _ from 'lodash';
+import { Buffer } from 'buffer';
 
 import styles from './Product.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
-import { JpgImages } from '~/components/Image/Images.js';
 import TechnologyList from './TechnologyList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
@@ -21,14 +21,15 @@ class Product extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isFE: true,
             isPagination: true,
-            selectedPage: 1,
-            itemsPerPage: 10,
+            FEpage: 1,
+            FEpageSize: 10,
+            BEpage: 1,
+            BEpageSize: 10,
 
             isModalOpen: false,
             uploadImageUrl: '',
-            imageUrl: '',
+            image: '',
             sortBy: '',
 
             isSearch: false,
@@ -45,7 +46,7 @@ class Product extends PureComponent {
     };
 
     getImageUrlFromChangeImageModal = (url) => {
-        this.setState({ imageUrl: url });
+        this.setState({ image: url });
     };
 
     FEorBESide = () => {
@@ -53,40 +54,13 @@ class Product extends PureComponent {
         return side;
     };
 
-    handleShowLibraryList = (e) => {
-        const isActive = e.currentTarget.classList.contains(cx('active'));
-        const isFE = e.currentTarget.id === 'js-frontend-button';
-
-        if (!isActive) {
-            const btn = document.querySelector(`.${cx('active')}`);
-            if (btn) {
-                btn.classList.remove(cx('active'));
-                e.target.classList.add(cx('active'));
-
-                if (this.state.isPagination) {
-                    this.setState({ isFE: isFE, selectedPage: 1 }, () =>
-                        this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage),
-                    );
-                } else {
-                    this.setState({ isFE: isFE, selectedPage: 1 }, () => this.props.readLibrary(this.FEorBESide()));
-                }
-            }
-        }
-
-        const inputSearchLibrary = document.getElementById(`js-input-search-library`);
-        if (inputSearchLibrary) {
-            inputSearchLibrary.value = '';
-            this.setState({ isSearch: false });
-        }
-    };
-
     handleChangePage = (event, value) => {
         this.setState({ selectedPage: value });
         this.props.readLibrary(this.FEorBESide(), value, this.state.itemsPerPage);
     };
 
-    handleShowAllLibraryList = () => {
-        const showAllButton = document.getElementById('js-show-all-button');
+    handleShowAllLibraryList = (side) => {
+        const showAllButton = document.getElementById(`js-show-all-button-${side}`);
         if (!showAllButton.classList.contains(`${cx('active')}`)) {
             this.props.readLibrary(this.FEorBESide());
             this.setState({ isPagination: false });
@@ -280,20 +254,29 @@ class Product extends PureComponent {
         this.props.readBETechnology('ALL');
         this.props.readSourceCode('ALL');
         this.props.readFETechnology('ALL');
+
+        // if (this.props.productData) {
+        //     const productInfo = this.props.productData?.productInfo;
+
+        //     const binaryImage = Buffer.from(productInfo.image, 'base64').toString('binary');
+        //     this.setState({ name: productInfo.name, desc: productInfo.desc, image: binaryImage });
+        // }
+
+        // const technologies = this.props.productData?.technologies;
+        // console.log('PRODUCT DATA:', this.props.productData?.productInfo, this.props.productData?.technologies);
     }
 
     componentDidUpdate() {
         // If page's quantity is more than 1, libray list's height of page 2, 3, 4,... will be equal to page 1
-        const libraryList = document.getElementById('js-library-list');
-
-        if (libraryList) {
-            if (this.props.pageQuantityLibrary > 1) {
-                const height = libraryList.childNodes[0].offsetHeight * this.state.itemsPerPage;
-                libraryList.style.minHeight = `${height}px`;
-            } else {
-                libraryList.style.minHeight = `initial`;
-            }
-        }
+        // const libraryList = document.getElementById('js-library-list');
+        // if (libraryList) {
+        //     if (this.props.pageQuantityLibrary > 1) {
+        //         const height = libraryList.childNodes[0].offsetHeight * this.state.itemsPerPage;
+        //         libraryList.style.minHeight = `${height}px`;
+        //     } else {
+        //         libraryList.style.minHeight = `initial`;
+        //     }
+        // }
     }
 
     render() {
@@ -305,7 +288,8 @@ class Product extends PureComponent {
             sortBy: this.state.sortBy,
         };
 
-        const copyLibraryList = this.props.libraryList;
+        const copyLibraryList = this.props?.technologies?.libraryList;
+
         const sortedDataLibraryList = this.state.sortBy
             ? _.orderBy(
                   [...copyLibraryList],
@@ -324,10 +308,21 @@ class Product extends PureComponent {
                     <div className={cx('col pc-12')}>
                         <div className={cx('product-desc')} spellCheck="false">
                             <div className={cx('work-exp')}>
-                                <ContentEditableTag className={cx('exp')} placeholder="Tên sản phẩm" />
+                                <ContentEditableTag
+                                    content={this.state.name}
+                                    className={cx('exp')}
+                                    placeholder="Tên sản phẩm"
+                                />
                             </div>
-                            <ContentEditableTag className={cx('desc')} placeholder="Mô tả sản phẩm" />
+                            <ContentEditableTag
+                                content={this.state.desc}
+                                className={cx('desc')}
+                                placeholder="Mô tả sản phẩm"
+                            />
                         </div>
+                    </div>
+
+                    <div className={cx('col pc-9')}>
                         <HeadlessTippy
                             zIndex="10"
                             placement="bottom"
@@ -342,11 +337,7 @@ class Product extends PureComponent {
                                 </div>
                             )}
                         >
-                            <Image
-                                src={this.state.imageUrl || JpgImages.avatar}
-                                className={cx('image')}
-                                alt="Ảnh sản phẩm"
-                            />
+                            <Image src={this.state.image} className={cx('image')} alt="Ảnh sản phẩm" />
                         </HeadlessTippy>
 
                         {this.state.isModalOpen && (
@@ -357,9 +348,8 @@ class Product extends PureComponent {
                             />
                         )}
                     </div>
-                    <div className={cx('col pc-7')}>
-                        <div className={cx('section')}>
-                            <span className={cx('title')}>Source code</span>
+                    <div className={cx('col pc-3')}>
+                        <div className={cx('source-code-section')}>
                             <div className={cx('list')}>
                                 <TechnologyList
                                     draggable
@@ -369,127 +359,157 @@ class Product extends PureComponent {
                                     technologylist={this.props.sourceCodeList}
                                     isloading={this.props.isSourceCodeLoading}
                                     readtechnology={() => this.props.readSourceCode('ALL')}
-                                    createtechnology={this.props.createSourceCode}
+                                    createtechnology={this.props?.technologies?.sourceCodeList}
                                     updatetechnology={this.props.updateSourceCode}
                                     deletetechnology={this.props.deleteSourceCode}
                                 />
                             </div>
                         </div>
-
-                        <div className={cx('section')}>
-                            <span className={cx('title')}>Công nghệ sử dụng ở Frontend</span>
-                            <div className={cx('list')}>
-                                <TechnologyList
-                                    draggable
-                                    technology="công nghệ sử dụng"
-                                    type="FRONTEND_TECHNOLOGY"
-                                    keyprop="FT"
-                                    technologylist={this.props.FETechnologies}
-                                    isloading={this.props.isFETechnologyLoading}
-                                    readtechnology={() => this.props.readFETechnology('ALL')}
-                                    createtechnology={this.props.createFETechnology}
-                                    updatetechnology={this.props.updateFETechnology}
-                                    deletetechnology={this.props.deleteFETechnology}
-                                />
-                            </div>
-                        </div>
-
-                        <div className={cx('section')}>
-                            <span className={cx('title')}>Công nghệ sử dụng ở Backend</span>
-                            <div className={cx('list')}>
-                                <TechnologyList
-                                    draggable
-                                    technology="công nghệ sử dụng"
-                                    type="BACKEND_TECHNOLOGY"
-                                    keyprop="BT"
-                                    technologylist={this.props.BETechnologies}
-                                    isloading={this.props.isBETechnologyLoading}
-                                    readtechnology={() => this.props.readBETechnology('ALL')}
-                                    createtechnology={this.props.createBETechnology}
-                                    updatetechnology={this.props.updateBETechnology}
-                                    deletetechnology={this.props.deleteBETechnology}
-                                />
-                            </div>
-                        </div>
                     </div>
-                    <div className={cx('col pc-5')}>
-                        <div className={cx('library-used')}>
-                            <div className={cx('library-filter-sort')}>
-                                <div className={cx('library-filter')}>
-                                    <span className={cx('library-filter-icon')}>
-                                        <HiOutlineSearch />
-                                    </span>
-                                    <input
-                                        autoComplete="off"
-                                        id="js-input-search-library"
-                                        type="text"
-                                        className={cx('library-filter-search')}
-                                        spellCheck="false"
-                                        onInput={this.handleSearchLibrary}
+                </div>
+
+                <div className={cx('col pc-12')}>
+                    <div className={cx('technology')}>
+                        <div className={cx('server', 'front-end')}>
+                            <span className={cx('server-side-title')}>FRONT-END</span>
+                            <div className={cx('technology-used')}>
+                                <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                <div className={cx('list')}>
+                                    <TechnologyList
+                                        draggable
+                                        technology="công nghệ sử dụng"
+                                        type="FRONTEND_TECHNOLOGY"
+                                        keyprop="FT"
+                                        technologylist={this.props?.technologies?.FETechnologyList}
+                                        isloading={this.props.isFETechnologyLoading}
+                                        readtechnology={() => this.props.readFETechnology('ALL')}
+                                        createtechnology={this.props.createFETechnology}
+                                        updatetechnology={this.props.updateFETechnology}
+                                        deletetechnology={this.props.deleteFETechnology}
                                     />
                                 </div>
-                                <div className={cx('library-sort')}>
-                                    <span className={cx('library-sort-heading')}>Sắp xếp </span>
-                                    <select
-                                        className={cx('library-sort-select')}
-                                        onChange={(e) => this.handleSortLibraryName(e)}
-                                    >
-                                        <option value="NO">---</option>
-                                        <option value="AZ">A - Z</option>
-                                        <option value="ZA">Z - A</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <p className={cx('library-heading')}>Danh sách thư viện sử dụng</p>
-                            <div className={cx('divide')}>
-                                <Button
-                                    id="js-frontend-button"
-                                    className={cx('library-select-button', 'active')}
-                                    onClick={(e) => this.handleShowLibraryList(e)}
-                                >
-                                    Front-end
-                                </Button>
-                                <Button
-                                    id="js-backend-button"
-                                    className={cx('library-select-button')}
-                                    onClick={(e) => this.handleShowLibraryList(e)}
-                                >
-                                    Back-end
-                                </Button>
                             </div>
 
-                            {!this.state.isSearch ? (
-                                <div>
-                                    <div className={cx('display')}>
-                                        <Button
-                                            className={cx('button')}
-                                            id="js-show-all-button"
-                                            onClick={this.handleShowAllLibraryList}
-                                        >
-                                            Hiển thị tất cả
-                                        </Button>
-                                        <Button
-                                            className={cx('button', 'pag-button', 'active')}
-                                            id="js-pagination-button"
-                                            onClick={this.hanldeShowPagination}
-                                        >
-                                            <label className={cx('label')}>Phân trang</label>
-                                            <select
-                                                className={cx('select')}
-                                                id="js-pagination-select"
-                                                onChange={(e) => this.handleChangeItemsPerPage(e)}
-                                            >
-                                                <option value="10">10</option>
-                                                <option value="20">20</option>
-                                                <option value="30">30</option>
-                                                <option value="40">40</option>
-                                                <option value="50">50</option>
-                                            </select>
-                                        </Button>
+                            <div className={cx('library-used')}>
+                                <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
+                                <div className={cx('library-filter-sort')}>
+                                    <div className={cx('library-filter')}>
+                                        <span className={cx('library-filter-icon')}>
+                                            <HiOutlineSearch />
+                                        </span>
+                                        <input
+                                            autoComplete="off"
+                                            id="js-input-search-library"
+                                            type="text"
+                                            className={cx('library-filter-search')}
+                                            spellCheck="false"
+                                            onInput={this.handleSearchLibrary}
+                                        />
                                     </div>
+                                    <div className={cx('library-sort')}>
+                                        <span className={cx('library-sort-heading')}>Sắp xếp </span>
+                                        <select
+                                            className={cx('library-sort-select')}
+                                            onChange={(e) => this.handleSortLibraryName(e)}
+                                        >
+                                            <option value="NO">---</option>
+                                            <option value="AZ">A - Z</option>
+                                            <option value="ZA">Z - A</option>
+                                        </select>
+                                    </div>
+                                </div>
 
+                                {!this.state.isSearch ? (
+                                    <div>
+                                        <div className={cx('display')}>
+                                            <Button
+                                                className={cx('button')}
+                                                id="js-show-all-button"
+                                                onClick={this.handleShowAllLibraryList}
+                                            >
+                                                Hiển thị tất cả
+                                            </Button>
+                                            <Button
+                                                className={cx('button', 'pag-button', 'active')}
+                                                id="js-pagination-button"
+                                                onClick={this.hanldeShowPagination}
+                                            >
+                                                <label className={cx('label')}>Phân trang</label>
+                                                <select
+                                                    className={cx('select')}
+                                                    id="js-pagination-select"
+                                                    onChange={(e) => this.handleChangeItemsPerPage(e)}
+                                                >
+                                                    <option value="10">10</option>
+                                                    <option value="20">20</option>
+                                                    <option value="30">30</option>
+                                                    <option value="40">40</option>
+                                                    <option value="50">50</option>
+                                                </select>
+                                            </Button>
+                                        </div>
+
+                                        <TechnologyList
+                                            id="js-library-list"
+                                            draggable
+                                            technology="thư viện"
+                                            type="LIBRARY"
+                                            keyprop="LI"
+                                            isloading={this.props.isLibraryLoading}
+                                            technologylist={sortedDataLibraryList}
+                                            readtechnology={this.props.readLibrary}
+                                            createtechnology={this.handleCreateLibrary}
+                                            updatetechnology={this.handleUpdateLibrary}
+                                            deletetechnology={this.handleDeleteLibrary}
+                                            sortupdatetechnology={this.props.updateLibrary}
+                                            dataforsort={dataForReadLibraryAfterSorting}
+                                        />
+
+                                        {this.state.isPagination && (
+                                            <div
+                                                style={{
+                                                    margin: '12px 0 12px',
+                                                    display: 'grid',
+                                                    placeItems: 'center',
+                                                }}
+                                            >
+                                                <Pagination
+                                                    count={this.props.pageQuantityLibrary}
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    siblingCount={1}
+                                                    boundaryCount={1}
+                                                    page={this.state.selectedPage}
+                                                    sx={{
+                                                        '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
+                                                            color: 'var(--primary-color)',
+                                                            fontSize: '12px',
+                                                            borderColor: 'var(--green-color-02)',
+                                                        },
+                                                        '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover':
+                                                            {
+                                                                backgroundColor: 'var(--button-bgc-green-02)',
+                                                            },
+
+                                                        '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
+                                                            {
+                                                                color: '#fff',
+                                                                backgroundColor: 'var(--button-bgc-green-01)',
+                                                            },
+
+                                                        '& .Mui-selected:hover': {
+                                                            backgroundColor: 'var(--button-bgc-green-01) !important',
+                                                        },
+                                                    }}
+                                                    onChange={this.handleChangePage}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
                                     <TechnologyList
-                                        id="js-library-list"
+                                        issearch
+                                        id="js-search-library-list"
                                         draggable
                                         technology="thư viện"
                                         type="LIBRARY"
@@ -500,69 +520,215 @@ class Product extends PureComponent {
                                         createtechnology={this.handleCreateLibrary}
                                         updatetechnology={this.handleUpdateLibrary}
                                         deletetechnology={this.handleDeleteLibrary}
+                                        searchLibrary={this.handleSearchLibrary}
                                         sortupdatetechnology={this.props.updateLibrary}
                                         dataforsort={dataForReadLibraryAfterSorting}
                                     />
-
-                                    {this.state.isPagination && (
-                                        <div
-                                            style={{
-                                                margin: '12px 0 12px',
-                                                display: 'grid',
-                                                placeItems: 'center',
-                                            }}
+                                )}
+                            </div>
+                        </div>
+                        <div className={cx('separate')}></div>
+                        <div className={cx('server', 'back-end')}>
+                            <span className={cx('server-side-title')}>BACK-END</span>
+                            <div className={cx('technology-used')}>
+                                <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                <div className={cx('list')}>
+                                    <TechnologyList
+                                        draggable
+                                        technology="công nghệ sử dụng"
+                                        type="FRONTEND_TECHNOLOGY"
+                                        keyprop="FT"
+                                        technologylist={this.props?.technologies?.FETechnologyList}
+                                        isloading={this.props.isFETechnologyLoading}
+                                        readtechnology={() => this.props.readFETechnology('ALL')}
+                                        createtechnology={this.props.createFETechnology}
+                                        updatetechnology={this.props.updateFETechnology}
+                                        deletetechnology={this.props.deleteFETechnology}
+                                    />
+                                </div>
+                            </div>
+                            <div className={cx('library-used')}>
+                                <span className={cx('title')}>Back-end</span>
+                                <div className={cx('library-filter-sort')}>
+                                    <div className={cx('library-filter')}>
+                                        <span className={cx('library-filter-icon')}>
+                                            <HiOutlineSearch />
+                                        </span>
+                                        <input
+                                            autoComplete="off"
+                                            id="js-input-search-library"
+                                            type="text"
+                                            className={cx('library-filter-search')}
+                                            spellCheck="false"
+                                            onInput={this.handleSearchLibrary}
+                                        />
+                                    </div>
+                                    <div className={cx('library-sort')}>
+                                        <span className={cx('library-sort-heading')}>Sắp xếp </span>
+                                        <select
+                                            className={cx('library-sort-select')}
+                                            onChange={(e) => this.handleSortLibraryName(e)}
                                         >
-                                            <Pagination
-                                                count={this.props.pageQuantityLibrary}
-                                                variant="outlined"
-                                                size="medium"
-                                                siblingCount={1}
-                                                boundaryCount={1}
-                                                page={this.state.selectedPage}
-                                                sx={{
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                                        color: 'var(--primary-color)',
-                                                        fontSize: '12px',
-                                                        borderColor: 'var(--green-color-02)',
-                                                    },
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                                        backgroundColor: 'var(--button-bgc-green-02)',
-                                                    },
+                                            <option value="NO">---</option>
+                                            <option value="AZ">A - Z</option>
+                                            <option value="ZA">Z - A</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
-                                                        {
-                                                            color: '#fff',
-                                                            backgroundColor: 'var(--button-bgc-green-01)',
-                                                        },
+                                {!this.state.isSearch ? (
+                                    <div>
+                                        <div className={cx('display')}>
+                                            <Button
+                                                className={cx('button')}
+                                                id="js-show-all-button"
+                                                onClick={this.handleShowAllLibraryList}
+                                            >
+                                                Hiển thị tất cả
+                                            </Button>
+                                            <Button
+                                                className={cx('button', 'pag-button', 'active')}
+                                                id="js-pagination-button"
+                                                onClick={this.hanldeShowPagination}
+                                            >
+                                                <label className={cx('label')}>Phân trang</label>
+                                                <select
+                                                    className={cx('select')}
+                                                    id="js-pagination-select"
+                                                    onChange={(e) => this.handleChangeItemsPerPage(e)}
+                                                >
+                                                    <option value="10">10</option>
+                                                    <option value="20">20</option>
+                                                    <option value="30">30</option>
+                                                    <option value="40">40</option>
+                                                    <option value="50">50</option>
+                                                </select>
+                                            </Button>
+                                        </div>
 
-                                                    '& .Mui-selected:hover': {
-                                                        backgroundColor: 'var(--button-bgc-green-01) !important',
-                                                    },
+                                        <TechnologyList
+                                            id="js-library-list"
+                                            draggable
+                                            technology="thư viện"
+                                            type="LIBRARY"
+                                            keyprop="LI"
+                                            isloading={this.props.isLibraryLoading}
+                                            technologylist={sortedDataLibraryList}
+                                            readtechnology={this.props.readLibrary}
+                                            createtechnology={this.handleCreateLibrary}
+                                            updatetechnology={this.handleUpdateLibrary}
+                                            deletetechnology={this.handleDeleteLibrary}
+                                            sortupdatetechnology={this.props.updateLibrary}
+                                            dataforsort={dataForReadLibraryAfterSorting}
+                                        />
+
+                                        {this.state.isPagination && (
+                                            <div
+                                                style={{
+                                                    margin: '12px 0 12px',
+                                                    display: 'grid',
+                                                    placeItems: 'center',
                                                 }}
-                                                onChange={this.handleChangePage}
+                                            >
+                                                <Pagination
+                                                    count={this.props.pageQuantityLibrary}
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    siblingCount={1}
+                                                    boundaryCount={1}
+                                                    page={this.state.selectedPage}
+                                                    sx={{
+                                                        '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
+                                                            color: 'var(--primary-color)',
+                                                            fontSize: '12px',
+                                                            borderColor: 'var(--green-color-02)',
+                                                        },
+                                                        '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover':
+                                                            {
+                                                                backgroundColor: 'var(--button-bgc-green-02)',
+                                                            },
+
+                                                        '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
+                                                            {
+                                                                color: '#fff',
+                                                                backgroundColor: 'var(--button-bgc-green-01)',
+                                                            },
+
+                                                        '& .Mui-selected:hover': {
+                                                            backgroundColor: 'var(--button-bgc-green-01) !important',
+                                                        },
+                                                    }}
+                                                    onChange={this.handleChangePage}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <TechnologyList
+                                        issearch
+                                        id="js-search-library-list"
+                                        draggable
+                                        technology="thư viện"
+                                        type="LIBRARY"
+                                        keyprop="LI"
+                                        isloading={this.props.isLibraryLoading}
+                                        technologylist={sortedDataLibraryList}
+                                        readtechnology={this.props.readLibrary}
+                                        createtechnology={this.handleCreateLibrary}
+                                        updatetechnology={this.handleUpdateLibrary}
+                                        deletetechnology={this.handleDeleteLibrary}
+                                        searchLibrary={this.handleSearchLibrary}
+                                        sortupdatetechnology={this.props.updateLibrary}
+                                        dataforsort={dataForReadLibraryAfterSorting}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={cx('col pc-12')}>
+                    <div className={cx('technology-section')}>
+                        <span className={cx('technology-section-subject')}>CÔNG NGHỆ SỬ DỤNG</span>
+                        <div className={cx('row no-gutters')}>
+                            <div className={cx('col pc-6')}>
+                                <div className={cx('technology-wrapper', 'left')}></div>
+                            </div>
+                            <div className={cx('col pc-6')}>
+                                <div className={cx('technology-wrapper', 'right')}>
+                                    <div className={cx('technology-used')}>
+                                        <span className={cx('title')}>Back-end</span>
+                                        <div className={cx('list')}>
+                                            <TechnologyList
+                                                draggable
+                                                technology="công nghệ sử dụng"
+                                                type="FRONTEND_TECHNOLOGY"
+                                                keyprop="FT"
+                                                technologylist={this.props?.technologies?.FETechnologyList}
+                                                isloading={this.props.isFETechnologyLoading}
+                                                readtechnology={() => this.props.readFETechnology('ALL')}
+                                                createtechnology={this.props.createFETechnology}
+                                                updatetechnology={this.props.updateFETechnology}
+                                                deletetechnology={this.props.deleteFETechnology}
                                             />
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
-                            ) : (
-                                <TechnologyList
-                                    issearch
-                                    id="js-search-library-list"
-                                    draggable
-                                    technology="thư viện"
-                                    type="LIBRARY"
-                                    keyprop="LI"
-                                    isloading={this.props.isLibraryLoading}
-                                    technologylist={sortedDataLibraryList}
-                                    readtechnology={this.props.readLibrary}
-                                    createtechnology={this.handleCreateLibrary}
-                                    updatetechnology={this.handleUpdateLibrary}
-                                    deletetechnology={this.handleDeleteLibrary}
-                                    searchLibrary={this.handleSearchLibrary}
-                                    sortupdatetechnology={this.props.updateLibrary}
-                                    dataforsort={dataForReadLibraryAfterSorting}
-                                />
-                            )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={cx('col pc-12')}>
+                    <div className={cx('technology-section')}>
+                        <span className={cx('technology-section-subject')}>THƯ VIỆN SỬ DỤNG</span>
+                        <div className={cx('row no-gutters')}>
+                            <div className={cx('col pc-6')}>
+                                <div className={cx('technology-wrapper', 'left')}></div>
+                            </div>
+                            <div className={cx('col pc-6')}>
+                                <div className={cx('technology-wrapper', 'right')}></div>
+                            </div>
                         </div>
                     </div>
                 </div>

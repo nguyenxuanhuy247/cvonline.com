@@ -125,13 +125,13 @@ export const handleUpdateUserInformation = async (req, res) => {
 };
 
 // =================================================================
-// CRUD PRODUCT
+// CRUD PRODUCT LIST
 
-// READ PRODUCT
-export const handleGetCVLayout = async (req, res) => {
+// READ PRODUCT LIST
+export const handleGetProductList = async (req, res) => {
     const data = req.query;
 
-    const message = await userService.handleGetCVLayout(data);
+    const message = await userService.handleGetProductList(data);
     if (message.errorCode === 0) {
         return res.status(200).json(message);
     } else if (message.errorCode === 31) {

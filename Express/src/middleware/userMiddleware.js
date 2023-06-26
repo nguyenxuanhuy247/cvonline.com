@@ -154,7 +154,7 @@ export const checkReqUpdateUserInformation = (req, res, next) => {
 
 // =================================================================
 // CHECK READ CV LAYOUT
-export const checkReqGetCVLayout = (req, res, next) => {
+export const checkReqGetProductList = (req, res, next) => {
     const { id } = req.query;
 
     if (!id) {

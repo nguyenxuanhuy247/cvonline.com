@@ -4,8 +4,9 @@ const initialState = {
     isLoading: {
         signin: false,
         signup: false,
-        cvlayout: false,
         user: false,
+        productList: false,
+
         library: false,
         sourcecode: false,
         BETechnology: false,
@@ -14,7 +15,7 @@ const initialState = {
     isSignUp: false,
     isSignIn: false,
     user: null,
-    products: [],
+    productList: [],
 
     libraries: [],
     pageQuantityLibrary: 0,
@@ -72,23 +73,22 @@ const userReducer = (state = initialState, action) => {
                 isSignUp: false,
             };
         // =================================================================
-        // READ CV LAYOUT
-        case actionNames.READ_CV_LAYOUT_START:
+        // READ PRODUCT LIST
+        case actionNames.READ_PRODUCT_LIST_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, cvlayout: true },
+                isLoading: { ...state.isLoading, productList: true },
             };
-        case actionNames.READ_CV_LAYOUT_SUCCESS:
+        case actionNames.READ_PRODUCT_LIST_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, cvlayout: false },
-                user: action.payload.userInfo,
-                products: action.payload.products,
+                isLoading: { ...state.isLoading, productList: false },
+                productList: action.payload,
             };
-        case actionNames.READ_CV_LAYOUT_FAILURE:
+        case actionNames.READ_PRODUCT_LIST_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, cvlayout: false },
+                isLoading: { ...state.isLoading, productList: false },
             };
 
         // =================================================================

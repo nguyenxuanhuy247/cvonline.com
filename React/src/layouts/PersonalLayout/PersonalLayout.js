@@ -37,6 +37,8 @@ class PersonalLayout extends PureComponent {
             email: this.props?.user?.email || '',
             address: this.props?.user?.address || '',
             languages: this.props?.user?.languages || '',
+            // Product Data sent to DB
+            productDataSentToBD: [],
         };
         this.languagesRef = React.createRef();
     }
@@ -65,6 +67,9 @@ class PersonalLayout extends PureComponent {
         }
 
         if (value !== this.state[name]) {
+            // Fix Bug
+            console.log('value', value);
+            console.log('this.state[name]', this.state[name] ? 'Undefined' : 'Không có gì');
             const data = { id: this.props?.user?.id, [name]: value };
             await this.props.updateUserInformation(toastText, data);
             await this.setState({ [name]: value });
@@ -87,9 +92,26 @@ class PersonalLayout extends PureComponent {
     };
 
     async componentDidMount() {
-        console.log('aaaaaaaaaaaaa ', this.props?.userInfo?.id);
-        await this.props.readCVLayout(this.props?.userInfo?.id);
+        await this.props.readUserInformation(this.props?.user?.id);
+        await this.props.readProductList(this.props?.user?.id);
 
+        const productDataSentToBD = this.props.productList.map((product) => {
+            return {
+                productId: product.productInfo.id,
+                FE: {
+                    page: 1,
+                    pageSize: 10,
+                },
+                BE: {
+                    page: 1,
+                    pageSize: 10,
+                },
+            };
+        });
+
+        this.setState({ productDataSentToBD });
+
+        // Fix bug
         const textarea = document.getElementById('js-languages-input');
         textarea?.addEventListener('change', function () {
             console.log(123);
@@ -109,7 +131,7 @@ class PersonalLayout extends PureComponent {
     }
 
     render = () => {
-        console.log(this.props.technologyList);
+        console.log('this.props.productList ', this.state.productDataSentToBD);
         return (
             <div className={cx('body')}>
                 <Header />
@@ -276,8 +298,8 @@ class PersonalLayout extends PureComponent {
                             <div className={cx('col pc-9')}>
                                 <div className={cx('product-list')}>
                                     <Product />
-                                    {this.props.products?.map((product, index) => {
-                                        return <Product key={index} />;
+                                    {this.props.productList?.map((product, index) => {
+                                        return <Product key={index} productData={product} />;
                                     })}
                                 </div>
                             </div>
@@ -291,19 +313,23 @@ class PersonalLayout extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        userInfo: state.user.user,
-        productsList: state.user.products,
-        technologyList: state.user.technologies,
+        user: state.user.user,
+        productList: state.user.productList,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        readCVLayout: (id) => dispatch(userActions.readCVLayout('CV cá nhân', 'CV_LAYOUT', id)),
+        // CRUD user information
         readUserInformation: (id) =>
             dispatch(userActions.readUserInformation('thông tin người dùng', 'USER_INFORMATION', id)),
         updateUserInformation: (toastText, data) =>
             dispatch(userActions.updateUserInformation(toastText, 'USER_INFORMATION', data, true)),
+
+        // CRUD product list
+        readProductList: (id) => dispatch(userActions.readProductList('danh sách sản phẩm', 'PRODUCT_LIST', id)),
+        updateProductList: (userId, productId) =>
+            dispatch(userActions.readProductList('danh sách sản phẩm', 'PRODUCT_LIST', userId)),
     };
 };
 

@@ -416,10 +416,12 @@ export const handleUpdateUserInformation = async (data) => {
 };
 
 // =================================================================
-// READ CV LAYOUT
-export const handleGetCVLayout = async (data) => {
+// CRUD PRODUCT LIST
+
+// READ PRODUCT LIST
+export const handleGetProductList = async (data) => {
     try {
-        const { id } = data;
+        const { id, page, page_size } = data;
 
         let user = await db.User.findOne({
             where: { id: id },
@@ -436,53 +438,47 @@ export const handleGetCVLayout = async (data) => {
                 let newProducts = [];
 
                 for (let index in products) {
+                    const productIDinDB = products[index].id;
+                    console.log('productIDinDB', productIDinDB);
                     newProducts[index] = { productInfo: { ...products[index] } };
 
+                    const sourceCodeList = await db.Technology.findAll({
+                        where: { key: 'SC', userId: id, productId: productIDinDB },
+                        attributes: ['id', 'image', 'name', 'link'],
+                    });
+
+                    const FETechnologyList = await db.Technology.findAll({
+                        where: { key: 'FT', userId: id, productId: productIDinDB },
+                        attributes: ['id', 'image', 'name', 'link'],
+                    });
+
+                    const BETechnologyList = await db.Technology.findAll({
+                        where: { key: 'BT', userId: id, productId: productIDinDB },
+                        attributes: ['id', 'image', 'name', 'link'],
+                    });
+
                     const { count, rows } = await db.Technology.findAndCountAll({
-                        where: { userId: id, productId: products[index].id, key: 'LI', side: 'FE' },
-                        attributes: { exclude: ['createdAt', 'updatedAt'] },
+                        where: { userId: id, productId: productIDinDB, key: 'LI', side: 'FE' },
+                        attributes: ['id', 'image', 'name', 'version', 'link'],
                         offset: 0,
                         limit: 10,
                     });
 
-                    if (rows) {
-                        const technologies = {
-                            sourceCodeList: [],
-                            FETechnologyList: [],
-                            BETechnologyList: [],
-                            libraryList: [],
-                        };
+                    const technologies = {
+                        sourceCodeList,
+                        FETechnologyList,
+                        BETechnologyList,
+                        libraryList: rows,
+                        totalPages: count,
+                    };
 
-                        for (let i in rows) {
-                            switch (rows[i].key) {
-                                case 'LI':
-                                    technologies.libraryList.push(rows[i]);
-                                    break;
-                                case 'SC':
-                                    technologies.sourceCodeList.push(rows[i]);
-                                    break;
-                                case 'FT':
-                                    technologies.FETechnologyList.push(rows[i]);
-                                    break;
-                                case 'BT':
-                                    technologies.BETechnologyList.push(rows[i]);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-
-                        newProducts[index].technologies = technologies;
-                    }
+                    newProducts[index].technologies = technologies;
                 }
 
                 return {
                     errorCode: 0,
                     errorMessage: `Tải dữ toàn bộ dữ liệu của người dùng thành công`,
-                    data: {
-                        userInfo: user,
-                        products: newProducts,
-                    },
+                    data: newProducts,
                 };
             } else {
                 return {
@@ -497,7 +493,7 @@ export const handleGetCVLayout = async (data) => {
             };
         }
     } catch (error) {
-        console.log('An error in handleGetCVLayout() in userService.js : ', error);
+        console.log('An error in handleGetProductList() in userService.js : ', error);
         return {
             errorCode: 31,
             errorMessage: `Không kết nối được với Database`,

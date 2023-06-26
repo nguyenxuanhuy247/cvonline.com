@@ -199,7 +199,7 @@ class TechnologyList extends PureComponent {
             version: state.version?.trim(),
             link: state.link,
         };
-        
+
         const { errorCode } = await this.props.createtechnology(data);
 
         if (errorCode === 0) {
@@ -261,7 +261,14 @@ class TechnologyList extends PureComponent {
 
         return (
             <div style={{ position: 'relative', width: '100%' }}>
-                <div id={id} className={cx('technology-list', { 'non-library-list': type !== 'LIBRARY' })}>
+                <div
+                    id={id}
+                    className={cx('technology-list-container', {
+                        'sourcecode-list': type === 'SOURCECODE',
+                        'technology-list': type === 'FRONTEND_TECHNOLOGY' || type === 'BACKEND_TECHNOLOGY',
+                        'library-list': type === 'LIBRARY',
+                    })}
+                >
                     {technologylist &&
                         technologyListArray?.map((library) => {
                             return (
@@ -296,52 +303,70 @@ class TechnologyList extends PureComponent {
                                 />
                             );
                         })}
-                    {type !== 'LIBRARY' && !this.state.isCreateTechnology && (
-                        <DefaultTippy content={`Thêm ${technology} mới `}>
-                            <Button
-                                className={cx('add-new-technology')}
-                                onClick={() => this.handleShowCreateTechnology()}
-                            >
-                                <span className={cx('add-new-technology-icon')}>
-                                    <BsPlusCircleDotted />
-                                </span>
-                            </Button>
-                        </DefaultTippy>
-                    )}
                 </div>
 
-                {!this.props.issearch && !this.state.isCreateTechnology
-                    ? type === 'LIBRARY' && (
-                          <div
-                              className={cx('add-new-technology-button-container', {
-                                  'non-library-button-container': type !== 'LIBRARY',
-                              })}
-                          >
-                              <Button
-                                  className={cx('add-new-technology-button')}
-                                  onClick={() => this.handleShowCreateTechnology()}
-                              >
-                                  <span className={cx('left-icon')}>
-                                      <BsPlusCircleDotted />
-                                  </span>
-                                  <span className={cx('text')}>
-                                      {type !== 'LIBRARY' ? `Thêm` : `Thêm ${technology}`}
-                                  </span>
-                              </Button>
-                          </div>
-                      )
-                    : !this.props.issearch && (
-                          <div style={{ position: 'relative', width: '100%' }}>
-                              <CreateEditTechnology
-                                  className={cx('add-new-technology-form', { 'non-library-form': type !== 'LIBRARY' })}
-                                  technology={technology}
-                                  type={type}
-                                  onclose={this.handleCloseCreateTechnology}
-                                  oncreate={this.handleCreateTechnology}
-                              />
-                              {isloading && <Loading style={{ position: 'absolute' }} />}
-                          </div>
-                      )}
+                {/* Add new source code */}
+                {/* {!this.props.issearch && !this.state.isCreateTechnology ? (
+                    <div
+                        className={cx('add-new-technology-button-container', {
+                            'non-library-button-container': type !== 'LIBRARY' || type !== 'SOURCECODE',
+                        })}
+                    >
+                        <Button
+                            className={cx('add-new-technology-button')}
+                            onClick={() => this.handleShowCreateTechnology()}
+                        >
+                            <span className={cx('left-icon')}>
+                                <BsPlusCircleDotted />
+                            </span>
+                            <span className={cx('text')}>{`Thêm ${technology}`}</span>
+                        </Button>
+                    </div>
+                ) : (
+                    !this.props.issearch && (
+                        <div style={{ position: 'relative', width: '100%' }}>
+                            <CreateEditTechnology
+                                className={cx('add-new-technology-form', { 'non-library-form': type !== 'LIBRARY' })}
+                                technology={technology}
+                                type={type}
+                                onclose={this.handleCloseCreateTechnology}
+                                oncreate={this.handleCreateTechnology}
+                            />
+                            {isloading && <Loading style={{ position: 'absolute' }} />}
+                        </div>
+                    )
+                )} */}
+
+                {!this.props.issearch && !this.state.isCreateTechnology ? (
+                    <div
+                        className={cx('add-technology-button-container', {
+                            'non-library-button-container': type !== 'LIBRARY' || type !== 'SOURCECODE',
+                        })}
+                    >
+                        <Button
+                            className={cx('add-new-technology-button')}
+                            onClick={() => this.handleShowCreateTechnology()}
+                        >
+                            <span className={cx('left-icon')}>
+                                <BsPlusCircleDotted />
+                            </span>
+                            <span className={cx('text')}>{`Thêm ${technology}`}</span>
+                        </Button>
+                    </div>
+                ) : (
+                    !this.props.issearch && (
+                        <div style={{ position: 'relative', width: '100%' }}>
+                            <CreateEditTechnology
+                                className={cx('add-new-technology-form')}
+                                technology={technology}
+                                type={type}
+                                onclose={this.handleCloseCreateTechnology}
+                                oncreate={this.handleCreateTechnology}
+                            />
+                            {isloading && <Loading style={{ position: 'absolute' }} />}
+                        </div>
+                    )
+                )}
                 {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );

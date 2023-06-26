@@ -176,7 +176,11 @@ class Technology extends PureComponent {
                     />
                     <Button
                         id={`js-button-${type}-${id}`}
-                        className={cx(buttonClass, { 'non-library-button': type !== 'LIBRARY' })}
+                        className={cx('button', {
+                            'sourcecode-list': type === 'SOURCECODE',
+                            'technology-list': type === 'FRONTEND_TECHNOLOGY' || type === 'BACKEND_TECHNOLOGY',
+                            'library-list': type === 'LIBRARY',
+                        })}
                         {...buttonProps}
                         onmouseenter={() => this.handleHoverButtonAndShowEditButton(`${type}-${id}`)}
                         onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(`${type}-${id}`)}

@@ -51,6 +51,6 @@ export const updateUserInformation = (data) => {
 // =============================================================================
 // READ CV LAYOUT
 
-export const readCVLayout = (id) => {
-    return axios.get(`/get-cv-layout?id=${id}`);
+export const readProductList = (id) => {
+    return axios.get(`/get-product-list?id=${id}`);
 };

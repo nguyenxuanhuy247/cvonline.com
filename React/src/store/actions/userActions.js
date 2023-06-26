@@ -301,34 +301,34 @@ export const CRUDUserInformation_Start_Success_Failure = (actionName, data) => (
 });
 
 // =================================================================
-// READ CV LAYOUT
+// CRUD PRODUCT LIST
 
-export const readCVLayout = (toastText, actionName, id) => {
+// READ PRODUCT LIST
+export const readProductList = (toastText, actionName, id) => {
     return async (dispatch) => {
         const actionStart = `READ_${actionName}_START`;
         const actionSuccess = `READ_${actionName}_SUCCESS`;
         const actionFailure = `READ_${actionName}_FAILURE`;
 
-        dispatch(readCVLayout_Start_Success_Failure(actionStart));
+        dispatch(readProductList_Start_Success_Failure(actionStart));
         try {
-            const res = await userService.readCVLayout(id);
+            const res = await userService.readProductList(id);
             const { errorCode, data } = res;
-            console.log(data);
             if (errorCode === 0) {
-                dispatch(readCVLayout_Start_Success_Failure(actionSuccess, data));
+                dispatch(readProductList_Start_Success_Failure(actionSuccess, data));
             } else {
                 toast.error(`Tải ${toastText} thất bại`);
-                dispatch(readCVLayout_Start_Success_Failure(actionFailure));
+                dispatch(readProductList_Start_Success_Failure(actionFailure));
             }
         } catch (error) {
             toast.error(error.response.data.errorMessage);
-            dispatch(CRUDUserInformation_Start_Success_Failure(actionFailure, error.response.data));
+            dispatch(CRUDUserInformation_Start_Success_Failure(actionFailure));
             console.log('An error in readUserInformation() - userActions.js: ', error);
         }
     };
 };
 
-export const readCVLayout_Start_Success_Failure = (actionName, data) => ({
+export const readProductList_Start_Success_Failure = (actionName, data) => ({
     type: actionNames[actionName],
     payload: data,
 });

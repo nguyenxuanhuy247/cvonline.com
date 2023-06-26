@@ -21,7 +21,7 @@ const actionNames = Object.freeze({
     USER_SIGNOUT: 'USER_SIGNOUT',
 
     // USER INFORMATION
-    ...actionMaker(`READ`, `CV_LAYOUT`),
+    ...actionMaker(`READ`, `PRODUCT_LIST`),
 
     // USER INFORMATION
     ...actionMaker(`CREATE`, `USER_INFORMATION`),
