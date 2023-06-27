@@ -43,6 +43,8 @@ class PersonalLayout extends PureComponent {
         this.languagesRef = React.createRef();
     }
 
+    // CRUD USER INFORMATION
+
     handleCloseChangeImageModal = () => {
         this.setState({
             isModalOpen: false,
@@ -88,6 +90,26 @@ class PersonalLayout extends PureComponent {
             const data = { id: this.props?.user?.id, languages: this.state.languages || '' };
             this.props.updateUserInformation('ngoại ngữ', data);
             this.languagesRef.current = value;
+        }
+    };
+
+    // CRUD PRODUCT
+    handleCreateNewTechnology = (data, type) => {
+        const newData = {
+            ...data,
+            userId: this.props?.user?.id,
+        };
+        console.log(newData);
+        if (type === 'SOURCECODE') {
+            this.props.createSourceCode(newData);
+        }
+
+        if (type === 'TECHNOLOGY') {
+            this.props.createTechnology(newData);
+        }
+
+        if (type === 'LIBRARY') {
+            this.props.createLibrary(newData);
         }
     };
 
@@ -297,9 +319,9 @@ class PersonalLayout extends PureComponent {
 
                             <div className={cx('col pc-9')}>
                                 <div className={cx('product-list')}>
-                                    <Product />
+                                    <Product createtechnology={this.handleCreateNewTechnology} />
                                     {this.props.productList?.map((product, index) => {
-                                        return <Product key={index} productData={product} />;
+                                        return <Product key={index} productdata={product} createtechnology={11111} />;
                                     })}
                                 </div>
                             </div>
@@ -315,21 +337,56 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.user,
         productList: state.user.productList,
+
+        // Library
+        isLibraryLoading: state.user.isLoading.library,
+        libraryList: state.user.libraries,
+        pageQuantityLibrary: state.user.pageQuantityLibrary,
+
+        // Source code
+        isSourceCodeLoading: state.user.isLoading.sourcecode,
+        sourceCodeList: state.user.sourcecodes,
+
+        // FE Technology
+        isFETechnologyLoading: state.user.isLoading.FETechnology,
+        FETechnologies: state.user.FETechnologies,
+
+        // BE Technology
+        isBETechnologyLoading: state.user.isLoading.BETechnology,
+        BETechnologies: state.user.BETechnologies,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // CRUD user information
+        // CRUD User information
         readUserInformation: (id) =>
             dispatch(userActions.readUserInformation('thông tin người dùng', 'USER_INFORMATION', id)),
         updateUserInformation: (toastText, data) =>
             dispatch(userActions.updateUserInformation(toastText, 'USER_INFORMATION', data, true)),
 
-        // CRUD product list
+        // CRUD Product list
         readProductList: (id) => dispatch(userActions.readProductList('danh sách sản phẩm', 'PRODUCT_LIST', id)),
         updateProductList: (userId, productId) =>
             dispatch(userActions.readProductList('danh sách sản phẩm', 'PRODUCT_LIST', userId)),
+
+        // CRUD Source code
+        createSourceCode: (data) => dispatch(userActions.createTechnology('source code', 'SOURCECODE', data)),
+        updateSourceCode: (data) => dispatch(userActions.updateTechnology('source code', 'SOURCECODE', data)),
+        deleteSourceCode: (id) => dispatch(userActions.deleteTechnology('source code', 'SOURCECODE', id, 'SC')),
+
+        // CRUD Technology
+        createTechnology: (data) => dispatch(userActions.createTechnology('công nghệ sử dụng', 'TECHNOLOGY', data)),
+        updateTechnology: (data) => dispatch(userActions.updateTechnology('công nghệ sử dụng', 'TECHNOLOGY', data)),
+        deleteTechnology: (id) =>
+            dispatch(userActions.deleteTechnology('Công nghệ ở Frontend', 'TECHNOLOGY', id, 'FT')),
+
+        // CRUD Library
+        createLibrary: (data) => dispatch(userActions.createTechnology('thư viện sử dụng', 'LIBRARY', data)),
+        updateLibrary: (data, isToastSuccess) =>
+            dispatch(userActions.updateTechnology('thư viện', 'LIBRARY', data, isToastSuccess)),
+        deleteLibrary: (id, side) =>
+            dispatch(userActions.deleteTechnology('thư viện sử dụng', 'LIBRARY', id, 'LI', side)),
     };
 };
 

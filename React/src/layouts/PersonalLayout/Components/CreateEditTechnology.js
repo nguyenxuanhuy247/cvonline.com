@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 
@@ -9,7 +9,6 @@ import Loading from '~/components/Modal/Loading.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 
 const cx = classnames.bind(styles);
-
 class CreateEditTechnology extends PureComponent {
     constructor(props) {
         super(props);
@@ -37,21 +36,36 @@ class CreateEditTechnology extends PureComponent {
         this.setState({ [name]: value });
     };
 
-    handleCreateOrUpdateTechnology = async (bool) => {
-        if (bool) {
+    handleCreateOrUpdateTechnology = async (isEdit) => {
+        const data = {
+            id: this.state.id,
+            type: this.props?.type,
+            key: this.props?.keyprop,
+            side: this.props?.side,
+            image: this.state.image,
+            name: this.state.name?.trim(),
+            version: this.state.version?.trim(),
+            link: this.state.link,
+            productId: this.props.productId,
+        };
+
+        if (isEdit) {
             await this.props.onupdate(this.state, this.props.onclose);
         } else {
-            await this.props.oncreate(this.state);
+            await this.props.createtechnology(data, this.props.type);
+            this.props.onclose();
         }
     };
 
     render() {
-        const { id, isedit, className, isloading, type, technology, onclose } = this.props;
-
+        const { id, isedit, className, isloading, type, label, onclose } = this.props;
+        // console.log('llllllllllllllll', this.props.createtechnology);
         return (
             <div className={cx('create-edit-technology', className)} id={id}>
                 <div className={cx('info')}>
-                    <p className={cx('heading')}>{isedit ? `Chỉnh sửa ${technology}` : `Thêm ${technology} mới`}</p>
+                    <p className={cx('heading')}>
+                        {isedit ? `Chỉnh sửa ${label}` : `Thêm ${type === 'SOURCECODE' ? '' : label} mới`}
+                    </p>
                     <div className={cx('image-wrapper')}>
                         <HeadlessTippy
                             zIndex="10"
@@ -85,7 +99,7 @@ class CreateEditTechnology extends PureComponent {
                         id={`js-autofocus-input-${this.props.type}`}
                         type="text"
                         className={cx('input-form')}
-                        placeholder={`Nhập tên ${technology}`}
+                        placeholder={`Nhập tên ${label}`}
                         value={this.state.name}
                         onChange={(e) => this.handleInputTechnology(e, 'name')}
                     />
@@ -100,7 +114,7 @@ class CreateEditTechnology extends PureComponent {
                     <input
                         type="text"
                         className={cx('input-form')}
-                        placeholder="Nhập link website (nếu có)"
+                        placeholder="Nhập link website"
                         value={this.state.link}
                         onChange={(e) => this.handleInputTechnology(e, 'link')}
                     />

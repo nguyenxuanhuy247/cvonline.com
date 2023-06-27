@@ -155,12 +155,12 @@ export const checkReqUpdateUserInformation = (req, res, next) => {
 // =================================================================
 // CHECK READ CV LAYOUT
 export const checkReqGetProductList = (req, res, next) => {
-    const { id } = req.query;
+    const { userId } = req.query;
 
-    if (!id) {
+    if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id người dùng để tải CV Layout',
+            errorMessage: 'Vui lòng nhập id người dùng để tải danh sách sản phẩm',
         });
     }
 

@@ -7,21 +7,14 @@ const initialState = {
         user: false,
         productList: false,
 
-        library: false,
         sourcecode: false,
-        BETechnology: false,
-        FETechnology: false,
+        library: false,
+        technology: false,
     },
     isSignUp: false,
     isSignIn: false,
     user: null,
     productList: [],
-
-    libraries: [],
-    pageQuantityLibrary: 0,
-    BETechnologies: [],
-    sourceCodes: [],
-    FETechnologies: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -136,24 +129,6 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, library: false },
             };
-        // READ LIBRARY
-        case actionNames.READ_LIBRARY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, library: true },
-            };
-        case actionNames.READ_LIBRARY_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, library: false },
-                libraries: action.payload.data,
-                pageQuantityLibrary: action.payload.totalPages,
-            };
-        case actionNames.READ_LIBRARY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, library: false },
-            };
         // UPDATE LIBRARY
         case actionNames.UPDATE_LIBRARY_START:
             return {
@@ -169,7 +144,7 @@ const userReducer = (state = initialState, action) => {
 
         // ================================================================
 
-        // CREATE FRONTEND ECHNOLOGY
+        // CREATE TECHNOLOGY
         case actionNames.CREATE_FRONTEND_TECHNOLOGY_START:
             return {
                 ...state,
@@ -181,7 +156,7 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, FETechnology: false },
             };
-        // READ FRONTEND ECHNOLOGY
+        // READ TECHNOLOGY
         case actionNames.READ_FRONTEND_TECHNOLOGY_START:
             return {
                 ...state,
@@ -198,7 +173,7 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, FETechnology: false },
             };
-        // UPDATE FRONTEND ECHNOLOGY
+        // UPDATE TECHNOLOGY
         case actionNames.UPDATE_FRONTEND_TECHNOLOGY_START:
             return {
                 ...state,
@@ -256,47 +231,6 @@ const userReducer = (state = initialState, action) => {
             };
         // ================================================================
 
-        // CREATE BACKEND TECHNOLOGY
-        case actionNames.CREATE_BACKEND_TECHNOLOGY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, BETechnology: true },
-            };
-        case actionNames.CREATE_BACKEND_TECHNOLOGY_SUCCESS:
-        case actionNames.CREATE_BACKEND_TECHNOLOGY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, BETechnology: false },
-            };
-        // READ BACKEND TECHNOLOGY
-        case actionNames.READ_BACKEND_TECHNOLOGY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, BETechnology: true },
-            };
-        case actionNames.READ_BACKEND_TECHNOLOGY_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, BETechnology: false },
-                BETechnologies: action.payload.data,
-            };
-        case actionNames.READ_BACKEND_TECHNOLOGY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, BETechnology: false },
-            };
-        // UPDATE BACKEND TECHNOLOGY
-        case actionNames.UPDATE_BACKEND_TECHNOLOGY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, BETechnology: true },
-            };
-        case actionNames.UPDATE_BACKEND_TECHNOLOGY_SUCCESS:
-        case actionNames.UPDATE_BACKEND_TECHNOLOGY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, BETechnology: false },
-            };
         default:
             return state;
     }

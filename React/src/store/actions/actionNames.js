@@ -22,36 +22,26 @@ const actionNames = Object.freeze({
 
     // USER INFORMATION
     ...actionMaker(`READ`, `PRODUCT_LIST`),
+    ...actionMaker(`DELETE`, `PRODUCT_LIST`),
 
     // USER INFORMATION
-    ...actionMaker(`CREATE`, `USER_INFORMATION`),
     ...actionMaker(`READ`, `USER_INFORMATION`),
     ...actionMaker(`UPDATE`, `USER_INFORMATION`),
-    ...actionMaker(`DELETE`, `USER_INFORMATION`),
 
     // LIBRARY
     ...actionMaker(`CREATE`, `LIBRARY`),
-    ...actionMaker(`READ`, `LIBRARY`),
     ...actionMaker(`UPDATE`, `LIBRARY`),
     ...actionMaker(`DELETE`, `LIBRARY`),
 
     // SOURCE CODE
     ...actionMaker(`CREATE`, `SOURCECODE`),
-    ...actionMaker(`READ`, `SOURCECODE`),
     ...actionMaker(`UPDATE`, `SOURCECODE`),
     ...actionMaker(`DELETE`, `SOURCECODE`),
 
-    // FRONTEND TECHNOLOGY
-    ...actionMaker(`CREATE`, `FRONTEND_TECHNOLOGY`),
-    ...actionMaker(`READ`, `FRONTEND_TECHNOLOGY`),
-    ...actionMaker(`UPDATE`, `FRONTEND_TECHNOLOGY`),
-    ...actionMaker(`DELETE`, `FRONTEND_TECHNOLOGY`),
-
-    // BACKEND TECHNOLOGY
-    ...actionMaker(`CREATE`, `BACKEND_TECHNOLOGY`),
-    ...actionMaker(`READ`, `BACKEND_TECHNOLOGY`),
-    ...actionMaker(`UPDATE`, `BACKEND_TECHNOLOGY`),
-    ...actionMaker(`DELETE`, `BACKEND_TECHNOLOGY`),
+    // TECHNOLOGY
+    ...actionMaker(`CREATE`, `TECHNOLOGY`),
+    ...actionMaker(`UPDATE`, `TECHNOLOGY`),
+    ...actionMaker(`DELETE`, `TECHNOLOGY`),
 });
 
 export default actionNames;

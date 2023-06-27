@@ -1,19 +1,15 @@
-'use strict';
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.bulkInsert('user_info', [
+        return queryInterface.bulkInsert('users', [
             {
-                fullName: 'John Doe',
+                fullName: 'John',
                 email: 'example@example.com',
-                password: 123456,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
         ]);
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.bulkDelete('user_info', null, {});
+        return queryInterface.bulkDelete('Users', null, {});
     },
 };

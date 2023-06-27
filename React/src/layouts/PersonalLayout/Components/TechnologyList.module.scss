@@ -1,8 +1,13 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
-.technology-list-container {
+.technology-list {
+    position: relative;
     width: 100%;
-    margin-top: 12px;
+    text-align: center;
+}
+
+.technology-list-inner {
+    width: 100%;
     display: flex;
 
     &.sourcecode-list {
@@ -91,46 +96,34 @@
     }
 }
 
-.add-technology-button-container {
-    width: 100%;
+.add-technology-button {
+    width: auto;
+    margin: 12px auto;
+    text-align: center;
+    padding: 8px;
+    color: var(--primary-color);
+    background-color: var(--button-bgc-green-02);
+    border-radius: 4px;
+    font-size: 20px;
+    column-gap: 8px;
 
-    .add-new-technology-button {
-        width: 100%;
-        margin: 12px auto;
-        text-align: center;
-        padding: 8px;
-        color: var(--primary-color);
-        background-color: var(--button-bgc-green-02);
-        border-radius: 4px;
-        font-size: 20px;
-        column-gap: 8px;
-
-        &.non-library-button {
-            width: auto;
-        }
-
-        &:hover {
-            cursor: pointer;
-            color: #fff;
-            background-color: var(--button-bgc-green-01);
-        }
-
-        .left-icon {
-            display: grid;
-            place-items: center;
-            font-size: 24px;
-        }
-
-        .text {
-            font-size: 1.4rem;
-        }
+    &.non-library-button {
+        width: auto;
     }
 
-    &.non-library-button-container {
-        .add-new-technology-button {
-            display: flex;
-            width: auto;
-        }
+    &:hover {
+        cursor: pointer;
+        color: #fff;
+        background-color: var(--button-bgc-green-01);
+    }
+
+    .left-icon {
+        display: grid;
+        place-items: center;
+        font-size: 24px;
+    }
+
+    .text {
+        font-size: 1.4rem;
     }
 }
-

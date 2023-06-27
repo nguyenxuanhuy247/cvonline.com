@@ -30,6 +30,9 @@ module.exports = {
             link: {
                 type: Sequelize.STRING,
             },
+            desc: {
+                type: Sequelize.TEXT('long'),
+            },
             userId: {
                 type: Sequelize.INTEGER,
             },

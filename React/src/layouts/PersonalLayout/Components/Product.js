@@ -1,18 +1,15 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 import Pagination from '@mui/material/Pagination';
 import { HiOutlineSearch } from 'react-icons/hi';
 import _ from 'lodash';
-import { Buffer } from 'buffer';
 
 import styles from './Product.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
 import TechnologyList from './TechnologyList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
-import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
 
 const cx = classnames.bind(styles);
@@ -250,18 +247,15 @@ class Product extends PureComponent {
     // =================================================================
 
     componentDidMount() {
-        this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
-        this.props.readBETechnology('ALL');
-        this.props.readSourceCode('ALL');
-        this.props.readFETechnology('ALL');
-
+        // this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
+        // this.props.readBETechnology('ALL');
+        // this.props.readSourceCode('ALL');
+        // this.props.readFETechnology('ALL');
         // if (this.props.productData) {
         //     const productInfo = this.props.productData?.productInfo;
-
         //     const binaryImage = Buffer.from(productInfo.image, 'base64').toString('binary');
         //     this.setState({ name: productInfo.name, desc: productInfo.desc, image: binaryImage });
         // }
-
         // const technologies = this.props.productData?.technologies;
         // console.log('PRODUCT DATA:', this.props.productData?.productInfo, this.props.productData?.technologies);
     }
@@ -280,6 +274,8 @@ class Product extends PureComponent {
     }
 
     render() {
+        console.log('aaaaaaaaaaa', this.props.createtechnology);
+
         const dataForReadLibraryAfterSorting = {
             isPagination: this.state.isPagination,
             side: this.FEorBESide(),
@@ -353,15 +349,14 @@ class Product extends PureComponent {
                             <div className={cx('list')}>
                                 <TechnologyList
                                     draggable
-                                    technology="source code"
+                                    label="source code"
                                     type="SOURCECODE"
                                     keyprop="SC"
+                                    productId={1}
                                     technologylist={this.props.sourceCodeList}
                                     isloading={this.props.isSourceCodeLoading}
-                                    readtechnology={() => this.props.readSourceCode('ALL')}
-                                    createtechnology={this.props?.technologies?.sourceCodeList}
-                                    updatetechnology={this.props.updateSourceCode}
-                                    deletetechnology={this.props.deleteSourceCode}
+                                    // CRUD
+                                    createtechnology={this.props.createtechnology}
                                 />
                             </div>
                         </div>
@@ -373,25 +368,30 @@ class Product extends PureComponent {
                         <div className={cx('server', 'front-end')}>
                             <span className={cx('server-side-title')}>FRONT-END</span>
                             <div className={cx('technology-used')}>
-                                <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                <div className={cx('technology-used-title')}>
+                                    <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                </div>
                                 <div className={cx('list')}>
                                     <TechnologyList
                                         draggable
-                                        technology="công nghệ sử dụng"
-                                        type="FRONTEND_TECHNOLOGY"
-                                        keyprop="FT"
+                                        label="công nghệ sử dụng"
+                                        type="TECHNOLOGY"
+                                        keyprop="TE"
+                                        side="FE"
                                         technologylist={this.props?.technologies?.FETechnologyList}
                                         isloading={this.props.isFETechnologyLoading}
                                         readtechnology={() => this.props.readFETechnology('ALL')}
-                                        createtechnology={this.props.createFETechnology}
-                                        updatetechnology={this.props.updateFETechnology}
-                                        deletetechnology={this.props.deleteFETechnology}
+                                        // createtechnology={this.props.createFETechnology}
+                                        // updatetechnology={this.props.updateFETechnology}
+                                        // deletetechnology={this.props.deleteFETechnology}
                                     />
                                 </div>
                             </div>
 
                             <div className={cx('library-used')}>
-                                <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
+                                <div className={cx('library-used-title')}>
+                                    <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
+                                </div>
                                 <div className={cx('library-filter-sort')}>
                                     <div className={cx('library-filter')}>
                                         <span className={cx('library-filter-icon')}>
@@ -422,45 +422,39 @@ class Product extends PureComponent {
                                 {!this.state.isSearch ? (
                                     <div>
                                         <div className={cx('display')}>
+                                            <label className={cx('label')}>Hiển thị : </label>
                                             <Button
-                                                className={cx('button')}
+                                                className={cx('button', 'active')}
                                                 id="js-show-all-button"
                                                 onClick={this.handleShowAllLibraryList}
                                             >
-                                                Hiển thị tất cả
+                                                Tất cả
                                             </Button>
-                                            <Button
-                                                className={cx('button', 'pag-button', 'active')}
-                                                id="js-pagination-button"
-                                                onClick={this.hanldeShowPagination}
-                                            >
-                                                <label className={cx('label')}>Phân trang</label>
-                                                <select
-                                                    className={cx('select')}
-                                                    id="js-pagination-select"
-                                                    onChange={(e) => this.handleChangeItemsPerPage(e)}
-                                                >
-                                                    <option value="10">10</option>
-                                                    <option value="20">20</option>
-                                                    <option value="30">30</option>
-                                                    <option value="40">40</option>
-                                                    <option value="50">50</option>
-                                                </select>
-                                            </Button>
+                                            {[10, 20, 30, 40, 50].map((button, index) => {
+                                                return (
+                                                    <Button
+                                                        key={index}
+                                                        className={cx('button')}
+                                                        onClick={this.handleShowAllLibraryList}
+                                                    >
+                                                        {button}
+                                                    </Button>
+                                                );
+                                            })}
                                         </div>
 
                                         <TechnologyList
                                             id="js-library-list"
                                             draggable
-                                            technology="thư viện"
+                                            label="thư viện"
                                             type="LIBRARY"
                                             keyprop="LI"
                                             isloading={this.props.isLibraryLoading}
                                             technologylist={sortedDataLibraryList}
                                             readtechnology={this.props.readLibrary}
-                                            createtechnology={this.handleCreateLibrary}
-                                            updatetechnology={this.handleUpdateLibrary}
-                                            deletetechnology={this.handleDeleteLibrary}
+                                            // createtechnology={this.handleCreateLibrary}
+                                            // updatetechnology={this.handleUpdateLibrary}
+                                            // deletetechnology={this.handleDeleteLibrary}
                                             sortupdatetechnology={this.props.updateLibrary}
                                             dataforsort={dataForReadLibraryAfterSorting}
                                         />
@@ -468,7 +462,7 @@ class Product extends PureComponent {
                                         {this.state.isPagination && (
                                             <div
                                                 style={{
-                                                    margin: '12px 0 12px',
+                                                    marginTop: '12px',
                                                     display: 'grid',
                                                     placeItems: 'center',
                                                 }}
@@ -511,15 +505,15 @@ class Product extends PureComponent {
                                         issearch
                                         id="js-search-library-list"
                                         draggable
-                                        technology="thư viện"
+                                        label="thư viện"
                                         type="LIBRARY"
                                         keyprop="LI"
                                         isloading={this.props.isLibraryLoading}
                                         technologylist={sortedDataLibraryList}
                                         readtechnology={this.props.readLibrary}
-                                        createtechnology={this.handleCreateLibrary}
-                                        updatetechnology={this.handleUpdateLibrary}
-                                        deletetechnology={this.handleDeleteLibrary}
+                                        // createtechnology={this.handleCreateLibrary}
+                                        // updatetechnology={this.handleUpdateLibrary}
+                                        // deletetechnology={this.handleDeleteLibrary}
                                         searchLibrary={this.handleSearchLibrary}
                                         sortupdatetechnology={this.props.updateLibrary}
                                         dataforsort={dataForReadLibraryAfterSorting}
@@ -527,28 +521,35 @@ class Product extends PureComponent {
                                 )}
                             </div>
                         </div>
+
                         <div className={cx('separate')}></div>
+
                         <div className={cx('server', 'back-end')}>
                             <span className={cx('server-side-title')}>BACK-END</span>
                             <div className={cx('technology-used')}>
-                                <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                <div className={cx('technology-used-title')}>
+                                    <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                </div>
                                 <div className={cx('list')}>
                                     <TechnologyList
                                         draggable
-                                        technology="công nghệ sử dụng"
-                                        type="FRONTEND_TECHNOLOGY"
-                                        keyprop="FT"
+                                        label="công nghệ sử dụng"
+                                        type="TECHNOLOGY"
+                                        keyprop="TE"
+                                        side="BE"
                                         technologylist={this.props?.technologies?.FETechnologyList}
                                         isloading={this.props.isFETechnologyLoading}
                                         readtechnology={() => this.props.readFETechnology('ALL')}
-                                        createtechnology={this.props.createFETechnology}
-                                        updatetechnology={this.props.updateFETechnology}
-                                        deletetechnology={this.props.deleteFETechnology}
+                                        // createtechnology={this.props.createFETechnology}
+                                        // updatetechnology={this.props.updateFETechnology}
+                                        // deletetechnology={this.props.deleteFETechnology}
                                     />
                                 </div>
                             </div>
                             <div className={cx('library-used')}>
-                                <span className={cx('title')}>Back-end</span>
+                                <div className={cx('library-used-title')}>
+                                    <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
+                                </div>
                                 <div className={cx('library-filter-sort')}>
                                     <div className={cx('library-filter')}>
                                         <span className={cx('library-filter-icon')}>
@@ -575,49 +576,66 @@ class Product extends PureComponent {
                                         </select>
                                     </div>
                                 </div>
+                                <div className={cx('display')}>
+                                    <label className={cx('label')}>Hiển thị : </label>
+                                    <Button
+                                        className={cx('button', 'active')}
+                                        id="js-show-all-button"
+                                        onClick={this.handleShowAllLibraryList}
+                                    >
+                                        Tất cả
+                                    </Button>
+                                    <Button
+                                        className={cx('button')}
+                                        id="js-show-all-button"
+                                        onClick={this.handleShowAllLibraryList}
+                                    >
+                                        10
+                                    </Button>
+                                    <Button
+                                        className={cx('button')}
+                                        id="js-show-all-button"
+                                        onClick={this.handleShowAllLibraryList}
+                                    >
+                                        20
+                                    </Button>
+                                    <Button
+                                        className={cx('button')}
+                                        id="js-show-all-button"
+                                        onClick={this.handleShowAllLibraryList}
+                                    >
+                                        30
+                                    </Button>
+                                    <Button
+                                        className={cx('button')}
+                                        id="js-show-all-button"
+                                        onClick={this.handleShowAllLibraryList}
+                                    >
+                                        40
+                                    </Button>
+                                    <Button
+                                        className={cx('button')}
+                                        id="js-show-all-button"
+                                        onClick={this.handleShowAllLibraryList}
+                                    >
+                                        50
+                                    </Button>
+                                </div>
 
                                 {!this.state.isSearch ? (
                                     <div>
-                                        <div className={cx('display')}>
-                                            <Button
-                                                className={cx('button')}
-                                                id="js-show-all-button"
-                                                onClick={this.handleShowAllLibraryList}
-                                            >
-                                                Hiển thị tất cả
-                                            </Button>
-                                            <Button
-                                                className={cx('button', 'pag-button', 'active')}
-                                                id="js-pagination-button"
-                                                onClick={this.hanldeShowPagination}
-                                            >
-                                                <label className={cx('label')}>Phân trang</label>
-                                                <select
-                                                    className={cx('select')}
-                                                    id="js-pagination-select"
-                                                    onChange={(e) => this.handleChangeItemsPerPage(e)}
-                                                >
-                                                    <option value="10">10</option>
-                                                    <option value="20">20</option>
-                                                    <option value="30">30</option>
-                                                    <option value="40">40</option>
-                                                    <option value="50">50</option>
-                                                </select>
-                                            </Button>
-                                        </div>
-
                                         <TechnologyList
                                             id="js-library-list"
                                             draggable
-                                            technology="thư viện"
+                                            label="thư viện"
                                             type="LIBRARY"
                                             keyprop="LI"
                                             isloading={this.props.isLibraryLoading}
                                             technologylist={sortedDataLibraryList}
                                             readtechnology={this.props.readLibrary}
-                                            createtechnology={this.handleCreateLibrary}
-                                            updatetechnology={this.handleUpdateLibrary}
-                                            deletetechnology={this.handleDeleteLibrary}
+                                            // createtechnology={this.handleCreateLibrary}
+                                            // updatetechnology={this.handleUpdateLibrary}
+                                            // deletetechnology={this.handleDeleteLibrary}
                                             sortupdatetechnology={this.props.updateLibrary}
                                             dataforsort={dataForReadLibraryAfterSorting}
                                         />
@@ -668,66 +686,20 @@ class Product extends PureComponent {
                                         issearch
                                         id="js-search-library-list"
                                         draggable
-                                        technology="thư viện"
+                                        label="thư viện"
                                         type="LIBRARY"
                                         keyprop="LI"
                                         isloading={this.props.isLibraryLoading}
                                         technologylist={sortedDataLibraryList}
                                         readtechnology={this.props.readLibrary}
-                                        createtechnology={this.handleCreateLibrary}
-                                        updatetechnology={this.handleUpdateLibrary}
-                                        deletetechnology={this.handleDeleteLibrary}
+                                        // createtechnology={this.handleCreateLibrary}
+                                        // updatetechnology={this.handleUpdateLibrary}
+                                        // deletetechnology={this.handleDeleteLibrary}
                                         searchLibrary={this.handleSearchLibrary}
                                         sortupdatetechnology={this.props.updateLibrary}
                                         dataforsort={dataForReadLibraryAfterSorting}
                                     />
                                 )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={cx('col pc-12')}>
-                    <div className={cx('technology-section')}>
-                        <span className={cx('technology-section-subject')}>CÔNG NGHỆ SỬ DỤNG</span>
-                        <div className={cx('row no-gutters')}>
-                            <div className={cx('col pc-6')}>
-                                <div className={cx('technology-wrapper', 'left')}></div>
-                            </div>
-                            <div className={cx('col pc-6')}>
-                                <div className={cx('technology-wrapper', 'right')}>
-                                    <div className={cx('technology-used')}>
-                                        <span className={cx('title')}>Back-end</span>
-                                        <div className={cx('list')}>
-                                            <TechnologyList
-                                                draggable
-                                                technology="công nghệ sử dụng"
-                                                type="FRONTEND_TECHNOLOGY"
-                                                keyprop="FT"
-                                                technologylist={this.props?.technologies?.FETechnologyList}
-                                                isloading={this.props.isFETechnologyLoading}
-                                                readtechnology={() => this.props.readFETechnology('ALL')}
-                                                createtechnology={this.props.createFETechnology}
-                                                updatetechnology={this.props.updateFETechnology}
-                                                deletetechnology={this.props.deleteFETechnology}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={cx('col pc-12')}>
-                    <div className={cx('technology-section')}>
-                        <span className={cx('technology-section-subject')}>THƯ VIỆN SỬ DỤNG</span>
-                        <div className={cx('row no-gutters')}>
-                            <div className={cx('col pc-6')}>
-                                <div className={cx('technology-wrapper', 'left')}></div>
-                            </div>
-                            <div className={cx('col pc-6')}>
-                                <div className={cx('technology-wrapper', 'right')}></div>
                             </div>
                         </div>
                     </div>
@@ -737,63 +709,4 @@ class Product extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        // Library
-        isLibraryLoading: state.user.isLoading.library,
-        libraryList: state.user.libraries,
-        pageQuantityLibrary: state.user.pageQuantityLibrary,
-
-        // Source code
-        isSourceCodeLoading: state.user.isLoading.sourcecode,
-        sourceCodeList: state.user.sourcecodes,
-
-        // FE Technology
-        isFETechnologyLoading: state.user.isLoading.FETechnology,
-        FETechnologies: state.user.FETechnologies,
-
-        // BE Technology
-        isBETechnologyLoading: state.user.isLoading.BETechnology,
-        BETechnologies: state.user.BETechnologies,
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        // Library
-        readLibrary: (side, page, pageSize) =>
-            dispatch(userActions.readTechnology('thư viện', 'LIBRARY', 'ALL', 'LI', side, page, pageSize)),
-        createLibrary: (data) => dispatch(userActions.createTechnology('thư viện', 'LIBRARY', data)),
-        updateLibrary: (data, isToastSuccess) =>
-            dispatch(userActions.updateTechnology('thư viện', 'LIBRARY', data, isToastSuccess)),
-        deleteLibrary: (id, side) => dispatch(userActions.deleteTechnology('thư viện', 'LIBRARY', id, 'LI', side)),
-
-        // Source code
-        readSourceCode: (id) => dispatch(userActions.readTechnology('Source Code', 'SOURCECODE', id, 'SC')),
-        createSourceCode: (data) => dispatch(userActions.createTechnology('Source Code', 'SOURCECODE', data)),
-        updateSourceCode: (data) => dispatch(userActions.updateTechnology('Source Code', 'SOURCECODE', data)),
-        deleteSourceCode: (id) => dispatch(userActions.deleteTechnology('Source Code', 'SOURCECODE', id, 'SC')),
-
-        // FE Technology
-        readFETechnology: (id) =>
-            dispatch(userActions.readTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', id, 'FT')),
-        createFETechnology: (data) =>
-            dispatch(userActions.createTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', data)),
-        updateFETechnology: (data) =>
-            dispatch(userActions.updateTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', data)),
-        deleteFETechnology: (id) =>
-            dispatch(userActions.deleteTechnology('Công nghệ ở Frontend', 'FRONTEND_TECHNOLOGY', id, 'FT')),
-
-        // BE Technology
-        readBETechnology: (id) =>
-            dispatch(userActions.readTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', id, 'BT')),
-        createBETechnology: (data) =>
-            dispatch(userActions.createTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', data)),
-        updateBETechnology: (data) =>
-            dispatch(userActions.updateTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', data)),
-        deleteBETechnology: (id) =>
-            dispatch(userActions.deleteTechnology('Công nghệ ở Backend', 'BACKEND_TECHNOLOGY', id, 'BT')),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Product);
+export default Product;

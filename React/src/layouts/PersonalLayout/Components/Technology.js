@@ -12,7 +12,6 @@ import Loading from '~/components/Modal/Loading.js';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
 
 const cx = classnames.bind(styles);
-
 class Technology extends PureComponent {
     constructor(props) {
         super(props);
@@ -113,10 +112,9 @@ class Technology extends PureComponent {
 
     render() {
         const {
-            buttonClass,
             hoverButtonClass,
             draggable,
-            technology,
+            label,
             type,
             href,
             id,
@@ -207,7 +205,7 @@ class Technology extends PureComponent {
                     isedit
                     data={this.state}
                     type={type}
-                    technology={technology}
+                    label={label}
                     onclose={this.handleCloseEditTechnology}
                     onupdate={onupdate}
                 />
