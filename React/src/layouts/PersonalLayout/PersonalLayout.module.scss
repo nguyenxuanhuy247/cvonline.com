@@ -26,7 +26,7 @@
 
     .container {
         margin-top: var(--header-height);
-        padding-top: 20px;
+        padding: 20px 0;
 
         .col-left {
             padding: 20px;
@@ -175,6 +175,28 @@
             flex-direction: column;
             row-gap: 8px;
             background-color: #f0f2f5;
+        }
+
+        .add-new-product-container {
+            display: grid;
+            place-items: center;
+            padding: 12px;
+            background-color: var(--button-bgc-green-02);
+
+            .add-new-product-button {
+                background-color: var(--primary-color);
+                color: #fff;
+                border-radius: 99px;
+                font-size: 2rem;
+                column-gap: 8px;
+                cursor: pointer;
+
+                .add-new-product-icon {
+                    display: grid;
+                    place-items: center;
+                    font-size: 32px;
+                }
+            }
         }
     }
 }

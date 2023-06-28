@@ -52,27 +52,23 @@ class Technology extends PureComponent {
             version: selectedLibrary.version,
             link: selectedLibrary.link,
         });
-
-        const editTechnologyContainer = document.getElementById(`js-edit-technology-container-${id}`);
-        const editTechnology = document.getElementById(`js-edit-technology-${id}`);
-
-        if (editTechnologyContainer && editTechnology && this.props.type !== 'LIBRARY') {
-            editTechnologyContainer.style.width = '100%';
-            editTechnology.style.width = '80%';
-            editTechnology.style.margin = '12px auto';
-        }
     };
 
     handleCloseEditTechnology = () => {
         this.setState({ isEdit: false });
     };
 
+    handleDeleteTechnology = (id, type) => {
+        this.props.onDeleteTechnology(id, type);
+    };
+
     handleHoverButtonAndShowEditButton = (id) => {
         const editButton = document.getElementById(`js-edit-button-${id}`);
         const button = document.getElementById(`js-button-${id}`);
+
         if (button) {
             button.classList.remove(this.props.hoverSortButtonClass);
-            button.classList.add(this.props.hoverButtonClass);
+            button.classList.add(cx('hover'));
 
             if (editButton) {
                 editButton.style.visibility = 'visible';
@@ -89,7 +85,7 @@ class Technology extends PureComponent {
         }
 
         if (button) {
-            button.classList.remove(this.props.hoverButtonClass);
+            button.classList.remove(cx('hover'));
         }
     };
 
@@ -112,19 +108,17 @@ class Technology extends PureComponent {
 
     render() {
         const {
-            hoverButtonClass,
             draggable,
             label,
             type,
+            productId,
+            keyprop,
             href,
             id,
             src,
             name,
             version,
-            isloading,
             onshow,
-            onupdate,
-            ondelete,
             ondragstart,
             ondragend,
             ondragenter,
@@ -161,33 +155,29 @@ class Technology extends PureComponent {
                     <EditButton
                         id={`${type}-${id}`}
                         type={type}
-                        onshow={onshow}
-                        onedit={() => this.handleShowEditTechnology(id)}
-                        ondelete={ondelete}
+                        onShowCreateTechnology={onshow}
+                        onShowEditTechnology={() => this.handleShowEditTechnology(id)}
+                        onDeleteTechnology={() => this.handleDeleteTechnology(id, type)}
                         ondragstart={ondragstart}
                         ondragend={this.props.ondragend}
                         ondrop={ondrop}
                         ondragenter={ondragenter}
                         onmouseenter={(e) => this.handleMouseHoverEditButton(e)}
                         onmouseleave={() => this.handleMouseUnHoverEditButton(`${type}-${id}`)}
-                        classHover={hoverButtonClass}
+                        classHover={cx('hover')}
                     />
                     <Button
                         id={`js-button-${type}-${id}`}
                         className={cx('button', {
                             'sourcecode-list': type === 'SOURCECODE',
-                            'technology-list': type === 'FRONTEND_TECHNOLOGY' || type === 'BACKEND_TECHNOLOGY',
+                            'technology-list': type === 'TECHNOLOGY',
                             'library-list': type === 'LIBRARY',
                         })}
                         {...buttonProps}
                         onmouseenter={() => this.handleHoverButtonAndShowEditButton(`${type}-${id}`)}
                         onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(`${type}-${id}`)}
                     >
-                        {type !== 'LIBRARY' ? (
-                            imageUrl && <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
-                        ) : (
-                            <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
-                        )}
+                        <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
 
                         {name && (
                             <span className={cx('name')} id={`js-button-name-${type}-${id}`}>
@@ -199,18 +189,17 @@ class Technology extends PureComponent {
                 </div>
             </HeadlessTippy>
         ) : (
-            <div style={{ position: 'relative' }} id={`js-edit-technology-container-${id}`}>
-                <CreateEditTechnology
-                    id={`js-edit-technology-${id}`}
-                    isedit
-                    data={this.state}
-                    type={type}
-                    label={label}
-                    onclose={this.handleCloseEditTechnology}
-                    onupdate={onupdate}
-                />
-                {isloading && <Loading style={{ position: 'absolute' }} />}
-            </div>
+            <CreateEditTechnology
+                id={`js-edit-technology-${id}`}
+                isedit
+                data={this.state}
+                type={type}
+                label={label}
+                keyprop={keyprop}
+                productId={productId}
+                onclose={this.handleCloseEditTechnology}
+                onUpdateTechnology={this.props.onUpdateTechnology}
+            />
         );
     }
 }

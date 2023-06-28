@@ -259,7 +259,6 @@ class TechnologyList extends PureComponent {
             technologyListArray = [technologylist];
         }
 
-        // console.log('ffffffffffff', this.props.createtechnology);
         return (
             <div className={cx('technology-list')}>
                 <div
@@ -271,34 +270,38 @@ class TechnologyList extends PureComponent {
                     })}
                 >
                     {technologylist &&
-                        technologyListArray?.map((library) => {
+                        technologyListArray?.map((technology) => {
                             return (
                                 <Technology
                                     ref={this.technologyRef}
-                                    buttonClass={cx('button')}
-                                    hoverButtonClass={cx('hover')}
                                     hoverSortButtonClass={cx('hover-drag-sort')}
-                                    key={library?.id}
+                                    key={technology?.id}
                                     draggable={draggable}
-                                    label={label}
                                     librarylist={technologyListArray}
+                                    // Common info
+                                    side={side}
+                                    label={label}
+                                    productId={productId}
+                                    keyprop={keyprop}
                                     // Technology info
-                                    id={library?.id}
+                                    id={technology?.id}
                                     type={type}
-                                    src={library?.image}
-                                    name={library?.name}
-                                    version={library?.version}
-                                    href={library?.link}
+                                    src={technology?.image}
+                                    name={technology?.name}
+                                    version={technology?.version}
+                                    href={technology?.link}
                                     // Event
                                     isloading={isloading}
                                     onshow={this.handleShowCreateTechnology}
-                                    onupdate={this.handleUpdateTechnology}
-                                    ondelete={() => this.handleDeleteTechnology(library?.id)}
+                                    onUpdateTechnology={this.props.onUpdateTechnology}
+                                    onDeleteTechnology={this.props.onDeleteTechnology}
+                                    // =================================================================
+                                    ondelete={() => this.handleDeleteTechnology(technology?.id)}
                                     oncloseCreate={this.handleCloseCreateTechnology}
                                     // Drag and drop
-                                    ondragstart={() => this.handleDragStart(library?.id)}
+                                    ondragstart={() => this.handleDragStart(technology?.id)}
                                     ondragend={this.handleDragEnd}
-                                    ondragenter={() => this.handleDragEnter(library?.id)}
+                                    ondragenter={() => this.handleDragEnter(technology?.id)}
                                     ondragover={(e) => e.preventDefault()}
                                     ondrop={this.handleSort}
                                 />
@@ -315,19 +318,15 @@ class TechnologyList extends PureComponent {
                     </Button>
                 ) : (
                     !this.props.issearch && (
-                        <div style={{ position: 'relative', width: '100%' }}>
-                            <CreateEditTechnology
-                                className={cx('add-new-technology-form')}
-                                label={label}
-                                type={type}
-                                keyprop={keyprop}
-                                side={side}
-                                productId={productId}
-                                onclose={this.handleCloseCreateTechnology}
-                                createtechnology={this.props.createtechnology}
-                            />
-                            {isloading && <Loading style={{ position: 'absolute' }} />}
-                        </div>
+                        <CreateEditTechnology
+                            label={label}
+                            type={type}
+                            keyprop={keyprop}
+                            side={side}
+                            productId={productId}
+                            onclose={this.handleCloseCreateTechnology}
+                            onCreateTechnology={this.props.onCreateTechnology}
+                        />
                     )
                 )}
                 {isloading && <Loading style={{ position: 'absolute' }} />}

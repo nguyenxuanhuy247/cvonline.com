@@ -4,6 +4,7 @@ import classnames from 'classnames/bind';
 import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
+import { IoIosAddCircle } from 'react-icons/io';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { Buffer } from 'buffer';
 
@@ -16,6 +17,7 @@ import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
+import Button from '~/components/Button/Button.js';
 
 const cx = classnames.bind(styles);
 
@@ -37,9 +39,8 @@ class PersonalLayout extends PureComponent {
             email: this.props?.user?.email || '',
             address: this.props?.user?.address || '',
             languages: this.props?.user?.languages || '',
-            // Product Data sent to DB
-            productDataSentToBD: [],
         };
+        
         this.languagesRef = React.createRef();
     }
 
@@ -93,50 +94,52 @@ class PersonalLayout extends PureComponent {
         }
     };
 
+    // =================================================================
     // CRUD PRODUCT
-    handleCreateNewTechnology = (data, type) => {
+    handleCreateNewTechnology = async (data, type) => {
         const newData = {
             ...data,
             userId: this.props?.user?.id,
         };
-        console.log(newData);
-        if (type === 'SOURCECODE') {
-            this.props.createSourceCode(newData);
-        }
 
-        if (type === 'TECHNOLOGY') {
-            this.props.createTechnology(newData);
-        }
+        const errorCode = await this.props.createTechnology(newData, type);
 
-        if (type === 'LIBRARY') {
-            this.props.createLibrary(newData);
+        if (errorCode === 0) {
+            await this.props.readProductList(this.props?.user?.id);
+            return errorCode;
         }
     };
 
+    handleUpdateTechnology = async (data, type) => {
+        const newData = {
+            ...data,
+            userId: this.props?.user?.id,
+        };
+
+        const errorCode = await this.props.updateTechnology(newData, type, true);
+        if (errorCode === 0) {
+            await this.props.readProductList(this.props?.user?.id);
+            return errorCode;
+        }
+    };
+
+    handleDeleteTechnology = async (id, type) => {
+        const errorCode = await this.props.deleteTechnology(id, type);
+        if (errorCode === 0) {
+            await this.props.readProductList(this.props?.user?.id);
+            return errorCode;
+        }
+    };
+
+    // =================================================================
     async componentDidMount() {
+        // Get all data for CV Layout when sign in
         await this.props.readUserInformation(this.props?.user?.id);
         await this.props.readProductList(this.props?.user?.id);
-
-        const productDataSentToBD = this.props.productList.map((product) => {
-            return {
-                productId: product.productInfo.id,
-                FE: {
-                    page: 1,
-                    pageSize: 10,
-                },
-                BE: {
-                    page: 1,
-                    pageSize: 10,
-                },
-            };
-        });
-
-        this.setState({ productDataSentToBD });
 
         // Fix bug
         const textarea = document.getElementById('js-languages-input');
         textarea?.addEventListener('change', function () {
-            console.log(123);
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         });
@@ -153,7 +156,6 @@ class PersonalLayout extends PureComponent {
     }
 
     render = () => {
-        console.log('this.props.productList ', this.state.productDataSentToBD);
         return (
             <div className={cx('body')}>
                 <Header />
@@ -319,10 +321,26 @@ class PersonalLayout extends PureComponent {
 
                             <div className={cx('col pc-9')}>
                                 <div className={cx('product-list')}>
-                                    <Product createtechnology={this.handleCreateNewTechnology} />
+                                    {/* <Product createtechnology={this.handleCreateNewTechnology} /> */}
                                     {this.props.productList?.map((product, index) => {
-                                        return <Product key={index} productdata={product} createtechnology={11111} />;
+                                        return (
+                                            <Product
+                                                key={index}
+                                                productdata={product}
+                                                onCreateTechnology={this.handleCreateNewTechnology}
+                                                onUpdateTechnology={this.handleUpdateTechnology}
+                                                onDeleteTechnology={this.handleDeleteTechnology}
+                                            />
+                                        );
                                     })}
+                                </div>
+                                <div className={cx('add-new-product-container')}>
+                                    <Button className={cx('add-new-product-button')}>
+                                        <span className={cx('add-new-product-icon')}>
+                                            <IoIosAddCircle />
+                                        </span>
+                                        THÊM SẢN PHẨM
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -337,23 +355,6 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.user,
         productList: state.user.productList,
-
-        // Library
-        isLibraryLoading: state.user.isLoading.library,
-        libraryList: state.user.libraries,
-        pageQuantityLibrary: state.user.pageQuantityLibrary,
-
-        // Source code
-        isSourceCodeLoading: state.user.isLoading.sourcecode,
-        sourceCodeList: state.user.sourcecodes,
-
-        // FE Technology
-        isFETechnologyLoading: state.user.isLoading.FETechnology,
-        FETechnologies: state.user.FETechnologies,
-
-        // BE Technology
-        isBETechnologyLoading: state.user.isLoading.BETechnology,
-        BETechnologies: state.user.BETechnologies,
     };
 };
 
@@ -365,28 +366,13 @@ const mapDispatchToProps = (dispatch) => {
         updateUserInformation: (toastText, data) =>
             dispatch(userActions.updateUserInformation(toastText, 'USER_INFORMATION', data, true)),
 
-        // CRUD Product list
-        readProductList: (id) => dispatch(userActions.readProductList('danh sách sản phẩm', 'PRODUCT_LIST', id)),
-        updateProductList: (userId, productId) =>
-            dispatch(userActions.readProductList('danh sách sản phẩm', 'PRODUCT_LIST', userId)),
+        readProductList: (id) => dispatch(userActions.readProductList('PRODUCT_LIST', id)),
 
-        // CRUD Source code
-        createSourceCode: (data) => dispatch(userActions.createTechnology('source code', 'SOURCECODE', data)),
-        updateSourceCode: (data) => dispatch(userActions.updateTechnology('source code', 'SOURCECODE', data)),
-        deleteSourceCode: (id) => dispatch(userActions.deleteTechnology('source code', 'SOURCECODE', id, 'SC')),
-
-        // CRUD Technology
-        createTechnology: (data) => dispatch(userActions.createTechnology('công nghệ sử dụng', 'TECHNOLOGY', data)),
-        updateTechnology: (data) => dispatch(userActions.updateTechnology('công nghệ sử dụng', 'TECHNOLOGY', data)),
-        deleteTechnology: (id) =>
-            dispatch(userActions.deleteTechnology('Công nghệ ở Frontend', 'TECHNOLOGY', id, 'FT')),
-
-        // CRUD Library
-        createLibrary: (data) => dispatch(userActions.createTechnology('thư viện sử dụng', 'LIBRARY', data)),
-        updateLibrary: (data, isToastSuccess) =>
-            dispatch(userActions.updateTechnology('thư viện', 'LIBRARY', data, isToastSuccess)),
-        deleteLibrary: (id, side) =>
-            dispatch(userActions.deleteTechnology('thư viện sử dụng', 'LIBRARY', id, 'LI', side)),
+        // CRUD Source code, Technology, Library
+        createTechnology: (data, type) => dispatch(userActions.createTechnology(data, type)),
+        updateTechnology: (data, type, isToastSuccess) =>
+            dispatch(userActions.updateTechnology(data, type, isToastSuccess)),
+        deleteTechnology: (id, type) => dispatch(userActions.deleteTechnology(id, type)),
     };
 };
 

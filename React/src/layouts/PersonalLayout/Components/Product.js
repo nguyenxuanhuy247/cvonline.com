@@ -18,16 +18,19 @@ class Product extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isPagination: true,
-            FEpage: 1,
-            FEpageSize: 10,
-            BEpage: 1,
-            BEpageSize: 10,
+            FE_isPagination: true,
+            FE_Page: 1,
+            FE_PageSize: 10,
+            FE_sortBy: '',
+
+            BE_isPagination: true,
+            BE_Page: 1,
+            BE_PageSize: 10,
+            BE_sortBy: '',
 
             isModalOpen: false,
             uploadImageUrl: '',
             image: '',
-            sortBy: '',
 
             isSearch: false,
             searchLibraryList: [],
@@ -36,7 +39,7 @@ class Product extends PureComponent {
         this.lastPage = React.createRef();
     }
 
-    onClose = () => {
+    onCloseChangeImageModal = () => {
         this.setState({
             isModalOpen: false,
         });
@@ -51,139 +54,82 @@ class Product extends PureComponent {
         return side;
     };
 
-    handleChangePage = (event, value) => {
-        this.setState({ selectedPage: value });
-        this.props.readLibrary(this.FEorBESide(), value, this.state.itemsPerPage);
-    };
-
-    handleShowAllLibraryList = (side) => {
-        const showAllButton = document.getElementById(`js-show-all-button-${side}`);
-        if (!showAllButton.classList.contains(`${cx('active')}`)) {
-            this.props.readLibrary(this.FEorBESide());
-            this.setState({ isPagination: false });
+    handleChangePagePaginition = (event, value, side) => {
+        if (side === 'FE') {
+            this.setState({ FE_Page: value });
         }
 
-        const paginationButton = document.getElementById('js-pagination-button');
-
-        showAllButton.classList.add(`${cx('active')}`);
-        paginationButton.classList.remove(`${cx('active')}`);
+        if (side === 'BE') {
+            this.setState({ BE_Page: value });
+        }
     };
 
-    hanldeShowPagination = async () => {
-        const showAllButton = document.getElementById('js-show-all-button');
-        const paginationButton = document.getElementById('js-pagination-button');
-        const paginationSelect = document.getElementById('js-pagination-select');
-
-        if (paginationSelect) {
-            paginationSelect.onclick = (e) => e.stopPropagation();
-        }
-
-        if (paginationButton) {
-            paginationButton.classList.add(`${cx('active')}`);
-        }
-
-        if (showAllButton) {
-            showAllButton.classList.remove(`${cx('active')}`);
-        }
-
-        await this.setState({ isPagination: true, selectedPage: 1, itemsPerPage: paginationSelect?.value });
-        await this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage);
-    };
-
-    handleChangeItemsPerPage = async (e) => {
-        const showAllButton = document.getElementById('js-show-all-button');
-        const paginationButton = document.getElementById('js-pagination-button');
-
-        paginationButton.classList.add(`${cx('active')}`);
-        showAllButton.classList.remove(`${cx('active')}`);
-
-        await this.setState({ isPagination: true, selectedPage: 1, itemsPerPage: e.target.value });
-        await this.props.readLibrary(this.FEorBESide(), 1, this.state.itemsPerPage);
-    };
-
-    // =================================================================
-
-    // CRUD Library
-    handleCreateLibrary = async (data) => {
-        const side = this.FEorBESide();
-        const libraryData = {
-            side: side,
-            ...data,
-        };
-
-        const { errorCode, totalRows } = await this.props.createLibrary(libraryData);
-
-        if (errorCode === 0) {
-            if (this.state.isPagination) {
-                const lastPage = Math.ceil(totalRows / this.state.itemsPerPage);
-                await this.setState({
-                    selectedPage: lastPage,
+    hanldeChangeNumberItemsPerPage = (e, side, productId) => {
+        const value = e.target.innerText;
+        if (value === 'Tất cả') {
+            if (side === 'FE') {
+                this.setState({
+                    FE_isPagination: false,
                 });
-                await this.props.readLibrary(side, lastPage, this.state.itemsPerPage);
-            } else {
-                await this.props.readLibrary(side);
             }
 
-            return { errorCode };
+            if (side === 'BE') {
+                this.setState({
+                    BE_isPagination: false,
+                });
+            }
         } else {
-            return { errorCode };
-        }
-    };
-
-    handleUpdateLibrary = async (data) => {
-        const side = this.FEorBESide();
-        const libraryData = {
-            side: side,
-            ...data,
-        };
-
-        const errorCode = await this.props.updateLibrary(libraryData, true);
-
-        if (errorCode === 0) {
-            if (this.state.isPagination) {
-                await this.props.readLibrary(side, this.state.selectedPage, this.state.itemsPerPage);
-            } else {
-                await this.props.readLibrary(side);
+            if (side === 'FE') {
+                this.setState({
+                    FE_isPagination: true,
+                    FE_PageSize: +value,
+                    FE_Page: 1,
+                });
             }
 
-            return errorCode;
-        } else {
-            return errorCode;
+            if (side === 'BE') {
+                this.setState({
+                    BE_isPagination: true,
+                    BE_PageSize: +value,
+                    BE_Page: 1,
+                });
+            }
         }
-    };
 
-    handleDeleteLibrary = async (id) => {
-        const side = this.FEorBESide();
-        const { errorCode, totalRows } = await this.props.deleteLibrary(id, side);
-
-        if (errorCode === 0) {
-            if (this.state.isPagination) {
-                const lastPage = Math.ceil(totalRows / this.state.itemsPerPage);
-                if (lastPage < this.state.selectedPage) {
-                    this.setState({ selectedPage: lastPage });
-                    this.props.readLibrary(side, lastPage, this.state.itemsPerPage);
+        const parentElement = e.target.parentNode;
+        const allDisplayButtons = parentElement?.childNodes;
+        if (allDisplayButtons) {
+            allDisplayButtons.forEach((displayButton) => {
+                const isActive = displayButton.classList.contains(cx('active'));
+                if (isActive) {
+                    displayButton.classList.remove(cx('active'));
                 }
-
-                await this.props.readLibrary(side, lastPage, this.state.itemsPerPage);
-            } else {
-                await this.props.readLibrary(side);
-            }
-
-            return { errorCode };
-        } else {
-            return { errorCode };
+            });
         }
+        e.target.classList.add(cx('active'));
     };
 
     // =================================================================
 
-    handleSortLibraryName = (e) => {
-        if (e.target.value === 'NO') {
-            this.setState({ sortBy: '' });
-        } else if (e.target.value === 'AZ') {
-            this.setState({ sortBy: 'asc' });
-        } else if (e.target.value === 'ZA') {
-            this.setState({ sortBy: 'desc' });
+    handleSortLibraryName = (e, side) => {
+        if ((side = 'FE')) {
+            if (e.target.value === 'NO') {
+                this.setState({ FE_sortBy: '' });
+            } else if (e.target.value === 'AZ') {
+                this.setState({ FE_sortBy: 'asc' });
+            } else if (e.target.value === 'ZA') {
+                this.setState({ FE_sortBy: 'desc' });
+            }
+        }
+
+        if ((side = 'BE')) {
+            if (e.target.value === 'NO') {
+                this.setState({ BE_sortBy: '' });
+            } else if (e.target.value === 'AZ') {
+                this.setState({ BE_sortBy: 'asc' });
+            } else if (e.target.value === 'ZA') {
+                this.setState({ BE_sortBy: 'desc' });
+            }
         }
     };
 
@@ -246,21 +192,20 @@ class Product extends PureComponent {
 
     // =================================================================
 
-    componentDidMount() {
-        // this.props.readLibrary(this.FEorBESide(), this.state.selectedPage, this.state.itemsPerPage);
-        // this.props.readBETechnology('ALL');
-        // this.props.readSourceCode('ALL');
-        // this.props.readFETechnology('ALL');
-        // if (this.props.productData) {
-        //     const productInfo = this.props.productData?.productInfo;
-        //     const binaryImage = Buffer.from(productInfo.image, 'base64').toString('binary');
-        //     this.setState({ name: productInfo.name, desc: productInfo.desc, image: binaryImage });
-        // }
-        // const technologies = this.props.productData?.technologies;
-        // console.log('PRODUCT DATA:', this.props.productData?.productInfo, this.props.productData?.technologies);
-    }
+    componentDidUpdate(prevProps) {
+        // Turn to last page when add or delete a library
+        if (this.props?.productdata?.numberofFELibrary !== prevProps.productdata?.numberofFELibrary) {
+            const { numberofFELibrary } = this.props?.productdata ?? {};
+            const FE_FinalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
+            this.setState({ FE_Page: FE_FinalPage });
+        }
 
-    componentDidUpdate() {
+        if (this.props?.productdata?.numberofBELibrary !== prevProps.productdata?.numberofBELibrary) {
+            const { numberofBELibrary } = this.props?.productdata ?? {};
+            const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
+            this.setState({ BE_Page: BE_FinalPage });
+        }
+
         // If page's quantity is more than 1, libray list's height of page 2, 3, 4,... will be equal to page 1
         // const libraryList = document.getElementById('js-library-list');
         // if (libraryList) {
@@ -274,7 +219,30 @@ class Product extends PureComponent {
     }
 
     render() {
-        console.log('aaaaaaaaaaa', this.props.createtechnology);
+        const {
+            productInfo,
+            sourceCodeList,
+            FETechnologyList,
+            BETechnologyList,
+            FELibraryList,
+            numberofFELibrary,
+            BELibraryList,
+            numberofBELibrary,
+        } = this.props?.productdata ?? {};
+
+        const FETotalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
+        const BETotalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
+
+        // =================================================================
+        const FE_paginatedLibraryList = _.chunk(FELibraryList, this.state.FE_PageSize);
+        const FE_selectedList = FE_paginatedLibraryList[this.state.FE_Page - 1];
+        const BE_paginatedLibraryList = _.chunk(BELibraryList, this.state.BE_PageSize);
+        const BE_selectedList = BE_paginatedLibraryList[this.state.BE_Page - 1];
+
+        const FELibraryListArray = this.state.FE_isPagination ? FE_selectedList : FELibraryList;
+        const BELibraryListArray = this.state.BE_isPagination ? BE_selectedList : BELibraryList;
+
+        // =================================================================
 
         const dataForReadLibraryAfterSorting = {
             isPagination: this.state.isPagination,
@@ -305,13 +273,13 @@ class Product extends PureComponent {
                         <div className={cx('product-desc')} spellCheck="false">
                             <div className={cx('work-exp')}>
                                 <ContentEditableTag
-                                    content={this.state.name}
+                                    content={this.state.name || productInfo?.name}
                                     className={cx('exp')}
                                     placeholder="Tên sản phẩm"
                                 />
                             </div>
                             <ContentEditableTag
-                                content={this.state.desc}
+                                content={this.state.desc || productInfo?.desc}
                                 className={cx('desc')}
                                 placeholder="Mô tả sản phẩm"
                             />
@@ -339,11 +307,12 @@ class Product extends PureComponent {
                         {this.state.isModalOpen && (
                             <ChangeImageModal
                                 round={false}
-                                onClose={this.onClose}
+                                onClose={this.onCloseChangeImageModal}
                                 onGetUrl={this.getImageUrlFromChangeImageModal}
                             />
                         )}
                     </div>
+
                     <div className={cx('col pc-3')}>
                         <div className={cx('source-code-section')}>
                             <div className={cx('list')}>
@@ -352,11 +321,12 @@ class Product extends PureComponent {
                                     label="source code"
                                     type="SOURCECODE"
                                     keyprop="SC"
-                                    productId={1}
-                                    technologylist={this.props.sourceCodeList}
-                                    isloading={this.props.isSourceCodeLoading}
-                                    // CRUD
-                                    createtechnology={this.props.createtechnology}
+                                    productId={productInfo?.id}
+                                    technologylist={sourceCodeList}
+                                    // CRUD Source Code
+                                    onCreateTechnology={this.props.onCreateTechnology}
+                                    onUpdateTechnology={this.props.onUpdateTechnology}
+                                    onDeleteTechnology={this.props.onDeleteTechnology}
                                 />
                             </div>
                         </div>
@@ -378,12 +348,12 @@ class Product extends PureComponent {
                                         type="TECHNOLOGY"
                                         keyprop="TE"
                                         side="FE"
-                                        technologylist={this.props?.technologies?.FETechnologyList}
-                                        isloading={this.props.isFETechnologyLoading}
-                                        readtechnology={() => this.props.readFETechnology('ALL')}
-                                        // createtechnology={this.props.createFETechnology}
-                                        // updatetechnology={this.props.updateFETechnology}
-                                        // deletetechnology={this.props.deleteFETechnology}
+                                        productId={productInfo?.id}
+                                        technologylist={FETechnologyList}
+                                        // CRUD FE Technology List
+                                        onCreateTechnology={this.props.onCreateTechnology}
+                                        onUpdateTechnology={this.props.onUpdateTechnology}
+                                        onDeleteTechnology={this.props.onDeleteTechnology}
                                     />
                                 </div>
                             </div>
@@ -410,7 +380,7 @@ class Product extends PureComponent {
                                         <span className={cx('library-sort-heading')}>Sắp xếp </span>
                                         <select
                                             className={cx('library-sort-select')}
-                                            onChange={(e) => this.handleSortLibraryName(e)}
+                                            onChange={(e) => this.handleSortLibraryName(e, 'FE')}
                                         >
                                             <option value="NO">---</option>
                                             <option value="AZ">A - Z</option>
@@ -423,19 +393,13 @@ class Product extends PureComponent {
                                     <div>
                                         <div className={cx('display')}>
                                             <label className={cx('label')}>Hiển thị : </label>
-                                            <Button
-                                                className={cx('button', 'active')}
-                                                id="js-show-all-button"
-                                                onClick={this.handleShowAllLibraryList}
-                                            >
-                                                Tất cả
-                                            </Button>
-                                            {[10, 20, 30, 40, 50].map((button, index) => {
+                                            {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                                 return (
                                                     <Button
+                                                        id={`js-display-paginition-FE-${productInfo?.id}`}
                                                         key={index}
-                                                        className={cx('button')}
-                                                        onClick={this.handleShowAllLibraryList}
+                                                        className={cx('button', { active: button === 10 })}
+                                                        onClick={(e) => this.hanldeChangeNumberItemsPerPage(e, 'FE')}
                                                     >
                                                         {button}
                                                     </Button>
@@ -444,22 +408,24 @@ class Product extends PureComponent {
                                         </div>
 
                                         <TechnologyList
-                                            id="js-library-list"
+                                            id="js-library-list-FE"
                                             draggable
-                                            label="thư viện"
+                                            label="thư viện FE"
                                             type="LIBRARY"
                                             keyprop="LI"
-                                            isloading={this.props.isLibraryLoading}
-                                            technologylist={sortedDataLibraryList}
-                                            readtechnology={this.props.readLibrary}
-                                            // createtechnology={this.handleCreateLibrary}
-                                            // updatetechnology={this.handleUpdateLibrary}
-                                            // deletetechnology={this.handleDeleteLibrary}
+                                            side="FE"
+                                            productId={productInfo?.id}
+                                            technologylist={FELibraryListArray}
+                                            // CRUD FE Library List
+                                            onCreateTechnology={this.props.onCreateTechnology}
+                                            onUpdateTechnology={this.props.onUpdateTechnology}
+                                            onDeleteTechnology={this.props.onDeleteTechnology}
+                                            // =================================================================
                                             sortupdatetechnology={this.props.updateLibrary}
                                             dataforsort={dataForReadLibraryAfterSorting}
                                         />
 
-                                        {this.state.isPagination && (
+                                        {this.state.FE_isPagination && (
                                             <div
                                                 style={{
                                                     marginTop: '12px',
@@ -468,12 +434,12 @@ class Product extends PureComponent {
                                                 }}
                                             >
                                                 <Pagination
-                                                    count={this.props.pageQuantityLibrary}
+                                                    count={FETotalPage}
                                                     variant="outlined"
                                                     size="medium"
                                                     siblingCount={1}
                                                     boundaryCount={1}
-                                                    page={this.state.selectedPage}
+                                                    page={this.state.FE_Page}
                                                     sx={{
                                                         '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
                                                             color: 'var(--primary-color)',
@@ -495,7 +461,9 @@ class Product extends PureComponent {
                                                             backgroundColor: 'var(--button-bgc-green-01) !important',
                                                         },
                                                     }}
-                                                    onChange={this.handleChangePage}
+                                                    onChange={(e, value) =>
+                                                        this.handleChangePagePaginition(e, value, 'FE')
+                                                    }
                                                 />
                                             </div>
                                         )}
@@ -508,12 +476,9 @@ class Product extends PureComponent {
                                         label="thư viện"
                                         type="LIBRARY"
                                         keyprop="LI"
+                                        side="FE"
                                         isloading={this.props.isLibraryLoading}
                                         technologylist={sortedDataLibraryList}
-                                        readtechnology={this.props.readLibrary}
-                                        // createtechnology={this.handleCreateLibrary}
-                                        // updatetechnology={this.handleUpdateLibrary}
-                                        // deletetechnology={this.handleDeleteLibrary}
                                         searchLibrary={this.handleSearchLibrary}
                                         sortupdatetechnology={this.props.updateLibrary}
                                         dataforsort={dataForReadLibraryAfterSorting}
@@ -537,12 +502,12 @@ class Product extends PureComponent {
                                         type="TECHNOLOGY"
                                         keyprop="TE"
                                         side="BE"
-                                        technologylist={this.props?.technologies?.FETechnologyList}
-                                        isloading={this.props.isFETechnologyLoading}
-                                        readtechnology={() => this.props.readFETechnology('ALL')}
-                                        // createtechnology={this.props.createFETechnology}
-                                        // updatetechnology={this.props.updateFETechnology}
-                                        // deletetechnology={this.props.deleteFETechnology}
+                                        productId={productInfo?.id}
+                                        technologylist={BETechnologyList}
+                                        // CRUD FE Technology List
+                                        onCreateTechnology={this.props.onCreateTechnology}
+                                        onUpdateTechnology={this.props.onUpdateTechnology}
+                                        onDeleteTechnology={this.props.onDeleteTechnology}
                                     />
                                 </div>
                             </div>
@@ -568,7 +533,7 @@ class Product extends PureComponent {
                                         <span className={cx('library-sort-heading')}>Sắp xếp </span>
                                         <select
                                             className={cx('library-sort-select')}
-                                            onChange={(e) => this.handleSortLibraryName(e)}
+                                            onChange={(e) => this.handleSortLibraryName(e, 'BE')}
                                         >
                                             <option value="NO">---</option>
                                             <option value="AZ">A - Z</option>
@@ -578,69 +543,42 @@ class Product extends PureComponent {
                                 </div>
                                 <div className={cx('display')}>
                                     <label className={cx('label')}>Hiển thị : </label>
-                                    <Button
-                                        className={cx('button', 'active')}
-                                        id="js-show-all-button"
-                                        onClick={this.handleShowAllLibraryList}
-                                    >
-                                        Tất cả
-                                    </Button>
-                                    <Button
-                                        className={cx('button')}
-                                        id="js-show-all-button"
-                                        onClick={this.handleShowAllLibraryList}
-                                    >
-                                        10
-                                    </Button>
-                                    <Button
-                                        className={cx('button')}
-                                        id="js-show-all-button"
-                                        onClick={this.handleShowAllLibraryList}
-                                    >
-                                        20
-                                    </Button>
-                                    <Button
-                                        className={cx('button')}
-                                        id="js-show-all-button"
-                                        onClick={this.handleShowAllLibraryList}
-                                    >
-                                        30
-                                    </Button>
-                                    <Button
-                                        className={cx('button')}
-                                        id="js-show-all-button"
-                                        onClick={this.handleShowAllLibraryList}
-                                    >
-                                        40
-                                    </Button>
-                                    <Button
-                                        className={cx('button')}
-                                        id="js-show-all-button"
-                                        onClick={this.handleShowAllLibraryList}
-                                    >
-                                        50
-                                    </Button>
+                                    {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
+                                        return (
+                                            <Button
+                                                id={`js-display-paginition-BE-${productInfo?.id}`}
+                                                key={index}
+                                                className={cx('button', { active: button === 10 })}
+                                                onClick={(e) => this.hanldeChangeNumberItemsPerPage(e, 'BE')}
+                                            >
+                                                {button}
+                                            </Button>
+                                        );
+                                    })}
                                 </div>
 
                                 {!this.state.isSearch ? (
                                     <div>
                                         <TechnologyList
-                                            id="js-library-list"
+                                            id="js-library-list-BE"
                                             draggable
-                                            label="thư viện"
+                                            label="thư viện BE"
                                             type="LIBRARY"
                                             keyprop="LI"
+                                            side="BE"
+                                            productId={productInfo?.id}
+                                            technologylist={BELibraryListArray}
+                                            // CRUD BE Library List
+                                            onCreateTechnology={this.props.onCreateTechnology}
+                                            onUpdateTechnology={this.props.onUpdateTechnology}
+                                            onDeleteTechnology={this.props.onDeleteTechnology}
+                                            // --------------------------------
                                             isloading={this.props.isLibraryLoading}
-                                            technologylist={sortedDataLibraryList}
-                                            readtechnology={this.props.readLibrary}
-                                            // createtechnology={this.handleCreateLibrary}
-                                            // updatetechnology={this.handleUpdateLibrary}
-                                            // deletetechnology={this.handleDeleteLibrary}
                                             sortupdatetechnology={this.props.updateLibrary}
                                             dataforsort={dataForReadLibraryAfterSorting}
                                         />
 
-                                        {this.state.isPagination && (
+                                        {this.state.BE_isPagination && (
                                             <div
                                                 style={{
                                                     margin: '12px 0 12px',
@@ -649,12 +587,12 @@ class Product extends PureComponent {
                                                 }}
                                             >
                                                 <Pagination
-                                                    count={this.props.pageQuantityLibrary}
+                                                    count={BETotalPage}
                                                     variant="outlined"
                                                     size="medium"
                                                     siblingCount={1}
                                                     boundaryCount={1}
-                                                    page={this.state.selectedPage}
+                                                    page={this.state.BE_Page}
                                                     sx={{
                                                         '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
                                                             color: 'var(--primary-color)',
@@ -676,7 +614,9 @@ class Product extends PureComponent {
                                                             backgroundColor: 'var(--button-bgc-green-01) !important',
                                                         },
                                                     }}
-                                                    onChange={this.handleChangePage}
+                                                    onChange={(e, value) =>
+                                                        this.handleChangePagePaginition(e, value, 'BE')
+                                                    }
                                                 />
                                             </div>
                                         )}
@@ -691,10 +631,6 @@ class Product extends PureComponent {
                                         keyprop="LI"
                                         isloading={this.props.isLibraryLoading}
                                         technologylist={sortedDataLibraryList}
-                                        readtechnology={this.props.readLibrary}
-                                        // createtechnology={this.handleCreateLibrary}
-                                        // updatetechnology={this.handleUpdateLibrary}
-                                        // deletetechnology={this.handleDeleteLibrary}
                                         searchLibrary={this.handleSearchLibrary}
                                         sortupdatetechnology={this.props.updateLibrary}
                                         dataforsort={dataForReadLibraryAfterSorting}

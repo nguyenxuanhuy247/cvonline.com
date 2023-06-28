@@ -6,15 +6,12 @@ const initialState = {
         signup: false,
         user: false,
         productList: false,
-
-        sourcecode: false,
-        library: false,
-        technology: false,
+        technologyList: false,
     },
     isSignUp: false,
     isSignIn: false,
     user: null,
-    productList: [],
+    productList: undefined,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -115,122 +112,6 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, user: false },
             };
-
-        // =================================================================
-        // CREATE LIBRARY
-        case actionNames.CREATE_LIBRARY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, library: true },
-            };
-        case actionNames.CREATE_LIBRARY_SUCCESS:
-        case actionNames.CREATE_LIBRARY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, library: false },
-            };
-        // UPDATE LIBRARY
-        case actionNames.UPDATE_LIBRARY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, library: true },
-            };
-        case actionNames.UPDATE_LIBRARY_SUCCESS:
-        case actionNames.UPDATE_LIBRARY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, library: false },
-            };
-
-        // ================================================================
-
-        // CREATE TECHNOLOGY
-        case actionNames.CREATE_FRONTEND_TECHNOLOGY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, FETechnology: true },
-            };
-        case actionNames.CREATE_FRONTEND_TECHNOLOGY_SUCCESS:
-        case actionNames.CREATE_FRONTEND_TECHNOLOGY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, FETechnology: false },
-            };
-        // READ TECHNOLOGY
-        case actionNames.READ_FRONTEND_TECHNOLOGY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, FETechnology: true },
-            };
-        case actionNames.READ_FRONTEND_TECHNOLOGY_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, FETechnology: false },
-                FETechnologies: action.payload.data,
-            };
-        case actionNames.READ_FRONTEND_TECHNOLOGY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, FETechnology: false },
-            };
-        // UPDATE TECHNOLOGY
-        case actionNames.UPDATE_FRONTEND_TECHNOLOGY_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, FETechnology: true },
-            };
-        case actionNames.UPDATE_FRONTEND_TECHNOLOGY_SUCCESS:
-        case actionNames.UPDATE_FRONTEND_TECHNOLOGY_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, FETechnology: false },
-            };
-
-        // ================================================================
-
-        // CREATE SOURCE CODE
-        case actionNames.CREATE_SOURCECODE_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, sourcecode: true },
-            };
-        case actionNames.CREATE_SOURCECODE_SUCCESS:
-        case actionNames.CREATE_SOURCECODE_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, sourcecode: false },
-            };
-        // READ SOURCE CODE
-        case actionNames.READ_SOURCECODE_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, sourcecode: true },
-            };
-        case actionNames.READ_SOURCECODE_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, sourcecode: false },
-                sourcecodes: action.payload.data,
-            };
-        case actionNames.READ_SOURCECODE_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, sourcecode: false },
-            };
-        // UPDATE SOURCE CODE
-        case actionNames.UPDATE_SOURCECODE_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, sourcecode: true },
-            };
-        case actionNames.UPDATE_SOURCECODE_SUCCESS:
-        case actionNames.UPDATE_SOURCECODE_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, sourcecode: false },
-            };
-        // ================================================================
-
         default:
             return state;
     }

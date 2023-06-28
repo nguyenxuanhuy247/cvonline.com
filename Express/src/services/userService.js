@@ -44,15 +44,21 @@ export const postUserSignUp = async (fullName, email, password) => {
             },
         });
 
-        if (!created) {
-            return {
-                errorCode: 32,
-                errorMessage: `Email của bạn đã được đăng ký`,
-            };
-        } else {
+        if (created) {
+            await db.Technology.create({
+                type: 'PRODUCTDESC',
+                key: 'PD',
+                userId: user.id,
+            });
+
             return {
                 errorCode: 0,
                 errorMessage: `Tài khoản được tạo thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Email của bạn đã được đăng ký`,
             };
         }
     } catch (error) {
@@ -288,7 +294,7 @@ export const handleUpdateTechnology = async (data) => {
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (data) => {
     try {
-        const { key, side, id } = data;
+        const { id } = data;
 
         const result = await db.Technology.findOne({
             where: { id: id },
@@ -297,22 +303,9 @@ export const handleDeleteTechnology = async (data) => {
         if (result) {
             await db.Technology.destroy({ where: { id: id } });
 
-            let whereQuery;
-            if (key === 'LI') {
-                whereQuery = { key: key, side: side };
-            } else {
-                whereQuery = { key: key };
-            }
-
-            const totalRows = await db.Technology.count({
-                where: whereQuery,
-            });
-
-            console.log('Total Rows: ', totalRows);
             return {
                 errorCode: 0,
-                errorMessage: `Xóa thư viện thành công`,
-                totalRows: totalRows,
+                errorMessage: `Xóa thành công`,
             };
         } else {
             return {
@@ -410,22 +403,22 @@ export const handleUpdateUserInformation = async (data) => {
 // READ PRODUCT LIST
 export const handleGetProductList = async (data) => {
     try {
-        const { userId, productId, page, page_size } = data;
+        const { id } = data;
 
         const user = await db.User.findOne({
-            where: { id: userId },
+            where: { id: id },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         });
 
         if (user) {
             const productIDs = await db.Technology.findAll({
-                where: { userId: userId },
-                attributes: ['productId'],
+                where: { userId: id, key: 'PD' },
+                attributes: ['id'],
             });
+            const productIDArr = productIDs?.map((productID) => productID.id);
+            const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
 
-            if (productIDs) {
-                const productIDArr = productIDs?.map((productID) => productID.productId);
-                const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+            if (productIDArrWithNULL.length > 0) {
                 const uniqueProductIDArr = [...new Set(productIDArrWithNULL)]?.sort();
 
                 let productListData = [];
@@ -436,14 +429,14 @@ export const handleGetProductList = async (data) => {
                         FETechnologyList: [],
                         BETechnologyList: [],
                         FELibraryList: [],
-                        numberFELibraryPage: undefined,
+                        numberofFELibrary: undefined,
                         BELibraryList: [],
-                        numberBELibraryPage: undefined,
+                        numberofBELibrary: undefined,
                     };
 
                     const productDesc = await db.Technology.findOne({
-                        where: { userId: userId, productId: ID, key: 'PD' },
-                        attributes: ['name', 'desc', 'image'],
+                        where: { userId: id, key: 'PD' },
+                        attributes: ['id', 'name', 'desc', 'image'],
                     });
 
                     if (productDesc) {
@@ -451,7 +444,7 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const sourceCodes = await db.Technology.findAll({
-                        where: { userId: userId, productId: ID, key: 'SC' },
+                        where: { userId: id, productId: ID, key: 'SC' },
                         attributes: ['id', 'image', 'name', 'link'],
                     });
 
@@ -460,7 +453,7 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const FETechnologies = await db.Technology.findAll({
-                        where: { userId: userId, productId: ID, key: 'TE', side: 'FE' },
+                        where: { userId: id, productId: ID, key: 'TE', side: 'FE' },
                         attributes: ['id', 'image', 'name', 'link'],
                     });
 
@@ -469,7 +462,7 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const BETechnologies = await db.Technology.findAll({
-                        where: { userId: userId, productId: ID, key: 'TE', side: 'BE' },
+                        where: { userId: id, productId: ID, key: 'TE', side: 'BE' },
                         attributes: ['id', 'image', 'name', 'link'],
                     });
 
@@ -478,20 +471,18 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const FELibraries = await db.Technology.findAndCountAll({
-                        where: { userId: userId, productId: ID, key: 'LI', side: 'FE' },
+                        where: { userId: id, productId: ID, key: 'LI', side: 'FE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
                     });
                     product.FELibraryList = FELibraries.rows;
-                    product.numberFELibraryPage = Math.ceil(FELibraries.count / BETechnologies.pazeSize);
+                    product.numberofFELibrary = FELibraries.count;
 
-                    const x = await db.Technology.findAll({
-                        where: { userId: userId, productId: ID, key: 'LI', side: 'BE' },
+                    const BELibraries = await db.Technology.findAndCountAll({
+                        where: { userId: id, productId: ID, key: 'LI', side: 'BE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
                     });
-
-                    if (BETechnologies) {
-                        product.BETechnologyList = BETechnologies;
-                    }
+                    product.BELibraryList = BELibraries.rows;
+                    product.numberofBELibrary = BELibraries.count;
 
                     productListData.push(product);
                 }

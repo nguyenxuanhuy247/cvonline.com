@@ -52,13 +52,29 @@ export const checkReqSignIn = (req, res, next) => {
 
 // CREATE TECHNOLOGY
 export const checkReqCreateTechnology = (req, res, next) => {
-    const { name } = req.body;
+    const { key, name, link } = req.body;
 
-    if (!name) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập tên của thư viện',
-        });
+    if (key === 'SC') {
+        if (!name) {
+            return res.status(400).json({
+                errorCode: 10,
+                errorMessage: 'Vui lòng nhập tên của source code',
+            });
+        }
+
+        if (!link) {
+            return res.status(400).json({
+                errorCode: 11,
+                errorMessage: 'Vui lòng nhập link của source code',
+            });
+        }
+    } else {
+        if (!name) {
+            return res.status(400).json({
+                errorCode: 12,
+                errorMessage: 'Vui lòng nhập tên của thư viện',
+            });
+        }
     }
 
     next();
@@ -155,9 +171,9 @@ export const checkReqUpdateUserInformation = (req, res, next) => {
 // =================================================================
 // CHECK READ CV LAYOUT
 export const checkReqGetProductList = (req, res, next) => {
-    const { userId } = req.query;
+    const { id } = req.query;
 
-    if (!userId) {
+    if (!id) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id người dùng để tải danh sách sản phẩm',

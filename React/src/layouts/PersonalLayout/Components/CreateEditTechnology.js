@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
+import { toast } from 'react-toastify';
 
 import styles from './CreateEditTechnology.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
-import Loading from '~/components/Modal/Loading.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 
 const cx = classnames.bind(styles);
@@ -46,25 +46,47 @@ class CreateEditTechnology extends PureComponent {
             name: this.state.name?.trim(),
             version: this.state.version?.trim(),
             link: this.state.link,
-            productId: this.props.productId,
+            productId: this.props?.productId,
         };
 
         if (isEdit) {
-            await this.props.onupdate(this.state, this.props.onclose);
+            const errorCode = await this.props?.onUpdateTechnology(data, this.props.type);
+            if (errorCode === 0) {
+                this.props.onclose();
+            }
         } else {
-            await this.props.createtechnology(data, this.props.type);
-            this.props.onclose();
+            if (this.props?.type === 'SOURCECODE') {
+                if (this.state.name && this.state.link) {
+                    const errorCode = await this.props.onCreateTechnology(data, this.props.type);
+                    if (errorCode === 0) {
+                        this.props.onclose();
+                    }
+                } else {
+                    toast.error(`Nhập tên hoặc link để tạo ${this.props.label} mới`);
+                }
+            } else {
+                if (this.state.name) {
+                    const errorCode = await this.props.onCreateTechnology(data, this.props?.type);
+                    if (errorCode === 0) {
+                        this.props.onclose();
+                    }
+                } else {
+                    toast.error(`Nhập tên tên để tạo ${this.props.label} mới`);
+                }
+            }
         }
     };
 
     render() {
-        const { id, isedit, className, isloading, type, label, onclose } = this.props;
-        // console.log('llllllllllllllll', this.props.createtechnology);
+        const { id, isedit, type, label, onclose } = this.props;
+
         return (
-            <div className={cx('create-edit-technology', className)} id={id}>
+            <div className={cx('create-edit-technology', { 'source-code': type === 'SOURCECODE' })} id={id}>
                 <div className={cx('info')}>
                     <p className={cx('heading')}>
-                        {isedit ? `Chỉnh sửa ${label}` : `Thêm ${type === 'SOURCECODE' ? '' : label} mới`}
+                        {isedit
+                            ? `Chỉnh sửa ${type === 'SOURCECODE' ? '' : label}`
+                            : `Thêm ${type === 'SOURCECODE' ? '' : label} mới`}
                     </p>
                     <div className={cx('image-wrapper')}>
                         <HeadlessTippy
@@ -120,16 +142,14 @@ class CreateEditTechnology extends PureComponent {
                     />
                 </div>
                 <div className={cx('actions')}>
-                    <Button className={cx('btn', 'cancel')} onClick={onclose}>
+                    <Button className={cx('btn', 'cancel', { 'source-code-edit-btn': isedit })} onClick={onclose}>
                         Hủy
                     </Button>
                     <Button
-                        className={cx('btn', 'add')}
+                        className={cx('btn', 'add', { 'source-code-edit-btn': isedit })}
                         onClick={() => this.handleCreateOrUpdateTechnology(isedit)}
                     >{`${isedit ? `Cập nhật` : `Thêm`}`}</Button>
                 </div>
-
-                {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );
     }

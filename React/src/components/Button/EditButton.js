@@ -54,7 +54,6 @@ class EditButton extends PureComponent {
             item.onmousedown = this.props.ondragstart();
 
             item.onmouseup = function () {
-                console.log('UP');
                 item.previousElementSibling.classList.remove(this.props.classHover);
                 editItem.previousElementSibling.style.visibility = 'hidden';
 
@@ -80,7 +79,7 @@ class EditButton extends PureComponent {
     };
 
     render() {
-        const { id, onshow, onedit, ondelete } = this.props;
+        const { id, onShowCreateTechnology, onShowEditTechnology, onDeleteTechnology } = this.props;
         return (
             <div
                 id={`js-edit-button-${id}`}
@@ -102,19 +101,19 @@ class EditButton extends PureComponent {
                 </DefaultTippy>
 
                 <DefaultTippy content="Thêm mục mới">
-                    <Button className={cx('btn', 'add')} onClick={onshow} drag="true">
+                    <Button className={cx('btn', 'add')} onClick={onShowCreateTechnology} drag="true">
                         <IoIosAddCircleOutline />
                     </Button>
                 </DefaultTippy>
 
                 <DefaultTippy content="Sửa mục này">
-                    <Button className={cx('btn', 'add')} onClick={onedit} drag="true">
+                    <Button className={cx('btn', 'add')} onClick={onShowEditTechnology} drag="true">
                         <TfiPencil />
                     </Button>
                 </DefaultTippy>
 
                 <DefaultTippy content="Xóa mục này">
-                    <Button className={cx('btn', 'delete')} onClick={ondelete} drag="true">
+                    <Button className={cx('btn', 'delete')} onClick={onDeleteTechnology} drag="true">
                         <AiOutlineDelete />
                     </Button>
                 </DefaultTippy>

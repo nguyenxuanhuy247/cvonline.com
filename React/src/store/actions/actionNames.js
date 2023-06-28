@@ -20,23 +20,13 @@ const actionNames = Object.freeze({
     // USER SIGN OUT
     USER_SIGNOUT: 'USER_SIGNOUT',
 
-    // USER INFORMATION
+    // PRODUCT LIST
     ...actionMaker(`READ`, `PRODUCT_LIST`),
     ...actionMaker(`DELETE`, `PRODUCT_LIST`),
 
     // USER INFORMATION
     ...actionMaker(`READ`, `USER_INFORMATION`),
     ...actionMaker(`UPDATE`, `USER_INFORMATION`),
-
-    // LIBRARY
-    ...actionMaker(`CREATE`, `LIBRARY`),
-    ...actionMaker(`UPDATE`, `LIBRARY`),
-    ...actionMaker(`DELETE`, `LIBRARY`),
-
-    // SOURCE CODE
-    ...actionMaker(`CREATE`, `SOURCECODE`),
-    ...actionMaker(`UPDATE`, `SOURCECODE`),
-    ...actionMaker(`DELETE`, `SOURCECODE`),
 
     // TECHNOLOGY
     ...actionMaker(`CREATE`, `TECHNOLOGY`),

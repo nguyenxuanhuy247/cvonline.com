@@ -34,7 +34,7 @@ export const updateTechnology = (data) => {
 };
 
 export const deleteTechnology = (id, key, side) => {
-    return axios.delete(`/delete-technology?id=${id}&key=${key}&side=${side}`);
+    return axios.delete(`/delete-technology?id=${id}`);
 };
 
 // =============================================================================
