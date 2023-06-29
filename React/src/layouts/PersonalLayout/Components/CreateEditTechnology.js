@@ -52,14 +52,14 @@ class CreateEditTechnology extends PureComponent {
         if (isEdit) {
             const errorCode = await this.props?.onUpdateTechnology(data, this.props.type);
             if (errorCode === 0) {
-                this.props.onclose();
+                this.props.onCloseCreateTechnology();
             }
         } else {
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
                     const errorCode = await this.props.onCreateTechnology(data, this.props.type);
                     if (errorCode === 0) {
-                        this.props.onclose();
+                        this.props.onCloseCreateTechnology();
                     }
                 } else {
                     toast.error(`Nhập tên hoặc link để tạo ${this.props.label} mới`);
@@ -68,7 +68,7 @@ class CreateEditTechnology extends PureComponent {
                 if (this.state.name) {
                     const errorCode = await this.props.onCreateTechnology(data, this.props?.type);
                     if (errorCode === 0) {
-                        this.props.onclose();
+                        this.props.onCloseCreateTechnology();
                     }
                 } else {
                     toast.error(`Nhập tên tên để tạo ${this.props.label} mới`);
@@ -78,7 +78,7 @@ class CreateEditTechnology extends PureComponent {
     };
 
     render() {
-        const { id, isedit, type, label, onclose } = this.props;
+        const { id, isedit, type, label } = this.props;
 
         return (
             <div className={cx('create-edit-technology', { 'source-code': type === 'SOURCECODE' })} id={id}>
@@ -142,7 +142,10 @@ class CreateEditTechnology extends PureComponent {
                     />
                 </div>
                 <div className={cx('actions')}>
-                    <Button className={cx('btn', 'cancel', { 'source-code-edit-btn': isedit })} onClick={onclose}>
+                    <Button
+                        className={cx('btn', 'cancel', { 'source-code-edit-btn': isedit })}
+                        onClick={this.props.onCloseCreateTechnology}
+                    >
                         Hủy
                     </Button>
                     <Button

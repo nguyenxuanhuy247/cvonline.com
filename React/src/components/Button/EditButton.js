@@ -12,8 +12,8 @@ import Button from './Button';
 const cx = className.bind(styles);
 
 class EditButton extends PureComponent {
-    handleMouseEnter = (id) => {
-        const button = document.getElementById(`js-button-${id}`);
+    handleMouseEnter = (buttonID) => {
+        const button = document.getElementById(buttonID);
         if (button) {
             button.classList.add(this.props.classHover);
         }
@@ -21,26 +21,25 @@ class EditButton extends PureComponent {
         this.props.onmouseenter();
     };
 
-    handleMouseLeave = (id) => {
-        const button = document.getElementById(`js-button-${id}`);
+    handleMouseLeave = (buttonID, editButtonID) => {
+        const button = document.getElementById(buttonID);
+        const editButton = document.getElementById(editButtonID);
+
         if (button) {
             button.classList.remove(this.props.classHover);
         }
 
-        const editItem = document.getElementById(`js-edit-button-${id}`);
-
-        Array.from(editItem?.children).forEach((item) => {
-            if (item.getAttribute('dragHidden') === 'true') {
+        Array.from(editButton?.children).forEach((item) => {
+            if (item.getAttribute('drag') === 'true') {
                 item.style.display = 'inline-flex';
             }
         });
-
         this.props.onmouseleave();
     };
 
-    handleMouseDown = (id) => {
-        const item = document.getElementById(`js-button-${id}`);
-        const editItem = document.getElementById(`js-edit-button-${id}`);
+    handleMouseDown = (buttonID, editButtonID) => {
+        const button = document.getElementById(buttonID);
+        const editItem = document.getElementById(editButtonID);
 
         if (editItem) {
             Array.from(editItem.children).forEach((item) => {
@@ -50,11 +49,11 @@ class EditButton extends PureComponent {
             });
         }
 
-        if (item) {
-            item.onmousedown = this.props.ondragstart();
+        if (button) {
+            button.onmousedown = this.props.ondragstart();
 
-            item.onmouseup = function () {
-                item.previousElementSibling.classList.remove(this.props.classHover);
+            button.onmouseup = function () {
+                button.previousElementSibling.classList.remove(this.props.classHover);
                 editItem.previousElementSibling.style.visibility = 'hidden';
 
                 const allButtons = document.querySelectorAll(`[id*=js-button-${this.props.type}]`);
@@ -66,8 +65,8 @@ class EditButton extends PureComponent {
         }
     };
 
-    handleMouseUp = async (id) => {
-        const editItem = document.getElementById([`js-edit-button-${id}`]);
+    handleMouseUp = async (editButtonID) => {
+        const editItem = document.getElementById(editButtonID);
 
         if (editItem) {
             Array.from(editItem?.children).forEach((item) => {
@@ -79,21 +78,21 @@ class EditButton extends PureComponent {
     };
 
     render() {
-        const { id, onShowCreateTechnology, onShowEditTechnology, onDeleteTechnology } = this.props;
+        const { editButtonID, buttonID, onShowCreateTechnology, onShowEditTechnology, onDeleteTechnology } = this.props;
         return (
             <div
-                id={`js-edit-button-${id}`}
+                id={editButtonID}
                 className={cx('wrapper')}
-                onMouseEnter={() => this.handleMouseEnter(id)}
-                onMouseLeave={() => this.handleMouseLeave(id)}
+                onMouseEnter={() => this.handleMouseEnter(buttonID)}
+                onMouseLeave={() => this.handleMouseLeave(buttonID, editButtonID)}
             >
                 <DefaultTippy content="Kéo thả để di chuyển mục">
                     <Button
-                        id={id}
+                        id={editButtonID}
                         draggable
                         className={cx('btn', 'drag')}
-                        onMouseDown={() => this.handleMouseDown(id)}
-                        onMouseUp={() => this.handleMouseUp(id)}
+                        onMouseDown={() => this.handleMouseDown(buttonID, editButtonID)}
+                        onMouseUp={() => this.handleMouseUp(editButtonID)}
                         ondragend={this.props.ondragend}
                     >
                         <RiDragMove2Fill />

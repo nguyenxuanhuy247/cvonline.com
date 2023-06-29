@@ -39,6 +39,8 @@ class Product extends PureComponent {
         };
     }
 
+    // =================================================================
+    // AVATAR IMAGE
     onCloseChangeImageModal = () => {
         this.setState({
             isModalOpen: false,

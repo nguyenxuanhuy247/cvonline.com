@@ -3,13 +3,11 @@ import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { Buffer } from 'buffer';
 import { toast } from 'react-toastify';
-import DefaultTippy from '@tippyjs/react';
 
 import styles from './TechnologyList.module.scss';
 import '~/components/GlobalStyles/Pagination.scss';
 import Button from '~/components/Button/Button.js';
 import Technology from '~/layouts/PersonalLayout/Components/Technology.js';
-import Loading from '~/components/Modal/Loading.js';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
 
 const cx = className.bind(styles);
@@ -18,8 +16,6 @@ class TechnologyList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            uploadImageUrl: '',
-
             dragItemId: undefined,
             dragOverItemId: undefined,
         };
@@ -27,13 +23,14 @@ class TechnologyList extends PureComponent {
         this.technologyRef = React.createRef();
     }
 
-    // Drag and drop API
+    // =================================================================
+    // DRAG AND DROP
     handleDragStart = (id) => {
         this.setState({ dragItemId: id });
     };
 
     handleDragEnd = () => {
-        // Remove all effect and hide edit button
+        // Remove all effect in Button and hide Edit Button
         const dragButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragItemId}`);
         const dragOverButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragOverItemId}`);
         const dragEditButton = document.getElementById(`js-edit-button-${this.props.type}-${this.state.dragItemId}`);
@@ -59,18 +56,20 @@ class TechnologyList extends PureComponent {
     handleDragEnter = (id) => {
         this.setState({ dragOverItemId: id });
 
-        const allButtons = document.querySelectorAll(`[id*=js-button-${this.props.type}]`);
-        const button = document.getElementById(`js-button-${this.props.type}-${id}`);
+        const technologylist = document.getElementById(this.props.id);
+        console.log(technologylist);
 
-        if (allButtons) {
-            allButtons.forEach((button) => {
-                button.classList.remove(cx('hover-drag-sort'));
-            });
+        // const button = document.getElementById(`js-button-${this.props.type}-${id}`);
 
-            if (button) {
-                button.classList.add(cx('hover-drag-sort'));
-            }
-        }
+        // if (allButtons) {
+        //     allButtons.forEach((button) => {
+        //         button.classList.remove(cx('hover-drag-sort'));
+        //     });
+
+        //     if (button) {
+        //         button.classList.add(cx('hover-drag-sort'));
+        //     }
+        // }
     };
 
     handleSort = async () => {
@@ -123,54 +122,58 @@ class TechnologyList extends PureComponent {
                 link: dragItemData?.link,
             };
 
-            if (this.props.type === 'LIBRARY') {
-                const errorCode = await this.props.sortupdatetechnology(dragItemChangeData);
+            console.log(dragItemChangeData);
+            console.log(dragOverItemChangeData);
 
-                if (errorCode === 0) {
-                    const errorCode = await this.props.sortupdatetechnology(dragOverItemChangeData);
+            // if (this.props.type === 'LIBRARY') {
+            //     const errorCode = await this.props.sortupdatetechnology(dragItemChangeData);
 
-                    if (errorCode === 0) {
-                        const { isPagination, side, selectedPage, itemsPerPage } = this.props.dataforsort;
+            //     if (errorCode === 0) {
+            //         const errorCode = await this.props.sortupdatetechnology(dragOverItemChangeData);
 
-                        if (this.props.issearch) {
-                            await this.props.readtechnology(side);
-                        } else {
-                            if (isPagination) {
-                                await this.props.readtechnology(side, selectedPage, itemsPerPage);
-                            } else {
-                                await this.props.readtechnology(side);
-                            }
-                        }
-                    }
+            //         if (errorCode === 0) {
+            //             const { isPagination, side, selectedPage, itemsPerPage } = this.props.dataforsort;
 
-                    await this.setState({
-                        dragItemId: undefined,
-                        dragOverItemId: undefined,
-                    });
-                }
-            } else {
-                const errorCode = await this.props.updatetechnology(dragItemChangeData);
+            //             if (this.props.issearch) {
+            //                 await this.props.readtechnology(side);
+            //             } else {
+            //                 if (isPagination) {
+            //                     await this.props.readtechnology(side, selectedPage, itemsPerPage);
+            //                 } else {
+            //                     await this.props.readtechnology(side);
+            //                 }
+            //             }
+            //         }
 
-                if (errorCode === 0) {
-                    const errorCode = await this.props.updatetechnology(dragOverItemChangeData);
+            //         await this.setState({
+            //             dragItemId: undefined,
+            //             dragOverItemId: undefined,
+            //         });
+            //     }
+            // } else {
+            //     const errorCode = await this.props.updatetechnology(dragItemChangeData);
 
-                    if (errorCode === 0) {
-                        await this.props.readtechnology();
-                    }
+            //     if (errorCode === 0) {
+            //         const errorCode = await this.props.updatetechnology(dragOverItemChangeData);
 
-                    await this.setState({
-                        dragItemId: undefined,
-                        dragOverItemId: undefined,
-                    });
-                }
-            }
+            //         if (errorCode === 0) {
+            //             await this.props.readtechnology();
+            //         }
+
+            //         await this.setState({
+            //             dragItemId: undefined,
+            //             dragOverItemId: undefined,
+            //         });
+            //     }
+            // }
         }
 
-        if (this.props.type === 'LIBRARY') {
-            this.props.searchLibrary();
-        }
+        // if (this.props.type === 'LIBRARY') {
+        //     this.props.searchLibrary();
+        // }
     };
 
+    // =================================================================
     // Show / Hide Create Technology container
     handleShowCreateTechnology = async () => {
         const closeEditTechnology = this.technologyRef.current?.handleCloseEditTechnology;
@@ -182,13 +185,10 @@ class TechnologyList extends PureComponent {
     };
 
     handleCloseCreateTechnology = () => {
-        this.setState({ isCreateTechnology: false, uploadImageUrl: '' });
+        this.setState({ isCreateTechnology: false });
     };
 
-    getImageUrlFromChangeImageModal = (url) => {
-        this.setState({ uploadImageUrl: url });
-    };
-
+    // =================================================================
     // CRUD Technology
     handleCreateTechnology = async (state) => {
         const data = {
@@ -239,30 +239,15 @@ class TechnologyList extends PureComponent {
         }
     };
 
-    handleDeleteTechnology = async (id) => {
-        const { errorCode } = await this.props.deletetechnology(id);
-
-        if (errorCode === 0) {
-            if (this.props.type !== 'LIBRARY') {
-                await this.props.readtechnology();
-            }
-        }
-    };
+    // =================================================================
 
     render() {
-        const { id, draggable, type, keyprop, side, productId, label, technologylist, isloading = false } = this.props;
-
-        let technologyListArray;
-        if (Array.isArray(technologylist)) {
-            technologyListArray = technologylist;
-        } else {
-            technologyListArray = [technologylist];
-        }
+        const { draggable, type, keyprop, side, productId, label, technologylist } = this.props;
 
         return (
             <div className={cx('technology-list')}>
                 <div
-                    id={id}
+                    id={this.props.id}
                     className={cx('technology-list-inner', {
                         'sourcecode-list': type === 'SOURCECODE',
                         'technology-list': type === 'TECHNOLOGY',
@@ -270,14 +255,15 @@ class TechnologyList extends PureComponent {
                     })}
                 >
                     {technologylist &&
-                        technologyListArray?.map((technology) => {
+                        technologylist?.map((technology) => {
                             return (
                                 <Technology
+                                    key={technology?.id}
+                                    // =================================================================
                                     ref={this.technologyRef}
                                     hoverSortButtonClass={cx('hover-drag-sort')}
-                                    key={technology?.id}
                                     draggable={draggable}
-                                    librarylist={technologyListArray}
+                                    librarylist={technologylist}
                                     // Common info
                                     side={side}
                                     label={label}
@@ -290,14 +276,15 @@ class TechnologyList extends PureComponent {
                                     name={technology?.name}
                                     version={technology?.version}
                                     href={technology?.link}
-                                    // Event
-                                    isloading={isloading}
-                                    onshow={this.handleShowCreateTechnology}
+                                    // =================================================================
+                                    // Show and Hide Create Technology Container
+                                    onShowCreateTechnology={this.handleShowCreateTechnology}
+                                    onCloseCreateTechnology={this.handleCloseCreateTechnology}
+                                    // =================================================================
+                                    // CRUD
                                     onUpdateTechnology={this.props.onUpdateTechnology}
                                     onDeleteTechnology={this.props.onDeleteTechnology}
                                     // =================================================================
-                                    ondelete={() => this.handleDeleteTechnology(technology?.id)}
-                                    oncloseCreate={this.handleCloseCreateTechnology}
                                     // Drag and drop
                                     ondragstart={() => this.handleDragStart(technology?.id)}
                                     ondragend={this.handleDragEnd}
@@ -323,7 +310,7 @@ class TechnologyList extends PureComponent {
                             keyprop={keyprop}
                             side={side}
                             productId={productId}
-                            onclose={this.handleCloseCreateTechnology}
+                            onCloseCreateTechnology={this.handleCloseCreateTechnology}
                             onCreateTechnology={this.props.onCreateTechnology}
                         />
                     )

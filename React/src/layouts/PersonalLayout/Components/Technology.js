@@ -8,7 +8,6 @@ import styles from './Technology.module.scss';
 import Image from '~/components/Image/Image.js';
 import EditButton from '~/components/Button/EditButton';
 import { JpgImages } from '~/components/Image/Images.js';
-import Loading from '~/components/Modal/Loading.js';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
 
 const cx = classnames.bind(styles);
@@ -29,7 +28,7 @@ class Technology extends PureComponent {
     }
 
     handleShowEditTechnology = async (id) => {
-        this.props.oncloseCreate();
+        this.props.onCloseCreateTechnology();
 
         let selectedLibrary;
         const libraryList = this.props.librarylist;
@@ -62,13 +61,15 @@ class Technology extends PureComponent {
         this.props.onDeleteTechnology(id, type);
     };
 
+    // =================================================================
+    // Hover and Unhover Button and Edit Button
     handleHoverButtonAndShowEditButton = (id) => {
         const editButton = document.getElementById(`js-edit-button-${id}`);
         const button = document.getElementById(`js-button-${id}`);
 
         if (button) {
             button.classList.remove(this.props.hoverSortButtonClass);
-            button.classList.add(cx('hover'));
+            button.classList.add(cx('hover-button'));
 
             if (editButton) {
                 editButton.style.visibility = 'visible';
@@ -85,7 +86,7 @@ class Technology extends PureComponent {
         }
 
         if (button) {
-            button.classList.remove(cx('hover'));
+            button.classList.remove(cx('hover-button'));
         }
     };
 
@@ -95,12 +96,15 @@ class Technology extends PureComponent {
     };
 
     handleMouseUnHoverEditButton = (id) => {
-        const item = document.getElementById(`js-edit-button-${id}`);
-        if (item) {
-            // Hide edit button
-            item.style.visibility = 'hidden';
+        // Hide Edit button
+        const editButton = document.getElementById(`js-edit-button-${id}`);
+
+        if (editButton) {
+            editButton.style.visibility = 'hidden';
         }
     };
+
+    // =================================================================
 
     componentWillUnmount() {
         clearTimeout(this.idTimeout.current);
@@ -115,10 +119,10 @@ class Technology extends PureComponent {
             keyprop,
             href,
             id,
+            side,
             src,
             name,
             version,
-            onshow,
             ondragstart,
             ondragend,
             ondragenter,
@@ -153,29 +157,41 @@ class Technology extends PureComponent {
             >
                 <div id={`js-button-container-${type}-${id}`} className={cx('button-container')}>
                     <EditButton
-                        id={`${type}-${id}`}
+                        editButtonID={side ? `js-edit-button-${side}-${type}-${id}` : `js-edit-button-${type}-${id}`}
+                        buttonID={side ? `js-button-${side}-${type}-${id}` : `js-button-${type}-${id}`}
+                        side={side}
                         type={type}
-                        onShowCreateTechnology={onshow}
+                        idTimeout={this.idTimeout.current}
+                        // =================================================================
+                        onShowCreateTechnology={this.props?.onShowCreateTechnology}
                         onShowEditTechnology={() => this.handleShowEditTechnology(id)}
                         onDeleteTechnology={() => this.handleDeleteTechnology(id, type)}
+                        // =================================================================
                         ondragstart={ondragstart}
                         ondragend={this.props.ondragend}
                         ondrop={ondrop}
                         ondragenter={ondragenter}
-                        onmouseenter={(e) => this.handleMouseHoverEditButton(e)}
-                        onmouseleave={() => this.handleMouseUnHoverEditButton(`${type}-${id}`)}
-                        classHover={cx('hover')}
+                        // =================================================================
+                        onmouseenter={() => this.handleMouseHoverEditButton()}
+                        onmouseleave={() =>
+                            this.handleMouseUnHoverEditButton(side ? `${side}-${type}-${id}` : `${type}-${id}`)
+                        }
+                        classHover={cx('hover-button')}
                     />
                     <Button
-                        id={`js-button-${type}-${id}`}
+                        id={side ? `js-button-${side}-${type}-${id}` : `js-button-${type}-${id}`}
                         className={cx('button', {
                             'sourcecode-list': type === 'SOURCECODE',
                             'technology-list': type === 'TECHNOLOGY',
                             'library-list': type === 'LIBRARY',
                         })}
                         {...buttonProps}
-                        onmouseenter={() => this.handleHoverButtonAndShowEditButton(`${type}-${id}`)}
-                        onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(`${type}-${id}`)}
+                        onmouseenter={() =>
+                            this.handleHoverButtonAndShowEditButton(side ? `${side}-${type}-${id}` : `${type}-${id}`)
+                        }
+                        onmouseleave={() =>
+                            this.handleUnhoverButtonAndHideEditButton(side ? `${side}-${type}-${id}` : `${type}-${id}`)
+                        }
                     >
                         <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
 
@@ -197,7 +213,7 @@ class Technology extends PureComponent {
                 label={label}
                 keyprop={keyprop}
                 productId={productId}
-                onclose={this.handleCloseEditTechnology}
+                onCloseCreateTechnology={this.handleCloseEditTechnology}
                 onUpdateTechnology={this.props.onUpdateTechnology}
             />
         );
