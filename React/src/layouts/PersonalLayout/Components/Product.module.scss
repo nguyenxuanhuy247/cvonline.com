@@ -259,6 +259,12 @@
                         }
                     }
                 }
+
+                .pagination-container {
+                    margin-top: 12px;
+                    display: grid;
+                    place-items: center;
+                }
             }
 
             &.front-end {
@@ -310,7 +316,9 @@
     }
 }
 
-.search-result-not-found {
+.search-result-not-found-FE,
+.search-result-not-found-BE {
+    margin-top: 12px;
     text-align: center;
     font-size: 1.6rem;
     padding: 4px;

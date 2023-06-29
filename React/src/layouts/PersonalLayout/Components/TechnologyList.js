@@ -308,8 +308,7 @@ class TechnologyList extends PureComponent {
                             );
                         })}
                 </div>
-
-                {!this.props.issearch && !this.state.isCreateTechnology ? (
+                {!this.props.isSearch && !this.state.isCreateTechnology ? (
                     <Button className={cx('add-technology-button')} onClick={() => this.handleShowCreateTechnology()}>
                         <span className={cx('left-icon')}>
                             <BsPlusCircleDotted />
@@ -317,7 +316,7 @@ class TechnologyList extends PureComponent {
                         <span className={cx('text')}>{`Thêm ${label}`}</span>
                     </Button>
                 ) : (
-                    !this.props.issearch && (
+                    !this.props.isSearch && (
                         <CreateEditTechnology
                             label={label}
                             type={type}
@@ -329,7 +328,6 @@ class TechnologyList extends PureComponent {
                         />
                     )
                 )}
-                {isloading && <Loading style={{ position: 'absolute' }} />}
             </div>
         );
     }
