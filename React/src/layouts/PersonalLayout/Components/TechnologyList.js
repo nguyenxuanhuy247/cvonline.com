@@ -17,7 +17,10 @@ class TechnologyList extends PureComponent {
         super(props);
         this.state = {
             dragItemId: undefined,
+            dragElement: null,
+
             dragOverItemId: undefined,
+            dragOverElement: null,
         };
 
         this.technologyRef = React.createRef();
@@ -25,68 +28,57 @@ class TechnologyList extends PureComponent {
 
     // =================================================================
     // DRAG AND DROP
-    handleDragStart = (id) => {
-        this.setState({ dragItemId: id });
+    handleDragStart = (id, buttonID) => {
+        const dragButton = document.getElementById(buttonID);
+
+        this.setState({ dragItemId: id, dragElement: dragButton });
     };
 
     handleDragEnd = () => {
-        // Remove all effect in Button and hide Edit Button
-        const dragButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragItemId}`);
-        const dragOverButton = document.getElementById(`js-button-${this.props.type}-${this.state.dragOverItemId}`);
-        const dragEditButton = document.getElementById(`js-edit-button-${this.props.type}-${this.state.dragItemId}`);
-        const dragOverEditButton = document.getElementById(
-            `js-edit-button-${this.props.type}-${this.state.dragOverItemId}`,
-        );
+        // After dropping, setting dragElement and dragOverElement turn to orginal state
+        this.state.dragElement?.classList.remove(cx('drag-drop-hover'));
+        this.state.dragOverElement?.classList.remove(cx('drag-drop-hover'));
+    };
 
-        if (dragButton && dragOverButton && dragEditButton && dragOverEditButton) {
-            dragButton.classList.remove(cx('hover-drag-sort'));
-            dragOverButton.classList.remove(cx('hover-drag-sort'));
+    handleDragEnter = (id, buttonID) => {
+        const technologyList = document.getElementById(this.props.technologyListID);
+        const allButtons = technologyList.querySelectorAll(`[id*=js-button]`);
+        const enterButton = document.getElementById(buttonID);
 
-            Array.from(dragEditButton?.children).forEach((item) => {
-                if (item.getAttribute('drag') === 'true') {
-                    item.style.display = 'inline-flex';
+        if (technologyList) {
+            // Remove drag-drop-hover class of all buttons before setting
+            if (allButtons) {
+                allButtons.forEach((button) => {
+                    button.classList.remove(cx('drag-drop-hover'));
+                });
+            }
+
+            // Prevent button in another list from setting drag-drop-hover class when drag
+            const dragElement = this.state.dragElement;
+            const isContain = technologyList.contains(dragElement);
+
+            if (isContain) {
+                if (enterButton) {
+                    enterButton.classList.add(cx('drag-drop-hover'));
                 }
-            });
-
-            dragEditButton.style.visibility = 'hidden';
-            dragOverEditButton.style.visibility = 'hidden';
+            }
         }
+
+        this.setState({ dragOverItemId: id, dragOverElement: enterButton });
     };
 
-    handleDragEnter = (id) => {
-        this.setState({ dragOverItemId: id });
-
-        const technologylist = document.getElementById(this.props.id);
-        console.log(technologylist);
-
-        // const button = document.getElementById(`js-button-${this.props.type}-${id}`);
-
-        // if (allButtons) {
-        //     allButtons.forEach((button) => {
-        //         button.classList.remove(cx('hover-drag-sort'));
-        //     });
-
-        //     if (button) {
-        //         button.classList.add(cx('hover-drag-sort'));
-        //     }
-        // }
-    };
-
-    handleSort = async () => {
+    handleDropAndSort = async () => {
+        // If list is sorted, will not exchange position
         if (this.props.type === 'LIBRARY') {
-            if (this.props.dataforsort.sortBy) {
-                toast.error(
-                    `Danh sách đang được sắp xếp từ ${
-                        this.props.dataforsort.sortBy === 'desc' ? 'Z đến A' : 'A đến Z'
-                    }`,
-                );
+            if (this.props.isSortBy) {
+                toast.error(`Danh sách đang được sắp xếp từ ${this.props.isSortBy === 'desc' ? 'Z đến A' : 'A đến Z'}`);
                 return;
             }
         }
 
         // Exchange info between 2 buttons
-        const dragItemData = this.props?.technologylist?.find((technology) => technology.id === this.state.dragItemId);
-        const dragOverItemData = this.props?.technologylist?.find(
+        const dragItemData = this.props?.technologyList?.find((technology) => technology.id === this.state.dragItemId);
+        const dragOverItemData = this.props?.technologyList?.find(
             (technology) => technology.id === this.state.dragOverItemId,
         );
 
@@ -102,75 +94,45 @@ class TechnologyList extends PureComponent {
                 dragOverImageBase64 = Buffer.from(dragOverItemData.image, 'base64').toString('binary');
             }
 
-            const dragItemChangeData = {
-                type: this.props?.type,
-                key: this.props?.keyprop,
-                id: dragItemData?.id,
-                image: dragOverImageBase64,
-                name: dragOverItemData?.name,
-                version: dragOverItemData?.version,
-                link: dragOverItemData?.link,
-            };
+            if (dragItemData.id !== dragOverItemData.id) {
+                const dragItem_NewData = {
+                    id: dragItemData?.id,
+                    image: dragOverImageBase64,
+                    name: dragOverItemData?.name,
+                    version: dragOverItemData?.version,
+                    link: dragOverItemData?.link,
+                };
 
-            const dragOverItemChangeData = {
-                type: this.props?.type,
-                key: this.props?.keyprop,
-                id: dragOverItemData?.id,
-                image: dragImageBase64,
-                name: dragItemData?.name,
-                version: dragItemData?.version,
-                link: dragItemData?.link,
-            };
+                const dragOverItem_NewData = {
+                    id: dragOverItemData?.id,
+                    image: dragImageBase64,
+                    name: dragItemData?.name,
+                    version: dragItemData?.version,
+                    link: dragItemData?.link,
+                };
 
-            console.log(dragItemChangeData);
-            console.log(dragOverItemChangeData);
-
-            // if (this.props.type === 'LIBRARY') {
-            //     const errorCode = await this.props.sortupdatetechnology(dragItemChangeData);
-
-            //     if (errorCode === 0) {
-            //         const errorCode = await this.props.sortupdatetechnology(dragOverItemChangeData);
-
-            //         if (errorCode === 0) {
-            //             const { isPagination, side, selectedPage, itemsPerPage } = this.props.dataforsort;
-
-            //             if (this.props.issearch) {
-            //                 await this.props.readtechnology(side);
-            //             } else {
-            //                 if (isPagination) {
-            //                     await this.props.readtechnology(side, selectedPage, itemsPerPage);
-            //                 } else {
-            //                     await this.props.readtechnology(side);
-            //                 }
-            //             }
-            //         }
-
-            //         await this.setState({
-            //             dragItemId: undefined,
-            //             dragOverItemId: undefined,
-            //         });
-            //     }
-            // } else {
-            //     const errorCode = await this.props.updatetechnology(dragItemChangeData);
-
-            //     if (errorCode === 0) {
-            //         const errorCode = await this.props.updatetechnology(dragOverItemChangeData);
-
-            //         if (errorCode === 0) {
-            //             await this.props.readtechnology();
-            //         }
-
-            //         await this.setState({
-            //             dragItemId: undefined,
-            //             dragOverItemId: undefined,
-            //         });
-            //     }
-            // }
+                const errorCode = await this.props.onUpdateTechnology(dragItem_NewData, this.props?.type, false);
+                if (errorCode === 0) {
+                    const errorCode = await this.props.onUpdateTechnology(
+                        dragOverItem_NewData,
+                        this.props?.type,
+                        false,
+                    );
+                    if (errorCode === 0) {
+                        this.setState({
+                            dragItemId: undefined,
+                            dragElement: null,
+                            dragOverItemId: undefined,
+                            dragOverElement: null,
+                        });
+                    } else {
+                        toast.error(`Đổi vị trí thất bại`);
+                    }
+                } else {
+                    toast.error(`Đổi vị trí thất bại`);
+                }
+            }
         }
-
-        // if (this.props.type === 'LIBRARY') {
-        //     this.props.searchLibrary();
-        // }
     };
 
     // =================================================================
@@ -242,58 +204,59 @@ class TechnologyList extends PureComponent {
     // =================================================================
 
     render() {
-        const { draggable, type, keyprop, side, productId, label, technologylist } = this.props;
+        const { draggable, type, keyprop, side, productId, label, technologyList } = this.props;
 
         return (
             <div className={cx('technology-list')}>
                 <div
-                    id={this.props.id}
+                    id={this.props.technologyListID}
                     className={cx('technology-list-inner', {
                         'sourcecode-list': type === 'SOURCECODE',
                         'technology-list': type === 'TECHNOLOGY',
                         'library-list': type === 'LIBRARY',
                     })}
                 >
-                    {technologylist &&
-                        technologylist?.map((technology) => {
-                            return (
-                                <Technology
-                                    key={technology?.id}
-                                    // =================================================================
-                                    ref={this.technologyRef}
-                                    hoverSortButtonClass={cx('hover-drag-sort')}
-                                    draggable={draggable}
-                                    librarylist={technologylist}
-                                    // Common info
-                                    side={side}
-                                    label={label}
-                                    productId={productId}
-                                    keyprop={keyprop}
-                                    // Technology info
-                                    id={technology?.id}
-                                    type={type}
-                                    src={technology?.image}
-                                    name={technology?.name}
-                                    version={technology?.version}
-                                    href={technology?.link}
-                                    // =================================================================
-                                    // Show and Hide Create Technology Container
-                                    onShowCreateTechnology={this.handleShowCreateTechnology}
-                                    onCloseCreateTechnology={this.handleCloseCreateTechnology}
-                                    // =================================================================
-                                    // CRUD
-                                    onUpdateTechnology={this.props.onUpdateTechnology}
-                                    onDeleteTechnology={this.props.onDeleteTechnology}
-                                    // =================================================================
-                                    // Drag and drop
-                                    ondragstart={() => this.handleDragStart(technology?.id)}
-                                    ondragend={this.handleDragEnd}
-                                    ondragenter={() => this.handleDragEnter(technology?.id)}
-                                    ondragover={(e) => e.preventDefault()}
-                                    ondrop={this.handleSort}
-                                />
-                            );
-                        })}
+                    {technologyList?.map((technology) => {
+                        const ID = side ? `${side}-${type}-${technology?.id}` : `${type}-${technology?.id}`;
+                        const buttonID = side ? `js-button-${ID}` : `js-button-${ID}`;
+
+                        return (
+                            <Technology
+                                key={technology?.id}
+                                // =================================================================
+                                ref={this.technologyRef}
+                                draggable={draggable}
+                                librarylist={technologyList}
+                                // Common info
+                                side={side}
+                                label={label}
+                                productId={productId}
+                                keyprop={keyprop}
+                                // Technology info
+                                id={technology?.id}
+                                type={type}
+                                src={technology?.image}
+                                name={technology?.name}
+                                version={technology?.version}
+                                href={technology?.link}
+                                // =================================================================
+                                // Show and Hide Create Technology Container
+                                onShowCreateTechnology={this.handleShowCreateTechnology}
+                                onCloseCreateTechnology={this.handleCloseCreateTechnology}
+                                // =================================================================
+                                // CRUD
+                                onUpdateTechnology={this.props.onUpdateTechnology}
+                                onDeleteTechnology={this.props.onDeleteTechnology}
+                                // =================================================================
+                                // Drag and drop
+                                onDragStart={() => this.handleDragStart(technology?.id, buttonID)}
+                                onDragEnd={this.handleDragEnd}
+                                onDragEnter={() => this.handleDragEnter(technology?.id, buttonID)}
+                                onDragOver={(e) => e.preventDefault()}
+                                onDrop={this.handleDropAndSort}
+                            />
+                        );
+                    })}
                 </div>
                 {!this.props.isSearch && !this.state.isCreateTechnology ? (
                     <Button className={cx('add-technology-button')} onClick={() => this.handleShowCreateTechnology()}>

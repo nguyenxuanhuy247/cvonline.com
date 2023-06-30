@@ -133,10 +133,10 @@ export const handleCreateTechnology = async (data) => {
         const { type, key, side, image, name, version, link, userId, productId } = data;
 
         let whereQuery;
-        if (key === 'SC') {
-            whereQuery = { name: name };
+        if (type === 'SOURCECODE') {
+            whereQuery = { name: name, userId: userId, productId: productId };
         } else {
-            whereQuery = { side: side, name: name };
+            whereQuery = { side: side, name: name, userId: userId, productId: productId };
         }
 
         const technology = await db.Technology.findOne({
@@ -169,82 +169,6 @@ export const handleCreateTechnology = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleCreateTechnology() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `Không kết nối được với Database`,
-        };
-    }
-};
-
-// READ TECHNOLOGY
-export const handleGetTechnology = async (data) => {
-    try {
-        const { key, side, userId, productId, id, page, page_size } = data;
-
-        let whereQuery;
-        if (key === 'SC') {
-            whereQuery = { key: key };
-        } else {
-            whereQuery = { key: key, side: side };
-        }
-
-        let technology;
-
-        if (id === 'ALL') {
-            if (page && page_size && page_size > 0) {
-                const pageNumber = parseInt(page);
-                const pageSizeNumber = parseInt(page_size);
-
-                const startIndex = (pageNumber - 1) * pageSizeNumber;
-
-                const { count, rows } = await db.Technology.findAndCountAll({
-                    where: { key: key, side: side },
-                    attributes: ['id', 'image', 'name', 'version', 'link'],
-                    offset: startIndex,
-                    limit: pageSizeNumber,
-                });
-
-                const totalPages = Math.ceil(count / pageSizeNumber);
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Tải dữ liệu phân trang thành công`,
-                    totalPages: totalPages,
-                    data: rows,
-                };
-            } else {
-                technology = await db.Technology.findAll({
-                    where: whereQuery,
-                    attributes: ['id', 'image', 'name', 'version', 'link'],
-                });
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Tải tất cả dữ liệu thành công`,
-                    data: technology,
-                };
-            }
-        } else {
-            technology = await db.Technology.findOne({
-                where: { id: id, ...whereQuery },
-                attributes: ['id', 'image', 'name', 'version', 'link'],
-            });
-
-            if (technology) {
-                return {
-                    errorCode: 0,
-                    errorMessage: `Tải dữ liệu thành công`,
-                    data: technology,
-                };
-            } else {
-                return {
-                    errorCode: 32,
-                    errorMessage: `Không tìm thấy dữ liệu khớp id`,
-                };
-            }
-        }
-    } catch (error) {
-        console.log('An error in handleGetTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
             errorMessage: `Không kết nối được với Database`,
@@ -368,7 +292,7 @@ export const handleUpdateUserInformation = async (data) => {
             where: { id: id },
             raw: false,
         });
-
+        console.log('user', user);
         if (user) {
             for (let prop in newData) {
                 if (newData[prop] !== undefined) {
@@ -376,6 +300,7 @@ export const handleUpdateUserInformation = async (data) => {
                 }
             }
 
+            console.log('change user', user);
             await user.save();
 
             return {
@@ -400,19 +325,43 @@ export const handleUpdateUserInformation = async (data) => {
 // =================================================================
 // CRUD PRODUCT LIST
 
+// CREATE PRODUCT
+export const handleCreateProduct = async (data) => {
+    try {
+        const { userId } = data;
+
+        await db.Technology.create({
+            type: 'PRODUCTDESC',
+            key: 'PD',
+            userId: userId,
+        });
+
+        return {
+            errorCode: 0,
+            errorMessage: `Tạo mới sản phẩm thành công`,
+        };
+    } catch (error) {
+        console.log('An error in handleCreateProduct() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
+        };
+    }
+};
+
 // READ PRODUCT LIST
 export const handleGetProductList = async (data) => {
     try {
-        const { id } = data;
+        const { userId } = data;
 
         const user = await db.User.findOne({
-            where: { id: id },
+            where: { id: userId },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         });
 
         if (user) {
             const productIDs = await db.Technology.findAll({
-                where: { userId: id, key: 'PD' },
+                where: { userId: userId, key: 'PD' },
                 attributes: ['id'],
             });
             const productIDArr = productIDs?.map((productID) => productID.id);
@@ -422,7 +371,7 @@ export const handleGetProductList = async (data) => {
                 const uniqueProductIDArr = [...new Set(productIDArrWithNULL)]?.sort();
 
                 let productListData = [];
-                for (let ID of uniqueProductIDArr) {
+                for (let productID of uniqueProductIDArr) {
                     const product = {
                         productInfo: {},
                         sourceCodeList: [],
@@ -435,7 +384,7 @@ export const handleGetProductList = async (data) => {
                     };
 
                     const productDesc = await db.Technology.findOne({
-                        where: { userId: id, key: 'PD' },
+                        where: { id: productID, key: 'PD' },
                         attributes: ['id', 'name', 'desc', 'image'],
                     });
 
@@ -444,7 +393,7 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const sourceCodes = await db.Technology.findAll({
-                        where: { userId: id, productId: ID, key: 'SC' },
+                        where: { userId: userId, productId: productID, key: 'SC' },
                         attributes: ['id', 'image', 'name', 'link'],
                     });
 
@@ -453,7 +402,7 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const FETechnologies = await db.Technology.findAll({
-                        where: { userId: id, productId: ID, key: 'TE', side: 'FE' },
+                        where: { userId: userId, productId: productID, key: 'TE', side: 'FE' },
                         attributes: ['id', 'image', 'name', 'link'],
                     });
 
@@ -462,7 +411,7 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const BETechnologies = await db.Technology.findAll({
-                        where: { userId: id, productId: ID, key: 'TE', side: 'BE' },
+                        where: { userId: userId, productId: productID, key: 'TE', side: 'BE' },
                         attributes: ['id', 'image', 'name', 'link'],
                     });
 
@@ -471,14 +420,14 @@ export const handleGetProductList = async (data) => {
                     }
 
                     const FELibraries = await db.Technology.findAndCountAll({
-                        where: { userId: id, productId: ID, key: 'LI', side: 'FE' },
+                        where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
                     });
                     product.FELibraryList = FELibraries.rows;
                     product.numberofFELibrary = FELibraries.count;
 
                     const BELibraries = await db.Technology.findAndCountAll({
-                        where: { userId: id, productId: ID, key: 'LI', side: 'BE' },
+                        where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
                     });
                     product.BELibraryList = BELibraries.rows;
@@ -489,7 +438,7 @@ export const handleGetProductList = async (data) => {
 
                 return {
                     errorCode: 0,
-                    errorMessage: `Tìm thấy danh sách sản phẩm`,
+                    errorMessage: `Tải danh sách sản phẩm thành công`,
                     data: productListData,
                 };
             } else {
@@ -506,6 +455,38 @@ export const handleGetProductList = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleGetProductList() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
+        };
+    }
+};
+
+// DELETE PRODUCT
+export const handleDeleteProduct = async (data) => {
+    try {
+        const { userId, productId } = data;
+
+        const product = await db.Technology.findOne({
+            where: { id: productId, userId: userId },
+        });
+
+        if (product) {
+            await db.Technology.destroy({ where: { id: productId } });
+            await db.Technology.destroy({ where: { productId: productId } });
+
+            return {
+                errorCode: 0,
+                errorMessage: `Xóa dự án thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy dự án`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleDeleteProduct() in userService.js : ', error);
         return {
             errorCode: 31,
             errorMessage: `Không kết nối được với Database`,

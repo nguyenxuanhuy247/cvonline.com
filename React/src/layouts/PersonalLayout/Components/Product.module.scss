@@ -1,5 +1,9 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
+.product-container {
+    position: relative;
+}
+
 .product {
     --text-color: #4abc8b;
 

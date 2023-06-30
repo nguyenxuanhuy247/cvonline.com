@@ -39,11 +39,14 @@ class PersonalLayout extends PureComponent {
             email: this.props?.user?.email || '',
             address: this.props?.user?.address || '',
             languages: this.props?.user?.languages || '',
+
+            productList: [],
         };
-        
+
         this.languagesRef = React.createRef();
     }
 
+    // =================================================================
     // CRUD USER INFORMATION
 
     handleCloseChangeImageModal = () => {
@@ -101,7 +104,7 @@ class PersonalLayout extends PureComponent {
             ...data,
             userId: this.props?.user?.id,
         };
-
+        console.log(newData);
         const errorCode = await this.props.createTechnology(newData, type);
 
         if (errorCode === 0) {
@@ -110,13 +113,13 @@ class PersonalLayout extends PureComponent {
         }
     };
 
-    handleUpdateTechnology = async (data, type) => {
+    handleUpdateTechnology = async (data, type, showToast = true) => {
         const newData = {
             ...data,
             userId: this.props?.user?.id,
         };
 
-        const errorCode = await this.props.updateTechnology(newData, type, true);
+        const errorCode = await this.props.updateTechnology(newData, type, showToast);
         if (errorCode === 0) {
             await this.props.readProductList(this.props?.user?.id);
             return errorCode;
@@ -132,10 +135,54 @@ class PersonalLayout extends PureComponent {
     };
 
     // =================================================================
+    // CRUD Product
+
+    handleAddNewProduct = async () => {
+        const userId = this.props?.user?.id;
+        const errorCode = await this.props.createProduct(userId);
+
+        if (errorCode === 0) {
+            await this.props.readProductList(this.props?.user?.id);
+        }
+    };
+
+    handleDeleteProduct = async (productId) => {
+        const userId = this.props?.user?.id;
+        const errorCode = await this.props.deleteProduct(userId, productId);
+
+        if (errorCode === 0) {
+            await this.props.readProductList(userId);
+        }
+    };
+
+    handleMoveUpProduct = async (index) => {
+        const productList = this.props?.productList;
+        const removedProduct = productList.splice(index, 1)[0];
+        productList.splice(index - 1, 0, removedProduct);
+
+        await this.setState({ productList: productList });
+    };
+
+    handleMoveDownProduct = async (index) => {
+        const productList = this.props?.productList;
+        const removedProduct = productList.splice(index, 1)[0];
+        productList.splice(index + 1, 0, removedProduct);
+
+        await this.setState({ productList: productList });
+    };
+
+    // =================================================================
     async componentDidMount() {
         // Get all data for CV Layout when sign in
         await this.props.readUserInformation(this.props?.user?.id);
         await this.props.readProductList(this.props?.user?.id);
+
+        const productList = this.props?.productList;
+        const ASCOrderProductList = productList?.sort(function (a, b) {
+            return a.productInfo.id - b.productInfo.id;
+        });
+
+        await this.setState({ productList: ASCOrderProductList });
 
         // Fix bug
         const textarea = document.getElementById('js-languages-input');
@@ -321,12 +368,17 @@ class PersonalLayout extends PureComponent {
 
                             <div className={cx('col pc-9')}>
                                 <div className={cx('product-list')}>
-                                    {/* <Product createtechnology={this.handleCreateNewTechnology} /> */}
-                                    {this.props.productList?.map((product, index) => {
+                                    {this.state.productList?.map((product, index) => {
                                         return (
                                             <Product
                                                 key={index}
+                                                index={index}
                                                 productdata={product}
+                                                // =================================================================
+                                                onDeleteProduct={this.handleDeleteProduct}
+                                                onMoveUpProduct={this.handleMoveUpProduct}
+                                                onMoveDownProduct={this.handleMoveDownProduct}
+                                                // =================================================================
                                                 onCreateTechnology={this.handleCreateNewTechnology}
                                                 onUpdateTechnology={this.handleUpdateTechnology}
                                                 onDeleteTechnology={this.handleDeleteTechnology}
@@ -335,7 +387,10 @@ class PersonalLayout extends PureComponent {
                                     })}
                                 </div>
                                 <div className={cx('add-new-product-container')}>
-                                    <Button className={cx('add-new-product-button')}>
+                                    <Button
+                                        className={cx('add-new-product-button')}
+                                        onClick={() => this.handleAddNewProduct()}
+                                    >
                                         <span className={cx('add-new-product-icon')}>
                                             <IoIosAddCircle />
                                         </span>
@@ -366,7 +421,10 @@ const mapDispatchToProps = (dispatch) => {
         updateUserInformation: (toastText, data) =>
             dispatch(userActions.updateUserInformation(toastText, 'USER_INFORMATION', data, true)),
 
-        readProductList: (id) => dispatch(userActions.readProductList('PRODUCT_LIST', id)),
+        // CRUD Product
+        readProductList: (userId) => dispatch(userActions.readProductList('PRODUCT_LIST', userId)),
+        createProduct: (userId) => dispatch(userActions.createProduct(userId)),
+        deleteProduct: (userId, productId) => dispatch(userActions.deleteProduct(userId, productId)),
 
         // CRUD Source code, Technology, Library
         createTechnology: (data, type) => dispatch(userActions.createTechnology(data, type)),

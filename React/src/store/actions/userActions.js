@@ -127,7 +127,7 @@ export const userSignOut = () => ({
 
 // CREATE TECHNOLOGY
 export const createTechnology = (dataSent, type) => {
-    return async (dispatch) => {
+    return async () => {
         let toastText = '';
         if (type === 'SOURCECODE') {
             toastText = 'Source Code';
@@ -156,7 +156,7 @@ export const createTechnology = (dataSent, type) => {
 
 // UPDATE TECHNOLOGY
 export const updateTechnology = (dataSent, type, isToastSuccess) => {
-    return async (dispatch) => {
+    return async () => {
         let toastText = '';
         if (type === 'SOURCECODE') {
             toastText = 'Source Code';
@@ -184,7 +184,7 @@ export const updateTechnology = (dataSent, type, isToastSuccess) => {
 
 // DELETE TECHNOLOGY
 export const deleteTechnology = (id, type) => {
-    return async (dispatch) => {
+    return async () => {
         let toastText = '';
         if (type === 'SOURCECODE') {
             toastText = 'Source Code';
@@ -213,6 +213,27 @@ export const deleteTechnology = (id, type) => {
 
 // =================================================================
 // CRUD PRODUCT LIST
+
+// CREATE PRODUCT
+export const createProduct = (userId) => {
+    return async () => {
+        try {
+            const res = await userService.createProduct(userId);
+            const { errorCode } = res;
+            if (errorCode === 0) {
+                toast.success(`Tạo mới dự án thành công`);
+                return errorCode;
+            } else {
+                toast.error(`Tạo mới dự án thất bại`);
+                return errorCode;
+            }
+        } catch (error) {
+            toast.error(error.response.data.errorMessage);
+            console.log('An error in readUserInformation() - userActions.js: ', error);
+            return error.response.data.errorCode;
+        }
+    };
+};
 
 // READ PRODUCT LIST
 export const readProductList = (actionName, userId) => {
@@ -253,6 +274,27 @@ export const readProductList_Failure = (actionName, data) => ({
     type: actionNames[actionName],
     payload: data,
 });
+
+// DELETE PRODUCT
+export const deleteProduct = (userId, productId) => {
+    return async () => {
+        try {
+            const res = await userService.deleteProduct(userId, productId);
+            const { errorCode } = res;
+            if (errorCode === 0) {
+                toast.success(`Xóa dự án thành công`);
+                return errorCode;
+            } else {
+                toast.error(`Xóa dự án thất bại`);
+                return errorCode;
+            }
+        } catch (error) {
+            toast.error(error.response.data.errorMessage);
+            console.log('An error in readUserInformation() - userActions.js: ', error);
+            return error.response.data.errorCode;
+        }
+    };
+};
 
 // =================================================================
 // CRUD USER INFORMATION

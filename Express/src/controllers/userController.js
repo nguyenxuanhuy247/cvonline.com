@@ -49,21 +49,6 @@ export const handleCreateTechnology = async (req, res) => {
     }
 };
 
-// READ TECHNOLOGY
-export const handleGetTechnology = async (req, res) => {
-    const data = req.query;
-
-    const message = await userService.handleGetTechnology(data);
-
-    if (message.errorCode === 0) {
-        return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(404).json(message);
-    }
-};
-
 // UPDATE TECHNOLOGY
 export const handleUpdateTechnology = async (req, res) => {
     const data = req.body;
@@ -127,6 +112,18 @@ export const handleUpdateUserInformation = async (req, res) => {
 // =================================================================
 // CRUD PRODUCT LIST
 
+// CREATE PRODUCT
+export const handleCreateProduct = async (req, res) => {
+    const data = req.query;
+
+    const message = await userService.handleCreateProduct(data);
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    }
+};
+
 // READ PRODUCT LIST
 export const handleGetProductList = async (req, res) => {
     const data = req.query;
@@ -140,3 +137,19 @@ export const handleGetProductList = async (req, res) => {
         res.status(404).json(message);
     }
 };
+
+// DELETE PRODUCT
+export const handleDeleteProduct = async (req, res) => {
+    const data = req.query;
+
+    const message = await userService.handleDeleteProduct(data);
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
+// =================================================================

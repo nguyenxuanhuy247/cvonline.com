@@ -23,15 +23,16 @@ function Button({
     onmouseenter,
     onmouseleave,
     forwardRef,
+    dragDropAPIProps,
     ...passProps
 }) {
     const props = {
         id: id,
         onClick: onClick,
-        onDragStart: ondragstart,
-        onDragEnter: ondragenter,
-        onDragOver: ondragover,
-        onDrop: ondrop,
+        // onDragStart: ondragstart,
+        // onDragEnter: ondragenter,
+        // onDragOver: ondragover,
+        // onDrop: ondrop,
         onMouseEnter: onmouseenter,
         onMouseLeave: onmouseleave,
         ...passProps,
@@ -66,12 +67,8 @@ function Button({
         disabled,
     });
 
-    const handleDragEnd = () => {
-        ondragend()
-    };
-
     return (
-        <Button className={classes} {...props} ref={forwardRef} onDragEnd={() => handleDragEnd()}>
+        <Button className={classes} {...props} ref={forwardRef} {...dragDropAPIProps}>
             {children}
         </Button>
     );

@@ -80,20 +80,6 @@ export const checkReqCreateTechnology = (req, res, next) => {
     next();
 };
 
-// READ TECHNOLOGY
-export const checkReqGetTechnology = (req, res, next) => {
-    const { id } = req.query;
-
-    if (!id) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập id để tải thư viện',
-        });
-    }
-
-    next();
-};
-
 // UPDATE TECHNOLOGY
 export const checkReqUpdateTechnology = (req, res, next) => {
     const { id, type, image, name, version } = req.body;
@@ -169,14 +155,47 @@ export const checkReqUpdateUserInformation = (req, res, next) => {
 };
 
 // =================================================================
-// CHECK READ CV LAYOUT
-export const checkReqGetProductList = (req, res, next) => {
-    const { id } = req.query;
+// CHECK CRUD PRODUCT
+export const checkReqCreateProduct = (req, res, next) => {
+    const { userId } = req.query;
 
-    if (!id) {
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id người dùng để tạo sản phẩm mới',
+        });
+    }
+
+    next();
+};
+
+export const checkReqGetProductList = (req, res, next) => {
+    const { userId } = req.query;
+
+    if (!userId) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id người dùng để tải danh sách sản phẩm',
+        });
+    }
+
+    next();
+};
+
+export const checkReqDeleteProduct = (req, res, next) => {
+    const { userId, productId } = req.query;
+
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id người dùng để xóa sản phẩm',
+        });
+    }
+
+    if (!productId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id dự án để xóa sản phẩm',
         });
     }
 

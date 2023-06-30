@@ -10,7 +10,6 @@ let initWebRoutes = (app) => {
 
     // CRUD TECHNOLOGY
     router.post('/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
-    router.get('/get-technology', userMiddleware.checkReqGetTechnology, userController.handleGetTechnology);
     router.put('/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
     router.delete('/delete-technology', userMiddleware.checkReqDeleteTechnology, userController.handleDeleteTechnology);
 
@@ -27,7 +26,9 @@ let initWebRoutes = (app) => {
     );
 
     // CRUD PRODUCT LIST
+    router.post('/post-product', userMiddleware.checkReqCreateProduct, userController.handleCreateProduct);
     router.get('/get-product-list', userMiddleware.checkReqGetProductList, userController.handleGetProductList);
+    router.delete('/delete-product', userMiddleware.checkReqDeleteProduct, userController.handleDeleteProduct);
 
     return app.use('/', router);
 };

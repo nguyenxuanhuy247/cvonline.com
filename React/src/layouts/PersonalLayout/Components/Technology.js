@@ -27,6 +27,7 @@ class Technology extends PureComponent {
         this.idTimeout = React.createRef();
     }
 
+    // =================================================================
     handleShowEditTechnology = async (id) => {
         this.props.onCloseCreateTechnology();
 
@@ -63,12 +64,11 @@ class Technology extends PureComponent {
 
     // =================================================================
     // Hover and Unhover Button and Edit Button
-    handleHoverButtonAndShowEditButton = (id) => {
-        const editButton = document.getElementById(`js-edit-button-${id}`);
-        const button = document.getElementById(`js-button-${id}`);
+    handleHoverButtonAndShowEditButton = (editButtonID, buttonID) => {
+        const editButton = document.getElementById(editButtonID);
+        const button = document.getElementById(buttonID);
 
         if (button) {
-            button.classList.remove(this.props.hoverSortButtonClass);
             button.classList.add(cx('hover-button'));
 
             if (editButton) {
@@ -77,9 +77,9 @@ class Technology extends PureComponent {
         }
     };
 
-    handleUnhoverButtonAndHideEditButton = (id) => {
-        const editButton = document.getElementById(`js-edit-button-${id}`);
-        const button = document.getElementById(`js-button-${id}`);
+    handleUnhoverButtonAndHideEditButton = (editButtonID, buttonID) => {
+        const editButton = document.getElementById(editButtonID);
+        const button = document.getElementById(buttonID);
 
         if (editButton) {
             this.idTimeout.current = setTimeout(() => (editButton.style.visibility = 'hidden'), 0);
@@ -90,16 +90,35 @@ class Technology extends PureComponent {
         }
     };
 
-    handleMouseHoverEditButton = () => {
-        // Disable hide Edit button
+    handleHoverEditButton = (buttonID) => {
+        // Skip hide Edit button
         clearTimeout(this.idTimeout.current);
+
+        // Still Hover Button
+        const button = document.getElementById(buttonID);
+        if (button) {
+            button.classList.add(cx('hover-button'));
+        }
     };
 
-    handleMouseUnHoverEditButton = (id) => {
-        // Hide Edit button
-        const editButton = document.getElementById(`js-edit-button-${id}`);
+    handleUnhoverEditButton = (editButtonID, buttonID) => {
+        const editButton = document.getElementById(editButtonID);
+        const button = document.getElementById(buttonID);
+
+        // Unhover Button
+        if (button) {
+            button.classList.remove(cx('hover-button'));
+        }
 
         if (editButton) {
+            // Show all button in Edit Button
+            Array.from(editButton?.children).forEach((item) => {
+                if (item.getAttribute('drag') === 'true') {
+                    item.style.display = 'inline-flex';
+                }
+            });
+            
+            // Hide Edit button
             editButton.style.visibility = 'hidden';
         }
     };
@@ -123,27 +142,31 @@ class Technology extends PureComponent {
             src,
             name,
             version,
-            ondragstart,
-            ondragend,
-            ondragenter,
-            ondragover,
-            ondrop,
+            onDragStart,
+            onDragEnd,
+            onDragEnter,
+            onDragLeave,
+            onDragOver,
+            onDrop,
         } = this.props;
 
-        const buttonProps = {
-            draggable,
-            href,
-            ondragstart,
-            ondragend,
-            ondragenter,
-            ondragover,
-            ondrop,
+        const dragDropAPIProps = {
+            onDragStart,
+            onDragEnd,
+            onDragEnter,
+            onDragLeave,
+            onDragOver,
+            onDrop,
         };
 
         let imageUrl;
         if (src) {
             imageUrl = Buffer.from(src, 'base64').toString('binary');
         }
+
+        const ID = side ? `${side}-${type}-${id}` : `${type}-${id}`;
+        const editButtonID = side ? `js-edit-button-${ID}` : `js-edit-button-${ID}`;
+        const buttonID = side ? `js-button-${ID}` : `js-button-${ID}`;
 
         return !this.state.isEdit ? (
             <HeadlessTippy
@@ -155,48 +178,41 @@ class Technology extends PureComponent {
                     </div>
                 )}
             >
-                <div id={`js-button-container-${type}-${id}`} className={cx('button-container')}>
+                <div id={`js-container-button-${type}-${id}`} className={cx('button-container')}>
                     <EditButton
-                        editButtonID={side ? `js-edit-button-${side}-${type}-${id}` : `js-edit-button-${type}-${id}`}
-                        buttonID={side ? `js-button-${side}-${type}-${id}` : `js-button-${type}-${id}`}
+                        editButtonID={editButtonID}
                         side={side}
                         type={type}
-                        idTimeout={this.idTimeout.current}
                         // =================================================================
                         onShowCreateTechnology={this.props?.onShowCreateTechnology}
                         onShowEditTechnology={() => this.handleShowEditTechnology(id)}
                         onDeleteTechnology={() => this.handleDeleteTechnology(id, type)}
                         // =================================================================
-                        ondragstart={ondragstart}
-                        ondragend={this.props.ondragend}
-                        ondrop={ondrop}
-                        ondragenter={ondragenter}
-                        // =================================================================
-                        onmouseenter={() => this.handleMouseHoverEditButton()}
-                        onmouseleave={() =>
-                            this.handleMouseUnHoverEditButton(side ? `${side}-${type}-${id}` : `${type}-${id}`)
-                        }
+                        onMouseEnter={() => this.handleHoverEditButton(buttonID)}
+                        onMouseLeave={() => this.handleUnhoverEditButton(editButtonID, buttonID)}
                         classHover={cx('hover-button')}
+                        // =================================================================
+                        dragDropAPIProps={dragDropAPIProps}
                     />
                     <Button
-                        id={side ? `js-button-${side}-${type}-${id}` : `js-button-${type}-${id}`}
+                        id={buttonID}
                         className={cx('button', {
                             'sourcecode-list': type === 'SOURCECODE',
                             'technology-list': type === 'TECHNOLOGY',
                             'library-list': type === 'LIBRARY',
                         })}
-                        {...buttonProps}
-                        onmouseenter={() =>
-                            this.handleHoverButtonAndShowEditButton(side ? `${side}-${type}-${id}` : `${type}-${id}`)
-                        }
-                        onmouseleave={() =>
-                            this.handleUnhoverButtonAndHideEditButton(side ? `${side}-${type}-${id}` : `${type}-${id}`)
-                        }
+                        // =================================================================
+                        onmouseenter={() => this.handleHoverButtonAndShowEditButton(editButtonID, buttonID)}
+                        onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonID)}
+                        // =================================================================
+                        draggable={draggable}
+                        href={href}
+                        dragDropAPIProps={dragDropAPIProps}
                     >
                         <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
 
                         {name && (
-                            <span className={cx('name')} id={`js-button-name-${type}-${id}`}>
+                            <span className={cx('name')} id={`js-name-button-${type}-${id}`}>
                                 {name}
                             </span>
                         )}

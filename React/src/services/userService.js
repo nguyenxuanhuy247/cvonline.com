@@ -25,10 +25,6 @@ export const createTechnology = (data) => {
     return axios.post('/post-technology', data);
 };
 
-export const readTechnology = (id, key, side, page, pageSize) => {
-    return axios.get(`/get-technology?id=${id}&key=${key}&side=${side}&page=${page}&page_size=${pageSize}`);
-};
-
 export const updateTechnology = (data) => {
     return axios.put('/put-technology', data);
 };
@@ -49,8 +45,16 @@ export const updateUserInformation = (data) => {
 };
 
 // =============================================================================
-// READ CV LAYOUT
+// CRUD PRODUCT
 
-export const readProductList = (id) => {
-    return axios.get(`/get-product-list?id=${id}`);
+export const createProduct = (userId) => {
+    return axios.post(`/post-product?userId=${userId}`);
+};
+
+export const readProductList = (userId) => {
+    return axios.get(`/get-product-list?userId=${userId}`);
+};
+
+export const deleteProduct = (userId, productId) => {
+    return axios.delete(`/delete-product?userId=${userId}&&productId=${productId}`);
 };

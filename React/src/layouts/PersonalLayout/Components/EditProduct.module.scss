@@ -1,15 +1,13 @@
-@import '../GlobalStyles/GlobalStyles.module.scss';
+@import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .wrapper {
     position: absolute;
-    top: 0px;
-    left: 0;
-    transform: translate(0, -100%);
+    top: 30px;
+    right: 0;
+    transform: translate(120%, 0);
     display: flex;
-    column-gap: 4px;
-    padding-bottom: 4px;
-    visibility: hidden;
-    z-index: 10;
+    flex-direction: column;
+    row-gap: 4px;
 
     .btn {
         padding: 6px;
@@ -20,13 +18,8 @@
         box-shadow: 1px -1px 10px rgba(0, 0, 0, 0.2);
         cursor: pointer;
 
-        &.drag {
+        &.move {
             background-color: var(--primary-color);
-        }
-
-        &.add,
-        &.edit {
-            background-color: #212f3f;
         }
 
         &.delete {

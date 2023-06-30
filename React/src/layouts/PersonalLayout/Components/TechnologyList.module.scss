@@ -27,57 +27,37 @@
             row-gap: 4px;
         }
 
-        .add-new-technology {
-            padding: 4px 12px;
-            background-color: var(--button-bgc-green-02);
-
-            .add-new-technology-icon {
-                display: grid;
-                place-items: center;
-                font-size: 24px;
-                color: var(--primary-color);
-            }
-
-            &:hover {
-                cursor: pointer;
-                background-color: var(--button-bgc-green-01);
-
-                .add-new-technology-icon {
-                    color: #fff;
-                }
-            }
+        .drag-drop-hover {
+            border: 1px solid var(--primary-color);
+            outline: 3px solid var(--primary-color);
         }
     }
-}
 
-.add-technology-button {
-    width: auto;
-    margin: 12px auto;
-    text-align: center;
-    padding: 8px;
-    color: var(--primary-color);
-    background-color: var(--button-bgc-green-02);
-    border-radius: 4px;
-    font-size: 20px;
-    column-gap: 8px;
-
-    &.non-library-button {
+    .add-technology-button {
         width: auto;
-    }
+        margin: 12px auto;
+        text-align: center;
+        padding: 8px;
+        color: var(--primary-color);
+        background-color: var(--button-bgc-green-02);
+        border-radius: 4px;
+        font-size: 20px;
+        column-gap: 8px;
 
-    &:hover {
-        cursor: pointer;
-        color: #fff;
-        background-color: var(--button-bgc-green-01);
-    }
+        &:hover {
+            cursor: pointer;
+            color: #fff;
+            background-color: var(--button-bgc-green-01);
+        }
 
-    .left-icon {
-        display: grid;
-        place-items: center;
-        font-size: 24px;
-    }
+        .left-icon {
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+        }
 
-    .text {
-        font-size: 1.4rem;
+        .text {
+            font-size: 1.4rem;
+        }
     }
 }
