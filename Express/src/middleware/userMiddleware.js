@@ -129,9 +129,9 @@ export const checkReqDeleteTechnology = (req, res, next) => {
 
 // READ USER INFORMATION
 export const checkReqGetUserInformation = (req, res, next) => {
-    const { id } = req.query;
-
-    if (!id) {
+    const { userId } = req.query;
+    
+    if (!userId) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id để tải thông tin người dùng',
@@ -143,8 +143,8 @@ export const checkReqGetUserInformation = (req, res, next) => {
 
 // UPDATE USER INFORMATION
 export const checkReqUpdateUserInformation = (req, res, next) => {
-    const { id } = req.body;
-    if (!id) {
+    const { userId } = req.body;
+    if (!userId) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id để sửa thông tin người dùng',
@@ -176,6 +176,26 @@ export const checkReqGetProductList = (req, res, next) => {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id người dùng để tải danh sách sản phẩm',
+        });
+    }
+
+    next();
+};
+
+export const checkReqUpdateProduct = (req, res, next) => {
+    const { userId, productId } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id người dùng để cập nhật sản phẩm',
+        });
+    }
+
+    if (!productId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id dự án để cập nhật sản phẩm',
         });
     }
 

@@ -39,6 +39,9 @@ module.exports = {
             productId: {
                 type: Sequelize.INTEGER,
             },
+            productOrder: {
+                type: Sequelize.INTEGER,
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,

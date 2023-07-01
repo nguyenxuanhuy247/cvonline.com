@@ -138,6 +138,20 @@ export const handleGetProductList = async (req, res) => {
     }
 };
 
+// UPDATE PRODUCT
+export const handleUpdateProduct = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.handleUpdateProduct(data);
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
 // DELETE PRODUCT
 export const handleDeleteProduct = async (req, res) => {
     const data = req.query;

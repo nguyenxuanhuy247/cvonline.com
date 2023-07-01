@@ -3,6 +3,7 @@ import classnames from 'classnames/bind';
 import { HiArrowUp } from 'react-icons/hi';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { HiArrowDown } from 'react-icons/hi';
+import { AiOutlinePlus } from 'react-icons/ai';
 import DefaultTippy from '@tippyjs/react';
 
 import styles from './EditProduct.module.scss';
@@ -23,6 +24,12 @@ class EditProduct extends PureComponent {
                 <DefaultTippy content="Di chuyển dự án này xuống dưới">
                     <Button className={cx('btn', 'move')} onClick={this.props.onMoveDownProduct}>
                         <HiArrowDown />
+                    </Button>
+                </DefaultTippy>
+
+                <DefaultTippy content="Thêm dự án mới">
+                    <Button className={cx('btn', 'add')} onClick={this.props.onCreateProduct}>
+                        <AiOutlinePlus />
                     </Button>
                 </DefaultTippy>
 

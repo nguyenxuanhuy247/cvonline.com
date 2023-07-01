@@ -136,6 +136,13 @@
                             line-height: 1.6;
                             font-weight: 300;
                             word-break: break-all;
+
+                            &.email {
+                                padding: 0.1em 0.4em;
+                                cursor: not-allowed;
+                                outline: none;
+                                border: none;
+                            }
                         }
                     }
                 }

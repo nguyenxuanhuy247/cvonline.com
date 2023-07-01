@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
-import HeadlessTippy from '@tippyjs/react/headless';
 import Pagination from '@mui/material/Pagination';
 import { HiOutlineSearch } from 'react-icons/hi';
 import _ from 'lodash';
+import { Buffer } from 'buffer';
+import { toast } from 'react-toastify';
 
 import styles from './Product.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
@@ -32,24 +33,50 @@ class Product extends PureComponent {
             BE_isSearch: false,
 
             isModalOpen: false,
-            uploadImageUrl: '',
-            image: '',
-
-            isSearch: false,
-            searchLibraryList: [],
+            order: undefined,
         };
     }
 
     // =================================================================
-    // AVATAR IMAGE
-    onCloseChangeImageModal = () => {
-        this.setState({
-            isModalOpen: false,
-        });
+    // CHANGE PRODUCT DESCRIPTION
+
+    getImageUrlFromChangeImageModal = async (url) => {
+        const { productInfo } = this.props?.productData ?? {};
+
+        const imageDB = productInfo?.image;
+        let binaryImageDB;
+
+        if (imageDB) {
+            binaryImageDB = Buffer.from(imageDB, 'base64').toString('binary');
+        }
+
+        if (url !== binaryImageDB) {
+            // Update avatar to Database
+            const data = { productId: productInfo?.id, image: url };
+            await this.props?.onUpdateProduct(data, 'ảnh sản phẩm');
+        } else {
+            toast.warn('Vui lòng chọn ảnh khác', {
+                position: 'top-center',
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'colored',
+            });
+        }
     };
 
-    getImageUrlFromChangeImageModal = (url) => {
-        this.setState({ image: url });
+    handleUpdateProductDesc = async (e, name, toastText, productId) => {
+        const { productInfo } = this.props?.productData ?? {};
+
+        const value = e.target.innerText?.trim();
+        const data = { productId: productId, [name]: value };
+
+        if (value !== productInfo[name]) {
+            await this.props?.onUpdateProduct(data, toastText);
+        }
     };
 
     // =================================================================
@@ -99,7 +126,7 @@ class Product extends PureComponent {
 
     handleSearchLibrary = async (e, side) => {
         const value = e.target.value?.trim();
-        const { productInfo, FELibraryList, BELibraryList } = this.props?.productdata ?? {};
+        const { productInfo, FELibraryList, BELibraryList } = this.props?.productData ?? {};
 
         // Check value is not empty
         if (value) {
@@ -192,14 +219,14 @@ class Product extends PureComponent {
 
     componentDidUpdate(prevProps) {
         // Turn to last page when add or delete a library
-        if (this.props?.productdata?.numberofFELibrary !== prevProps.productdata?.numberofFELibrary) {
-            const { numberofFELibrary } = this.props?.productdata ?? {};
+        if (this.props?.productData?.numberofFELibrary !== prevProps.productData?.numberofFELibrary) {
+            const { numberofFELibrary } = this.props?.productData ?? {};
             const FE_FinalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
             this.setState({ FE_Page: FE_FinalPage });
         }
 
-        if (this.props?.productdata?.numberofBELibrary !== prevProps.productdata?.numberofBELibrary) {
-            const { numberofBELibrary } = this.props?.productdata ?? {};
+        if (this.props?.productData?.numberofBELibrary !== prevProps.productData?.numberofBELibrary) {
+            const { numberofBELibrary } = this.props?.productData ?? {};
             const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
             this.setState({ BE_Page: BE_FinalPage });
         }
@@ -207,6 +234,7 @@ class Product extends PureComponent {
 
     render() {
         const {
+            order,
             productInfo,
             sourceCodeList,
             FETechnologyList,
@@ -215,7 +243,7 @@ class Product extends PureComponent {
             numberofFELibrary,
             BELibraryList: BE_AllLibraryList,
             numberofBELibrary,
-        } = this.props?.productdata ?? {};
+        } = this.props?.productData ?? {};
 
         // =================================================================
         // PAGINATION
@@ -264,59 +292,68 @@ class Product extends PureComponent {
 
         // =================================================================
 
+        // Convert Buffer Image type to Base 64 and finally Binary
+        const productImage = productInfo?.image;
+        let binaryImage;
+        if (productImage) {
+            binaryImage = Buffer.from(productImage, 'base64').toString('binary');
+        }
+
         return (
             <div className={cx('product-container')}>
                 <div className={cx('edit-product')}>
                     <EditProduct
                         onDeleteProduct={() => this.props.onDeleteProduct(productInfo?.id)}
-                        onMoveUpProduct={() => this.props.onMoveUpProduct(this.props.index)}
-                        onMoveDownProduct={() => this.props.onMoveDownProduct(this.props.index)}
+                        onCreateProduct={() => this.props.onCreateProduct()}
+                        onMoveUpProduct={() => this.props.onMoveUpProduct(order)}
+                        onMoveDownProduct={() => this.props.onMoveDownProduct(order)}
                     />
                 </div>
+
                 <div className={cx('product')}>
                     <div className={cx('row no-gutters')}>
                         <div className={cx('col pc-12')}>
                             <div className={cx('product-desc')} spellCheck="false">
                                 <div className={cx('work-exp')}>
                                     <ContentEditableTag
-                                        content={this.state.name || productInfo?.name}
+                                        content={productInfo?.name}
                                         className={cx('exp')}
                                         placeholder="Tên sản phẩm"
+                                        onBlur={(e) =>
+                                            this.handleUpdateProductDesc(e, 'name', 'tên dự án', productInfo?.id)
+                                        }
                                     />
                                 </div>
                                 <ContentEditableTag
-                                    content={this.state.desc || productInfo?.desc}
+                                    content={productInfo?.desc}
                                     className={cx('desc')}
                                     placeholder="Mô tả sản phẩm"
+                                    onBlur={(e) =>
+                                        this.handleUpdateProductDesc(e, 'desc', 'mô tả dự án', productInfo?.id)
+                                    }
                                 />
                             </div>
                         </div>
 
                         <div className={cx('col pc-9')}>
-                            <HeadlessTippy
-                                zIndex="10"
-                                placement="bottom"
-                                interactive
-                                delay={[0, 300]}
-                                offset={[0, -300]}
-                                render={(attrs) => (
-                                    <div tabIndex="-1" {...attrs}>
-                                        <div
-                                            className={cx('tooltip')}
-                                            onClick={() => this.setState({ isModalOpen: true })}
-                                        >
-                                            Sửa ảnh
-                                        </div>
-                                    </div>
-                                )}
-                            >
-                                <Image src={this.state.image} className={cx('image')} alt="Ảnh sản phẩm" />
-                            </HeadlessTippy>
+                            <div className={cx('product-image-container')}>
+                                <div
+                                    className={cx('edit-image-button')}
+                                    onClick={() => this.setState({ isModalOpen: true })}
+                                >
+                                    Sửa ảnh
+                                </div>
+                                <Image src={binaryImage} className={cx('image')} alt="Ảnh sản phẩm" />
+                            </div>
 
                             {this.state.isModalOpen && (
                                 <ChangeImageModal
                                     round={false}
-                                    onClose={this.onCloseChangeImageModal}
+                                    onClose={() =>
+                                        this.setState({
+                                            isModalOpen: false,
+                                        })
+                                    }
                                     onGetUrl={this.getImageUrlFromChangeImageModal}
                                 />
                             )}

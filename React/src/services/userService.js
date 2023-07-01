@@ -36,8 +36,8 @@ export const deleteTechnology = (id, key, side) => {
 // =============================================================================
 // CRUD USER INFORMATION
 
-export const readUserInformation = (id) => {
-    return axios.get(`/get-user-information?id=${id}`);
+export const readUserInformation = (userId) => {
+    return axios.get(`/get-user-information?userId=${userId}`);
 };
 
 export const updateUserInformation = (data) => {
@@ -53,6 +53,10 @@ export const createProduct = (userId) => {
 
 export const readProductList = (userId) => {
     return axios.get(`/get-product-list?userId=${userId}`);
+};
+
+export const updateProduct = (data) => {
+    return axios.put(`/put-product`, data);
 };
 
 export const deleteProduct = (userId, productId) => {

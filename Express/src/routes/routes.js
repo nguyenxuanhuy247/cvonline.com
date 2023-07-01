@@ -28,6 +28,7 @@ let initWebRoutes = (app) => {
     // CRUD PRODUCT LIST
     router.post('/post-product', userMiddleware.checkReqCreateProduct, userController.handleCreateProduct);
     router.get('/get-product-list', userMiddleware.checkReqGetProductList, userController.handleGetProductList);
+    router.put('/put-product', userMiddleware.checkReqUpdateProduct, userController.handleUpdateProduct);
     router.delete('/delete-product', userMiddleware.checkReqDeleteProduct, userController.handleDeleteProduct);
 
     return app.use('/', router);

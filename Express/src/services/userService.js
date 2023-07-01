@@ -49,6 +49,7 @@ export const postUserSignUp = async (fullName, email, password) => {
                 type: 'PRODUCTDESC',
                 key: 'PD',
                 userId: user.id,
+                productOrder: 1,
             });
 
             return {
@@ -110,11 +111,11 @@ export const postUserSignIn = async (userEmail, userPassword) => {
                 };
             }
         } else {
-            userData.errorCode = 32;
-            userData.errorMessage = `Email không tồn tại trên hệ thống`;
+            return {
+                errorCode: 32,
+                errorMessage: `Email không tồn tại trên hệ thống`,
+            };
         }
-
-        return userData;
     } catch (error) {
         console.log('An error in postUserSignIn() in userService.js : ', error);
         return {
@@ -252,10 +253,10 @@ export const handleDeleteTechnology = async (data) => {
 // READ USER INFORMATION
 export const handleGetUserInformation = async (data) => {
     try {
-        const { id } = data;
+        const { userId } = data;
 
         let user = await db.User.findOne({
-            where: { id: id },
+            where: { id: userId },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         });
 
@@ -283,24 +284,23 @@ export const handleGetUserInformation = async (data) => {
 // UPDATE USER INFORMATION
 export const handleUpdateUserInformation = async (data) => {
     try {
-        const { id, avatar, fullName, dateOfBirth } = data;
-
-        const newData = { ...data };
-        delete newData.id;
+        const { userId } = data;
 
         const user = await db.User.findOne({
-            where: { id: id },
+            where: { id: userId },
             raw: false,
         });
-        console.log('user', user);
+
         if (user) {
+            const newData = { ...data };
+            delete newData.userId;
+
             for (let prop in newData) {
                 if (newData[prop] !== undefined) {
                     user[prop] = newData[prop];
                 }
             }
 
-            console.log('change user', user);
             await user.save();
 
             return {
@@ -330,10 +330,20 @@ export const handleCreateProduct = async (data) => {
     try {
         const { userId } = data;
 
+        const productIDs = await db.Technology.findAll({
+            where: { userId: userId, key: 'PD' },
+            attributes: ['productOrder'],
+        });
+
+        const productIDArr = productIDs?.map((productID) => productID.productOrder);
+        const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+        let max = Math.max(...productIDArrWithNULL);
+
         await db.Technology.create({
             type: 'PRODUCTDESC',
             key: 'PD',
             userId: userId,
+            productOrder: max + 1,
         });
 
         return {
@@ -373,6 +383,7 @@ export const handleGetProductList = async (data) => {
                 let productListData = [];
                 for (let productID of uniqueProductIDArr) {
                     const product = {
+                        order: undefined,
                         productInfo: {},
                         sourceCodeList: [],
                         FETechnologyList: [],
@@ -385,11 +396,12 @@ export const handleGetProductList = async (data) => {
 
                     const productDesc = await db.Technology.findOne({
                         where: { id: productID, key: 'PD' },
-                        attributes: ['id', 'name', 'desc', 'image'],
+                        attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
                     });
 
                     if (productDesc) {
                         product.productInfo = productDesc;
+                        product.order = productDesc.productOrder;
                     }
 
                     const sourceCodes = await db.Technology.findAll({
@@ -455,6 +467,48 @@ export const handleGetProductList = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleGetProductList() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
+        };
+    }
+};
+
+// UPDATE PRODUCT
+export const handleUpdateProduct = async (data) => {
+    try {
+        const { userId, productId } = data;
+
+        const product = await db.Technology.findOne({
+            where: { id: productId, userId: userId },
+            raw: false,
+        });
+
+        if (product) {
+            const newData = { ...data };
+            delete newData.userId;
+            delete newData.productId;
+
+            for (let prop in newData) {
+                if (newData[prop] !== undefined) {
+                    product[prop] = newData[prop];
+                }
+            }
+
+            await product.save();
+
+            return {
+                errorCode: 0,
+                errorMessage: `Xóa dự án thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy dự án`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleDeleteProduct() in userService.js : ', error);
         return {
             errorCode: 31,
             errorMessage: `Không kết nối được với Database`,

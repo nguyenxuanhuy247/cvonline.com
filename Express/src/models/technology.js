@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             desc: DataTypes.TEXT,
             userId: DataTypes.INTEGER,
             productId: DataTypes.INTEGER,
+            productOrder: DataTypes.INTEGER,
         },
         {
             sequelize,

@@ -249,7 +249,7 @@ export const readProductList = (actionName, userId) => {
             if (errorCode === 0) {
                 dispatch(readProductList_Success(actionSuccess, data));
             } else {
-                toast.error(`Tải danh sách sản phẩm thất bại`);
+                toast.error(`Tải danh sách dự án thất bại`);
                 dispatch(readProductList_Failure(actionFailure));
             }
         } catch (error) {
@@ -274,6 +274,27 @@ export const readProductList_Failure = (actionName, data) => ({
     type: actionNames[actionName],
     payload: data,
 });
+
+// UPDATE PRODUCT
+export const updateProduct = (data, toastText) => {
+    return async () => {
+        try {
+            const res = await userService.updateProduct(data);
+            const { errorCode } = res;
+            if (errorCode === 0) {
+                toast.success(`Cập nhật ${toastText} thành công`);
+                return errorCode;
+            } else {
+                toast.error(`Cập nhật ${toastText} thất bại`);
+                return errorCode;
+            }
+        } catch (error) {
+            toast.error(error.response.data.errorMessage);
+            console.log('An error in readUserInformation() - userActions.js: ', error);
+            return error.response.data.errorCode;
+        }
+    };
+};
 
 // DELETE PRODUCT
 export const deleteProduct = (userId, productId) => {
@@ -300,7 +321,7 @@ export const deleteProduct = (userId, productId) => {
 // CRUD USER INFORMATION
 
 // READ USER INFORMATION
-export const readUserInformation = (toastText, actionName, id) => {
+export const readUserInformation = (toastText, actionName, userId) => {
     return async (dispatch) => {
         const actionStart = `READ_${actionName}_START`;
         const actionSuccess = `READ_${actionName}_SUCCESS`;
@@ -308,13 +329,13 @@ export const readUserInformation = (toastText, actionName, id) => {
 
         dispatch(CRUDUserInformation_Start(actionStart));
         try {
-            const res = await userService.readUserInformation(id);
+            const res = await userService.readUserInformation(userId);
 
             if (res.errorCode === 0) {
                 dispatch(CRUDUserInformation_Success(actionSuccess, res));
             } else {
                 toast.error(`Tải ${toastText} thất bại`);
-                dispatch(CRUDUserInformation_Failure(actionFailure, res));
+                dispatch(CRUDUserInformation_Failure(actionFailure));
             }
         } catch (error) {
             toast.error(error.response.data.errorMessage);
@@ -334,14 +355,15 @@ export const updateUserInformation = (toastText, actionName, dataSent, isToastSu
         dispatch(CRUDUserInformation_Start(actionStart));
         try {
             let res = await userService.updateUserInformation(dataSent);
-            if (res.errorCode === 0) {
+            const { errorCode } = res;
+            if (errorCode === 0) {
                 isToastSuccess && toast.success(`Sửa ${toastText} thành công`);
-                dispatch(CRUDUserInformation_Success(actionSuccess, res));
-                return res.errorCode;
+                dispatch(CRUDUserInformation_Success(actionSuccess));
+                return errorCode;
             } else {
                 toast.error(`Sửa ${toastText} thất bại`);
-                dispatch(CRUDUserInformation_Failure(actionFailure, res));
-                return res.errorCode;
+                dispatch(CRUDUserInformation_Failure(actionFailure));
+                return errorCode;
             }
         } catch (error) {
             toast.error(error.response.data.errorMessage);
@@ -352,9 +374,8 @@ export const updateUserInformation = (toastText, actionName, dataSent, isToastSu
     };
 };
 
-export const CRUDUserInformation_Start = (actionName, data) => ({
+export const CRUDUserInformation_Start = (actionName) => ({
     type: actionNames[actionName],
-    payload: data,
 });
 
 export const CRUDUserInformation_Success = (actionName, data) => ({
@@ -362,7 +383,6 @@ export const CRUDUserInformation_Success = (actionName, data) => ({
     payload: data,
 });
 
-export const CRUDUserInformation_Failure = (actionName, data) => ({
+export const CRUDUserInformation_Failure = (actionName) => ({
     type: actionNames[actionName],
-    payload: data,
 });
