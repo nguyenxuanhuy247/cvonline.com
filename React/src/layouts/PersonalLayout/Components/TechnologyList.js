@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { Buffer } from 'buffer';
-import { toast } from 'react-toastify';
+import { Toast } from '~/components/Toast/Toast.js';
 
 import styles from './TechnologyList.module.scss';
 import '~/components/GlobalStyles/Pagination.scss';
@@ -71,7 +71,10 @@ class TechnologyList extends PureComponent {
         // If list is sorted, will not exchange position
         if (this.props.type === 'LIBRARY') {
             if (this.props.isSortBy) {
-                toast.error(`Danh sách đang được sắp xếp từ ${this.props.isSortBy === 'desc' ? 'Z đến A' : 'A đến Z'}`);
+                Toast.TOP_RIGHT_ERROR(
+                    `Danh sách đang được sắp xếp từ ${this.props.isSortBy === 'desc' ? 'Z đến A' : 'A đến Z'}`,
+                    3000,
+                );
                 return;
             }
         }
@@ -118,6 +121,7 @@ class TechnologyList extends PureComponent {
                         this.props?.type,
                         false,
                     );
+
                     if (errorCode === 0) {
                         this.setState({
                             dragItemId: undefined,
@@ -126,10 +130,10 @@ class TechnologyList extends PureComponent {
                             dragOverElement: null,
                         });
                     } else {
-                        toast.error(`Đổi vị trí thất bại`);
+                        Toast.TOP_RIGHT_ERROR(`Cập nhật ${this.props.label} bị đổi vị trí thất bại`, 3000);
                     }
                 } else {
-                    toast.error(`Đổi vị trí thất bại`);
+                    Toast.TOP_RIGHT_ERROR(`Cập nhật ${this.props.label} cần đổi vị trí thất bại`, 3000);
                 }
             }
         }

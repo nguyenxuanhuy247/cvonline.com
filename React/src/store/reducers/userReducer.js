@@ -4,9 +4,7 @@ const initialState = {
     isLoading: {
         signin: false,
         signup: false,
-        user: false,
-        productList: false,
-        technologyList: false,
+        CVLayout: false,
     },
     isSignUp: false,
     isSignIn: false,
@@ -62,56 +60,45 @@ const userReducer = (state = initialState, action) => {
                 isSignIn: false,
                 isSignUp: false,
             };
-        // =================================================================
-        // READ PRODUCT LIST
-        case actionNames.READ_PRODUCT_LIST_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, productList: true },
-            };
-        case actionNames.READ_PRODUCT_LIST_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, productList: false },
-                productList: action.payload,
-            };
-        case actionNames.READ_PRODUCT_LIST_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, productList: false },
-            };
 
         // =================================================================
         // READ USER INFORMATION
         case actionNames.READ_USER_INFORMATION_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, user: true },
+                isLoading: { ...state.isLoading, CVLayout: true },
             };
         case actionNames.READ_USER_INFORMATION_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, user: false },
+                isLoading: { ...state.isLoading, CVLayout: false },
                 user: action.payload.data,
             };
         case actionNames.READ_USER_INFORMATION_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, user: false },
+                isLoading: { ...state.isLoading, CVLayout: false },
             };
 
-        // UPDATE USER INFORMATION
-        case actionNames.UPDATE_USER_INFORMATION_START:
+        // =================================================================
+        // READ PRODUCT LIST
+        case actionNames.READ_PRODUCT_LIST_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, user: true },
+                isLoading: { ...state.isLoading, CVLayout: true },
             };
-        case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
-        case actionNames.UPDATE_USER_INFORMATION_FAILURE:
+        case actionNames.READ_PRODUCT_LIST_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, user: false },
+                isLoading: { ...state.isLoading, CVLayout: false },
+                productList: action.payload,
             };
+        case actionNames.READ_PRODUCT_LIST_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+            };
+
         default:
             return state;
     }

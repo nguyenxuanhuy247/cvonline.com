@@ -6,7 +6,7 @@ class Loading extends PureComponent {
         return (
             <div
                 style={{
-                    ...this.props.style,
+                    position: 'fixed',
                     inset: 0,
                     display: 'flex',
                     justifyContent: 'center',

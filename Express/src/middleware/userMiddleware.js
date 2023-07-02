@@ -48,6 +48,36 @@ export const checkReqSignIn = (req, res, next) => {
 };
 
 // =================================================================
+// CHECK CRUD USER INFORMATION
+
+// READ USER INFORMATION
+export const checkReqGetUserInformation = (req, res, next) => {
+    const { userId } = req.query;
+
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id để tải thông tin người dùng',
+        });
+    }
+
+    next();
+};
+
+// UPDATE USER INFORMATION
+export const checkReqUpdateUserInformation = (req, res, next) => {
+    const { userId } = req.body;
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập id để sửa thông tin người dùng',
+        });
+    }
+
+    next();
+};
+
+// =================================================================
 // CHECK CRUD TECHNOLOGY
 
 // CREATE TECHNOLOGY
@@ -118,36 +148,6 @@ export const checkReqDeleteTechnology = (req, res, next) => {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập id để xóa thư viện',
-        });
-    }
-
-    next();
-};
-
-// =================================================================
-// CHECK CRUD USER INFORMATION
-
-// READ USER INFORMATION
-export const checkReqGetUserInformation = (req, res, next) => {
-    const { userId } = req.query;
-    
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập id để tải thông tin người dùng',
-        });
-    }
-
-    next();
-};
-
-// UPDATE USER INFORMATION
-export const checkReqUpdateUserInformation = (req, res, next) => {
-    const { userId } = req.body;
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập id để sửa thông tin người dùng',
         });
     }
 

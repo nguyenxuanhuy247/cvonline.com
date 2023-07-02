@@ -2,9 +2,10 @@ import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import Pagination from '@mui/material/Pagination';
 import { HiOutlineSearch } from 'react-icons/hi';
+import { AiOutlineSortAscending, AiOutlineSortDescending } from 'react-icons/ai';
 import _ from 'lodash';
 import { Buffer } from 'buffer';
-import { toast } from 'react-toastify';
+import { Toast } from '~/components/Toast/Toast.js';
 
 import styles from './Product.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
@@ -33,12 +34,49 @@ class Product extends PureComponent {
             BE_isSearch: false,
 
             isModalOpen: false,
-            order: undefined,
+            productDesc: '',
         };
     }
 
     // =================================================================
     // CHANGE PRODUCT DESCRIPTION
+
+    handleUpdateProductName = async (e, productId) => {
+        const { productInfo } = this.props?.productData ?? {};
+
+        const value = e.target.innerText?.trim();
+        const data = { productId: productId, name: value };
+
+        if (value !== productInfo?.name) {
+            await this.props?.onUpdateProduct(data, 'tên dự án');
+        }
+    };
+
+    getNumberOfRows = (textAreaEl) => {
+        const text = textAreaEl?.textContent;
+        const row_count = text?.split(/\r\n|\r|\n/).length;
+        return row_count;
+    };
+
+    handleInputProductDescAndSetRowsForTextarea = (e) => {
+        const textAreaElement = e.target;
+        const value = e.target.value;
+
+        const rows = this.getNumberOfRows(textAreaElement);
+        textAreaElement.rows = rows;
+
+        this.setState({ productDesc: value });
+    };
+
+    handleUpdateProductDesc = async () => {
+        const { productInfo } = this.props?.productData ?? {};
+        const value = this.state.productDesc;
+
+        if (value !== productInfo?.desc) {
+            const data = { productId: productInfo?.id, desc: value };
+            await this.props?.onUpdateProduct(data, 'mô tả dự án');
+        }
+    };
 
     getImageUrlFromChangeImageModal = async (url) => {
         const { productInfo } = this.props?.productData ?? {};
@@ -55,27 +93,7 @@ class Product extends PureComponent {
             const data = { productId: productInfo?.id, image: url };
             await this.props?.onUpdateProduct(data, 'ảnh sản phẩm');
         } else {
-            toast.warn('Vui lòng chọn ảnh khác', {
-                position: 'top-center',
-                autoClose: 2500,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: 'colored',
-            });
-        }
-    };
-
-    handleUpdateProductDesc = async (e, name, toastText, productId) => {
-        const { productInfo } = this.props?.productData ?? {};
-
-        const value = e.target.innerText?.trim();
-        const data = { productId: productId, [name]: value };
-
-        if (value !== productInfo[name]) {
-            await this.props?.onUpdateProduct(data, toastText);
+            Toast.TOP_CENTER_WARN(`Ảnh này đã được sử dụng, hãy chọn ảnh khác`, 3000);
         }
     };
 
@@ -114,13 +132,15 @@ class Product extends PureComponent {
     // =================================================================
     // SORT AND FILTER
 
-    handleSortLibraryName = (e, side) => {
-        if (e.target.value === 'NO') {
+    handeSortLibrary = (e, side, sort) => {
+        const element = e.currentTarget;
+        const isActive = element.classList.contains(cx('active-sort'));
+
+        if (isActive) {
+            element.classList.remove(cx('active'));
             this.setState({ [`${side === 'FE' ? 'FE_sortBy' : 'BE_sortBy'}`]: '' });
-        } else if (e.target.value === 'AZ') {
-            this.setState({ [`${side === 'FE' ? 'FE_sortBy' : 'BE_sortBy'}`]: 'asc' });
-        } else if (e.target.value === 'ZA') {
-            this.setState({ [`${side === 'FE' ? 'FE_sortBy' : 'BE_sortBy'}`]: 'desc' });
+        } else {
+            this.setState({ [`${side === 'FE' ? 'FE_sortBy' : 'BE_sortBy'}`]: sort });
         }
     };
 
@@ -219,17 +239,32 @@ class Product extends PureComponent {
 
     componentDidUpdate(prevProps) {
         // Turn to last page when add or delete a library
-        if (this.props?.productData?.numberofFELibrary !== prevProps.productData?.numberofFELibrary) {
+        if (this.props?.productData?.numberofFELibrary !== prevProps?.productData?.numberofFELibrary) {
             const { numberofFELibrary } = this.props?.productData ?? {};
             const FE_FinalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
             this.setState({ FE_Page: FE_FinalPage });
         }
 
-        if (this.props?.productData?.numberofBELibrary !== prevProps.productData?.numberofBELibrary) {
+        if (this.props?.productData?.numberofBELibrary !== prevProps?.productData?.numberofBELibrary) {
             const { numberofBELibrary } = this.props?.productData ?? {};
             const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
             this.setState({ BE_Page: BE_FinalPage });
         }
+
+        // Update product desc after updating props from redux
+        if (this.props?.productInfo?.desc !== prevProps?.productInfo?.desc) {
+            this.setState({ productDesc: this.props?.productInfo?.desc });
+        }
+    }
+
+    async componentDidMount() {
+        const { productInfo } = this.props?.productData ?? {};
+
+        await this.setState({ productDesc: productInfo?.desc });
+
+        const textAreaElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
+        const rows = this.getNumberOfRows(textAreaElement);
+        textAreaElement.rows = rows;
     }
 
     render() {
@@ -264,32 +299,39 @@ class Product extends PureComponent {
 
         // Check FE_isSearch and FE_sortBy in order to use FE Library List
         const FE_LibraryList = this.state.FE_isSearch ? FE_AllLibraryList : FELibraryListArray;
-        const FE_LibraryList_SortedOrNot = this.state.FE_sortBy
-            ? _.orderBy(
-                  [...FE_LibraryList],
-                  [
-                      (value) => {
-                          return value.name?.toLowerCase();
-                      },
-                  ],
-                  [this.state.FE_sortBy],
-              )
-            : FE_LibraryList;
+
+        let FE_LibraryList_SortedOrNot;
+        if (FE_LibraryList?.length > 0) {
+            FE_LibraryList_SortedOrNot = this.state.FE_sortBy
+                ? _.orderBy(
+                      [...FE_LibraryList],
+                      [
+                          (value) => {
+                              return value.name?.toLowerCase();
+                          },
+                      ],
+                      [this.state.FE_sortBy],
+                  )
+                : FE_LibraryList;
+        }
 
         // Check BE_isSearch and BE_sortBy in order to use BE Library List
         const BE_LibraryList = this.state.BE_isSearch ? BE_AllLibraryList : BELibraryListArray;
-        const BE_LibraryList_SortedOrNot = this.state.BE_sortBy
-            ? _.orderBy(
-                  [...BE_LibraryList],
-                  [
-                      (value) => {
-                          return value.name?.toLowerCase();
-                      },
-                  ],
-                  [this.state.BE_sortBy],
-              )
-            : BE_LibraryList;
 
+        let BE_LibraryList_SortedOrNot;
+        if (BE_LibraryList?.length > 0) {
+            BE_LibraryList_SortedOrNot = this.state.BE_sortBy
+                ? _.orderBy(
+                      [...BE_LibraryList],
+                      [
+                          (value) => {
+                              return value.name?.toLowerCase();
+                          },
+                      ],
+                      [this.state.BE_sortBy],
+                  )
+                : BE_LibraryList;
+        }
         // =================================================================
 
         // Convert Buffer Image type to Base 64 and finally Binary
@@ -319,19 +361,19 @@ class Product extends PureComponent {
                                         content={productInfo?.name}
                                         className={cx('exp')}
                                         placeholder="Tên sản phẩm"
-                                        onBlur={(e) =>
-                                            this.handleUpdateProductDesc(e, 'name', 'tên dự án', productInfo?.id)
-                                        }
+                                        onBlur={(e) => this.handleUpdateProductName(e, productInfo?.id)}
                                     />
                                 </div>
-                                <ContentEditableTag
-                                    content={productInfo?.desc}
-                                    className={cx('desc')}
+                                <textarea
+                                    id={`js-product-desc-${productInfo?.id}`}
                                     placeholder="Mô tả sản phẩm"
-                                    onBlur={(e) =>
-                                        this.handleUpdateProductDesc(e, 'desc', 'mô tả dự án', productInfo?.id)
-                                    }
-                                />
+                                    className={cx('desc')}
+                                    spellCheck={false}
+                                    rows={1}
+                                    value={this.state?.productDesc ?? ''}
+                                    onInput={(e) => this.handleInputProductDescAndSetRowsForTextarea(e)}
+                                    onBlur={() => this.handleUpdateProductDesc()}
+                                ></textarea>
                             </div>
                         </div>
 
@@ -393,7 +435,7 @@ class Product extends PureComponent {
                                         <TechnologyList
                                             technologyListID={`js-technology-list-FE-${productInfo?.id}`}
                                             draggable
-                                            label="công nghệ sử dụng"
+                                            label="công nghệ FE sử dụng"
                                             type="TECHNOLOGY"
                                             keyprop="TE"
                                             side="FE"
@@ -419,29 +461,37 @@ class Product extends PureComponent {
                                             </span>
                                             <input
                                                 autoComplete="off"
-                                                id="js-input-search-library"
                                                 type="text"
                                                 className={cx('library-filter-search')}
                                                 spellCheck="false"
                                                 onInput={(e) => this.handleSearchLibrary(e, 'FE')}
                                             />
                                         </div>
+
                                         <div className={cx('library-sort')}>
-                                            <span className={cx('library-sort-heading')}>Sắp xếp </span>
-                                            <select
-                                                className={cx('library-sort-select')}
-                                                onChange={(e) => this.handleSortLibraryName(e, 'FE')}
+                                            <span className={cx('label')}>Sắp xếp : </span>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.FE_sortBy === 'asc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'FE', 'asc')}
                                             >
-                                                <option value="NO">---</option>
-                                                <option value="AZ">A - Z</option>
-                                                <option value="ZA">Z - A</option>
-                                            </select>
+                                                <AiOutlineSortAscending />
+                                            </Button>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.FE_sortBy === 'desc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'FE', 'desc')}
+                                            >
+                                                <AiOutlineSortDescending />
+                                            </Button>
                                         </div>
                                     </div>
 
                                     {!this.state.FE_isSearch && (
                                         <div className={cx('display')}>
-                                            <label className={cx('label')}>Hiển thị : </label>
+                                            <span className={cx('label')}>Hiển thị : </span>
                                             {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                                 return (
                                                     <Button
@@ -474,12 +524,9 @@ class Product extends PureComponent {
                                         onUpdateTechnology={this.props.onUpdateTechnology}
                                         onDeleteTechnology={this.props.onDeleteTechnology}
                                         // =================================================================
-                                        // Search
+                                        // Search - Sort
                                         isSearch={this.state.FE_isSearch}
-                                        // =================================================================
-                                        // Sort
                                         isSortBy={this.state.FE_sortBy}
-                                        sortupdatetechnology={this.props.updateLibrary}
                                     />
 
                                     {!this.state.FE_isSearch && this.state.FE_isPagination && (
@@ -530,7 +577,7 @@ class Product extends PureComponent {
                                         <TechnologyList
                                             technologyListID={`js-technology-list-BE-${productInfo?.id}`}
                                             draggable
-                                            label="công nghệ sử dụng"
+                                            label="công nghệ BE sử dụng"
                                             type="TECHNOLOGY"
                                             keyprop="TE"
                                             side="BE"
@@ -548,6 +595,7 @@ class Product extends PureComponent {
                                     <div className={cx('library-used-title')}>
                                         <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
                                     </div>
+
                                     <div className={cx('library-filter-sort')}>
                                         <div className={cx('library-filter')}>
                                             <span className={cx('library-filter-icon')}>
@@ -555,28 +603,37 @@ class Product extends PureComponent {
                                             </span>
                                             <input
                                                 autoComplete="off"
-                                                id="js-input-search-library"
                                                 type="text"
                                                 className={cx('library-filter-search')}
                                                 spellCheck="false"
                                                 onInput={(e) => this.handleSearchLibrary(e, 'BE')}
                                             />
                                         </div>
+
                                         <div className={cx('library-sort')}>
-                                            <span className={cx('library-sort-heading')}>Sắp xếp </span>
-                                            <select
-                                                className={cx('library-sort-select')}
-                                                onChange={(e) => this.handleSortLibraryName(e, 'BE')}
+                                            <span className={cx('label')}>Sắp xếp : </span>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.BE_sortBy === 'asc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'BE', 'asc')}
                                             >
-                                                <option value="NO">---</option>
-                                                <option value="AZ">A - Z</option>
-                                                <option value="ZA">Z - A</option>
-                                            </select>
+                                                <AiOutlineSortAscending />
+                                            </Button>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.BE_sortBy === 'desc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'BE', 'desc')}
+                                            >
+                                                <AiOutlineSortDescending />
+                                            </Button>
                                         </div>
                                     </div>
+
                                     {!this.state.BE_isSearch && (
                                         <div className={cx('display')}>
-                                            <label className={cx('label')}>Hiển thị : </label>
+                                            <span className={cx('label')}>Hiển thị : </span>
                                             {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                                 return (
                                                     <Button
@@ -609,12 +666,9 @@ class Product extends PureComponent {
                                         onUpdateTechnology={this.props.onUpdateTechnology}
                                         onDeleteTechnology={this.props.onDeleteTechnology}
                                         // =================================================================
-                                        // Search
+                                        // Search - Sort
                                         isSearch={this.state.BE_isSearch}
-                                        // =================================================================
-                                        // Sort
                                         isSortBy={this.state.BE_sortBy}
-                                        sortupdatetechnology={this.props.updateLibrary}
                                     />
 
                                     {!this.state.BE_isSearch && this.state.BE_isPagination && (

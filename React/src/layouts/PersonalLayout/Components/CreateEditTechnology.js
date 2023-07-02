@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
-import { toast } from 'react-toastify';
 
 import styles from './CreateEditTechnology.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
+import { Toast } from '~/components/Toast/Toast.js';
 
 const cx = classnames.bind(styles);
 class CreateEditTechnology extends PureComponent {
@@ -21,8 +21,8 @@ class CreateEditTechnology extends PureComponent {
         };
     }
 
-    handleGetImageUrlFromChangeImageModal = async (url) => {
-        await this.setState({ image: url });
+    handleGetImageUrlFromChangeImageModal = (url) => {
+        this.setState({ image: url });
     };
 
     handleCloseChangeImageModal = () => {
@@ -50,28 +50,30 @@ class CreateEditTechnology extends PureComponent {
         };
 
         if (isEdit) {
-            const errorCode = await this.props?.onUpdateTechnology(data, this.props.type);
+            const errorCode = await this.props?.onUpdateTechnology(data, this.props?.label);
             if (errorCode === 0) {
                 this.props.onCloseCreateTechnology();
             }
         } else {
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
-                    const errorCode = await this.props.onCreateTechnology(data, this.props.type);
+                    const errorCode = await this.props.onCreateTechnology(data, this.props?.label);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
                     }
-                } else {
-                    toast.error(`Nhập tên hoặc link để tạo ${this.props.label} mới`);
+                } else if (!this.state.name) {
+                    Toast.TOP_RIGHT_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
+                } else if (!this.state.link) {
+                    Toast.TOP_RIGHT_INFO(`Vui lòng nhập link của ${this.props.label}`, 3000);
                 }
             } else {
                 if (this.state.name) {
-                    const errorCode = await this.props.onCreateTechnology(data, this.props?.type);
+                    const errorCode = await this.props.onCreateTechnology(data, this.props?.label);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
                     }
                 } else {
-                    toast.error(`Nhập tên tên để tạo ${this.props.label} mới`);
+                    Toast.TOP_RIGHT_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
                 }
             }
         }

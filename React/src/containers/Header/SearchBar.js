@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
 import classnames from 'classnames/bind';
 import { BsKeyboard } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
@@ -17,8 +16,6 @@ class SearchBar extends PureComponent {
         this.state = { searchValue: '', loading: false };
     }
 
-    inputRef = React.createRef();
-
     handleInputValue = (e) => {
         this.setState({ searchValue: e.target.value });
     };
@@ -30,7 +27,6 @@ class SearchBar extends PureComponent {
                 <div className={cx('search-bar')}>
                     <input
                         className={cx('search-input')}
-                        ref={this.inputRef}
                         value={searchValue}
                         placeholder="Search accounts and videos"
                         spellCheck={false}

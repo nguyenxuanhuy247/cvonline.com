@@ -58,8 +58,8 @@ class Technology extends PureComponent {
         this.setState({ isEdit: false });
     };
 
-    handleDeleteTechnology = (id, type) => {
-        this.props.onDeleteTechnology(id, type);
+    handleDeleteTechnology = (id) => {
+        this.props.onDeleteTechnology(id, this.props?.label);
     };
 
     // =================================================================
@@ -117,7 +117,7 @@ class Technology extends PureComponent {
                     item.style.display = 'inline-flex';
                 }
             });
-            
+
             // Hide Edit button
             editButton.style.visibility = 'hidden';
         }
@@ -186,7 +186,7 @@ class Technology extends PureComponent {
                         // =================================================================
                         onShowCreateTechnology={this.props?.onShowCreateTechnology}
                         onShowEditTechnology={() => this.handleShowEditTechnology(id)}
-                        onDeleteTechnology={() => this.handleDeleteTechnology(id, type)}
+                        onDeleteTechnology={() => this.handleDeleteTechnology(id)}
                         // =================================================================
                         onMouseEnter={() => this.handleHoverEditButton(buttonID)}
                         onMouseLeave={() => this.handleUnhoverEditButton(editButtonID, buttonID)}

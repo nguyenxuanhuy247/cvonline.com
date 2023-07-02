@@ -135,7 +135,7 @@
                             font-size: 1.5rem;
                             line-height: 1.6;
                             font-weight: 300;
-                            word-break: break-all;
+                            word-break: break-word;
 
                             &.email {
                                 padding: 0.1em 0.4em;
@@ -163,7 +163,8 @@
                     border: 1px solid transparent;
                     word-break: break-word;
 
-                    &:hover {
+                    &:hover,
+                    &:focus {
                         border: 1px dashed #999;
                     }
 
