@@ -39,7 +39,7 @@ class Header extends PureComponent {
         return (
             <div className={cx('header')}>
                 <Link to={'/'} className={cx('logo-link')}>
-                    <img src={logo} className={cx('logo')} alt="CiVi.com" />
+                    <img src={logo} className={cx('logo')} alt="cvonline.com" />
                 </Link>
 
                 <SearchBar />

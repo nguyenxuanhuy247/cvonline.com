@@ -87,32 +87,13 @@ class PersonalLayout extends PureComponent {
         }
     };
 
-    getWidthOfText = (textAreaEl) => {
-        var text = textAreaEl.value;
-        var canvas = document.createElement('canvas');
-        var context = canvas.getContext('2d');
-        context.font = window.getComputedStyle(textAreaEl).font;
-        var width = context.measureText(text).width;
-        return width;
-    };
-
-    getWidthOfTextArea = (textAreaEl) => {
-        const paddingLeft = parseInt(window.getComputedStyle(textAreaEl).paddingLeft);
-        const paddingRight = parseInt(window.getComputedStyle(textAreaEl).paddingRight);
-        const textAreaWidth = textAreaEl.clientWidth - paddingLeft - paddingRight;
-
-        return textAreaWidth;
-    };
-
     handleInputLanguagesAndSetRowsForTextarea = (e) => {
         const textAreaElement = e.target;
         const value = e.target.value;
 
-        const textWidth = this.getWidthOfText(textAreaElement);
-        const textAreaWidth = this.getWidthOfTextArea(textAreaElement);
-
-        const rows = Math.ceil(textWidth / textAreaWidth);
-        textAreaElement.rows = rows + 1;
+        // Get number of rows of textarea and set rows attribute
+        const rows = textAreaElement?.textContent?.split(/\r\n|\r|\n/).length;
+        textAreaElement.rows = rows;
 
         this.setState({ languages: value });
     };
@@ -269,11 +250,11 @@ class PersonalLayout extends PureComponent {
                 productOrder: upperItemOrder.productOrder,
             };
 
-            const errorCode = await this.props.updateProduct(changedUpperItem, 'vị trí');
-            if (errorCode === 0) {
-                const errorCode = await this.props.updateProduct(changedMoveItem, 'vị trí');
+            const errorCode1 = await this.props.updateProduct(changedUpperItem, 'vị trí');
+            if (errorCode1 === 0) {
+                const errorCode2 = await this.props.updateProduct(changedMoveItem, 'vị trí');
 
-                if (errorCode === 0) {
+                if (errorCode2 === 0) {
                     await this.props.readProductList(userId);
                 }
             }
@@ -329,12 +310,16 @@ class PersonalLayout extends PureComponent {
                 Toast.TOP_CENTER_ERROR(`Tải thông tin người dùng thất bại`, 3000);
             }
 
+            await this.setState({ languages: this.props?.user?.languages });
+
             const errorCode_productList = await this.props.readProductList(userId);
             if (errorCode_productList !== 0) {
                 Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm thất bại`, 3000);
             }
 
-            await this.setState({ languages: this.props?.user?.languages });
+            const textAreaElement = document.getElementById(`js-language-desc`);
+            const rows = textAreaElement?.innerHTML?.split(/\r\n|\r|\n/).length;
+            textAreaElement.rows = rows;
         } else {
             Toast.TOP_CENTER_ERROR(`Không tìm thấy ID của người dùng để tải CV`, 3000);
         }
@@ -507,6 +492,7 @@ class PersonalLayout extends PureComponent {
                                     <div className={cx('candidate-info')}>
                                         <p className={cx('text')}>Trình độ ngoại ngữ</p>
                                         <textarea
+                                            id={`js-language-desc`}
                                             placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
                                             className={cx('language-desc')}
                                             spellCheck={false}

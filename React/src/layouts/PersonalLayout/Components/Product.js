@@ -238,22 +238,22 @@ class Product extends PureComponent {
     // =================================================================
 
     componentDidUpdate(prevProps) {
+        const { productInfo, numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
+
         // Turn to last page when add or delete a library
-        if (this.props?.productData?.numberofFELibrary !== prevProps?.productData?.numberofFELibrary) {
-            const { numberofFELibrary } = this.props?.productData ?? {};
+        if (numberofFELibrary !== prevProps?.productData?.numberofFELibrary) {
             const FE_FinalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
             this.setState({ FE_Page: FE_FinalPage });
         }
 
-        if (this.props?.productData?.numberofBELibrary !== prevProps?.productData?.numberofBELibrary) {
-            const { numberofBELibrary } = this.props?.productData ?? {};
+        if (numberofBELibrary !== prevProps?.productData?.numberofBELibrary) {
             const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
             this.setState({ BE_Page: BE_FinalPage });
         }
 
         // Update product desc after updating props from redux
-        if (this.props?.productInfo?.desc !== prevProps?.productInfo?.desc) {
-            this.setState({ productDesc: this.props?.productInfo?.desc });
+        if (productInfo?.desc !== prevProps?.productData?.productInfo?.desc) {
+            this.setState({ productDesc: productInfo?.desc });
         }
     }
 
@@ -341,6 +341,7 @@ class Product extends PureComponent {
             binaryImage = Buffer.from(productImage, 'base64').toString('binary');
         }
 
+        console.log('productDesc', this.state.productDesc);
         return (
             <div className={cx('product-container')}>
                 <div className={cx('edit-product')}>

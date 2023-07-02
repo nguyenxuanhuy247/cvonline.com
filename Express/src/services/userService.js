@@ -488,7 +488,7 @@ export const handleUpdateProduct = async (data) => {
             const newData = { ...data };
             delete newData.userId;
             delete newData.productId;
-
+            console.log(`San pham ${productId}`, newData);
             for (let prop in newData) {
                 if (newData[prop] !== undefined) {
                     product[prop] = newData[prop];
