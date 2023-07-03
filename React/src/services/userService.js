@@ -19,21 +19,6 @@ export const postSignIn = (userEmail, userPassword) => {
 };
 
 // =============================================================================
-// CRUD TECHNOLOGY
-
-export const createTechnology = (data) => {
-    return axios.post('/post-technology', data);
-};
-
-export const updateTechnology = (data) => {
-    return axios.put('/put-technology', data);
-};
-
-export const deleteTechnology = (id, key, side) => {
-    return axios.delete(`/delete-technology?id=${id}`);
-};
-
-// =============================================================================
 // CRUD USER INFORMATION
 
 export const readUserInformation = (userId) => {
@@ -61,4 +46,19 @@ export const updateProduct = (data) => {
 
 export const deleteProduct = (userId, productId) => {
     return axios.delete(`/delete-product?userId=${userId}&&productId=${productId}`);
+};
+
+// =============================================================================
+// CRUD TECHNOLOGY
+
+export const createTechnology = (data) => {
+    return axios.post('/post-technology', data);
+};
+
+export const updateTechnology = (data) => {
+    return axios.put('/put-technology', data);
+};
+
+export const deleteTechnology = (technologyId, label) => {
+    return axios.delete(`/delete-technology?technologyId=${technologyId}&&label=${label}`);
 };

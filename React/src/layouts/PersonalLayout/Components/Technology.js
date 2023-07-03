@@ -58,8 +58,8 @@ class Technology extends PureComponent {
         this.setState({ isEdit: false });
     };
 
-    handleDeleteTechnology = (id) => {
-        this.props.onDeleteTechnology(id, this.props?.label);
+    handleDeleteTechnology = (technologyId) => {
+        this.props.onDeleteTechnology(technologyId, this.props.label);
     };
 
     // =================================================================
@@ -145,7 +145,6 @@ class Technology extends PureComponent {
             onDragStart,
             onDragEnd,
             onDragEnter,
-            onDragLeave,
             onDragOver,
             onDrop,
         } = this.props;
@@ -154,7 +153,6 @@ class Technology extends PureComponent {
             onDragStart,
             onDragEnd,
             onDragEnter,
-            onDragLeave,
             onDragOver,
             onDrop,
         };

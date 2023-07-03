@@ -8,11 +8,6 @@ let initWebRoutes = (app) => {
     router.post('/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
 
-    // CRUD TECHNOLOGY
-    router.post('/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
-    router.put('/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
-    router.delete('/delete-technology', userMiddleware.checkReqDeleteTechnology, userController.handleDeleteTechnology);
-
     // CRUD USER INFOMATION
     router.get(
         '/get-user-information',
@@ -30,6 +25,11 @@ let initWebRoutes = (app) => {
     router.get('/get-product-list', userMiddleware.checkReqGetProductList, userController.handleGetProductList);
     router.put('/put-product', userMiddleware.checkReqUpdateProduct, userController.handleUpdateProduct);
     router.delete('/delete-product', userMiddleware.checkReqDeleteProduct, userController.handleDeleteProduct);
+
+    // CRUD TECHNOLOGY
+    router.post('/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
+    router.put('/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
+    router.delete('/delete-technology', userMiddleware.checkReqDeleteTechnology, userController.handleDeleteTechnology);
 
     return app.use('/', router);
 };

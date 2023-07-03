@@ -21,14 +21,13 @@ class SearchBar extends PureComponent {
     };
 
     render() {
-        const { searchValue } = this.state;
         return (
             <div className={cx('container')}>
                 <div className={cx('search-bar')}>
                     <input
                         className={cx('search-input')}
-                        value={searchValue}
-                        placeholder="Search accounts and videos"
+                        value={this.state.searchValue}
+                        placeholder="Tìm kiếm tên sản phẩm"
                         spellCheck={false}
                         onInput={(e) => this.handleInputValue(e)}
                     />

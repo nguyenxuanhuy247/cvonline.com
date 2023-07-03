@@ -72,7 +72,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                user: action.payload.data,
+                user: action.payload,
             };
         case actionNames.READ_USER_INFORMATION_FAILURE:
             return {

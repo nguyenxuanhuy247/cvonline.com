@@ -33,14 +33,14 @@ export const checkReqSignIn = (req, res, next) => {
     if (!email) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập email của bạn',
+            errorMessage: 'Nhập email của bạn để đăng nhập',
         });
     }
 
     if (!password) {
         return res.status(400).json({
             errorCode: 11,
-            errorMessage: 'Vui lòng nhập mật khẩu của bạn',
+            errorMessage: 'Nhập mật khẩu của bạn để đăng nhập',
         });
     }
 
@@ -57,7 +57,7 @@ export const checkReqGetUserInformation = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id để tải thông tin người dùng',
+            errorMessage: 'Nhập ID để tải thông tin người dùng',
         });
     }
 
@@ -66,88 +66,12 @@ export const checkReqGetUserInformation = (req, res, next) => {
 
 // UPDATE USER INFORMATION
 export const checkReqUpdateUserInformation = (req, res, next) => {
-    const { userId } = req.body;
+    const { userId, label } = req.body;
+
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id để sửa thông tin người dùng',
-        });
-    }
-
-    next();
-};
-
-// =================================================================
-// CHECK CRUD TECHNOLOGY
-
-// CREATE TECHNOLOGY
-export const checkReqCreateTechnology = (req, res, next) => {
-    const { key, name, link } = req.body;
-
-    if (key === 'SC') {
-        if (!name) {
-            return res.status(400).json({
-                errorCode: 10,
-                errorMessage: 'Vui lòng nhập tên của source code',
-            });
-        }
-
-        if (!link) {
-            return res.status(400).json({
-                errorCode: 11,
-                errorMessage: 'Vui lòng nhập link của source code',
-            });
-        }
-    } else {
-        if (!name) {
-            return res.status(400).json({
-                errorCode: 12,
-                errorMessage: 'Vui lòng nhập tên của thư viện',
-            });
-        }
-    }
-
-    next();
-};
-
-// UPDATE TECHNOLOGY
-export const checkReqUpdateTechnology = (req, res, next) => {
-    const { id, type, image, name, version } = req.body;
-
-    if (!id) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập id để sửa thư viện',
-        });
-    }
-
-    if (type === 'LIBRARY') {
-        if (!(image || name || version)) {
-            return res.status(400).json({
-                errorCode: 11,
-                errorMessage: 'Hãy thực hiện thao tác xóa',
-            });
-        }
-    } else {
-        if (!(image || name)) {
-            return res.status(400).json({
-                errorCode: 12,
-                errorMessage: 'Hãy thực hiện thao tác xóa',
-            });
-        }
-    }
-
-    next();
-};
-
-// DELETE TECHNOLOGY
-export const checkReqDeleteTechnology = (req, res, next) => {
-    const { id } = req.query;
-
-    if (!id) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập id để xóa thư viện',
+            errorMessage: `Nhập ID để cập nhật ${label}`,
         });
     }
 
@@ -156,26 +80,29 @@ export const checkReqDeleteTechnology = (req, res, next) => {
 
 // =================================================================
 // CHECK CRUD PRODUCT
+
+// CREATE PRODUCT
 export const checkReqCreateProduct = (req, res, next) => {
     const { userId } = req.query;
 
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id người dùng để tạo sản phẩm mới',
+            errorMessage: 'Nhập ID người dùng để tạo sản phẩm mới',
         });
     }
 
     next();
 };
 
+// READ PRODUCT
 export const checkReqGetProductList = (req, res, next) => {
     const { userId } = req.query;
 
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id người dùng để tải danh sách sản phẩm',
+            errorMessage: 'Nhập ID người dùng để tải danh sách sản phẩm',
         });
     }
 
@@ -183,19 +110,19 @@ export const checkReqGetProductList = (req, res, next) => {
 };
 
 export const checkReqUpdateProduct = (req, res, next) => {
-    const { userId, productId } = req.body;
+    const { userId, productId, label } = req.body;
 
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id người dùng để cập nhật sản phẩm',
+            errorMessage: `Nhập ID người dùng để cập nhật ${label}`,
         });
     }
 
     if (!productId) {
         return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập id dự án để cập nhật sản phẩm',
+            errorCode: 11,
+            errorMessage: `Nhập ID để cập nhật ${label}`,
         });
     }
 
@@ -208,14 +135,105 @@ export const checkReqDeleteProduct = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id người dùng để xóa sản phẩm',
+            errorMessage: 'Nhập ID người dùng để xóa sản phẩm',
         });
     }
 
     if (!productId) {
         return res.status(400).json({
+            errorCode: 11,
+            errorMessage: 'Nhập ID để xóa sản phẩm',
+        });
+    }
+
+    next();
+};
+
+// =================================================================
+// CHECK CRUD TECHNOLOGY
+
+// CREATE TECHNOLOGY
+export const checkReqCreateTechnology = (req, res, next) => {
+    const { userId, productId, type, name, link, label } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập id dự án để xóa sản phẩm',
+            errorMessage: `Nhập ID người dùng để tạo mới ${label}`,
+        });
+    }
+
+    if (!productId) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: `Nhập ID sản phẩm để tạo mới ${label}`,
+        });
+    }
+
+    if (type === 'SOURCECODE') {
+        if (!name) {
+            return res.status(400).json({
+                errorCode: 12,
+                errorMessage: 'Nhập tên của Source Code mới',
+            });
+        }
+
+        if (!link) {
+            return res.status(400).json({
+                errorCode: 13,
+                errorMessage: 'Nhập link của Source Code mới',
+            });
+        }
+    } else {
+        if (!name) {
+            return res.status(400).json({
+                errorCode: 14,
+                errorMessage: `Nhập tên của ${label} mới`,
+            });
+        }
+    }
+
+    next();
+};
+
+// UPDATE TECHNOLOGY
+export const checkReqUpdateTechnology = (req, res, next) => {
+    const { userId, type, image, name, version, label } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: `Nhập ID người dùng để cập nhật ${label}`,
+        });
+    }
+
+    if (type === 'LIBRARY') {
+        if (!(image || name || version)) {
+            return res.status(400).json({
+                errorCode: 11,
+                errorMessage: 'Không thể để trống tất cả thông tin bắt buộc',
+            });
+        }
+    } else {
+        if (!(image || name)) {
+            return res.status(400).json({
+                errorCode: 12,
+                errorMessage: 'Không thể để trống tất cả thông tin bắt buộc',
+            });
+        }
+    }
+
+    next();
+};
+
+// DELETE TECHNOLOGY
+export const checkReqDeleteTechnology = (req, res, next) => {
+    const { technologyId, label } = req.query;
+
+    if (!technologyId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: `Nhập ID để xóa ${label}`,
         });
     }
 

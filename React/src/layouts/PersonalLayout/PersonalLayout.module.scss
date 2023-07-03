@@ -13,13 +13,9 @@
         }
 
         &:focus,
-        :hover {
-            outline: none;
-            border: 1px dashed #999;
-        }
-
         &:hover {
             cursor: text;
+            outline: none;
             border: 1px dashed #999;
         }
     }
@@ -203,6 +199,25 @@
                     display: grid;
                     place-items: center;
                     font-size: 32px;
+                }
+            }
+        }
+
+        .product-list-error-load {
+            display: grid;
+            place-items: center;
+            background-color: #ffdcdc;
+            height: 100%;
+
+            .error-text {
+                font-size: 3rem;
+                display: flex;
+                align-items: center;
+                column-gap: 8px;
+
+                .icon {
+                    font-size: 4rem;
+                    color: red;
                 }
             }
         }

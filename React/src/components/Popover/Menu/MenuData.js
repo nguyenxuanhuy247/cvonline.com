@@ -1,7 +1,7 @@
-import { SignOutIcon, AccountIcon, LanguageIcon} from '~/components/Image/Images.js';
 import { BsArrowRight } from 'react-icons/bs';
 import { FaUserTie } from 'react-icons/fa';
-import { HiLanguage } from 'react-icons/hi';
+import { MdOutlineLogout } from 'react-icons/md';
+import { MdOutlineLanguage } from 'react-icons/md';
 
 export const MENU_AVATAR_DATA = [
     {
@@ -13,7 +13,7 @@ export const MENU_AVATAR_DATA = [
     },
     {
         id: 12,
-        leftIcon: <LanguageIcon />,
+        leftIcon: <MdOutlineLanguage />,
         title: 'Tiếng Việt',
         rightIcon: <BsArrowRight />,
         separate: true,
@@ -37,7 +37,7 @@ export const MENU_AVATAR_DATA = [
     },
     {
         id: 13,
-        leftIcon: <SignOutIcon />,
+        leftIcon: <MdOutlineLogout />,
         title: 'Đăng xuất',
         rightIcon: <BsArrowRight />,
     },

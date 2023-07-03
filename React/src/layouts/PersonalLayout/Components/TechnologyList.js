@@ -71,7 +71,7 @@ class TechnologyList extends PureComponent {
         // If list is sorted, will not exchange position
         if (this.props.type === 'LIBRARY') {
             if (this.props.isSortBy) {
-                Toast.TOP_RIGHT_ERROR(
+                Toast.TOP_CENTER_ERROR(
                     `Danh sách đang được sắp xếp từ ${this.props.isSortBy === 'desc' ? 'Z đến A' : 'A đến Z'}`,
                     3000,
                 );
@@ -104,6 +104,7 @@ class TechnologyList extends PureComponent {
                     name: dragOverItemData?.name,
                     version: dragOverItemData?.version,
                     link: dragOverItemData?.link,
+                    label: `vị trí ${this.props.label}`,
                 };
 
                 const dragOverItem_NewData = {
@@ -112,97 +113,39 @@ class TechnologyList extends PureComponent {
                     name: dragItemData?.name,
                     version: dragItemData?.version,
                     link: dragItemData?.link,
+                    label: `vị trí ${this.props.label}`,
                 };
 
-                const errorCode = await this.props.onUpdateTechnology(dragItem_NewData, this.props?.type, false);
-                if (errorCode === 0) {
-                    const errorCode = await this.props.onUpdateTechnology(
-                        dragOverItem_NewData,
-                        this.props?.type,
-                        false,
-                    );
-
-                    if (errorCode === 0) {
-                        this.setState({
-                            dragItemId: undefined,
-                            dragElement: null,
-                            dragOverItemId: undefined,
-                            dragOverElement: null,
-                        });
-                    } else {
-                        Toast.TOP_RIGHT_ERROR(`Cập nhật ${this.props.label} bị đổi vị trí thất bại`, 3000);
-                    }
-                } else {
-                    Toast.TOP_RIGHT_ERROR(`Cập nhật ${this.props.label} cần đổi vị trí thất bại`, 3000);
+                const errorCode1 = await this.props.onUpdateTechnology(dragItem_NewData);
+                if (errorCode1 === 0) {
+                    await this.props.onUpdateTechnology(dragOverItem_NewData);
                 }
+
+                this.setState({
+                    dragItemId: undefined,
+                    dragElement: null,
+                    dragOverItemId: undefined,
+                    dragOverElement: null,
+                });
             }
         }
     };
 
     // =================================================================
     // Show / Hide Create Technology container
+
     handleShowCreateTechnology = async () => {
         const closeEditTechnology = this.technologyRef.current?.handleCloseEditTechnology;
         closeEditTechnology?.();
 
         await this.setState({ isCreateTechnology: true });
+
         const autofocusInputElement = document.getElementById(`js-autofocus-input-${this.props.type}`);
         autofocusInputElement.focus();
     };
 
     handleCloseCreateTechnology = () => {
         this.setState({ isCreateTechnology: false });
-    };
-
-    // =================================================================
-    // CRUD Technology
-    handleCreateTechnology = async (state) => {
-        const data = {
-            type: this.props?.type,
-            key: this.props?.keyprop,
-            image: state.image,
-            name: state.name?.trim(),
-            version: state.version?.trim(),
-            link: state.link,
-        };
-
-        const { errorCode } = await this.props.createtechnology(data);
-
-        if (errorCode === 0) {
-            await this.setState({
-                isCreateTechnology: false,
-                image: '',
-                name: '',
-                version: '',
-                link: '',
-            });
-
-            if (this.props.type !== 'LIBRARY') {
-                await this.props.readtechnology();
-            }
-        }
-    };
-
-    handleUpdateTechnology = async (state, closeFn) => {
-        const data = {
-            type: this.props?.type,
-            key: this.props?.keyprop,
-            id: state.id,
-            image: state.image,
-            name: state.name?.trim(),
-            version: state.version?.trim(),
-            link: state.link,
-        };
-
-        const errorCode = await this.props.updatetechnology(data, true);
-
-        if (errorCode === 0) {
-            await closeFn();
-
-            if (this.props.type !== 'LIBRARY') {
-                await this.props.readtechnology();
-            }
-        }
     };
 
     // =================================================================
@@ -272,6 +215,7 @@ class TechnologyList extends PureComponent {
                 ) : (
                     !this.props.isSearch && (
                         <CreateEditTechnology
+                            id={`${this.props.technologyListID}-create-container`}
                             label={label}
                             type={type}
                             keyprop={keyprop}

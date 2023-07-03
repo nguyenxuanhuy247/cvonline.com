@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 class ContentEditableTag extends PureComponent {
     render = () => {
-        const { content, className = '', placeholder = 'Vui lòng nhập trường này' } = this.props;
+        const { id, content, className = '', placeholder = 'Vui lòng nhập trường này' } = this.props;
 
         let eventProps = {};
         for (let key in this.props) {
@@ -15,6 +15,7 @@ class ContentEditableTag extends PureComponent {
 
         return (
             <p
+                id={id}
                 {...eventProps}
                 className={`${className}`}
                 style={{ padding: '0.1em 0.4em' }}

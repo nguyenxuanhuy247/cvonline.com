@@ -1,14 +1,15 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
+import { MdOutlineError } from 'react-icons/md';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { Buffer } from 'buffer';
-import { Toast } from '~/components/Toast/Toast.js';
 
+import { Toast } from '~/components/Toast/Toast.js';
 import Header from '~/containers/Header/Header.js';
 import Product from '~/layouts/PersonalLayout/Components/Product.js';
 
@@ -35,10 +36,16 @@ class PersonalLayout extends PureComponent {
     // =================================================================
     // CRUD USER INFORMATION
 
+    handleOpenChangeAvatarModal = () => {
+        this.setState({ isModalOpen: true });
+    };
+
+    handleCloseChangeAvatarModal = () => {
+        this.setState({ isModalOpen: false });
+    };
+
     getAvatarUrlFromChangeImageModal = async (url) => {
-        const userId = this.props?.user?.id;
-        console.log(userId);
-        const avatarDB = this.props?.user?.avatar;
+        const { id: userId, avatar: avatarDB } = this.props?.user ?? {};
         let binaryAvatarDB;
 
         if (avatarDB) {
@@ -47,24 +54,18 @@ class PersonalLayout extends PureComponent {
 
         if (url !== binaryAvatarDB) {
             // Update avatar to Database
-            const data = { userId: userId, avatar: url };
+            const data = { userId: userId, avatar: url, label: 'Avatar' };
             const errorCode = await this.props.updateUserInformation(data);
 
             if (errorCode === 0) {
-                const errorCode = await this.props.readUserInformation(userId);
-                if (errorCode !== 0) {
-                    Toast.TOP_CENTER_ERROR(`Tải thông tin người dùng thất bại`, 3000);
-                }
-            } else {
-                Toast.TOP_CENTER_ERROR(`Thay đổi avatar thất bại`, 3000);
+                await this.props.readUserInformation(userId);
             }
-        } else {
-            Toast.TOP_CENTER_WARN(`Avatar này đã được sử dụng, hãy chọn ảnh khác`, 3000);
         }
     };
 
-    handleUpdateUserInformation = async (e, name, toastTextError) => {
-        const userId = this.props?.user?.id;
+    handleUpdateUserInformation = async (e, name, label) => {
+        const { id: userId } = this.props?.user ?? {};
+
         let value;
         if (name === 'jobPosition') {
             value = e.target.value;
@@ -73,54 +74,47 @@ class PersonalLayout extends PureComponent {
         }
 
         if (value !== this.props?.user?.[name]) {
-            const data = { userId: userId, [name]: value };
+            const data = { userId: userId, [name]: value, label: label };
+
             const errorCode = await this.props.updateUserInformation(data);
 
             if (errorCode === 0) {
-                const errorCode = await this.props.readUserInformation(userId);
-                if (errorCode !== 0) {
-                    Toast.TOP_CENTER_ERROR(`Tải thông tin người dùng thất bại`, 3000);
-                }
-            } else {
-                Toast.TOP_CENTER_ERROR(`Cập nhật ${toastTextError} thất bại`, 3000);
+                await this.props.readUserInformation(userId);
             }
         }
     };
 
-    handleInputLanguagesAndSetRowsForTextarea = (e) => {
+    handleInputLanguagesAndSetRowsForTextarea = async (e) => {
         const textAreaElement = e.target;
         const value = e.target.value;
+
+        await this.setState({ languages: value });
 
         // Get number of rows of textarea and set rows attribute
         const rows = textAreaElement?.textContent?.split(/\r\n|\r|\n/).length;
         textAreaElement.rows = rows;
-
-        this.setState({ languages: value });
     };
 
     handleUpdateLanguages = async () => {
-        const userId = this.props?.user?.id;
+        const { id: userId, languages } = this.props?.user ?? {};
+
         const value = this.state.languages;
 
-        if (value !== this.props?.user?.languages) {
-            const data = { userId: userId, languages: value };
+        if (value !== languages) {
+            const data = { userId: userId, languages: value, label: 'Ngoại ngữ' };
             const errorCode = await this.props.updateUserInformation(data);
 
             if (errorCode === 0) {
-                const errorCode = await this.props.readUserInformation(userId);
-                if (errorCode !== 0) {
-                    Toast.TOP_CENTER_ERROR(`Tải thông tin người dùng thất bại`, 3000);
-                }
-            } else {
-                Toast.TOP_CENTER_ERROR(`Cập nhật ngoại ngữ thất bại`, 3000);
+                await this.props.readUserInformation(userId);
             }
         }
     };
 
     // =================================================================
     // CRUD PRODUCT
-    handleCreateNewTechnology = async (data, label) => {
-        const userId = this.props?.user?.id;
+
+    handleCreateTechnology = async (data) => {
+        const { id: userId } = this.props?.user ?? {};
         const newData = {
             ...data,
             userId: userId,
@@ -130,49 +124,37 @@ class PersonalLayout extends PureComponent {
 
         if (errorCode === 0) {
             const errorCode = await this.props.readProductList(userId);
+
             if (errorCode === 0) {
                 return errorCode;
-            } else {
-                Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm sau tạo mới ${label} thất bại`, 3000);
-                return errorCode;
             }
-        } else {
-            Toast.TOP_RIGHT_ERROR(`Tạo mới ${label} thất bại`, 3000);
         }
     };
 
-    handleUpdateTechnology = async (data, label) => {
-        const userId = this.props?.user?.id;
+    handleUpdateTechnology = async (data) => {
+        const { id: userId } = this.props?.user ?? {};
         const newData = {
             ...data,
             userId: userId,
         };
 
         const errorCode = await this.props.updateTechnology(newData);
+
         if (errorCode === 0) {
             const errorCode = await this.props.readProductList(userId);
+
             if (errorCode === 0) {
                 return errorCode;
-            } else {
-                Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm sau cập nhật ${label} thất bại`, 3000);
-                return errorCode;
             }
-        } else {
-            Toast.TOP_RIGHT_ERROR(`Cập nhật ${label} thất bại`, 3000);
         }
     };
 
-    handleDeleteTechnology = async (id, label) => {
-        const userId = this.props?.user?.id;
+    handleDeleteTechnology = async (technologyId, label) => {
+        const { id: userId } = this.props?.user ?? {};
 
-        const errorCode = await this.props.deleteTechnology(id);
+        const errorCode = await this.props.deleteTechnology(technologyId, label);
         if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-            if (errorCode !== 0) {
-                Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm sau xóa ${label} thất bại`, 3000);
-            }
-        } else {
-            Toast.TOP_RIGHT_ERROR(`Xóa ${label} thất bại`, 3000);
+            await this.props.readProductList(userId);
         }
     };
 
@@ -180,89 +162,90 @@ class PersonalLayout extends PureComponent {
     // CRUD Product
 
     handleCreateProduct = async () => {
-        const userId = this.props?.user?.id;
+        const { id: userId } = this.props?.user ?? {};
+
         const errorCode = await this.props.createProduct(userId);
 
         if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-            if (errorCode !== 0) {
-                Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm sau tạo mới sản phẩm thất bại`, 3000);
-            }
-        } else {
-            Toast.TOP_RIGHT_ERROR(`Tạo sản phẩm mới thất bại`, 3000);
+            await this.props.readProductList(userId);
+
+            const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
+                return a.order - b.order;
+            });
+
+            const lastProductData = ASCOrderProductList?.at(-1);
+            const lastProductId = lastProductData?.productInfo?.id;
+
+            const lastProduct = document.getElementById(`js-product-${lastProductId}`);
+            lastProduct?.scrollIntoView();
         }
     };
 
-    handleUpdateProduct = async (data, toastText) => {
-        const userId = this.props?.user?.id;
+    handleUpdateProduct = async (data) => {
+        const { id: userId } = this.props?.user ?? {};
         const newData = { ...data, userId: userId };
 
-        const errorCode = await this.props.updateProduct(newData, toastText);
+        const errorCode = await this.props.updateProduct(newData);
         if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-            if (errorCode !== 0) {
-                Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm sau cập nhật ${toastText} thất bại`, 3000);
-            }
-        } else {
-            Toast.TOP_RIGHT_ERROR(`Cập nhật ${toastText} thất bại`, 3000);
+            await this.props.readProductList(userId);
         }
     };
 
     handleDeleteProduct = async (productId) => {
-        const userId = this.props?.user?.id;
+        const { id: userId } = this.props?.user ?? {};
         const errorCode = await this.props.deleteProduct(userId, productId);
 
         if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-            if (errorCode !== 0) {
-                Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm sau xóa sản phẩm thất bại`, 3000);
-            }
-        } else {
-            Toast.TOP_RIGHT_ERROR(`Xóa sản phẩm thất bại`, 3000);
+            await this.props.readProductList(userId);
         }
     };
 
     handleMoveUpProduct = async (order) => {
-        const userId = this.props?.user?.id;
+        const { id: userId } = this.props?.user ?? {};
 
         const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
             return a.order - b.order;
         });
+
         const productExchange = ASCOrderProductList?.map((productID) => {
             return { userId: userId, productId: productID.productInfo.id, productOrder: productID.order };
         });
 
-        const index = productExchange.findIndex((product) => product.productOrder === order);
+        const moveItemIndex = productExchange.findIndex((product) => product.productOrder === order);
 
-        let upperItemOrder = productExchange[index - 1];
-        let moveItemOrder = productExchange[index];
+        let upperItemOrder = productExchange[moveItemIndex - 1];
+        let moveItemOrder = productExchange[moveItemIndex];
 
-        if (upperItemOrder) {
+        if (moveItemOrder && upperItemOrder) {
             const changedUpperItem = {
                 userId: userId,
                 productId: upperItemOrder.productId,
                 productOrder: moveItemOrder.productOrder,
+                label: 'Vị trí của sản phẩm',
             };
 
             const changedMoveItem = {
                 userId: userId,
                 productId: moveItemOrder.productId,
                 productOrder: upperItemOrder.productOrder,
+                label: 'Vị trí của sản phẩm',
             };
 
-            const errorCode1 = await this.props.updateProduct(changedUpperItem, 'vị trí');
+            const errorCode1 = await this.props.updateProduct(changedUpperItem);
             if (errorCode1 === 0) {
-                const errorCode2 = await this.props.updateProduct(changedMoveItem, 'vị trí');
+                const errorCode2 = await this.props.updateProduct(changedMoveItem);
 
                 if (errorCode2 === 0) {
                     await this.props.readProductList(userId);
                 }
             }
+        } else {
+            Toast.TOP_CENTER_WARN('Không thể di chuyển sản phẩm này lên trên', 3000);
         }
     };
 
     handleMoveDownProduct = async (order) => {
-        const userId = this.props?.user?.id;
+        const { id: userId } = this.props?.user ?? {};
 
         const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
             return a.order - b.order;
@@ -271,57 +254,79 @@ class PersonalLayout extends PureComponent {
             return { userId: userId, productId: productID.productInfo.id, productOrder: productID.order };
         });
 
-        const index = productExchange.findIndex((product) => product.productOrder === order);
+        const moveItemIndex = productExchange.findIndex((product) => product.productOrder === order);
 
-        let lowerItemOrder = productExchange[index + 1];
-        let moveItemOrder = productExchange[index];
+        let lowerItemOrder = productExchange[moveItemIndex + 1];
+        let moveItemOrder = productExchange[moveItemIndex];
 
-        if (lowerItemOrder) {
+        if (moveItemOrder && lowerItemOrder) {
             const changedUpperItem = {
                 userId: userId,
                 productId: lowerItemOrder.productId,
                 productOrder: moveItemOrder.productOrder,
+                label: 'Vị trí của sản phẩm',
             };
 
             const changedMoveItem = {
                 userId: userId,
                 productId: moveItemOrder.productId,
                 productOrder: lowerItemOrder.productOrder,
+                label: 'Vị trí của sản phẩm',
             };
 
-            const errorCode = await this.props.updateProduct(changedUpperItem, 'vị trí');
-            if (errorCode === 0) {
-                const errorCode = await this.props.updateProduct(changedMoveItem, 'vị trí');
+            const errorCode1 = await this.props.updateProduct(changedUpperItem);
+            if (errorCode1 === 0) {
+                const errorCode2 = await this.props.updateProduct(changedMoveItem);
 
-                if (errorCode === 0) {
+                if (errorCode2 === 0) {
                     await this.props.readProductList(userId);
                 }
             }
+        } else {
+            Toast.TOP_CENTER_WARN('Không thể di chuyển sản phẩm này xuống dưới', 3000);
         }
     };
 
     // =================================================================
     async componentDidMount() {
         // Get all data for CV Layout when sign in
-        const userId = this.props?.user?.id;
-        if (userId) {
-            const errorCode_userInfo = await this.props.readUserInformation(userId);
-            if (errorCode_userInfo !== 0) {
-                Toast.TOP_CENTER_ERROR(`Tải thông tin người dùng thất bại`, 3000);
-            }
+        const { id: userId } = this.props?.user ?? {};
 
+        const errorCode = await this.props.readUserInformation(userId);
+        if (errorCode === 0) {
             await this.setState({ languages: this.props?.user?.languages });
+        }
+        await this.props.readProductList(userId);
 
-            const errorCode_productList = await this.props.readProductList(userId);
-            if (errorCode_productList !== 0) {
-                Toast.TOP_CENTER_ERROR(`Tải danh sách sản phẩm thất bại`, 3000);
-            }
-
-            const textAreaElement = document.getElementById(`js-language-desc`);
+        // Set rows for textarea by JS
+        const textAreaElement = document.getElementById(`js-language-desc`);
+        if (textAreaElement) {
             const rows = textAreaElement?.innerHTML?.split(/\r\n|\r|\n/).length;
-            textAreaElement.rows = rows;
-        } else {
-            Toast.TOP_CENTER_ERROR(`Không tìm thấy ID của người dùng để tải CV`, 3000);
+
+            if (rows) {
+                textAreaElement.rows = rows;
+            }
+        }
+
+        // Press ENTER to change input field or submit
+        const container = document.querySelector(`.${cx('col-left')}`);
+        if (container) {
+            const inputArray = container.querySelectorAll(`[contentEditable]`);
+            Array.from(inputArray).forEach((input, index) => {
+                input.onkeydown = (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        let nextEl = inputArray[index + 1];
+
+                        if (nextEl) {
+                            nextEl.focus();
+                        } else {
+                            nextEl = inputArray[0];
+                            nextEl.focus();
+                        }
+                    }
+                };
+            });
         }
     }
 
@@ -358,7 +363,7 @@ class PersonalLayout extends PureComponent {
                                                     <div tabIndex="-1" {...attrs}>
                                                         <div
                                                             className={cx('tooltip')}
-                                                            onClick={() => this.setState({ isModalOpen: true })}
+                                                            onClick={() => this.handleOpenChangeAvatarModal()}
                                                         >
                                                             Sửa ảnh
                                                         </div>
@@ -378,11 +383,7 @@ class PersonalLayout extends PureComponent {
                                             {this.state.isModalOpen && (
                                                 <ChangeImageModal
                                                     round
-                                                    onClose={() =>
-                                                        this.setState({
-                                                            isModalOpen: false,
-                                                        })
-                                                    }
+                                                    onClose={() => this.handleCloseChangeAvatarModal()}
                                                     onGetUrl={this.getAvatarUrlFromChangeImageModal}
                                                 />
                                             )}
@@ -392,14 +393,13 @@ class PersonalLayout extends PureComponent {
                                         content={this.props?.user?.fullName}
                                         className={cx('full-name')}
                                         placeholder="Nguyễn Xuân Huy"
-                                        onblur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'họ và tên')}
+                                        onblur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
                                     />
                                     <select
                                         className={cx('select-job-title')}
-                                        name="job-title"
                                         onMouseEnter={(e) => e.target.focus()}
                                         onChange={(e) =>
-                                            this.handleUpdateUserInformation(e, 'jobPosition', 'vị trí ứng tuyển')
+                                            this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')
                                         }
                                     >
                                         <option className={cx('option-job-title')} value="Fullstack developer">
@@ -427,7 +427,7 @@ class PersonalLayout extends PureComponent {
                                                     className={cx('info-text')}
                                                     placeholder="Ngày tháng năm sinh"
                                                     onblur={(e) =>
-                                                        this.handleUpdateUserInformation(e, 'dateOfBirth', 'ngày sinh')
+                                                        this.handleUpdateUserInformation(e, 'dateOfBirth', 'Ngày sinh')
                                                     }
                                                 />
                                             </div>
@@ -440,7 +440,7 @@ class PersonalLayout extends PureComponent {
                                                     className={cx('info-text')}
                                                     placeholder="Giới tính"
                                                     onblur={(e) =>
-                                                        this.handleUpdateUserInformation(e, 'gender', 'giới tính')
+                                                        this.handleUpdateUserInformation(e, 'gender', 'Giới tính')
                                                     }
                                                 />
                                             </div>
@@ -456,7 +456,7 @@ class PersonalLayout extends PureComponent {
                                                         this.handleUpdateUserInformation(
                                                             e,
                                                             'phoneNumber',
-                                                            'số điện thoại',
+                                                            'Số điện thoại',
                                                         )
                                                     }
                                                 />
@@ -480,7 +480,7 @@ class PersonalLayout extends PureComponent {
                                                     className={cx('info-text')}
                                                     placeholder="Địa chỉ"
                                                     onblur={(e) =>
-                                                        this.handleUpdateUserInformation(e, 'address', 'địa chỉ')
+                                                        this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')
                                                     }
                                                 />
                                             </div>
@@ -499,44 +499,56 @@ class PersonalLayout extends PureComponent {
                                             value={this.state?.languages ?? ''}
                                             onInput={(e) => this.handleInputLanguagesAndSetRowsForTextarea(e)}
                                             onBlur={() => this.handleUpdateLanguages()}
+                                            onMouseEnter={(e) => e.target.focus()}
                                         ></textarea>
                                     </div>
                                 </div>
                             </div>
 
                             <div className={cx('col pc-9')}>
-                                <div className={cx('product-list')}>
-                                    {ASCOrderProductList?.map((product, index) => {
-                                        return (
-                                            <Product
-                                                key={index}
-                                                productData={product}
-                                                index={index}
-                                                // =================================================================
-                                                onCreateProduct={this.handleCreateProduct}
-                                                onUpdateProduct={this.handleUpdateProduct}
-                                                onDeleteProduct={this.handleDeleteProduct}
-                                                onMoveUpProduct={this.handleMoveUpProduct}
-                                                onMoveDownProduct={this.handleMoveDownProduct}
-                                                // =================================================================
-                                                onCreateTechnology={this.handleCreateNewTechnology}
-                                                onUpdateTechnology={this.handleUpdateTechnology}
-                                                onDeleteTechnology={this.handleDeleteTechnology}
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className={cx('add-new-product-container')}>
-                                    <Button
-                                        className={cx('add-new-product-button')}
-                                        onClick={() => this.handleCreateProduct()}
-                                    >
-                                        <span className={cx('add-new-product-icon')}>
-                                            <IoIosAddCircle />
-                                        </span>
-                                        THÊM SẢN PHẨM
-                                    </Button>
-                                </div>
+                                {this.props.productList ? (
+                                    <Fragment>
+                                        <div className={cx('product-list')}>
+                                            {ASCOrderProductList?.map((product, index) => {
+                                                return (
+                                                    <Product
+                                                        key={index}
+                                                        productData={product}
+                                                        index={index}
+                                                        // =================================================================
+                                                        onCreateProduct={this.handleCreateProduct}
+                                                        onUpdateProduct={this.handleUpdateProduct}
+                                                        onDeleteProduct={this.handleDeleteProduct}
+                                                        onMoveUpProduct={this.handleMoveUpProduct}
+                                                        onMoveDownProduct={this.handleMoveDownProduct}
+                                                        // =================================================================
+                                                        onCreateTechnology={this.handleCreateTechnology}
+                                                        onUpdateTechnology={this.handleUpdateTechnology}
+                                                        onDeleteTechnology={this.handleDeleteTechnology}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                        <div className={cx('add-new-product-container')}>
+                                            <Button
+                                                className={cx('add-new-product-button')}
+                                                onClick={() => this.handleCreateProduct()}
+                                            >
+                                                <span className={cx('add-new-product-icon')}>
+                                                    <IoIosAddCircle />
+                                                </span>
+                                                THÊM SẢN PHẨM
+                                            </Button>
+                                        </div>
+                                    </Fragment>
+                                ) : (
+                                    <div className={cx('product-list-error-load')}>
+                                        <p className={cx('error-text')}>
+                                            <MdOutlineError className={cx('icon')} />
+                                            <span>Không tải được danh sách sản phẩm</span>
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -571,7 +583,7 @@ const mapDispatchToProps = (dispatch) => {
         // CRUD Source code, Technology, Library
         createTechnology: (data) => dispatch(userActions.createTechnology(data)),
         updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
-        deleteTechnology: (id) => dispatch(userActions.deleteTechnology(id)),
+        deleteTechnology: (technologyId, label) => dispatch(userActions.deleteTechnology(technologyId, label)),
     };
 };
 

@@ -7,6 +7,7 @@ import { BiArrowBack } from 'react-icons/bi';
 import * as userActions from '~/store/actions/userActions.js';
 import styles from './Menu.module.scss';
 import Button from '~/components/Button/Button';
+import { Toast } from '~/components/Toast/Toast.js';
 
 const cx = className.bind(styles);
 
@@ -57,7 +58,7 @@ class Menu extends Component {
                                     className={cx('button', {
                                         separate: item.separate,
                                     })}
-                                    onClick={() => {
+                                    onClick={async () => {
                                         if (isChildren) {
                                             const { title, data } = item.children;
                                             this.setState({
@@ -68,7 +69,8 @@ class Menu extends Component {
                                         }
 
                                         if (item.title === 'Đăng xuất') {
-                                            this.props.userSignOut();
+                                            await this.props.userSignOut();
+                                            Toast.TOP_CENTER_SUCCESS('Bạn vừa đăng xuất khỏi trang CV')
                                         }
                                     }}
                                 >
@@ -87,7 +89,6 @@ class Menu extends Component {
         return (
             <TippyHeadless
                 interactive
-                delay={[0, 500]}
                 hideOnClick
                 placement="bottom-end"
                 render={() => this.handleShowMenuContent()}
@@ -99,7 +100,9 @@ class Menu extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        isSignIn: state.user.isSignIn,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {

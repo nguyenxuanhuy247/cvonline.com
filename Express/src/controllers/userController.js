@@ -33,51 +33,6 @@ export const handleUserSignIn = async (req, res) => {
 };
 
 // =================================================================
-// CRUD TECHNOLOGY
-
-// CREATE TECHNOLOGY
-export const handleCreateTechnology = async (req, res) => {
-    const data = req.body;
-    const message = await userService.handleCreateTechnology(data);
-
-    if (message.errorCode === 0) {
-        return res.status(201).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(409).json(message);
-    }
-};
-
-// UPDATE TECHNOLOGY
-export const handleUpdateTechnology = async (req, res) => {
-    const data = req.body;
-
-    const message = await userService.handleUpdateTechnology(data);
-
-    if (message.errorCode === 0) {
-        return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(404).json(message);
-    }
-};
-
-// DELETE TECHNOLOGY
-export const handleDeleteTechnology = async (req, res) => {
-    const data = req.query;
-
-    const message = await userService.handleDeleteTechnology(data);
-
-    if (message.errorCode === 0) {
-        return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    }
-};
-
-// =================================================================
 // CRUD USER INFORMATION
 
 // READ USER INFORMATION
@@ -121,6 +76,8 @@ export const handleCreateProduct = async (req, res) => {
         return res.status(200).json(message);
     } else if (message.errorCode === 31) {
         res.status(503).json(message);
+    } else if (message.errorCode === 32 || message.errorCode === 33) {
+        res.status(404).json(message);
     }
 };
 
@@ -167,3 +124,46 @@ export const handleDeleteProduct = async (req, res) => {
 };
 
 // =================================================================
+// CRUD TECHNOLOGY
+
+// CREATE TECHNOLOGY
+export const handleCreateTechnology = async (req, res) => {
+    const data = req.body;
+    const message = await userService.handleCreateTechnology(data);
+
+    if (message.errorCode === 0) {
+        return res.status(201).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(409).json(message);
+    }
+};
+
+// UPDATE TECHNOLOGY
+export const handleUpdateTechnology = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.handleUpdateTechnology(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
+// DELETE TECHNOLOGY
+export const handleDeleteTechnology = async (req, res) => {
+    const data = req.query;
+
+    const message = await userService.handleDeleteTechnology(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    }
+};

@@ -150,7 +150,7 @@ class SignIn extends Component {
                                 </Button>
                             </div>
                         </div>
-                        {isLoading && <Loading style={{ position: 'fixed' }} />}
+                        {isLoading && <Loading />}
                     </>
                 )}
             </Route>

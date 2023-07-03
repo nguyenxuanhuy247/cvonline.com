@@ -15,7 +15,7 @@ class App extends Component {
                 <Switch>
                     {authenticatedRoutes.map((route, index) => {
                         let Authenticated = route.Authenticated ? userIsAuthenticated : userIsNotAuthenticated;
-                        return <Route key={index} path={route.path} component={route.component} />;
+                        return <Route key={index} path={route.path} component={Authenticated(route.component)} />;
                     })}
 
                     {publicRoutes.map((route, index) => {
@@ -24,7 +24,7 @@ class App extends Component {
                 </Switch>
 
                 <ToastContainer
-                    position="top-right"
+                    position="top-center"
                     autoClose={2000}
                     hideProgressBar={false}
                     newestOnTop={false}

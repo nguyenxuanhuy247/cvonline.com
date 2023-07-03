@@ -21,14 +21,16 @@ class CreateEditTechnology extends PureComponent {
         };
     }
 
+    handleOpenChangeImageModal = () => {
+        this.setState({ isModalOpen: true });
+    };
+
     handleGetImageUrlFromChangeImageModal = (url) => {
         this.setState({ image: url });
     };
 
     handleCloseChangeImageModal = () => {
-        this.setState({
-            isModalOpen: false,
-        });
+        this.setState({ isModalOpen: false });
     };
 
     handleInputTechnology = (e, name) => {
@@ -47,37 +49,65 @@ class CreateEditTechnology extends PureComponent {
             version: this.state.version?.trim(),
             link: this.state.link,
             productId: this.props?.productId,
+            label: this.props?.label,
         };
 
         if (isEdit) {
-            const errorCode = await this.props?.onUpdateTechnology(data, this.props?.label);
+            const errorCode = await this.props?.onUpdateTechnology(data);
             if (errorCode === 0) {
                 this.props.onCloseCreateTechnology();
             }
         } else {
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
-                    const errorCode = await this.props.onCreateTechnology(data, this.props?.label);
+                    const errorCode = await this.props.onCreateTechnology(data);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
                     }
                 } else if (!this.state.name) {
-                    Toast.TOP_RIGHT_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
+                    Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
                 } else if (!this.state.link) {
-                    Toast.TOP_RIGHT_INFO(`Vui lòng nhập link của ${this.props.label}`, 3000);
+                    Toast.TOP_CENTER_INFO(`Vui lòng nhập link của ${this.props.label}`, 3000);
                 }
             } else {
                 if (this.state.name) {
-                    const errorCode = await this.props.onCreateTechnology(data, this.props?.label);
+                    const errorCode = await this.props.onCreateTechnology(data);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
                     }
                 } else {
-                    Toast.TOP_RIGHT_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
+                    Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
                 }
             }
         }
     };
+
+    componentDidMount() {
+        // Press ENTER to change input field or submit
+        const container = document.getElementById(this.props.id);
+
+        const inputElementArray = container.getElementsByTagName('input');
+        Array.from(inputElementArray)?.forEach((inputElement) => {
+            inputElement.onkeydown = (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    let nextEl = event.target.nextElementSibling;
+
+                    if (nextEl) {
+                        while (nextEl.hidden) {
+                            nextEl = nextEl.nextElementSibling;
+                        }
+
+                        if (nextEl.nodeName === 'INPUT') {
+                            nextEl.focus();
+                        }
+                    } else {
+                        this.handleCreateOrUpdateTechnology(this.props?.isedit);
+                    }
+                }
+            };
+        });
+    }
 
     render() {
         const { id, isedit, type, label } = this.props;
@@ -101,7 +131,7 @@ class CreateEditTechnology extends PureComponent {
                                 <div tabIndex="-1" {...attrs}>
                                     <Button
                                         className={cx('add-edit-image-button')}
-                                        onClick={() => this.setState({ isModalOpen: true })}
+                                        onClick={() => this.handleOpenChangeImageModal()}
                                     >
                                         {`${isedit ? `Sửa ảnh` : `Thêm ảnh`}`}
                                     </Button>

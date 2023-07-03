@@ -45,10 +45,23 @@ class Product extends PureComponent {
         const { productInfo } = this.props?.productData ?? {};
 
         const value = e.target.innerText?.trim();
-        const data = { productId: productId, name: value };
+        const data = { productId: productId, name: value, label: 'Tên sản phẩm' };
 
         if (value !== productInfo?.name) {
-            await this.props?.onUpdateProduct(data, 'tên dự án');
+            await this.props?.onUpdateProduct(data);
+        }
+    };
+
+    handlePressEnterKeyBoard = (e, productInfo) => {
+        // Press Enter to blur out product name and focus on product description
+        const producDescElement = document.getElementById(`js-product-desc-${productInfo}`);
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.target.blur();
+
+            if (producDescElement) {
+                producDescElement.focus();
+            }
         }
     };
 
@@ -58,14 +71,14 @@ class Product extends PureComponent {
         return row_count;
     };
 
-    handleInputProductDescAndSetRowsForTextarea = (e) => {
+    handleInputProductDescAndSetRowsForTextarea = async (e) => {
         const textAreaElement = e.target;
         const value = e.target.value;
 
+        await this.setState({ productDesc: value });
+
         const rows = this.getNumberOfRows(textAreaElement);
         textAreaElement.rows = rows;
-
-        this.setState({ productDesc: value });
     };
 
     handleUpdateProductDesc = async () => {
@@ -73,8 +86,8 @@ class Product extends PureComponent {
         const value = this.state.productDesc;
 
         if (value !== productInfo?.desc) {
-            const data = { productId: productInfo?.id, desc: value };
-            await this.props?.onUpdateProduct(data, 'mô tả dự án');
+            const data = { productId: productInfo?.id, desc: value, label: 'mô tả sản phẩm' };
+            await this.props?.onUpdateProduct(data);
         }
     };
 
@@ -90,8 +103,8 @@ class Product extends PureComponent {
 
         if (url !== binaryImageDB) {
             // Update avatar to Database
-            const data = { productId: productInfo?.id, image: url };
-            await this.props?.onUpdateProduct(data, 'ảnh sản phẩm');
+            const data = { productId: productInfo?.id, image: url, label: 'Hình ảnh sản phẩm' };
+            await this.props?.onUpdateProduct(data);
         } else {
             Toast.TOP_CENTER_WARN(`Ảnh này đã được sử dụng, hãy chọn ảnh khác`, 3000);
         }
@@ -262,6 +275,7 @@ class Product extends PureComponent {
 
         await this.setState({ productDesc: productInfo?.desc });
 
+        // After re-rendering, we will get actual number row of text in textarea
         const textAreaElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
         const rows = this.getNumberOfRows(textAreaElement);
         textAreaElement.rows = rows;
@@ -341,15 +355,14 @@ class Product extends PureComponent {
             binaryImage = Buffer.from(productImage, 'base64').toString('binary');
         }
 
-        console.log('productDesc', this.state.productDesc);
         return (
-            <div className={cx('product-container')}>
+            <div className={cx('product-container')} id={`js-product-${productInfo?.id}`}>
                 <div className={cx('edit-product')}>
                     <EditProduct
-                        onDeleteProduct={() => this.props.onDeleteProduct(productInfo?.id)}
-                        onCreateProduct={() => this.props.onCreateProduct()}
                         onMoveUpProduct={() => this.props.onMoveUpProduct(order)}
                         onMoveDownProduct={() => this.props.onMoveDownProduct(order)}
+                        onCreateProduct={() => this.props.onCreateProduct()}
+                        onDeleteProduct={() => this.props.onDeleteProduct(productInfo?.id)}
                     />
                 </div>
 
@@ -363,6 +376,7 @@ class Product extends PureComponent {
                                         className={cx('exp')}
                                         placeholder="Tên sản phẩm"
                                         onBlur={(e) => this.handleUpdateProductName(e, productInfo?.id)}
+                                        onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productInfo?.id)}
                                     />
                                 </div>
                                 <textarea
@@ -374,6 +388,7 @@ class Product extends PureComponent {
                                     value={this.state?.productDesc ?? ''}
                                     onInput={(e) => this.handleInputProductDescAndSetRowsForTextarea(e)}
                                     onBlur={() => this.handleUpdateProductDesc()}
+                                    onMouseEnter={(e) => e.target.focus()}
                                 ></textarea>
                             </div>
                         </div>
