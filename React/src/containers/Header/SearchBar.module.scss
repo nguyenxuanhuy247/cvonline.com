@@ -1,3 +1,5 @@
+@import '../../components/GlobalStyles/GlobalStyles.module.scss';
+
 .container {
     display: flex;
     align-items: center;
@@ -68,5 +70,56 @@
         font-size: 22px;
         background-color: var(--button-bgc-green-02);
         color: var(--primary-color);
+    }
+}
+
+.search-result-tooltip {
+    width: 540px;
+    color: black;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 1px 2px 20px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+
+    .search-result-container {
+        .short-search-result {
+            margin-top: 12px;
+            display: flex;
+
+            .product-name-desc {
+                flex: 1;
+
+                .product-name {
+                    font-size: 1.6rem;
+                    padding: 4px 4px 4px 0;
+                    @include line-clamp;
+                    line-height: calc(100% + 8px);
+                    word-break: break-all;
+                }
+
+                .product-desc {
+                    @extend .product-name;
+                    --line-clamp: 6;
+                    color: #555;
+                    font-size: 1.4rem;
+
+                    padding: 4px 4px 0 0;
+                    line-height: 100%;
+                }
+            }
+
+            .product-image {
+                flex-basis: 30%;
+                height: 120px;
+            }
+        }
+    }
+}
+
+.not-found-result {
+    text-align: center;
+
+    &.hide {
+        display: none;
     }
 }

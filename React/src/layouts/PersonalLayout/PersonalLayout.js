@@ -7,7 +7,6 @@ import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
 import { MdOutlineError } from 'react-icons/md';
 import HeadlessTippy from '@tippyjs/react/headless';
-import { Buffer } from 'buffer';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import Header from '~/containers/Header/Header.js';
@@ -45,14 +44,9 @@ class PersonalLayout extends PureComponent {
     };
 
     getAvatarUrlFromChangeImageModal = async (url) => {
-        const { id: userId, avatar: avatarDB } = this.props?.user ?? {};
-        let binaryAvatarDB;
+        const { id: userId, avatar } = this.props?.user ?? {};
 
-        if (avatarDB) {
-            binaryAvatarDB = Buffer.from(avatarDB, 'base64').toString('binary');
-        }
-
-        if (url !== binaryAvatarDB) {
+        if (url !== avatar) {
             // Update avatar to Database
             const data = { userId: userId, avatar: url, label: 'Avatar' };
             const errorCode = await this.props.updateUserInformation(data);
@@ -60,6 +54,8 @@ class PersonalLayout extends PureComponent {
             if (errorCode === 0) {
                 await this.props.readUserInformation(userId);
             }
+        } else {
+            Toast.TOP_CENTER_WARN(`Ảnh này đang được sử dụng làm Avatar, hãy chọn ảnh khác`, 3000);
         }
     };
 
@@ -84,6 +80,15 @@ class PersonalLayout extends PureComponent {
         }
     };
 
+    getNumberOfRows = (textAreaEl) => {
+        const lineHeight = window.getComputedStyle(textAreaEl, null).getPropertyValue('line-height');
+        const paddingTop = window.getComputedStyle(textAreaEl, null).getPropertyValue('padding-top');
+        const paddingBottom = window.getComputedStyle(textAreaEl, null).getPropertyValue('padding-bottom');
+        const contentHeight = textAreaEl.scrollHeight - parseInt(paddingTop) - parseInt(paddingBottom);
+        const numberOfRows = Math.ceil(contentHeight / parseInt(lineHeight));
+        return numberOfRows;
+    };
+
     handleInputLanguagesAndSetRowsForTextarea = async (e) => {
         const textAreaElement = e.target;
         const value = e.target.value;
@@ -91,7 +96,7 @@ class PersonalLayout extends PureComponent {
         await this.setState({ languages: value });
 
         // Get number of rows of textarea and set rows attribute
-        const rows = textAreaElement?.textContent?.split(/\r\n|\r|\n/).length;
+        const rows = this.getNumberOfRows(textAreaElement);
         textAreaElement.rows = rows;
     };
 
@@ -336,16 +341,9 @@ class PersonalLayout extends PureComponent {
             return a.order - b.order;
         });
 
-        // Convert Buffer Image type to Base 64 and finally Binary
-        const avatar = this.props.user?.avatar;
-        let binaryImage;
-        if (avatar) {
-            binaryImage = Buffer.from(avatar, 'base64').toString('binary');
-        }
-
         return (
             <div className={cx('body')}>
-                <Header />
+                <Header productList={ASCOrderProductList} />
                 <div className={cx('container')}>
                     <div className={cx('grid wide')}>
                         <div className={cx('row no-gutters')}>
@@ -372,7 +370,7 @@ class PersonalLayout extends PureComponent {
                                             >
                                                 <Image
                                                     className={cx('avatar')}
-                                                    src={binaryImage || JpgImages.avatarPlaceholder}
+                                                    src={this.props.user?.avatar || JpgImages.avatarPlaceholder}
                                                     width="170px"
                                                     height="170px"
                                                     alt={`${this.props?.user?.fullName}`}

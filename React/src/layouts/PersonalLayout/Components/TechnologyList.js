@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
-import { Buffer } from 'buffer';
 import { Toast } from '~/components/Toast/Toast.js';
 
 import styles from './TechnologyList.module.scss';
@@ -86,21 +85,10 @@ class TechnologyList extends PureComponent {
         );
 
         if (dragItemData && dragOverItemData) {
-            let dragImageBase64;
-            let dragOverImageBase64;
-
-            if (dragItemData.image) {
-                dragImageBase64 = Buffer.from(dragItemData.image, 'base64').toString('binary');
-            }
-
-            if (dragOverItemData.image) {
-                dragOverImageBase64 = Buffer.from(dragOverItemData.image, 'base64').toString('binary');
-            }
-
             if (dragItemData.id !== dragOverItemData.id) {
                 const dragItem_NewData = {
                     id: dragItemData?.id,
-                    image: dragOverImageBase64,
+                    image: dragOverItemData.image,
                     name: dragOverItemData?.name,
                     version: dragOverItemData?.version,
                     link: dragOverItemData?.link,
@@ -109,7 +97,7 @@ class TechnologyList extends PureComponent {
 
                 const dragOverItem_NewData = {
                     id: dragOverItemData?.id,
-                    image: dragImageBase64,
+                    image: dragItemData.image,
                     name: dragItemData?.name,
                     version: dragItemData?.version,
                     link: dragItemData?.link,

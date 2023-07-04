@@ -4,7 +4,6 @@ import Pagination from '@mui/material/Pagination';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { AiOutlineSortAscending, AiOutlineSortDescending } from 'react-icons/ai';
 import _ from 'lodash';
-import { Buffer } from 'buffer';
 import { Toast } from '~/components/Toast/Toast.js';
 
 import styles from './Product.module.scss';
@@ -71,6 +70,15 @@ class Product extends PureComponent {
         return row_count;
     };
 
+    getNumberOfRowsWithNoSpaceString = (textAreaEl) => {
+        const lineHeight = window.getComputedStyle(textAreaEl, null).getPropertyValue('line-height');
+        const paddingTop = window.getComputedStyle(textAreaEl, null).getPropertyValue('padding-top');
+        const paddingBottom = window.getComputedStyle(textAreaEl, null).getPropertyValue('padding-bottom');
+        const contentHeight = textAreaEl.scrollHeight - parseInt(paddingTop) - parseInt(paddingBottom);
+        const numberOfRows = Math.ceil(contentHeight / parseInt(lineHeight));
+        return numberOfRows;
+    };
+
     handleInputProductDescAndSetRowsForTextarea = async (e) => {
         const textAreaElement = e.target;
         const value = e.target.value;
@@ -93,16 +101,10 @@ class Product extends PureComponent {
 
     getImageUrlFromChangeImageModal = async (url) => {
         const { productInfo } = this.props?.productData ?? {};
+        const { image: imageDB } = productInfo ?? {};
 
-        const imageDB = productInfo?.image;
-        let binaryImageDB;
-
-        if (imageDB) {
-            binaryImageDB = Buffer.from(imageDB, 'base64').toString('binary');
-        }
-
-        if (url !== binaryImageDB) {
-            // Update avatar to Database
+        if (url !== imageDB) {
+            // Update product image to Database
             const data = { productId: productInfo?.id, image: url, label: 'Hình ảnh sản phẩm' };
             await this.props?.onUpdateProduct(data);
         } else {
@@ -278,7 +280,7 @@ class Product extends PureComponent {
         // After re-rendering, we will get actual number row of text in textarea
         const textAreaElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
         const rows = this.getNumberOfRows(textAreaElement);
-        textAreaElement.rows = rows;
+        textAreaElement.rows = rows || 2;
     }
 
     render() {
@@ -348,13 +350,6 @@ class Product extends PureComponent {
         }
         // =================================================================
 
-        // Convert Buffer Image type to Base 64 and finally Binary
-        const productImage = productInfo?.image;
-        let binaryImage;
-        if (productImage) {
-            binaryImage = Buffer.from(productImage, 'base64').toString('binary');
-        }
-
         return (
             <div className={cx('product-container')} id={`js-product-${productInfo?.id}`}>
                 <div className={cx('edit-product')}>
@@ -401,7 +396,7 @@ class Product extends PureComponent {
                                 >
                                     Sửa ảnh
                                 </div>
-                                <Image src={binaryImage} className={cx('image')} alt="Ảnh sản phẩm" />
+                                <Image src={productInfo?.image} className={cx('image')} alt="Ảnh sản phẩm" />
                             </div>
 
                             {this.state.isModalOpen && (

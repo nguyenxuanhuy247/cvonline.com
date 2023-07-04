@@ -36,13 +36,22 @@ class Header extends PureComponent {
     };
 
     render = () => {
+        const shortProductList = this.props.productList?.map((product) => {
+            return {
+                id: product.productInfo.id,
+                name: product.productInfo.name,
+                desc: product.productInfo.desc,
+                image: product.productInfo.image,
+            };
+        });
+
         return (
             <div className={cx('header')}>
                 <Link to={'/'} className={cx('logo-link')}>
                     <img src={logo} className={cx('logo')} alt="cvonline.com" />
                 </Link>
 
-                <SearchBar />
+                <SearchBar productList={shortProductList} />
 
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>

@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
-import { Buffer } from 'buffer';
 
 import Button from '~/components/Button/Button.js';
 import styles from './Technology.module.scss';
@@ -38,16 +37,11 @@ class Technology extends PureComponent {
                 return library.id === id;
             });
         }
-
-        let imageBase64;
-        if (selectedLibrary.image) {
-            imageBase64 = Buffer.from(selectedLibrary.image, 'base64').toString('binary');
-        }
-
+        
         await this.setState({
             isEdit: true,
             id: selectedLibrary.id,
-            image: imageBase64,
+            image: selectedLibrary.image,
             name: selectedLibrary.name,
             version: selectedLibrary.version,
             link: selectedLibrary.link,
@@ -157,11 +151,6 @@ class Technology extends PureComponent {
             onDrop,
         };
 
-        let imageUrl;
-        if (src) {
-            imageUrl = Buffer.from(src, 'base64').toString('binary');
-        }
-
         const ID = side ? `${side}-${type}-${id}` : `${type}-${id}`;
         const editButtonID = side ? `js-edit-button-${ID}` : `js-edit-button-${ID}`;
         const buttonID = side ? `js-button-${ID}` : `js-button-${ID}`;
@@ -207,7 +196,7 @@ class Technology extends PureComponent {
                         href={href}
                         dragDropAPIProps={dragDropAPIProps}
                     >
-                        <Image src={imageUrl || JpgImages.placeholder} className={cx('image')} />
+                        <Image src={src || JpgImages.placeholder} className={cx('image')} />
 
                         {name && (
                             <span className={cx('name')} id={`js-name-button-${type}-${id}`}>

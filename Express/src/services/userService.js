@@ -1,5 +1,6 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
+const fs = require('fs');
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -139,10 +140,15 @@ export const handleGetUserInformation = async (data) => {
         });
 
         if (user) {
+            const avatar = user.avatar;
+            const binaryAvatar = avatar.toString('binary');
+
+            const newUser = { ...user, avatar: binaryAvatar };
+
             return {
                 errorCode: 0,
                 errorMessage: `Tải thông tin người dùng thành công`,
-                data: user,
+                data: newUser,
             };
         } else {
             return {
@@ -297,7 +303,15 @@ export const handleGetProductList = async (data) => {
                     });
 
                     if (productDesc) {
-                        product.productInfo = productDesc;
+                        const productImage = productDesc.image;
+                        let binaryData;
+                        if (productImage) {
+                            binaryData = productImage.toString('binary');
+                        }
+
+                        const newProductDesc = { ...productDesc, image: binaryData };
+
+                        product.productInfo = newProductDesc;
                         product.order = productDesc.productOrder;
                     }
 
@@ -332,14 +346,30 @@ export const handleGetProductList = async (data) => {
                         where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
                     });
-                    product.FELibraryList = FELibraries.rows;
+
+                    if (FELibraries.rows.length > 0) {
+                        const FELibraryList = FELibraries.rows.map((library) => {
+                            const binaryImage = library.image.toString('binary');
+                            return { ...library, image: binaryImage };
+                        });
+
+                        product.FELibraryList = FELibraryList;
+                    }
                     product.numberofFELibrary = FELibraries.count;
 
                     const BELibraries = await db.Technology.findAndCountAll({
                         where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
                     });
-                    product.BELibraryList = BELibraries.rows;
+
+                    if (BELibraries.rows.length > 0) {
+                        const FELibraryList = BELibraries.rows.map((library) => {
+                            const binaryImage = library.image.toString('binary');
+                            return { ...library, image: binaryImage };
+                        });
+
+                        product.BELibraryList = FELibraryList;
+                    }
                     product.numberofBELibrary = BELibraries.count;
 
                     productListData.push(product);
@@ -501,9 +531,7 @@ export const handleUpdateTechnology = async (data) => {
         });
 
         if (result) {
-            if (image) {
-                result.image = image;
-            }
+            result.image = image;
             result.name = name;
             result.version = version;
             result.link = link;
