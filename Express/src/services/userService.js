@@ -10,12 +10,22 @@ const checkUserEmailInDB = async (email) => {
         let user = await db.User.findOne({ where: { email: email } });
 
         if (user) {
-            return true;
+            return {
+                errorCode: 0,
+            };
         } else {
-            return false;
+            return {
+                errorCode: 32,
+                errorMessage: `Email không tồn tại trong hệ thống`,
+            };
         }
     } catch (error) {
         console.log('An error in checkUserEmailInDB() in userService.js : ', error);
+
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Xác thực email thất bại`,
+        };
     }
 };
 
@@ -76,9 +86,9 @@ export const postUserSignUp = async (fullName, email, password) => {
 export const postUserSignIn = async (userEmail, userPassword) => {
     try {
         // Use email to check whether the user exists
-        let isEmailExisted = await checkUserEmailInDB(userEmail);
+        let { errorCode, errorMessage } = await checkUserEmailInDB(userEmail);
 
-        if (isEmailExisted) {
+        if (errorCode === 0) {
             // Get user's data again prevent someone from deleting/changing data
             let user = await db.User.findOne({
                 where: { email: userEmail },
@@ -102,19 +112,19 @@ export const postUserSignIn = async (userEmail, userPassword) => {
                 } else {
                     return {
                         errorCode: 34,
-                        errorMessage: `Sai mật khẩu. Vui lòng kiểm tra lại`,
+                        errorMessage: `Mật khẩu không chính xác. Vui lòng kiểm tra lại`,
                     };
                 }
             } else {
                 return {
                     errorCode: 33,
-                    errorMessage: `Không tìm thấy người dùng`,
+                    errorMessage: `Không tìm thấy người dùng trong hệ thống`,
                 };
             }
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Email không tồn tại trên hệ thống`,
+                errorMessage: errorMessage,
             };
         }
     } catch (error) {
@@ -304,12 +314,12 @@ export const handleGetProductList = async (data) => {
 
                     if (productDesc) {
                         const productImage = productDesc.image;
-                        let binaryData;
+                        let binaryImage;
                         if (productImage) {
-                            binaryData = productImage.toString('binary');
+                            binaryImage = productImage.toString('binary');
                         }
 
-                        const newProductDesc = { ...productDesc, image: binaryData };
+                        const newProductDesc = { ...productDesc, image: binaryImage };
 
                         product.productInfo = newProductDesc;
                         product.order = productDesc.productOrder;
@@ -321,7 +331,12 @@ export const handleGetProductList = async (data) => {
                     });
 
                     if (sourceCodes) {
-                        product.sourceCodeList = sourceCodes;
+                        const sourceCodeList = sourceCodes.map((sourceCode) => {
+                            const binaryImage = sourceCode.image.toString('binary');
+                            return { ...sourceCode, image: binaryImage };
+                        });
+
+                        product.sourceCodeList = sourceCodeList;
                     }
 
                     const FETechnologies = await db.Technology.findAll({
@@ -330,7 +345,12 @@ export const handleGetProductList = async (data) => {
                     });
 
                     if (FETechnologies) {
-                        product.FETechnologyList = FETechnologies;
+                        const FETechnologyList = FETechnologies.map((FETechnology) => {
+                            const binaryImage = FETechnology.image.toString('binary');
+                            return { ...FETechnology, image: binaryImage };
+                        });
+
+                        product.FETechnologyList = FETechnologyList;
                     }
 
                     const BETechnologies = await db.Technology.findAll({
@@ -339,7 +359,12 @@ export const handleGetProductList = async (data) => {
                     });
 
                     if (BETechnologies) {
-                        product.BETechnologyList = BETechnologies;
+                        const BETechnologyList = BETechnologies.map((BETechnology) => {
+                            const binaryImage = BETechnology.image.toString('binary');
+                            return { ...BETechnology, image: binaryImage };
+                        });
+
+                        product.BETechnologyList = BETechnologyList;
                     }
 
                     const FELibraries = await db.Technology.findAndCountAll({

@@ -90,15 +90,17 @@ class ChangeImageModal extends PureComponent {
                                 </div>
                             </div>
                             <div className={cx('actions')}>
-                                <Button className={cx('btn', 'change')} onChange={this.handleUploadImage}>
-                                    <label className={cx('label')} htmlFor="upload">
-                                        Tải ảnh
-                                        <input id="upload" type="file" hidden />
-                                    </label>
+                                <label
+                                    className={cx('btn', 'change')}
+                                    onChange={this.handleUploadImage}
+                                    htmlFor="upload"
+                                >
+                                    Tải ảnh
+                                    <input id="upload" type="file" hidden />
                                     <i className={cx('right-icon')}>
                                         <ImUpload3 />
                                     </i>
-                                </Button>
+                                </label>
                                 <Button
                                     className={cx('btn', 'crop')}
                                     onClick={this.handleOpenCropModal}

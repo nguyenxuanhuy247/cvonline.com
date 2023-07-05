@@ -14,7 +14,7 @@ const cx = classnames.bind(styles);
 class EditProduct extends PureComponent {
     render() {
         return (
-            <div className={cx('wrapper')}>
+            <div className={cx('wrapper')} id={this.props.id}>
                 <DefaultTippy content="Di chuyển dự án này lên trên">
                     <Button className={cx('btn', 'move')} onClick={this.props.onMoveUpProduct}>
                         <HiArrowUp />

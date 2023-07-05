@@ -18,7 +18,7 @@ export const userSignUpStart = (userData) => {
             }
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             dispatch(userSignUpFail());
             console.log('An error in userSignUpStart() - userActions.js: ', error);
         }
@@ -66,9 +66,11 @@ export const userSignInFail = () => ({
 });
 
 // USER SIGN OUT
-export const userSignOut = () => ({
-    type: actionNames.USER_SIGNOUT,
-});
+export const userSignOut = () => {
+    return {
+        type: actionNames.USER_SIGNOUT,
+    };
+};
 
 // =================================================================
 // CRUD USER INFORMATION

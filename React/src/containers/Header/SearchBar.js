@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import { BsKeyboard } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
@@ -20,39 +20,30 @@ class SearchBar extends PureComponent {
     }
 
     handleInputValue = async (e) => {
-        const value = e.target.value;
+        await this.setState({ searchValue: e.target.value, visible: true });
+
+        const value = e.target.value?.trim();
 
         if (value) {
-            await this.setState({ searchValue: e.target.value, visible: true });
-
             const notFoundElement = document.querySelector(`.${cx('not-found-result')}`);
-            console.log(notFoundElement);
             notFoundElement?.classList.add(cx('hide'));
 
             this.props.productList?.forEach((product) => {
+                const productElement = document.getElementById(`js-product-${product.id}`);
                 const productSearchResult = document.getElementById(`js-short-search-result-${product.id}`);
                 const productName = document.getElementById(`js-search-result-name-${product.id}`);
                 const productDesc = document.getElementById(`js-search-result-desc-${product.id}`);
 
-                if (productSearchResult && productName && productDesc) {
+                if (productElement && productSearchResult && productName && productDesc) {
                     productSearchResult.style.display = 'flex';
-                    productName.innerHTML = product.name;
-                    productDesc.innerHTML = product.desc;
 
-                    const regex = new RegExp(value, 'gi');
-                    const name1 = productName?.innerHTML.replace(
-                        /(<mark style={{ backgroundColor: 'yellow'}}>|<\/mark>)/gim,
-                        '',
-                    );
-                    const name2 = productDesc?.innerHTML.replace(
-                        /(<mark style={{ backgroundColor: 'yellow'}}>|<\/mark>)/gim,
-                        '',
-                    );
-                    const newName1 = name1.replace(regex, `<mark  style={{ backgroundColor: 'yellow'}}>$&</mark>`);
-                    const newName2 = name2.replace(regex, `<mark  style={{ backgroundColor: 'yellow'}}>$&</mark>`);
-                    if (name1 !== newName1 || name2 !== newName2) {
-                        productName.innerHTML = newName1;
-                        productDesc.innerHTML = newName2;
+                    const isIncludesName = productName.innerHTML.toLowerCase().includes(value?.trim().toLowerCase());
+                    const isIncludesDesc = productDesc.innerHTML.toLowerCase().includes(value?.trim().toLowerCase());
+                    if (isIncludesName || isIncludesDesc) {
+                        productSearchResult.onclick = () => {
+                            productElement.scrollIntoView();
+                            this.setState({ visible: false });
+                        };
                     } else {
                         productSearchResult.style.display = 'none';
                     }
@@ -64,7 +55,6 @@ class SearchBar extends PureComponent {
                 const isAllNone = Array.from(searchResultArrary).every((node) => {
                     return node.getAttribute('style') === 'display: none;';
                 });
-                console.log('isAllNone ', isAllNone);
 
                 if (isAllNone) {
                     notFoundElement.classList.remove(cx('hide'));
@@ -81,6 +71,7 @@ class SearchBar extends PureComponent {
                 <div style={{ width: '100%' }}>
                     <HeadlessTippy
                         visible={this.state.visible}
+                        onClickOutside={() => this.setState({ visible: false })}
                         zIndex="10"
                         placement="bottom"
                         interactive
@@ -128,6 +119,7 @@ class SearchBar extends PureComponent {
                                 placeholder="Tìm kiếm tên sản phẩm"
                                 spellCheck={false}
                                 onInput={(e) => this.handleInputValue(e)}
+                                onFocus={(e) => this.handleInputValue(e)}
                             />
 
                             <DefaultTippy content="Bàn phím ảo" arrow="">

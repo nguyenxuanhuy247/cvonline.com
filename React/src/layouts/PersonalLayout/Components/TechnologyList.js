@@ -194,7 +194,12 @@ class TechnologyList extends PureComponent {
                     })}
                 </div>
                 {!this.props.isSearch && !this.state.isCreateTechnology ? (
-                    <Button className={cx('add-technology-button')} onClick={() => this.handleShowCreateTechnology()}>
+                    <Button
+                        className={cx('add-technology-button', {
+                            'sourcecode-list': type === 'SOURCECODE',
+                        })}
+                        onClick={() => this.handleShowCreateTechnology()}
+                    >
                         <span className={cx('left-icon')}>
                             <BsPlusCircleDotted />
                         </span>

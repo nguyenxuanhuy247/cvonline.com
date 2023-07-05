@@ -42,6 +42,91 @@ body {
     font-size: 1.6rem !important;
 }
 
+// Common
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    border: none;
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+@mixin btn {
+    display: inline-block;
+    color: var(--primary-color);
+    background-color: var(--button-bgc-white);
+    padding: 8px 20px;
+    text-align: center;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+@mixin solid-btn {
+    @include btn;
+    color: var(--button-bgc-white);
+    background-color: var(--primary-color);
+}
+
+@mixin regular-btn {
+    @include btn;
+
+    color: var(--primary-color);
+    background-color: var(--button-bgc-white);
+
+    &:hover {
+        @include solid-btn;
+    }
+}
+
+@mixin active-btn {
+    @include solid-btn;
+}
+
+@mixin line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: var(--line-clamp, 1);
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@mixin signin-signup-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    user-select: none;
+    padding: 30px;
+    background-color: var(--bgc-white);
+}
+
+@mixin auth-logo {
+    display: block;
+    height: 10vmin;
+    max-width: 100%;
+    margin: 0 auto 20px auto;
+}
+
+@mixin alert-fail {
+    color: #955267;
+    background-color: #f8d7da;
+}
+
+@mixin alert-success {
+    color: #186376;
+    background-color: #d1e7dd;
+}
+
 // RESPONSIVE
 // For mobile +  Tablet + PC
 .grid {
@@ -503,89 +588,4 @@ body {
     .pc-o-11 {
         margin-left: 91.66667%;
     }
-}
-
-// Common
-button,
-input,
-select,
-textarea {
-    font-family: inherit;
-    border: none;
-    outline: none;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-@mixin btn {
-    display: inline-block;
-    color: var(--primary-color);
-    background-color: var(--button-bgc-white);
-    padding: 8px 20px;
-    text-align: center;
-    font-size: 1.6rem;
-    line-height: 1.5;
-    border: 1px solid var(--primary-color);
-    border-radius: 6px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-@mixin solid-btn {
-    @include btn;
-    color: var(--button-bgc-white);
-    background-color: var(--primary-color);
-}
-
-@mixin regular-btn {
-    @include btn;
-
-    color: var(--primary-color);
-    background-color: var(--button-bgc-white);
-
-    &:hover {
-        @include solid-btn;
-    }
-}
-
-@mixin active-btn {
-    @include solid-btn;
-}
-
-@mixin line-clamp {
-    display: -webkit-box;
-    -webkit-line-clamp: var(--line-clamp, 1);
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-@mixin signin-signup-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 100vh;
-    width: 100%;
-    user-select: none;
-    padding: 30px;
-    background-color: var(--bgc-white);
-}
-
-@mixin auth-logo {
-    display: block;
-    height: 10vmin;
-    max-width: 100%;
-    margin: 0 auto 20px auto;
-}
-
-@mixin alert-fail {
-    color: #955267;
-    background-color: #f8d7da;
-}
-
-@mixin alert-success {
-    color: #186376;
-    background-color: #d1e7dd;
 }

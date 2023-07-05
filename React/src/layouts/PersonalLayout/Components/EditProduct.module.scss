@@ -1,13 +1,14 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .wrapper {
+    display: none;
     position: absolute;
     top: 50%;
     right: 0;
     transform: translate(130%, -100%);
-    display: flex;
     flex-direction: column;
     row-gap: 4px;
+    z-index: 1;
 
     .btn {
         padding: 6px;
@@ -29,5 +30,13 @@
         &.delete {
             background-color: red;
         }
+    }
+}
+
+@media (max-width: 1300px) {
+    .wrapper {
+        left: 0;
+        right: auto;
+        transform: translate(-130%, -100%);
     }
 }

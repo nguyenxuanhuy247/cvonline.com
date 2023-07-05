@@ -20,11 +20,16 @@
         }
     }
 
-    .container {
+    .cv-container {
+        width: 1200px;
+        margin: auto auto;
         margin-top: var(--header-height);
         padding: 20px 0;
+        display: grid;
+        grid-template-columns: 2fr 5fr;
 
-        .col-left {
+        .user-information {
+            flex: 1;
             padding: 20px;
             color: #fff;
             background-color: #37474f;
@@ -60,6 +65,7 @@
                 font-size: 2.5rem;
                 line-height: 1.5;
                 font-weight: 600;
+                word-break: break-word;
             }
 
             .select-job-title {
@@ -174,52 +180,62 @@
             }
         }
 
-        .product-list {
-            display: flex;
-            flex-direction: column;
-            row-gap: 8px;
-            background-color: #f0f2f5;
-        }
+        .product-list-container {
+            flex: 3;
 
-        .add-new-product-container {
-            display: grid;
-            place-items: center;
-            padding: 12px;
-            background-color: var(--button-bgc-green-02);
-
-            .add-new-product-button {
-                background-color: var(--primary-color);
-                color: #fff;
-                border-radius: 99px;
-                font-size: 2rem;
-                column-gap: 8px;
-                cursor: pointer;
-
-                .add-new-product-icon {
-                    display: grid;
-                    place-items: center;
-                    font-size: 32px;
-                }
-            }
-        }
-
-        .product-list-error-load {
-            display: grid;
-            place-items: center;
-            background-color: #ffdcdc;
-            height: 100%;
-
-            .error-text {
-                font-size: 3rem;
+            .product-list {
                 display: flex;
-                align-items: center;
-                column-gap: 8px;
+                flex-direction: column;
+                row-gap: 8px;
+                background-color: #f0f2f5;
+            }
 
-                .icon {
-                    font-size: 4rem;
-                    color: red;
+            .add-new-product-container {
+                display: grid;
+                place-items: center;
+                padding: 12px;
+                background-color: var(--button-bgc-green-02);
+
+                .add-new-product-button {
+                    background-color: var(--primary-color);
+                    color: #fff;
+                    border-radius: 99px;
+                    font-size: 2rem;
+                    column-gap: 8px;
+                    cursor: pointer;
+
+                    .add-new-product-icon {
+                        display: grid;
+                        place-items: center;
+                        font-size: 32px;
+                    }
+                }
+            }
+
+            .product-list-error-load {
+                display: grid;
+                place-items: center;
+                background-color: #ffdcdc;
+                height: 100%;
+
+                .error-text {
+                    font-size: 3rem;
+                    display: flex;
+                    align-items: center;
+                    column-gap: 8px;
+
+                    .icon {
+                        font-size: 4rem;
+                        color: red;
+                    }
                 }
             }
         }
+    }
+}
+
+@media (max-width: 1300px) {
+    .product-name-desc {
+        padding-right: 50px;
     }
 }
