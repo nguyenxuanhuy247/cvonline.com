@@ -101,7 +101,6 @@
                     flex-direction: column;
                     justify-content: center;
                     row-gap: 12px;
-                    width: 140px;
                     cursor: pointer;
 
                     .change {
@@ -110,7 +109,6 @@
                         align-items: center;
                         justify-content: center;
                         border-radius: 6px;
-                        padding: 14px;
 
                         .label {
                             cursor: pointer;
@@ -123,11 +121,6 @@
 
                     .delete {
                         background-color: red;
-                    }
-
-                    .right-icon {
-                        display: grid;
-                        place-items: center;
                     }
                 }
             }
@@ -149,6 +142,77 @@
                 .finish {
                     color: #fff;
                     background-color: var(--primary-color);
+                }
+            }
+        }
+    }
+}
+
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+// Mobile
+@media (max-width: 767px) {
+    .overlay {
+        .container {
+            min-width: initial;
+            max-width: calc(100% - 24px);
+
+            .modal-dialog {
+                & > * {
+                }
+
+                .btn {
+                    min-width: initial;
+                }
+
+                .modal-header {
+                    .title {
+                    }
+
+                    .close {
+                        &:hover {
+                        }
+                    }
+                }
+
+                .modal-body {
+                    .image-display {
+                        padding-right: 20px;
+
+                        .label {
+                            .image {
+                            }
+                        }
+                    }
+
+                    .actions {
+                        .change {
+                            .label {
+                            }
+                        }
+
+                        .crop {
+                        }
+
+                        .delete {
+                        }
+
+                        .right-icon {
+                        }
+                    }
+                }
+
+                .modal-footer {
+                    .btn {
+                    }
+
+                    .cancel {
+                    }
+
+                    .finish {
+                    }
                 }
             }
         }

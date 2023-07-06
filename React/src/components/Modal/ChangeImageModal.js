@@ -18,7 +18,7 @@ class ChangeImageModal extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            imageUrl: this.props.src || '',
+            image: this.props.src || '',
             isOpenCropImageModal: false,
         };
     }
@@ -30,7 +30,7 @@ class ChangeImageModal extends PureComponent {
         if (file) {
             if (file.size / (1024 * 1024) <= 5) {
                 const urlBase64 = await CommonUtils.getBase64(file);
-                await this.setState({ imageUrl: urlBase64 });
+                await this.setState({ image: urlBase64 });
             } else {
                 toast.error(`Kích thước ảnh lớn hơn 5MB. Vui lòng chọn ảnh khác`);
             }
@@ -40,13 +40,13 @@ class ChangeImageModal extends PureComponent {
     };
 
     handleDeleteImage = () => {
-        this.setState({ imageUrl: '' });
+        this.setState({ image: '' });
     };
 
     handleFinishChangeImage = () => {
         const { onGetUrl, onClose } = this.props;
 
-        onGetUrl(this.state.imageUrl);
+        onGetUrl(this.state.image);
         onClose();
     };
 
@@ -59,7 +59,7 @@ class ChangeImageModal extends PureComponent {
     };
 
     handleGetUrlFromCropImageModal = (url) => {
-        this.setState({ isOpenCropImageModal: false, imageUrl: url });
+        this.setState({ isOpenCropImageModal: false, image: url });
     };
 
     render() {
@@ -86,7 +86,7 @@ class ChangeImageModal extends PureComponent {
                                         aspectRatio: round ? 1 : 'auto',
                                     }}
                                 >
-                                    <Image src={this.state.imageUrl} className={cx('image')} alt="Product Image" />
+                                    <Image src={this.state.image} className={cx('image')} alt="Product Image" />
                                 </div>
                             </div>
                             <div className={cx('actions')}>
@@ -97,25 +97,16 @@ class ChangeImageModal extends PureComponent {
                                 >
                                     Tải ảnh
                                     <input id="upload" type="file" hidden />
-                                    <i className={cx('right-icon')}>
-                                        <ImUpload3 />
-                                    </i>
                                 </label>
                                 <Button
                                     className={cx('btn', 'crop')}
                                     onClick={this.handleOpenCropModal}
-                                    disabled={this.state.imageUrl ? false : true}
+                                    disabled={this.state.image ? false : true}
                                 >
                                     <span className={cx('text')}>Cắt ảnh</span>
-                                    <i className={cx('right-icon')}>
-                                        <MdCrop />
-                                    </i>
                                 </Button>
                                 <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
                                     <span className={cx('text')}>Xóa ảnh</span>
-                                    <i className={cx('right-icon')}>
-                                        <AiTwotoneDelete />
-                                    </i>
                                 </Button>
                             </div>
                         </div>
@@ -134,7 +125,7 @@ class ChangeImageModal extends PureComponent {
         ) : (
             <CropImageModal
                 round={round}
-                src={this.state.imageUrl}
+                src={this.state.image}
                 onClose={this.handleCloseCropImageModal}
                 onGetUrl={this.handleGetUrlFromCropImageModal}
             />

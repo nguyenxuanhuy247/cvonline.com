@@ -70,6 +70,7 @@ class Product extends PureComponent {
         const { productInfo } = this.props?.productData ?? {};
         const textAreaElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
         const text = textAreaElement?.textContent;
+        console.log('text', text);
         const row_count = text?.split(/\r\n|\r|\n/).length;
         textAreaElement.rows = row_count || 2;
     };
@@ -91,7 +92,9 @@ class Product extends PureComponent {
         }
     };
 
-    getImageUrlFromChangeImageModal = async (url) => {
+    // ----------------------------------------------------------------
+
+    handleUpdateImageFromChangeImageModal = async (url) => {
         const { productInfo } = this.props?.productData ?? {};
         const { image: imageDB } = productInfo ?? {};
 
@@ -102,6 +105,10 @@ class Product extends PureComponent {
         } else {
             Toast.TOP_CENTER_WARN(`Ảnh này đã được sử dụng, hãy chọn ảnh khác`, 3000);
         }
+    };
+
+    handleCloseChangeImageModal = () => {
+        this.setState({ isModalOpen: false });
     };
 
     // =================================================================
@@ -412,12 +419,9 @@ class Product extends PureComponent {
                             {this.state.isModalOpen && (
                                 <ChangeImageModal
                                     round={false}
-                                    onClose={() =>
-                                        this.setState({
-                                            isModalOpen: false,
-                                        })
-                                    }
-                                    onGetUrl={this.getImageUrlFromChangeImageModal}
+                                    src={productInfo?.image}
+                                    onClose={() => this.handleCloseChangeImageModal()}
+                                    onGetUrl={this.handleUpdateImageFromChangeImageModal}
                                 />
                             )}
                         </div>
@@ -452,7 +456,7 @@ class Product extends PureComponent {
                                     <TechnologyList
                                         technologyListID={`js-technology-list-FE-${productInfo?.id}`}
                                         draggable
-                                        label="công nghệ FE sử dụng"
+                                        label="công nghệ ở FE"
                                         type="TECHNOLOGY"
                                         keyprop="TE"
                                         side="FE"
@@ -486,7 +490,7 @@ class Product extends PureComponent {
                                     </div>
 
                                     <div className={cx('library-sort')}>
-                                        <span className={cx('label')}>Sắp xếp : </span>
+                                        <span className={cx('label')}>Sắp xếp</span>
                                         <Button
                                             className={cx('sort', {
                                                 'active-sort': this.state.FE_sortBy === 'asc',
@@ -508,7 +512,7 @@ class Product extends PureComponent {
 
                                 {!this.state.FE_isSearch && (
                                     <div className={cx('display')}>
-                                        <span className={cx('label')}>Hiển thị : </span>
+                                        <span className={cx('label')}>Hiển thị</span>
                                         {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                             return (
                                                 <Button
@@ -582,8 +586,6 @@ class Product extends PureComponent {
                             </div>
                         </div>
 
-                        <div className={cx('separate')}></div>
-
                         <div className={cx('server', 'back-end')}>
                             <span className={cx('server-side-title')}>BACK-END</span>
                             <div className={cx('technology-used')}>
@@ -594,7 +596,7 @@ class Product extends PureComponent {
                                     <TechnologyList
                                         technologyListID={`js-technology-list-BE-${productInfo?.id}`}
                                         draggable
-                                        label="công nghệ BE sử dụng"
+                                        label="công nghệ ở BE"
                                         type="TECHNOLOGY"
                                         keyprop="TE"
                                         side="BE"
@@ -628,7 +630,7 @@ class Product extends PureComponent {
                                     </div>
 
                                     <div className={cx('library-sort')}>
-                                        <span className={cx('label')}>Sắp xếp : </span>
+                                        <span className={cx('label')}>Sắp xếp</span>
                                         <Button
                                             className={cx('sort', {
                                                 'active-sort': this.state.BE_sortBy === 'asc',
@@ -650,7 +652,7 @@ class Product extends PureComponent {
 
                                 {!this.state.BE_isSearch && (
                                     <div className={cx('display')}>
-                                        <span className={cx('label')}>Hiển thị : </span>
+                                        <span className={cx('label')}>Hiển thị</span>
                                         {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                             return (
                                                 <Button

@@ -142,7 +142,11 @@ class TechnologyList extends PureComponent {
         const { draggable, type, keyprop, side, productId, label, technologyList } = this.props;
 
         return (
-            <div className={cx('technology-list')}>
+            <div
+                className={cx('technology-list', {
+                    'sourcecode-list': type === 'SOURCECODE',
+                })}
+            >
                 <div
                     id={this.props.technologyListID}
                     className={cx('technology-list-inner', {

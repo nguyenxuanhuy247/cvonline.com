@@ -4,6 +4,10 @@
     width: 100%;
     text-align: center;
 
+    &.sourcecode-list {
+        text-align: left;
+    }
+
     .technology-list-inner {
         width: 100%;
         display: flex;
@@ -44,7 +48,6 @@
         column-gap: 8px;
 
         &.sourcecode-list {
-            width: 100%;
         }
 
         &:hover {
@@ -61,6 +64,98 @@
 
         .text {
             font-size: 1.4rem;
+        }
+    }
+}
+
+// =================================================================
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .technology-list {
+        &.sourcecode-list {
+            text-align: center;
+        }
+
+        .technology-list-inner {
+            &.sourcecode-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                column-gap: 4px;
+            }
+
+            &.technology-list {
+            }
+
+            &.library-list {
+            }
+
+            .drag-drop-hover {
+            }
+
+            &.sourcecode-list {
+                text-align: center;
+            }
+        }
+
+        .add-technology-button {
+            &.sourcecode-list {
+            }
+
+            &:hover {
+            }
+
+            .left-icon {
+            }
+
+            .text {
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .technology-list {
+        &.sourcecode-list {
+            text-align: center;
+        }
+
+        .technology-list-inner {
+            &.sourcecode-list {
+                flex-direction: row;
+                justify-content: center;
+                text-align: center;
+                column-gap: 4px;
+                flex-wrap: wrap;
+            }
+
+            &.technology-list {
+            }
+
+            &.library-list {
+            }
+
+            .drag-drop-hover {
+            }
+
+            &.sourcecode-list {
+                text-align: left;
+            }
+        }
+
+        .add-technology-button {
+            &.sourcecode-list {
+                width: auto;
+            }
+
+            &:hover {
+            }
+
+            .left-icon {
+            }
+
+            .text {
+            }
         }
     }
 }

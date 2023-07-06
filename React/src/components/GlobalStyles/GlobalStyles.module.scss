@@ -35,11 +35,13 @@ html,
 body {
     font-size: 62.5% !important;
     overflow: overlay;
+    line-height: 1.4;
 }
 
 body {
     font-family: var(--roboto-font) !important;
     font-size: 1.6rem !important;
+    line-height: 1.4;
 }
 
 // Common
@@ -126,6 +128,30 @@ a {
     color: #186376;
     background-color: #d1e7dd;
 }
+
+// =========================================================================
+
+@mixin flex-max-width-30 {
+    flex: 1 1 30%;
+    max-width: 30%;
+}
+
+@mixin flex-max-width-50 {
+    flex: 1 1 50%;
+    max-width: 50%;
+}
+
+@mixin flex-max-width-70 {
+    flex: 1 1 70%;
+    max-width: 70%;
+}
+
+@mixin flex-max-width-100 {
+    flex: 1 1 100%;
+    max-width: 100%;
+}
+
+// =========================================================================
 
 // RESPONSIVE
 // For mobile +  Tablet + PC

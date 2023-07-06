@@ -7,6 +7,7 @@ import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
 import { MdOutlineError } from 'react-icons/md';
 import HeadlessTippy from '@tippyjs/react/headless';
+import Markdown from 'markdown-to-jsx';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import Header from '~/containers/Header/Header.js';
@@ -20,6 +21,7 @@ import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
 import Loading from '~/components/Modal/Loading.js';
+import { override } from 'customize-cra';
 
 const cx = classnames.bind(styles);
 
@@ -43,7 +45,7 @@ class PersonalLayout extends PureComponent {
         this.setState({ isModalOpen: false });
     };
 
-    getAvatarUrlFromChangeImageModal = async (url) => {
+    handleUpdateAvatarFromChangeImageModal = async (url) => {
         const { id: userId, avatar } = this.props?.user ?? {};
 
         if (url !== avatar) {
@@ -87,19 +89,19 @@ class PersonalLayout extends PureComponent {
     };
 
     handleInputLanguagesAndSetRowsForTextarea = async (e) => {
-        const textAreaElement = e.target;
         const value = e.target.value;
 
-        await this.setState({ languages: value });
+        const paragraphs = e.target.innerHTML
+            .split('\n')
+            .map((line) => `<p>${line}</p>`)
+            .join('');
+        console.log([e.target]);
 
-        // Get number of rows of textarea and set rows attribute
-        const rows = this.getNumberOfRows(textAreaElement);
-        textAreaElement.rows = rows;
+        await this.setState({ languages: value });
     };
 
-    handleUpdateLanguages = async () => {
+    handleUpdateLanguages = async (e) => {
         const { id: userId, languages } = this.props?.user ?? {};
-
         const value = this.state.languages;
 
         if (value !== languages) {
@@ -348,144 +350,143 @@ class PersonalLayout extends PureComponent {
                 <Header productList={ASCOrderProductList} />
                 <div className={cx('cv-container')}>
                     <div className={cx('user-information')}>
-                        <div className={cx('avatar-wrapper')}>
-                            <div className={cx('border-outline')}>
-                                <HeadlessTippy
-                                    zIndex="10"
-                                    placement="bottom"
-                                    interactive
-                                    delay={[0, 300]}
-                                    offset={[0, -100]}
-                                    render={(attrs) => (
-                                        <div tabIndex="-1" {...attrs}>
-                                            <div
-                                                className={cx('tooltip')}
-                                                onClick={() => this.handleOpenChangeAvatarModal()}
-                                            >
-                                                Sửa ảnh
+                        <div className={cx('user-information-basic')}>
+                            <div className={cx('avatar-wrapper')}>
+                                <div className={cx('border-outline')}>
+                                    <HeadlessTippy
+                                        zIndex="10"
+                                        placement="bottom"
+                                        interactive
+                                        delay={[0, 300]}
+                                        offset={[0, -100]}
+                                        render={(attrs) => (
+                                            <div tabIndex="-1" {...attrs}>
+                                                <div
+                                                    className={cx('tooltip')}
+                                                    onClick={() => this.handleOpenChangeAvatarModal()}
+                                                >
+                                                    Sửa ảnh
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
+                                    >
+                                        <Image
+                                            className={cx('avatar')}
+                                            src={this.props.user?.avatar || JpgImages.avatarPlaceholder}
+                                            alt={`${this.props?.user?.fullName}`}
+                                            round
+                                        />
+                                    </HeadlessTippy>
+
+                                    {this.state.isModalOpen && (
+                                        <ChangeImageModal
+                                            round
+                                            src={this.props.user?.avatar}
+                                            onClose={() => this.handleCloseChangeAvatarModal()}
+                                            onGetUrl={this.handleUpdateAvatarFromChangeImageModal}
+                                        />
                                     )}
-                                >
-                                    <Image
-                                        className={cx('avatar')}
-                                        src={this.props.user?.avatar || JpgImages.avatarPlaceholder}
-                                        width="170px"
-                                        height="170px"
-                                        alt={`${this.props?.user?.fullName}`}
-                                        round
-                                    />
-                                </HeadlessTippy>
-
-                                {this.state.isModalOpen && (
-                                    <ChangeImageModal
-                                        round
-                                        onClose={() => this.handleCloseChangeAvatarModal()}
-                                        onGetUrl={this.getAvatarUrlFromChangeImageModal}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                        <ContentEditableTag
-                            content={this.props?.user?.fullName}
-                            className={cx('full-name')}
-                            placeholder="Nguyễn Xuân Huy"
-                            onblur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
-                        />
-                        <select
-                            className={cx('select-job-title')}
-                            onMouseEnter={(e) => e.target.focus()}
-                            onChange={(e) => this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')}
-                        >
-                            <option className={cx('option-job-title')} value="Fullstack developer">
-                                Fullstack developer
-                            </option>
-                            <option className={cx('option-job-title')} value="Frontend developer">
-                                Frontend developer
-                            </option>
-                            <option className={cx('option-job-title')} value="Backend developer">
-                                Backend developer
-                            </option>
-                        </select>
-
-                        <div className={cx('separate')}></div>
-
-                        <div className={cx('candidate-info')}>
-                            <p className={cx('text')}>Thông tin cá nhân</p>
-                            <div className={cx('content')}>
-                                <div className={cx('info')}>
-                                    <span className={cx('icon')}>
-                                        <BsFillCalendarDayFill />
-                                    </span>
-                                    <ContentEditableTag
-                                        content={this.props?.user?.dateOfBirth}
-                                        className={cx('info-text')}
-                                        placeholder="Ngày tháng năm sinh"
-                                        onblur={(e) => this.handleUpdateUserInformation(e, 'dateOfBirth', 'Ngày sinh')}
-                                    />
-                                </div>
-                                <div className={cx('info')}>
-                                    <span className={cx('icon')}>
-                                        <FaUserCircle />
-                                    </span>
-                                    <ContentEditableTag
-                                        content={this.props?.user?.gender}
-                                        className={cx('info-text')}
-                                        placeholder="Giới tính"
-                                        onblur={(e) => this.handleUpdateUserInformation(e, 'gender', 'Giới tính')}
-                                    />
-                                </div>
-                                <div className={cx('info')}>
-                                    <span className={cx('icon')}>
-                                        <BsFillTelephoneFill />
-                                    </span>
-                                    <ContentEditableTag
-                                        content={this.props?.user?.phoneNumber}
-                                        className={cx('info-text')}
-                                        placeholder="Số điện thoại"
-                                        onblur={(e) =>
-                                            this.handleUpdateUserInformation(e, 'phoneNumber', 'Số điện thoại')
-                                        }
-                                    />
-                                </div>
-                                <div className={cx('info')}>
-                                    <span className={cx('icon')}>
-                                        <MdEmail />
-                                    </span>
-                                    <p
-                                        dangerouslySetInnerHTML={{ __html: this.props?.user?.email }}
-                                        className={cx('info-text', 'email')}
-                                        placeholder="Email"
-                                    />
-                                </div>
-                                <div className={cx('info')}>
-                                    <span className={cx('icon')}>
-                                        <FaAddressBook />
-                                    </span>
-                                    <ContentEditableTag
-                                        content={this.props?.user?.address}
-                                        className={cx('info-text')}
-                                        placeholder="Địa chỉ"
-                                        onblur={(e) => this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')}
-                                    />
                                 </div>
                             </div>
-                        </div>
-
-                        <div className={cx('separate')}></div>
-
-                        <div className={cx('candidate-info')}>
-                            <p className={cx('text')}>Trình độ ngoại ngữ</p>
-                            <textarea
-                                id={`js-language-desc`}
-                                placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
-                                className={cx('language-desc')}
-                                spellCheck={false}
-                                value={this.state?.languages ?? ''}
-                                onInput={(e) => this.handleInputLanguagesAndSetRowsForTextarea(e)}
-                                onBlur={() => this.handleUpdateLanguages()}
+                            <ContentEditableTag
+                                content={this.props?.user?.fullName}
+                                className={cx('full-name')}
+                                placeholder="Nguyễn Xuân Huy"
+                                onblur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
+                            />
+                            <select
+                                className={cx('select-job-title')}
                                 onMouseEnter={(e) => e.target.focus()}
-                            ></textarea>
+                                onChange={(e) => this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')}
+                            >
+                                <option className={cx('option-job-title')} value="Fullstack developer">
+                                    Fullstack developer
+                                </option>
+                                <option className={cx('option-job-title')} value="Frontend developer">
+                                    Frontend developer
+                                </option>
+                                <option className={cx('option-job-title')} value="Backend developer">
+                                    Backend developer
+                                </option>
+                            </select>
+                        </div>
+                        <div className={cx('user-information-detail')}>
+                            <div className={cx('candidate-info')}>
+                                <p className={cx('text')}>Thông tin cá nhân</p>
+                                <div className={cx('content')}>
+                                    <div className={cx('info')}>
+                                        <span className={cx('icon')}>
+                                            <BsFillCalendarDayFill />
+                                        </span>
+                                        <ContentEditableTag
+                                            content={this.props?.user?.dateOfBirth}
+                                            className={cx('info-text')}
+                                            placeholder="Ngày tháng năm sinh"
+                                            onblur={(e) =>
+                                                this.handleUpdateUserInformation(e, 'dateOfBirth', 'Ngày sinh')
+                                            }
+                                        />
+                                    </div>
+                                    <div className={cx('info')}>
+                                        <span className={cx('icon')}>
+                                            <FaUserCircle />
+                                        </span>
+                                        <ContentEditableTag
+                                            content={this.props?.user?.gender}
+                                            className={cx('info-text')}
+                                            placeholder="Giới tính"
+                                            onblur={(e) => this.handleUpdateUserInformation(e, 'gender', 'Giới tính')}
+                                        />
+                                    </div>
+                                    <div className={cx('info')}>
+                                        <span className={cx('icon')}>
+                                            <BsFillTelephoneFill />
+                                        </span>
+                                        <ContentEditableTag
+                                            content={this.props?.user?.phoneNumber}
+                                            className={cx('info-text')}
+                                            placeholder="Số điện thoại"
+                                            onblur={(e) =>
+                                                this.handleUpdateUserInformation(e, 'phoneNumber', 'Số điện thoại')
+                                            }
+                                        />
+                                    </div>
+                                    <div className={cx('info')}>
+                                        <span className={cx('icon')}>
+                                            <MdEmail />
+                                        </span>
+                                        <p
+                                            dangerouslySetInnerHTML={{ __html: this.props?.user?.email }}
+                                            className={cx('info-text', 'email')}
+                                            placeholder="Email"
+                                        />
+                                    </div>
+                                    <div className={cx('info')}>
+                                        <span className={cx('icon')}>
+                                            <FaAddressBook />
+                                        </span>
+                                        <ContentEditableTag
+                                            content={this.props?.user?.address}
+                                            className={cx('info-text')}
+                                            placeholder="Địa chỉ"
+                                            onblur={(e) => this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={cx('candidate-info')}>
+                                <p className={cx('text')}>Trình độ ngoại ngữ</p>
+                                <textarea
+                                    id={`js-language-desc`}
+                                    placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
+                                    className={cx('language-desc')}
+                                    spellCheck={false}
+                                    value={this.state?.languages ?? ''}
+                                    onInput={(e) => this.handleInputLanguagesAndSetRowsForTextarea(e)}
+                                    onBlur={() => this.handleUpdateLanguages()}
+                                    onMouseEnter={(e) => e.target.focus()}
+                                ></textarea>
+                            </div>
                         </div>
                     </div>
 

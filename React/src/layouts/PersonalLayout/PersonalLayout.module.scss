@@ -1,3 +1,5 @@
+@import '../../components/GlobalStyles/GlobalStyles.module.scss';
+
 .body {
     background-color: #f0f2f5;
 
@@ -21,19 +23,18 @@
     }
 
     .cv-container {
-        width: 1200px;
+        max-width: 1200px;
         margin: auto auto;
         margin-top: var(--header-height);
         padding: 20px 0;
-        display: grid;
-        grid-template-columns: 2fr 5fr;
+        display: flex;
 
         .user-information {
-            flex: 1;
+            @include flex-max-width-30;
             padding: 20px;
             color: #fff;
             background-color: #37474f;
-            height: 100%;
+            height: auto;
 
             .avatar-wrapper {
                 display: grid;
@@ -55,6 +56,11 @@
                         &:hover {
                             cursor: pointer;
                         }
+                    }
+
+                    .avatar {
+                        width: 170px;
+                        height: 170px;
                     }
                 }
             }
@@ -101,7 +107,9 @@
             }
 
             .candidate-info {
-                padding: 12px 0;
+                margin-top: 12px;
+                padding: 24px 0;
+                border-top: 1px solid #fff;
 
                 .text {
                     font-size: 1.8rem;
@@ -176,12 +184,15 @@
                         font-weight: 300;
                         white-space: wrap;
                     }
+
+                    .language-desc-li {
+                    }
                 }
             }
         }
 
         .product-list-container {
-            flex: 3;
+            @include flex-max-width-70;
 
             .product-list {
                 display: flex;
@@ -234,8 +245,138 @@
     }
 }
 
-@media (max-width: 1300px) {
-    .product-name-desc {
-        padding-right: 50px;
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+    .body {
+        .cv-container {
+            flex-direction: column;
+
+            .user-information {
+                @include flex-max-width-100;
+                display: flex;
+
+                .user-information-basic {
+                    @include flex-max-width-50;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .avatar-wrapper {
+                        .border-outline {
+                            .tooltip {
+                                &:hover {
+                                }
+                            }
+                        }
+                    }
+
+                    .full-name {
+                    }
+
+                    .select-job-title {
+                        &:hover {
+                        }
+
+                        .option-job-title {
+                        }
+                    }
+                }
+
+                .user-information-detail {
+                    @include flex-max-width-50;
+
+                    .candidate-info {
+                        padding: 12px 0;
+                        border-top: none;
+                        margin-top: 0;
+                    }
+                }
+            }
+
+            .product-list-container {
+                @include flex-max-width-100;
+
+                .product-list {
+                }
+
+                .add-new-product-container {
+                    .add-new-product-button {
+                        .add-new-product-icon {
+                        }
+                    }
+                }
+
+                .product-list-error-load {
+                    .error-text {
+                        .icon {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Mobile
+@media (max-width: 767px) {
+    .body {
+        .cv-container {
+            flex-direction: column;
+
+            .user-information {
+                @include flex-max-width-100;
+
+                .user-information-basic {
+                    .avatar-wrapper {
+                        .border-outline {
+                            .tooltip {
+                                &:hover {
+                                }
+                            }
+                        }
+                    }
+
+                    .full-name {
+                    }
+
+                    .select-job-title {
+                        &:hover {
+                        }
+
+                        .option-job-title {
+                        }
+                    }
+                }
+
+                .user-information-detail {
+                    .candidate-info {
+                        .text {
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+
+            .product-list-container {
+                @include flex-max-width-100;
+
+                .product-list {
+                }
+
+                .add-new-product-container {
+                    .add-new-product-button {
+                        .add-new-product-icon {
+                        }
+                    }
+                }
+
+                .product-list-error-load {
+                    .error-text {
+                        .icon {
+                        }
+                    }
+                }
+            }
+        }
     }
 }

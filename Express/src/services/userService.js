@@ -1,6 +1,7 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
 const fs = require('fs');
+// import fs from 'fs';
 
 const salt = bcrypt.genSaltSync(10);
 
