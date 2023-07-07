@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
-import { publicRoutes, authenticatedRoutes } from '~/routes/routes';
+import { publicRoutes, authenticatedRoutes } from './routes/routes.js';
 
 class App extends Component {
     render() {
@@ -24,7 +24,7 @@ class App extends Component {
 
                 <ToastContainer
                     position="top-center"
-                    autoClose={2000}
+                    autoClose={5000}
                     hideProgressBar={false}
                     newestOnTop={false}
                     closeOnClick

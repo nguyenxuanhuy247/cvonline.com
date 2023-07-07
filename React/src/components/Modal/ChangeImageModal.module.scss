@@ -1,220 +1,71 @@
 @import '../GlobalStyles/GlobalStyles.module.scss';
 
-.overlay {
-    font-family: var(--alexandria-font);
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+.image-display {
+    flex: 1;
 
-    .container {
-        min-width: 500px;
-        max-width: 700px;
-        background-color: #fff;
-        border-radius: 4px;
+    .label {
+        width: 100%;
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
 
-        .modal-dialog {
-            display: flex;
-            flex-direction: column;
+        .image {
+            width: inherit;
+            height: inherit;
+            object-fit: cover;
+            width: 100%;
             height: 100%;
-
-            & > * {
-                padding: 16px;
-            }
-
-            .btn {
-                font-size: 16px;
-                padding: 12px 12px;
-                border: none;
-                min-width: 130px;
-                color: #fff;
-                column-gap: 8px;
-                cursor: pointer;
-            }
-
-            .modal-header {
-                position: relative;
-                text-align: center;
-                border-bottom: 1px solid #ccc;
-
-                .title {
-                    color: #000;
-                    font-size: 2rem;
-                    font-weight: 600;
-                }
-
-                .close {
-                    position: absolute;
-                    right: 16px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    opacity: 0.8;
-                    display: flex;
-                    align-items: center;
-                    color: red;
-                    font-size: 30px;
-
-                    &:hover {
-                        cursor: pointer;
-                        opacity: 1;
-                        font-weight: 600;
-                    }
-                }
-            }
-
-            .modal-body {
-                flex: 1;
-                border-bottom: 1px solid #ccc;
-                display: flex;
-                align-items: center;
-                padding: 20px;
-
-                .image-display {
-                    flex: 1;
-                    padding: 0 40px;
-
-                    .label {
-                        width: 100%;
-                        height: 100%;
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                        overflow: hidden;
-
-                        .image {
-                            width: inherit;
-                            height: inherit;
-                            object-fit: cover;
-                            width: 100%;
-                            height: 100%;
-                            background-color: #000;
-                        }
-                    }
-                }
-
-                .actions {
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    row-gap: 12px;
-                    cursor: pointer;
-
-                    .change {
-                        background-color: blue;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 6px;
-
-                        .label {
-                            cursor: pointer;
-                        }
-                    }
-
-                    .crop {
-                        background-color: var(--primary-color);
-                    }
-
-                    .delete {
-                        background-color: red;
-                    }
-                }
-            }
-
-            .modal-footer {
-                padding: 12px;
-                display: flex;
-                justify-content: center;
-                column-gap: 20px;
-
-                .btn {
-                    min-width: 100px;
-                }
-
-                .cancel {
-                    color: #000;
-                }
-
-                .finish {
-                    color: #fff;
-                    background-color: var(--primary-color);
-                }
-            }
+            background-color: #000;
         }
     }
 }
 
-// Tablet
-@media (min-width: 768px) and (max-width: 991px) {
+.actions {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 12px;
+    cursor: pointer;
+
+    .btn {
+        font-size: 1.6rem;
+        padding: 10px;
+        border: none;
+        min-width: 120px;
+        color: #fff;
+        column-gap: 8px;
+        cursor: pointer;
+    }
+
+    .change {
+        background-color: blue;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+
+        .label {
+            cursor: pointer;
+        }
+    }
+
+    .crop {
+        background-color: var(--primary-color);
+    }
+
+    .delete {
+        background-color: red;
+    }
 }
 
 // Mobile
 @media (max-width: 767px) {
-    .overlay {
-        .container {
-            min-width: initial;
-            max-width: calc(100% - 24px);
-
-            .modal-dialog {
-                & > * {
-                }
-
-                .btn {
-                    min-width: initial;
-                }
-
-                .modal-header {
-                    .title {
-                    }
-
-                    .close {
-                        &:hover {
-                        }
-                    }
-                }
-
-                .modal-body {
-                    .image-display {
-                        padding-right: 20px;
-
-                        .label {
-                            .image {
-                            }
-                        }
-                    }
-
-                    .actions {
-                        .change {
-                            .label {
-                            }
-                        }
-
-                        .crop {
-                        }
-
-                        .delete {
-                        }
-
-                        .right-icon {
-                        }
-                    }
-                }
-
-                .modal-footer {
-                    .btn {
-                    }
-
-                    .cancel {
-                    }
-
-                    .finish {
-                    }
-                }
-            }
+    .actions {
+        .btn {
+            min-width: 90px;
         }
     }
 }

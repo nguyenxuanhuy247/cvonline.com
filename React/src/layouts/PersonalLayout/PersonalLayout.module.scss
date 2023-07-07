@@ -173,19 +173,18 @@
                     border: 1px solid transparent;
                     word-break: break-word;
 
-                    &:hover,
-                    &:focus {
-                        border: 1px dashed #999;
-                    }
-
-                    &::placeholder {
+                    &:empty:not(:focus):before {
+                        content: attr(placeholder);
                         color: #999;
                         font-style: italic;
                         font-weight: 300;
-                        white-space: wrap;
                     }
 
-                    .language-desc-li {
+                    &:focus,
+                    &:hover {
+                        cursor: text;
+                        outline: none;
+                        border: 1px dashed #999;
                     }
                 }
             }
@@ -260,26 +259,6 @@
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
-
-                    .avatar-wrapper {
-                        .border-outline {
-                            .tooltip {
-                                &:hover {
-                                }
-                            }
-                        }
-                    }
-
-                    .full-name {
-                    }
-
-                    .select-job-title {
-                        &:hover {
-                        }
-
-                        .option-job-title {
-                        }
-                    }
                 }
 
                 .user-information-detail {
@@ -295,23 +274,6 @@
 
             .product-list-container {
                 @include flex-max-width-100;
-
-                .product-list {
-                }
-
-                .add-new-product-container {
-                    .add-new-product-button {
-                        .add-new-product-icon {
-                        }
-                    }
-                }
-
-                .product-list-error-load {
-                    .error-text {
-                        .icon {
-                        }
-                    }
-                }
             }
         }
     }
@@ -326,28 +288,6 @@
             .user-information {
                 @include flex-max-width-100;
 
-                .user-information-basic {
-                    .avatar-wrapper {
-                        .border-outline {
-                            .tooltip {
-                                &:hover {
-                                }
-                            }
-                        }
-                    }
-
-                    .full-name {
-                    }
-
-                    .select-job-title {
-                        &:hover {
-                        }
-
-                        .option-job-title {
-                        }
-                    }
-                }
-
                 .user-information-detail {
                     .candidate-info {
                         .text {
@@ -359,23 +299,6 @@
 
             .product-list-container {
                 @include flex-max-width-100;
-
-                .product-list {
-                }
-
-                .add-new-product-container {
-                    .add-new-product-button {
-                        .add-new-product-icon {
-                        }
-                    }
-                }
-
-                .product-list-error-load {
-                    .error-text {
-                        .icon {
-                        }
-                    }
-                }
             }
         }
     }

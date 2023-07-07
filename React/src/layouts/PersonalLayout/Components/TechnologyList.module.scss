@@ -84,31 +84,8 @@
                 column-gap: 4px;
             }
 
-            &.technology-list {
-            }
-
-            &.library-list {
-            }
-
-            .drag-drop-hover {
-            }
-
             &.sourcecode-list {
                 text-align: center;
-            }
-        }
-
-        .add-technology-button {
-            &.sourcecode-list {
-            }
-
-            &:hover {
-            }
-
-            .left-icon {
-            }
-
-            .text {
             }
         }
     }
@@ -129,15 +106,6 @@
                 flex-wrap: wrap;
             }
 
-            &.technology-list {
-            }
-
-            &.library-list {
-            }
-
-            .drag-drop-hover {
-            }
-
             &.sourcecode-list {
                 text-align: left;
             }
@@ -146,15 +114,6 @@
         .add-technology-button {
             &.sourcecode-list {
                 width: auto;
-            }
-
-            &:hover {
-            }
-
-            .left-icon {
-            }
-
-            .text {
             }
         }
     }

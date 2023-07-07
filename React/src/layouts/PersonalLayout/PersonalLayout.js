@@ -88,21 +88,17 @@ class PersonalLayout extends PureComponent {
         return row_count;
     };
 
-    handleInputLanguagesAndSetRowsForTextarea = async (e) => {
-        const value = e.target.value;
-
-        const paragraphs = e.target.innerHTML
-            .split('\n')
-            .map((line) => `<p>${line}</p>`)
-            .join('');
-        console.log([e.target]);
-
+    handleInputLanguages = async (e) => {
+        const value = e.target.innerText;
+        console.log(value);
         await this.setState({ languages: value });
     };
 
-    handleUpdateLanguages = async (e) => {
+    handleUpdateLanguagesToDB = async (e) => {
         const { id: userId, languages } = this.props?.user ?? {};
         const value = this.state.languages;
+
+        e.target.innerText = this.state.languages;
 
         if (value !== languages) {
             const data = { userId: userId, languages: value, label: 'Ngoại ngữ' };
@@ -303,15 +299,9 @@ class PersonalLayout extends PureComponent {
             }
             await this.props.readProductList(userId);
 
-            // Set rows for textarea by JS
-            const textAreaElement = document.getElementById(`js-language-desc`);
-            if (textAreaElement) {
-                const rows = textAreaElement?.innerHTML?.split(/\r\n|\r|\n/).length;
-
-                if (rows) {
-                    textAreaElement.rows = rows;
-                }
-            }
+            // Set languages by JS
+            const languagesElement = document.getElementById(`js-language-desc`);
+            languagesElement.innerText = this.props?.user?.languages;
 
             // Press ENTER to change input field or submit
             const container = document.querySelector(`.${cx('col-left')}`);
@@ -336,6 +326,13 @@ class PersonalLayout extends PureComponent {
         } else {
             Toast.TOP_CENTER_WARN('Vui lòng đăng nhập lại');
             await this.props.userSignOut();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props?.user?.languages !== prevProps.user?.languages) {
+            const languagesElement = document.getElementById(`js-language-desc`);
+            languagesElement.innerText = this.props?.user?.languages;
         }
     }
 
@@ -476,16 +473,16 @@ class PersonalLayout extends PureComponent {
                             </div>
                             <div className={cx('candidate-info')}>
                                 <p className={cx('text')}>Trình độ ngoại ngữ</p>
-                                <textarea
+                                <p
                                     id={`js-language-desc`}
+                                    contentEditable
                                     placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
                                     className={cx('language-desc')}
                                     spellCheck={false}
-                                    value={this.state?.languages ?? ''}
-                                    onInput={(e) => this.handleInputLanguagesAndSetRowsForTextarea(e)}
-                                    onBlur={() => this.handleUpdateLanguages()}
+                                    onInput={(e) => this.handleInputLanguages(e)}
+                                    onBlur={(e) => this.handleUpdateLanguagesToDB(e)}
                                     onMouseEnter={(e) => e.target.focus()}
-                                ></textarea>
+                                ></p>
                             </div>
                         </div>
                     </div>

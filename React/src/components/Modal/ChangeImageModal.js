@@ -1,16 +1,13 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
-import { AiFillCloseSquare } from 'react-icons/ai';
-import { MdCrop } from 'react-icons/md';
-import { AiTwotoneDelete } from 'react-icons/ai';
-import { ImUpload3 } from 'react-icons/im';
+import { toast } from 'react-toastify';
 
 import styles from './ChangeImageModal.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
-import CropImageModal from './CropImageModal.js';
 import CommonUtils from '~/utils/CommonUtils.js';
-import { toast } from 'react-toastify';
+import Modal from '~/components/Modal/Modal.js';
+import CropImage from '~/components/Image/CropImage/CropImage.js';
 
 const cx = classnames.bind(styles);
 
@@ -21,6 +18,7 @@ class ChangeImageModal extends PureComponent {
             image: this.props.src || '',
             isOpenCropImageModal: false,
         };
+        this.ref = React.createRef();
     }
 
     handleUploadImage = async () => {
@@ -58,8 +56,9 @@ class ChangeImageModal extends PureComponent {
         this.setState({ isOpenCropImageModal: false });
     };
 
-    handleGetUrlFromCropImageModal = (url) => {
-        this.setState({ isOpenCropImageModal: false, image: url });
+    handleFinishDropImage = async () => {
+        const image = await this.ref.current.crop();
+        this.setState({ isOpenCropImageModal: false, image: image });
     };
 
     render() {
@@ -67,68 +66,39 @@ class ChangeImageModal extends PureComponent {
         const { isOpenCropImageModal } = this.state;
 
         return !isOpenCropImageModal ? (
-            <div className={cx('overlay')} onClick={onClose}>
-                <div className={cx('container')} onClick={(e) => e.stopPropagation()}>
-                    <div className={cx('modal-dialog')}>
-                        <div className={cx('modal-header')}>
-                            <p className={cx('title')}>Thay đổi hình ảnh</p>
-                            <span className={cx('close')} onClick={onClose}>
-                                <AiFillCloseSquare />
-                            </span>
-                        </div>
-
-                        <div className={cx('modal-body')}>
-                            <div className={cx('image-display')}>
-                                <div
-                                    className={cx('label')}
-                                    style={{
-                                        borderRadius: round ? '999px' : '0',
-                                        aspectRatio: round ? 1 : 'auto',
-                                    }}
-                                >
-                                    <Image src={this.state.image} className={cx('image')} alt="Product Image" />
-                                </div>
-                            </div>
-                            <div className={cx('actions')}>
-                                <label
-                                    className={cx('btn', 'change')}
-                                    onChange={this.handleUploadImage}
-                                    htmlFor="upload"
-                                >
-                                    Tải ảnh
-                                    <input id="upload" type="file" hidden />
-                                </label>
-                                <Button
-                                    className={cx('btn', 'crop')}
-                                    onClick={this.handleOpenCropModal}
-                                    disabled={this.state.image ? false : true}
-                                >
-                                    <span className={cx('text')}>Cắt ảnh</span>
-                                </Button>
-                                <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
-                                    <span className={cx('text')}>Xóa ảnh</span>
-                                </Button>
-                            </div>
-                        </div>
-
-                        <div className={cx('modal-footer')}>
-                            <Button className={cx('btn', 'cancel')} onClick={() => onClose()}>
-                                Hủy
-                            </Button>
-                            <Button className={cx('btn', 'finish')} onClick={() => this.handleFinishChangeImage()}>
-                                Hoàn tất
-                            </Button>
-                        </div>
+            <Modal title="Thay đổi hình ảnh" onClose={() => onClose()} onFinish={() => this.handleFinishChangeImage()}>
+                <div className={cx('image-display')}>
+                    <div
+                        className={cx('label')}
+                        style={{
+                            borderRadius: round ? '999px' : '0',
+                            aspectRatio: round ? 1 : 'auto',
+                        }}
+                    >
+                        <Image src={this.state.image} className={cx('image')} alt="Product Image" />
                     </div>
                 </div>
-            </div>
+                <div className={cx('actions')}>
+                    <label className={cx('btn', 'change')} onChange={this.handleUploadImage} htmlFor="upload">
+                        Tải ảnh
+                        <input id="upload" type="file" hidden />
+                    </label>
+                    <Button
+                        className={cx('btn', 'crop')}
+                        onClick={this.handleOpenCropModal}
+                        disabled={this.state.image ? false : true}
+                    >
+                        <span className={cx('text')}>Cắt</span>
+                    </Button>
+                    <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
+                        <span className={cx('text')}>Xóa</span>
+                    </Button>
+                </div>
+            </Modal>
         ) : (
-            <CropImageModal
-                round={round}
-                src={this.state.image}
-                onClose={this.handleCloseCropImageModal}
-                onGetUrl={this.handleGetUrlFromCropImageModal}
-            />
+            <Modal title="Thay đổi hình ảnh" onClose={onClose} onFinish={this.handleFinishDropImage}>
+                <CropImage round={round} src={this.state.image} ref={this.ref} />
+            </Modal>
         );
     }
 }

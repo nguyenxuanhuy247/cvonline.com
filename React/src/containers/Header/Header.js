@@ -7,7 +7,8 @@ import { FaBell } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 
 import styles from './Header.module.scss';
-import logo from '~/assets/logo/logo-with-text.png';
+import logoWithText from '~/assets/logo/logo-with-text.png';
+import logo from '~/assets/logo/logo.png';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
 import { path } from '~/utils';
@@ -25,7 +26,6 @@ class Header extends PureComponent {
         if (!isActive) {
             const allButtons = document.querySelectorAll(`.${cx('btn')}`);
             if (allButtons) {
-                console.log(allButtons);
                 allButtons.forEach((button) => {
                     button.classList.remove(cx('active'));
                 });
@@ -47,11 +47,15 @@ class Header extends PureComponent {
 
         return (
             <div className={cx('header')}>
-                <Link to={'/'} className={cx('logo-link')}>
+                <Link to={'/'} className={cx('logo-link', 'hide-on-table-mobile')}>
+                    <img src={logoWithText} className={cx('logo')} alt="cvonline.com" />
+                </Link>
+
+                <Link to={'/'} className={cx('logo-link', 'hide-on-table-pc')}>
                     <img src={logo} className={cx('logo')} alt="cvonline.com" />
                 </Link>
 
-                <SearchBar productList={shortProductList} />
+                <SearchBar productList={shortProductList} className={cx('search-bar')} />
 
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>

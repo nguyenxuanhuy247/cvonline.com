@@ -477,12 +477,10 @@ class Product extends PureComponent {
                                 </div>
                                 <div className={cx('library-filter-sort')}>
                                     <div className={cx('library-filter')}>
-                                        <span className={cx('library-filter-icon')}>
-                                            <HiOutlineSearch />
-                                        </span>
                                         <input
                                             autoComplete="off"
                                             type="text"
+                                            placeholder="Tìm kiếm thư viện"
                                             className={cx('library-filter-search')}
                                             spellCheck="false"
                                             onInput={(e) => this.handleSearchLibrary(e, 'FE')}
@@ -513,20 +511,22 @@ class Product extends PureComponent {
                                 {!this.state.FE_isSearch && (
                                     <div className={cx('display')}>
                                         <span className={cx('label')}>Hiển thị</span>
-                                        {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
-                                            return (
-                                                <Button
-                                                    id={`js-display-paginition-FE-${productInfo?.id}`}
-                                                    key={index}
-                                                    className={cx('button', {
-                                                        active: button === this.state.FE_PageSize,
-                                                    })}
-                                                    onClick={(e) => this.handleChangePageSize(e, 'FE')}
-                                                >
-                                                    {button}
-                                                </Button>
-                                            );
-                                        })}
+                                        <div className={cx('select')}>
+                                            {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
+                                                return (
+                                                    <Button
+                                                        id={`js-display-paginition-FE-${productInfo?.id}`}
+                                                        key={index}
+                                                        className={cx('button', {
+                                                            active: button === this.state.FE_PageSize,
+                                                        })}
+                                                        onClick={(e) => this.handleChangePageSize(e, 'FE')}
+                                                    >
+                                                        {button}
+                                                    </Button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
                                 )}
 
@@ -617,12 +617,10 @@ class Product extends PureComponent {
 
                                 <div className={cx('library-filter-sort')}>
                                     <div className={cx('library-filter')}>
-                                        <span className={cx('library-filter-icon')}>
-                                            <HiOutlineSearch />
-                                        </span>
                                         <input
                                             autoComplete="off"
                                             type="text"
+                                            placeholder="Tìm kiếm thư viện"
                                             className={cx('library-filter-search')}
                                             spellCheck="false"
                                             onInput={(e) => this.handleSearchLibrary(e, 'BE')}
@@ -653,20 +651,22 @@ class Product extends PureComponent {
                                 {!this.state.BE_isSearch && (
                                     <div className={cx('display')}>
                                         <span className={cx('label')}>Hiển thị</span>
-                                        {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
-                                            return (
-                                                <Button
-                                                    id={`js-display-paginition-BE-${productInfo?.id}`}
-                                                    key={index}
-                                                    className={cx('button', {
-                                                        active: button === this.state.BE_PageSize,
-                                                    })}
-                                                    onClick={(e) => this.handleChangePageSize(e, 'BE')}
-                                                >
-                                                    {button}
-                                                </Button>
-                                            );
-                                        })}
+                                        <div className={cx('select')}>
+                                            {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
+                                                return (
+                                                    <Button
+                                                        id={`js-display-paginition-BE-${productInfo?.id}`}
+                                                        key={index}
+                                                        className={cx('button', {
+                                                            active: button === this.state.BE_PageSize,
+                                                        })}
+                                                        onClick={(e) => this.handleChangePageSize(e, 'BE')}
+                                                    >
+                                                        {button}
+                                                    </Button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
                                 )}
 

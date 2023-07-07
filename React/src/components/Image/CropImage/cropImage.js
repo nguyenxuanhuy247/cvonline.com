@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useImperativeHandle, forwardRef } from 'react';
 import classnames from 'classnames/bind';
 import Cropper from 'react-easy-crop';
 import Slider from '@mui/material/Slider';
@@ -8,14 +8,12 @@ import Button from '~/components/Button/Button.js';
 import styles from './CropImage.module.scss';
 
 const cx = classnames.bind(styles);
-
-const CropImage = ({ src, onClose, onGetUrl, round = false }) => {
+const CropImage = ({ src, round = false }, ref) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [rotation, setRotation] = useState(0);
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [aspect, setAspect] = useState(1 / 1);
-
 
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
@@ -30,18 +28,25 @@ const CropImage = ({ src, onClose, onGetUrl, round = false }) => {
         }
     }, [src, croppedAreaPixels, rotation]);
 
-    const handleFinishCropImage = async () => {
-        const url = await cropImage();
-        onGetUrl(url);
-    };
-
     const handleChangeRatioImage = (e) => {
-        console.log(e.target.dataset.ratio);
         setAspect(e.target.dataset.ratio);
     };
 
+    useImperativeHandle(
+        ref,
+        () => {
+            return {
+                async crop() {
+                    const image = await cropImage();
+                    return image;
+                },
+            };
+        },
+        [cropImage],
+    );
+
     return (
-        <div>
+        <div className={cx('crop-image-container')}>
             <div className={cx('crop-container')}>
                 <Cropper
                     image={src}
@@ -102,16 +107,8 @@ const CropImage = ({ src, onClose, onGetUrl, round = false }) => {
                     />
                 </div>
             </div>
-            <div className={cx('actions')}>
-                <Button className={cx('btn', 'cancel')} onClick={onClose}>
-                    Hủy
-                </Button>
-                <Button className={cx('btn', 'finish')} onClick={handleFinishCropImage}>
-                    Hoàn tất
-                </Button>
-            </div>
         </div>
     );
 };
 
-export default CropImage;
+export default forwardRef(CropImage);

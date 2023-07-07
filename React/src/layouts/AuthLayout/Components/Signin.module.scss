@@ -1,7 +1,6 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .signin-container {
-    font-family: var(--alexandria-font);
     @include signin-signup-container;
 
     .form-signin {

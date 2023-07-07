@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import { BsKeyboard } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
-import { FaMicrophone } from 'react-icons/fa';
 import { GrClose } from 'react-icons/gr';
 import DefaultTippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
@@ -20,12 +19,19 @@ class SearchBar extends PureComponent {
     }
 
     handleInputValue = async (e) => {
+        const clearInputValueButton = document.getElementById('js-clear-input-value-button');
+
         await this.setState({ searchValue: e.target.value, visible: true });
 
         const value = e.target.value?.trim();
 
         if (value) {
             const notFoundElement = document.querySelector(`.${cx('not-found-result')}`);
+
+            if (clearInputValueButton) {
+                clearInputValueButton.classList.remove(cx('hide'));
+            }
+
             notFoundElement?.classList.add(cx('hide'));
 
             this.props.productList?.forEach((product) => {
@@ -61,13 +67,23 @@ class SearchBar extends PureComponent {
                 }
             }
         } else {
+            if (clearInputValueButton) {
+                clearInputValueButton.classList.add(cx('hide'));
+            }
             this.setState({ searchValue: e.target.value, visible: false });
         }
     };
 
+    handleClearInputValue = (e) => {
+        e.target.classList.remove(cx('hide'));
+        this.setState({ searchValue: '', visible: false });
+    };
+
     render() {
+        const { className } = this.props;
+
         return (
-            <div className={cx('container')}>
+            <div className={cx('container', className)}>
                 <div style={{ width: '100%' }}>
                     <HeadlessTippy
                         visible={this.state.visible}
@@ -116,7 +132,7 @@ class SearchBar extends PureComponent {
                             <input
                                 className={cx('search-input')}
                                 value={this.state.searchValue}
-                                placeholder="Tìm kiếm tên sản phẩm"
+                                placeholder="Tìm kiếm sản phẩm"
                                 spellCheck={false}
                                 onInput={(e) => this.handleInputValue(e)}
                                 onFocus={(e) => this.handleInputValue(e)}
@@ -129,7 +145,11 @@ class SearchBar extends PureComponent {
                             </DefaultTippy>
 
                             <DefaultTippy content="Xóa" arrow="">
-                                <Button className={cx('close')}>
+                                <Button
+                                    className={cx('clear', 'hide')}
+                                    onClick={(e) => this.handleClearInputValue(e)}
+                                    id="js-clear-input-value-button"
+                                >
                                     <GrClose />
                                 </Button>
                             </DefaultTippy>
@@ -142,11 +162,6 @@ class SearchBar extends PureComponent {
                         </div>
                     </HeadlessTippy>
                 </div>
-                <DefaultTippy content="Tìm kiếm bằng giọng nói" arrow="">
-                    <Button className={cx('micro-button')}>
-                        <FaMicrophone />
-                    </Button>
-                </DefaultTippy>
             </div>
         );
     }

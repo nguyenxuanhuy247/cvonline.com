@@ -12,16 +12,12 @@ const cx = className.bind(styles);
 class Auth extends PureComponent {
     render() {
         return (
-            <div className={cx('container')}>
-                <div className={cx('grid wide')}>
-                    <div className={cx('row no-gutters')}>
-                        <div className={cx('col pc-6 pc-o-3 tb-8 tb-o-2 mb-12')}>
-                            <Switch>
-                                <Route path={path.SIGNIN} component={SignIn} />
-                                <Route path={path.SIGNUP} component={SignUp} />
-                            </Switch>
-                        </div>
-                    </div>
+            <div className={cx('auth-container')}>
+                <div  className={cx('inner')}>
+                    <Switch>
+                        <Route path={path.SIGNIN} component={SignIn} />
+                        <Route path={path.SIGNUP} component={SignUp} />
+                    </Switch>
                 </div>
             </div>
         );

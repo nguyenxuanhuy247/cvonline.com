@@ -10,7 +10,7 @@ import '@formatjs/intl-relativetimeformat/polyfill';
 import '@formatjs/intl-relativetimeformat/locale-data/en';
 import '@formatjs/intl-relativetimeformat/locale-data/vi';
 
-import { LanguageUtils } from '~/utils'
+import { LanguageUtils } from '../utils'
 
 const messages = LanguageUtils.getFlattenedMessages();
 

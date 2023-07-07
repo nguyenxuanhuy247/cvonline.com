@@ -102,13 +102,13 @@ a {
 }
 
 @mixin signin-signup-container {
+    font-family: var(--alexandria-font);
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 100vh;
     width: 100%;
     user-select: none;
-    padding: 30px;
     background-color: var(--bgc-white);
 }
 
@@ -131,9 +131,29 @@ a {
 
 // =========================================================================
 
+@mixin flex-max-width-10 {
+    flex: 1 1 10%;
+    max-width: 10%;
+}
+
+@mixin flex-max-width-20 {
+    flex: 1 1 20%;
+    max-width: 20%;
+}
+
+@mixin flex-max-width-25 {
+    flex: 1 1 25%;
+    max-width: 25%;
+}
+
 @mixin flex-max-width-30 {
     flex: 1 1 30%;
     max-width: 30%;
+}
+
+@mixin flex-max-width-40 {
+    flex: 1 1 40%;
+    max-width: 40%;
 }
 
 @mixin flex-max-width-50 {
@@ -141,9 +161,24 @@ a {
     max-width: 50%;
 }
 
+@mixin flex-max-width-60 {
+    flex: 1 1 60%;
+    max-width: 60%;
+}
+
 @mixin flex-max-width-70 {
     flex: 1 1 70%;
     max-width: 70%;
+}
+
+@mixin flex-max-width-80 {
+    flex: 1 1 80%;
+    max-width: 80%;
+}
+
+@mixin flex-max-width-90 {
+    flex: 1 1 90%;
+    max-width: 90%;
 }
 
 @mixin flex-max-width-100 {
