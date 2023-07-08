@@ -33,7 +33,6 @@ class Product extends PureComponent {
             BE_isSearch: false,
 
             isModalOpen: false,
-            productDesc: '',
         };
 
         this.editProductId = React.createRef();
@@ -66,25 +65,9 @@ class Product extends PureComponent {
         }
     };
 
-    getNumberOfRowsAndSetForTextArea = () => {
+    handleUpdateProductDescToDatabase = async (e) => {
         const { productInfo } = this.props?.productData ?? {};
-        const textAreaElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
-        const text = textAreaElement?.textContent;
-        console.log('text', text);
-        const row_count = text?.split(/\r\n|\r|\n/).length;
-        textAreaElement.rows = row_count || 2;
-    };
-
-    handleInputProductDescAndSetRowsForTextarea = async (e) => {
-        const value = e.target.value;
-
-        await this.setState({ productDesc: value });
-        this.getNumberOfRowsAndSetForTextArea();
-    };
-
-    handleUpdateProductDesc = async () => {
-        const { productInfo } = this.props?.productData ?? {};
-        const value = this.state.productDesc;
+        const value = e.target.innerText;
 
         if (value !== productInfo?.desc) {
             const data = { productId: productInfo?.id, desc: value, label: 'mô tả sản phẩm' };
@@ -249,7 +232,7 @@ class Product extends PureComponent {
     // =================================================================
 
     async componentDidUpdate(prevProps) {
-        const { productInfo, numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
+        const { numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
 
         // Turn to last page when add or delete a library
         if (numberofFELibrary !== prevProps?.productData?.numberofFELibrary) {
@@ -261,21 +244,14 @@ class Product extends PureComponent {
             const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
             this.setState({ BE_Page: BE_FinalPage });
         }
-
-        // Update product desc and rows attribute after updating props from redux
-        if (productInfo?.desc !== prevProps?.productData?.productInfo?.desc) {
-            await this.setState({ productDesc: productInfo?.desc });
-
-            this.getNumberOfRowsAndSetForTextArea();
-        }
     }
 
     async componentDidMount() {
         const { productInfo } = this.props?.productData ?? {};
 
-        await this.setState({ productDesc: productInfo?.desc });
-
-        this.getNumberOfRowsAndSetForTextArea();
+        // Set product desc from database by JS
+        const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
+        productDescElement.innerText = productInfo?.desc;
 
         // Hover product and show Edit Product
         const productContainer = document.getElementById(`js-product-${productInfo?.id}`);
@@ -294,7 +270,7 @@ class Product extends PureComponent {
                 }, 100);
             };
 
-            editProduct.onmouseenter = (e) => {
+            editProduct.onmouseenter = () => {
                 clearTimeout(this.editProductId.current);
             };
         }
@@ -383,31 +359,26 @@ class Product extends PureComponent {
                 />
 
                 <div className={cx('product')}>
-                    <div className={cx('product-name-desc')} spellCheck="false">
-                        <div className={cx('product-name-container')}>
-                            <ContentEditableTag
-                                content={productInfo?.name}
-                                className={cx('product-name')}
-                                placeholder="Tên sản phẩm"
-                                onBlur={(e) => this.handleUpdateProductName(e, productInfo?.id)}
-                                onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productInfo?.id)}
-                            />
-                        </div>
-                        <textarea
+                    <div className={cx('product-name-desc-image')} spellCheck="false">
+                        <ContentEditableTag
+                            content={productInfo?.name}
+                            className={cx('product-name')}
+                            placeholder="Tên sản phẩm"
+                            onBlur={(e) => this.handleUpdateProductName(e, productInfo?.id)}
+                            onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productInfo?.id)}
+                        />
+
+                        <p
                             id={`js-product-desc-${productInfo?.id}`}
+                            contentEditable
                             placeholder="Mô tả sản phẩm"
                             className={cx('product-desc')}
                             spellCheck={false}
-                            rows={1}
-                            value={this.state?.productDesc ?? ''}
-                            onInput={(e) => this.handleInputProductDescAndSetRowsForTextarea(e)}
-                            onBlur={() => this.handleUpdateProductDesc()}
+                            onBlur={(e) => this.handleUpdateProductDescToDatabase(e)}
                             onMouseEnter={(e) => e.target.focus()}
-                        ></textarea>
-                    </div>
+                        ></p>
 
-                    <div className={cx('product-image-sourcecode')}>
-                        <div className={cx('product-image-container')}>
+                        <div className={cx('product-image')}>
                             <div
                                 className={cx('edit-image-button')}
                                 onClick={() => this.setState({ isModalOpen: true })}
@@ -425,24 +396,23 @@ class Product extends PureComponent {
                                 />
                             )}
                         </div>
-                        <div className={cx('source-code-section')}>
-                            <div className={cx('list')}>
-                                <TechnologyList
-                                    technologyListID={`js-source-code-list-${productInfo?.id}`}
-                                    draggable
-                                    label="source code"
-                                    type="SOURCECODE"
-                                    keyprop="SC"
-                                    productId={productInfo?.id}
-                                    technologyList={sourceCodeList}
-                                    // =================================================================
-                                    // CRUD Source Code
-                                    onCreateTechnology={this.props.onCreateTechnology}
-                                    onUpdateTechnology={this.props.onUpdateTechnology}
-                                    onDeleteTechnology={this.props.onDeleteTechnology}
-                                />
-                            </div>
-                        </div>
+                    </div>
+
+                    <div className={cx('source-code-section')}>
+                        <TechnologyList
+                            technologyListID={`js-source-code-list-${productInfo?.id}`}
+                            draggable
+                            label="source code"
+                            type="SOURCECODE"
+                            keyprop="SC"
+                            productId={productInfo?.id}
+                            technologyList={sourceCodeList}
+                            // =================================================================
+                            // CRUD Source Code
+                            onCreateTechnology={this.props.onCreateTechnology}
+                            onUpdateTechnology={this.props.onUpdateTechnology}
+                            onDeleteTechnology={this.props.onDeleteTechnology}
+                        />
                     </div>
 
                     <div className={cx('technology')}>

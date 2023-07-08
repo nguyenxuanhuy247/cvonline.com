@@ -150,8 +150,6 @@ class TechnologyList extends PureComponent {
                 <div
                     id={this.props.technologyListID}
                     className={cx('technology-list-inner', {
-                        'sourcecode-list': type === 'SOURCECODE',
-                        'technology-list': type === 'TECHNOLOGY',
                         'library-list': type === 'LIBRARY',
                     })}
                 >

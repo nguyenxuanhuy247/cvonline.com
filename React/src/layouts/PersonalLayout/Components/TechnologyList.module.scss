@@ -5,29 +5,19 @@
     text-align: center;
 
     &.sourcecode-list {
-        text-align: left;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     .technology-list-inner {
         width: 100%;
         display: flex;
-
-        &.sourcecode-list {
-            flex-direction: column;
-            align-items: flex-start;
-            row-gap: 4px;
-        }
-
-        &.technology-list {
-            flex-direction: row;
-            flex-wrap: wrap;
-            column-gap: 4px;
-            row-gap: 4px;
-        }
+        column-gap: 4px;
+        row-gap: 4px;
+        flex-wrap: wrap;
 
         &.library-list {
             flex-direction: column;
-            row-gap: 4px;
         }
 
         .drag-drop-hover {
@@ -48,6 +38,7 @@
         column-gap: 8px;
 
         &.sourcecode-list {
+            margin: 12px 0 0;
         }
 
         &:hover {
@@ -72,16 +63,14 @@
 
 @media (min-width: 768px) and (max-width: 991px) {
     .technology-list {
-        &.sourcecode-list {
-            text-align: center;
-        }
-
         .technology-list-inner {
             &.sourcecode-list {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: center;
                 column-gap: 4px;
+                row-gap: 4px;
+                flex-wrap: wrap;
             }
 
             &.sourcecode-list {
@@ -93,16 +82,13 @@
 
 @media (max-width: 767px) {
     .technology-list {
-        &.sourcecode-list {
-            text-align: center;
-        }
-
         .technology-list-inner {
             &.sourcecode-list {
                 flex-direction: row;
                 justify-content: center;
                 text-align: center;
                 column-gap: 4px;
+                row-gap: 4px;
                 flex-wrap: wrap;
             }
 

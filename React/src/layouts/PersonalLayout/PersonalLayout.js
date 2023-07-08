@@ -82,25 +82,12 @@ class PersonalLayout extends PureComponent {
         }
     };
 
-    getNumberOfRows = (textAreaEl) => {
-        const text = textAreaEl?.textContent;
-        const row_count = text?.split(/\r\n|\r|\n/).length;
-        return row_count;
-    };
-
-    handleInputLanguages = async (e) => {
-        const value = e.target.innerText;
-        console.log(value);
-        await this.setState({ languages: value });
-    };
-
-    handleUpdateLanguagesToDB = async (e) => {
+    handleUpdateLanguagesToDatabase = async (e) => {
         const { id: userId, languages } = this.props?.user ?? {};
-        const value = this.state.languages;
-
-        e.target.innerText = this.state.languages;
+        const value = e.target.innerText;
 
         if (value !== languages) {
+            console.log(`Update language`);
             const data = { userId: userId, languages: value, label: 'Ngoại ngữ' };
             const errorCode = await this.props.updateUserInformation(data);
 
@@ -289,22 +276,22 @@ class PersonalLayout extends PureComponent {
 
     // =================================================================
     async componentDidMount() {
-        // Get all data for CV Layout when sign in
         const { id: userId } = this.props?.user ?? {};
 
         if (userId) {
+            // Get all data for CV Layout when sign in
             const errorCode = await this.props.readUserInformation(userId);
             if (errorCode === 0) {
                 await this.setState({ languages: this.props?.user?.languages });
             }
             await this.props.readProductList(userId);
 
-            // Set languages by JS
+            // Set languages from database by JS
             const languagesElement = document.getElementById(`js-language-desc`);
             languagesElement.innerText = this.props?.user?.languages;
 
             // Press ENTER to change input field or submit
-            const container = document.querySelector(`.${cx('col-left')}`);
+            const container = document.querySelector(`.${cx('content')}`);
             if (container) {
                 const inputArray = container.querySelectorAll(`[contentEditable]`);
                 Array.from(inputArray).forEach((input, index) => {
@@ -326,13 +313,6 @@ class PersonalLayout extends PureComponent {
         } else {
             Toast.TOP_CENTER_WARN('Vui lòng đăng nhập lại');
             await this.props.userSignOut();
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props?.user?.languages !== prevProps.user?.languages) {
-            const languagesElement = document.getElementById(`js-language-desc`);
-            languagesElement.innerText = this.props?.user?.languages;
         }
     }
 
@@ -479,8 +459,7 @@ class PersonalLayout extends PureComponent {
                                     placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
                                     className={cx('language-desc')}
                                     spellCheck={false}
-                                    onInput={(e) => this.handleInputLanguages(e)}
-                                    onBlur={(e) => this.handleUpdateLanguagesToDB(e)}
+                                    onBlur={(e) => this.handleUpdateLanguagesToDatabase(e)}
                                     onMouseEnter={(e) => e.target.focus()}
                                 ></p>
                             </div>

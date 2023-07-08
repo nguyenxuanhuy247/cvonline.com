@@ -5,10 +5,6 @@
     align-items: center;
     column-gap: 8px;
 
-    * {
-        cursor: pointer;
-    }
-
     .search-bar {
         display: flex;
         align-items: center;
@@ -38,6 +34,7 @@
             padding: 0 8px;
             height: 100%;
             background-color: #fff;
+            cursor: pointer;
         }
 
         .clear {
@@ -54,6 +51,7 @@
             }
 
             &:hover {
+                cursor: pointer;
                 background-color: #ebebeb;
             }
         }
@@ -63,6 +61,7 @@
             border-radius: 0 99px 99px 0;
             height: 100%;
             border-left: 1px solid #ccc;
+            cursor: pointer;
         }
     }
 }
@@ -84,6 +83,7 @@
             display: flex;
             border: 1px solid var(--primary-color);
             padding: 8px;
+            cursor: pointer;
 
             .product-name-desc {
                 flex: 1;
