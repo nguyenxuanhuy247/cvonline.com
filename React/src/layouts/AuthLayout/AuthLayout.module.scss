@@ -3,12 +3,13 @@
 .auth-container {
     background-color: var(--auth-bgc-grey);
     padding: 40px 0;
+    min-height: 100vh;
 
     .inner {
         width: 600px;
         max-width: calc(100% - 24px);
         margin: auto;
-        padding: 12px;
+        padding: 40px 24px;
         background-color: #fff;
         border-radius: 4px;
     }

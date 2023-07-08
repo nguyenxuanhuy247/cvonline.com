@@ -9,7 +9,7 @@ const cx = classnames.bind(styles);
 
 class ChangeImageModal extends PureComponent {
     render() {
-        const { title = 'Nhập tiêu đề của modal', onClose, onFinish, children } = this.props;
+        const { title = 'Nhập tiêu đề của modal', onClose, onFinish, children, isCrop } = this.props;
 
         return (
             <div className={cx('overlay')} onClick={onClose}>
@@ -21,7 +21,7 @@ class ChangeImageModal extends PureComponent {
                         </span>
                     </div>
 
-                    <div className={cx('modal-body')}>{children}</div>
+                    <div className={cx('modal-body', { 'iscrop': isCrop })}>{children}</div>
 
                     <div className={cx('modal-footer')}>
                         <Button className={cx('btn', 'cancel')} onClick={onClose}>

@@ -40,3 +40,17 @@
         transform: translate(-130%, -100%);
     }
 }
+
+@media (max-width: 991px) {
+    .wrapper {
+        display: none;
+        flex-direction: row;
+        position: static;
+        transform: translate(0%, 0%);
+        justify-content: flex-end;
+        column-gap: 4px;
+        background: rgb(255, 255, 255);
+        padding-top: 16px;
+        padding-right: 16px;
+    }
+}

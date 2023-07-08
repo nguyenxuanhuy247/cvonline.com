@@ -97,6 +97,7 @@ class ChangeImageModal extends PureComponent {
             </Modal>
         ) : (
             <Modal
+                isCrop
                 title="Thay đổi hình ảnh"
                 onClose={this.handleCloseCropImageModal}
                 onFinish={this.handleFinishDropImage}

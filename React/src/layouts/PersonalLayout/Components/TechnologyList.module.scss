@@ -6,11 +6,12 @@
 
     &.sourcecode-list {
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 16px;
     }
 
     .technology-list-inner {
-        width: 100%;
+        @include flex-max-width-100;
         display: flex;
         column-gap: 4px;
         row-gap: 4px;
@@ -38,7 +39,8 @@
         column-gap: 8px;
 
         &.sourcecode-list {
-            margin: 12px 0 0;
+            margin: 0;
+            white-space: nowrap;
         }
 
         &:hover {
@@ -57,6 +59,10 @@
             font-size: 1.4rem;
         }
     }
+}
+
+.show-all-edit-button {
+    visibility: visible;
 }
 
 // =================================================================
@@ -82,6 +88,10 @@
 
 @media (max-width: 767px) {
     .technology-list {
+        &.sourcecode-list {
+            flex-direction: column;
+        }
+
         .technology-list-inner {
             &.sourcecode-list {
                 flex-direction: row;
@@ -99,6 +109,7 @@
 
         .add-technology-button {
             &.sourcecode-list {
+                margin-top: 12px;
                 width: auto;
             }
         }

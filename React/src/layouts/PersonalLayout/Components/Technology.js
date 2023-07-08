@@ -37,7 +37,7 @@ class Technology extends PureComponent {
                 return library.id === id;
             });
         }
-        
+
         await this.setState({
             isEdit: true,
             id: selectedLibrary.id,
@@ -65,7 +65,9 @@ class Technology extends PureComponent {
         if (button) {
             button.classList.add(cx('hover-button'));
 
+            // Show all drag buttons
             if (editButton) {
+                editButton.style.opacity = 1;
                 editButton.style.visibility = 'visible';
             }
         }
@@ -76,7 +78,10 @@ class Technology extends PureComponent {
         const button = document.getElementById(buttonID);
 
         if (editButton) {
-            this.idTimeout.current = setTimeout(() => (editButton.style.visibility = 'hidden'), 0);
+            this.idTimeout.current = setTimeout(() => {
+                editButton.style.opacity = 0;
+                editButton.style.visibility = 'hidden';
+            }, 0);
         }
 
         if (button) {
@@ -84,7 +89,7 @@ class Technology extends PureComponent {
         }
     };
 
-    handleHoverEditButton = (buttonID) => {
+    handleHoverEditButton = (e, buttonID) => {
         // Skip hide Edit button
         clearTimeout(this.idTimeout.current);
 
@@ -105,14 +110,7 @@ class Technology extends PureComponent {
         }
 
         if (editButton) {
-            // Show all button in Edit Button
-            Array.from(editButton?.children).forEach((item) => {
-                if (item.getAttribute('drag') === 'true') {
-                    item.style.display = 'inline-flex';
-                }
-            });
-
-            // Hide Edit button
+            editButton.style.opacity = 0;
             editButton.style.visibility = 'hidden';
         }
     };
@@ -175,8 +173,8 @@ class Technology extends PureComponent {
                         onShowEditTechnology={() => this.handleShowEditTechnology(id)}
                         onDeleteTechnology={() => this.handleDeleteTechnology(id)}
                         // =================================================================
-                        onMouseEnter={() => this.handleHoverEditButton(buttonID)}
-                        onMouseLeave={() => this.handleUnhoverEditButton(editButtonID, buttonID)}
+                        onMouseEnter={(e) => this.handleHoverEditButton(e, buttonID)}
+                        onMouseLeave={(className) => this.handleUnhoverEditButton(editButtonID, buttonID, className)}
                         classHover={cx('hover-button')}
                         // =================================================================
                         dragDropAPIProps={dragDropAPIProps}

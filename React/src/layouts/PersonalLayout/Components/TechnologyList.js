@@ -4,7 +4,6 @@ import { BsPlusCircleDotted } from 'react-icons/bs';
 import { Toast } from '~/components/Toast/Toast.js';
 
 import styles from './TechnologyList.module.scss';
-import '~/components/GlobalStyles/Pagination.scss';
 import Button from '~/components/Button/Button.js';
 import Technology from '~/layouts/PersonalLayout/Components/Technology.js';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
@@ -29,14 +28,28 @@ class TechnologyList extends PureComponent {
     // DRAG AND DROP
     handleDragStart = (id, buttonID) => {
         const dragButton = document.getElementById(buttonID);
-
         this.setState({ dragItemId: id, dragElement: dragButton });
     };
 
-    handleDragEnd = () => {
+    handleDragEnd = (e, editButtonID, buttonID) => {
         // After dropping, setting dragElement and dragOverElement turn to orginal state
         this.state.dragElement?.classList.remove(cx('drag-drop-hover'));
         this.state.dragOverElement?.classList.remove(cx('drag-drop-hover'));
+
+        const dragEditButton = document.getElementById(editButtonID);
+
+        // Show all drag buttons
+        if (dragEditButton) {
+            Array.from(dragEditButton.children).forEach((button) => {
+                if (button.getAttribute('drag') === 'true') {
+                    button.style.opacity = 1;
+                    button.style.visibility = 'visible';
+                }
+            });
+
+            dragEditButton.style.opacity = 0;
+            dragEditButton.style.visibility = 'hidden';
+        }
     };
 
     handleDragEnter = (id, buttonID) => {
@@ -155,6 +168,7 @@ class TechnologyList extends PureComponent {
                 >
                     {technologyList?.map((technology) => {
                         const ID = side ? `${side}-${type}-${technology?.id}` : `${type}-${technology?.id}`;
+                        const editButtonID = side ? `js-edit-button-${ID}` : `js-edit-button-${ID}`;
                         const buttonID = side ? `js-button-${ID}` : `js-button-${ID}`;
 
                         return (
@@ -187,7 +201,7 @@ class TechnologyList extends PureComponent {
                                 // =================================================================
                                 // Drag and drop
                                 onDragStart={() => this.handleDragStart(technology?.id, buttonID)}
-                                onDragEnd={this.handleDragEnd}
+                                onDragEnd={(e) => this.handleDragEnd(e, editButtonID, buttonID)}
                                 onDragEnter={() => this.handleDragEnter(technology?.id, buttonID)}
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={this.handleDropAndSort}

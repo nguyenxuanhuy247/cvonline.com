@@ -91,7 +91,7 @@ class Header extends PureComponent {
                         <Menu data={MENU_AVATAR_DATA}>
                             <Button className={cx('user')}>
                                 <Image
-                                    src={JpgImages.avatar}
+                                    src={this.props?.avatar}
                                     wrapperClass={cx('wapper')}
                                     className={cx('avatar')}
                                     alt={this.props?.fullName}
@@ -111,6 +111,7 @@ const mapStateToProps = (state) => {
     return {
         isSignIn: state.user.isSignIn,
         fullName: state.user.user?.fullName,
+        avatar: state.user.user?.avatar,
     };
 };
 

@@ -1,15 +1,22 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .create-edit-technology {
-    width: 80%;
     font-family: var(--alexandria-font);
     padding: 8px;
     margin: 12px auto;
     border: 1px dashed #333;
     position: relative;
+    width: 400px;
+    max-width: 100%;
 
-    &.source-code {
-        width: 100%;
+    &.create-source-code {
+        flex-shrink: 0;
+        width: 48%;
+        margin: 0;
+    }
+
+    &.edit-technology {
+        margin: 0;
     }
 
     &:hover {
@@ -106,6 +113,28 @@
                 min-width: none;
                 padding: 8px;
             }
+        }
+    }
+}
+
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+    .create-edit-technology {
+        &.edit-technology {
+            margin: 0;
+        }
+    }
+}
+
+// Mobile
+@media (max-width: 767px) {
+    .create-edit-technology {
+        &.create-source-code {
+            width: 400px;
+        }
+
+        &.edit-technology {
+            margin: 0 auto;
         }
     }
 }

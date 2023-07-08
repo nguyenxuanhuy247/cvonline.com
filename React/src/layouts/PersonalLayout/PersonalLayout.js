@@ -7,7 +7,6 @@ import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
 import { MdOutlineError } from 'react-icons/md';
 import HeadlessTippy from '@tippyjs/react/headless';
-import Markdown from 'markdown-to-jsx';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import Header from '~/containers/Header/Header.js';
@@ -21,7 +20,6 @@ import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
 import Loading from '~/components/Modal/Loading.js';
-import { override } from 'customize-cra';
 
 const cx = classnames.bind(styles);
 

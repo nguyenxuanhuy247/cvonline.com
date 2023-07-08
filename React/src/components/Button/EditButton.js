@@ -17,9 +17,10 @@ class EditButton extends PureComponent {
 
         // Only show drag button and hide the others button
         if (editItem) {
-            Array.from(editItem.children).forEach((item) => {
-                if (item.getAttribute('drag') === 'true') {
-                    item.style.display = 'none';
+            Array.from(editItem.children).forEach((button) => {
+                if (button.getAttribute('drag') === 'true') {
+                    button.style.opacity = 0;
+                    button.style.visibility = 'hidden';
                 }
             });
         }
@@ -30,9 +31,11 @@ class EditButton extends PureComponent {
 
         // Show all drag buttons
         if (editItem) {
-            Array.from(editItem?.children).forEach((item) => {
-                if (item.getAttribute('drag') === 'true') {
-                    item.style.display = 'inline-flex';
+            Array.from(editItem?.children).forEach((button) => {
+                if (button.getAttribute('drag') === 'true') {
+                    button.style.opacity = 1;
+                    button.style.visibility = 'visible';
+                    button.preventDefault();
                 }
             });
         }
@@ -46,7 +49,7 @@ class EditButton extends PureComponent {
                 id={editButtonID}
                 className={cx('wrapper')}
                 onMouseEnter={this.props.onMouseEnter}
-                onMouseLeave={this.props.onMouseLeave}
+                onMouseLeave={() => this.props.onMouseLeave(cx('hide'))}
             >
                 <DefaultTippy content="Kéo thả để di chuyển mục">
                     <Button

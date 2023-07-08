@@ -113,7 +113,13 @@ class CreateEditTechnology extends PureComponent {
         const { id, isedit, type, label } = this.props;
 
         return (
-            <div className={cx('create-edit-technology', { 'source-code': type === 'SOURCECODE' })} id={id}>
+            <div
+                className={cx('create-edit-technology', {
+                    'create-source-code': !isedit && type === 'SOURCECODE',
+                    'edit-technology': isedit,
+                })}
+                id={id}
+            >
                 <div className={cx('info')}>
                     <p className={cx('heading')}>
                         {isedit

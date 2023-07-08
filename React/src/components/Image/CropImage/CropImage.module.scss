@@ -6,6 +6,7 @@
         width: 100%;
         height: 300px;
         background: #333;
+        column-gap: 8px;
     }
 
     .ratio {
@@ -36,7 +37,7 @@
     }
 
     .slider-controller {
-        padding: 12px;
+        padding: 12px 0;
 
         .slider-container {
             display: flex;

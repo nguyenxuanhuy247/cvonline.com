@@ -77,7 +77,7 @@
             column-gap: 8px;
             background-color: #e5f7ed;
             border-radius: 99px;
-            padding: 4px 8px;
+            padding: 2px 8px 4px 4px;
             cursor: pointer;
 
             .wapper {
@@ -135,38 +135,17 @@
         column-gap: 12px;
         padding: 0 12px;
 
-        .logo-link {
-            .logo {
-            }
-        }
-
         .search-bar {
             @include flex-max-width-60;
         }
 
-        .actions {
-            .btn {
-            }
-
-            .active {
-            }
-        }
-
         .login {
-            .icon {
-            }
-
             .user {
                 background-color: #fff;
+            }
 
-                .wapper {
-                    .avatar {
-                    }
-                }
-
-                .fullname {
-                    display: none;
-                }
+            .fullname {
+                display: none;
             }
         }
     }

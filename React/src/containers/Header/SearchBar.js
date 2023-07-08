@@ -75,7 +75,9 @@ class SearchBar extends PureComponent {
     };
 
     handleClearInputValue = (e) => {
-        e.target.classList.remove(cx('hide'));
+        const clearInputValueButton = document.getElementById('js-clear-input-value-button');
+        clearInputValueButton?.classList.add(cx('hide'));
+
         this.setState({ searchValue: '', visible: false });
     };
 
@@ -98,6 +100,14 @@ class SearchBar extends PureComponent {
                                 <div className={cx('search-result-tooltip')}>
                                     <div className={cx('search-result-container')} id="js-container-search-result">
                                         {this.props.productList?.map((product, index) => {
+                                            const productDescResult = document.getElementById(
+                                                `js-search-result-desc-${product.id}`,
+                                            );
+
+                                            if (productDescResult) {
+                                                productDescResult.innerText = product.desc;
+                                            }
+
                                             return (
                                                 <div
                                                     key={index}
@@ -114,9 +124,7 @@ class SearchBar extends PureComponent {
                                                         <p
                                                             className={cx('product-desc')}
                                                             id={`js-search-result-desc-${product.id}`}
-                                                        >
-                                                            {product.desc}
-                                                        </p>
+                                                        ></p>
                                                     </div>
                                                     <Image src={product.image} className={cx('product-image')} />
                                                 </div>
