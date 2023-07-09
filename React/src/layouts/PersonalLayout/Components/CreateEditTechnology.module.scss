@@ -11,7 +11,7 @@
 
     &.create-source-code {
         flex-shrink: 0;
-        width: 48%;
+        width: 46%;
         margin: 0;
     }
 
@@ -130,6 +130,7 @@
 @media (max-width: 767px) {
     .create-edit-technology {
         &.create-source-code {
+            margin-top: 12px;
             width: 400px;
         }
 

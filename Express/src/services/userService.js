@@ -1,7 +1,6 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
 const fs = require('fs');
-// import fs from 'fs';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -152,7 +151,7 @@ export const handleGetUserInformation = async (data) => {
 
         if (user) {
             const avatar = user.avatar;
-            const binaryAvatar = avatar.toString('binary');
+            const binaryAvatar = avatar?.toString('binary');
 
             const newUser = { ...user, avatar: binaryAvatar };
 
@@ -333,7 +332,7 @@ export const handleGetProductList = async (data) => {
 
                     if (sourceCodes) {
                         const sourceCodeList = sourceCodes.map((sourceCode) => {
-                            const binaryImage = sourceCode.image.toString('binary');
+                            const binaryImage = sourceCode?.image?.toString('binary');
                             return { ...sourceCode, image: binaryImage };
                         });
 
@@ -347,7 +346,7 @@ export const handleGetProductList = async (data) => {
 
                     if (FETechnologies) {
                         const FETechnologyList = FETechnologies.map((FETechnology) => {
-                            const binaryImage = FETechnology.image.toString('binary');
+                            const binaryImage = FETechnology?.image?.toString('binary');
                             return { ...FETechnology, image: binaryImage };
                         });
 
@@ -361,7 +360,7 @@ export const handleGetProductList = async (data) => {
 
                     if (BETechnologies) {
                         const BETechnologyList = BETechnologies.map((BETechnology) => {
-                            const binaryImage = BETechnology.image.toString('binary');
+                            const binaryImage = BETechnology?.image?.toString('binary');
                             return { ...BETechnology, image: binaryImage };
                         });
 
@@ -375,7 +374,7 @@ export const handleGetProductList = async (data) => {
 
                     if (FELibraries.rows.length > 0) {
                         const FELibraryList = FELibraries.rows.map((library) => {
-                            const binaryImage = library.image.toString('binary');
+                            const binaryImage = library?.image?.toString('binary');
                             return { ...library, image: binaryImage };
                         });
 
@@ -390,7 +389,7 @@ export const handleGetProductList = async (data) => {
 
                     if (BELibraries.rows.length > 0) {
                         const FELibraryList = BELibraries.rows.map((library) => {
-                            const binaryImage = library.image.toString('binary');
+                            const binaryImage = library?.image?.toString('binary');
                             return { ...library, image: binaryImage };
                         });
 

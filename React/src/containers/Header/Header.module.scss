@@ -106,12 +106,14 @@
     }
 }
 
+// Tablet
 @media (min-width: 992px) {
     .hide-on-table-pc {
         display: none;
     }
 }
 
+// Tablet + Mobile
 @media (max-width: 991px) {
     .hide-on-table-mobile {
         display: none;
@@ -130,6 +132,7 @@
     }
 }
 
+// Mobile
 @media (max-width: 767px) {
     .header {
         column-gap: 12px;
@@ -142,10 +145,10 @@
         .login {
             .user {
                 background-color: #fff;
-            }
 
-            .fullname {
-                display: none;
+                .fullname {
+                    display: none;
+                }
             }
         }
     }

@@ -33,6 +33,7 @@
     }
 }
 
+// PC revolution < 1300px
 @media (max-width: 1300px) {
     .wrapper {
         left: 0;
@@ -41,6 +42,7 @@
     }
 }
 
+// Tablet + Mobile
 @media (max-width: 991px) {
     .wrapper {
         display: none;

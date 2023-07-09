@@ -7,7 +7,6 @@ import 'tippy.js/dist/tippy.css';
 
 import store, { persistor } from '~/config/redux.js';
 import { history } from '~/config/redux.js';
-import IntlProviderWrapper from './hoc/IntlProviderWrapper.js';
 import App from './App.js';
 import GlobalStyles from '~/components/GlobalStyles/GlobalStyles.js';
 
@@ -16,11 +15,9 @@ root.render(
     // <React.StrictMode>
     <Provider store={store}>
         <ConnectedRouter history={history}>
-            <IntlProviderWrapper>
                 <GlobalStyles>
                     <App persistor={persistor} />
                 </GlobalStyles>
-            </IntlProviderWrapper>
         </ConnectedRouter>
     </Provider>,
     // </React.StrictMode>

@@ -20,8 +20,9 @@ function Button({
     ondragenter,
     ondragover,
     ondrop,
-    onmouseenter,
-    onmouseleave,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseDown,
     forwardRef,
     dragDropAPIProps,
     ...passProps
@@ -29,12 +30,9 @@ function Button({
     const props = {
         id: id,
         onClick: onClick,
-        // onDragStart: ondragstart,
-        // onDragEnter: ondragenter,
-        // onDragOver: ondragover,
-        // onDrop: ondrop,
-        onMouseEnter: onmouseenter,
-        onMouseLeave: onmouseleave,
+        onMouseEnter: onMouseEnter,
+        onMouseLeave: onMouseLeave,
+        onMouseDown: onMouseDown,
         ...passProps,
     };
 

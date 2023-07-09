@@ -1,6 +1,7 @@
 @import '../GlobalStyles/GlobalStyles.module.scss';
 
 .wrapper {
+    width: 140px;
     position: absolute;
     top: 0px;
     left: 50%;
@@ -8,8 +9,8 @@
     display: flex;
     column-gap: 4px;
     padding-bottom: 4px;
-    visibility: hidden;
     z-index: 10;
+    display: none;
 
     .btn {
         padding: 6px;

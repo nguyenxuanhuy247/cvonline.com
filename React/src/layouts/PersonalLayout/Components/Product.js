@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import Pagination from '@mui/material/Pagination';
-import { HiOutlineSearch } from 'react-icons/hi';
 import { AiOutlineSortAscending, AiOutlineSortDescending } from 'react-icons/ai';
 import _ from 'lodash';
 import { Toast } from '~/components/Toast/Toast.js';
@@ -141,9 +140,11 @@ class Product extends PureComponent {
         }
     };
 
-    handleSearchLibrary = async (e, side) => {
-        const value = e.target.value?.trim();
+    handleSearchLibrary = async (side) => {
         const { productInfo, FELibraryList, BELibraryList } = this.props?.productData ?? {};
+
+        const searchInputElement = document.getElementById(`js-search-input-${side}-${productInfo?.id}`);
+        const value = searchInputElement?.value?.trim();
 
         // Check value is not empty
         if (value) {
@@ -232,22 +233,34 @@ class Product extends PureComponent {
     // =================================================================
 
     async componentDidUpdate(prevProps) {
-        const { numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
+        const { productInfo, numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
 
-        // Turn to last page when add or delete a library
-        if (numberofFELibrary !== prevProps?.productData?.numberofFELibrary) {
+        // Turn to last page when add a library
+        if (numberofFELibrary > prevProps?.productData?.numberofFELibrary) {
             const FE_FinalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
             this.setState({ FE_Page: FE_FinalPage });
         }
 
-        if (numberofBELibrary !== prevProps?.productData?.numberofBELibrary) {
+        if (numberofBELibrary > prevProps?.productData?.numberofBELibrary) {
             const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
             this.setState({ BE_Page: BE_FinalPage });
+        }
+        // Set product desc after updateing from database by JS
+        if (productInfo?.desc !== prevProps?.productData?.productInfo?.desc) {
+            const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
+            productDescElement.innerText = productInfo?.desc;
         }
     }
 
     async componentDidMount() {
         const { productInfo } = this.props?.productData ?? {};
+
+        const FE_searchInputElement = document.getElementById(`js-search-input-FE-${productInfo?.id}`);
+        const BE_searchInputElement = document.getElementById(`js-search-input-BE-${productInfo?.id}`);
+
+        // Handle event Input search Library
+        FE_searchInputElement.oninput = () => this.handleSearchLibrary('FE');
+        BE_searchInputElement.oninput = () => this.handleSearchLibrary('BE');
 
         // Set product desc from database by JS
         const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
@@ -267,7 +280,7 @@ class Product extends PureComponent {
                 e.stopPropagation();
                 this.editProductId.current = setTimeout(() => {
                     editProduct.style.display = 'none';
-                }, 100);
+                }, 200);
             };
 
             editProduct.onmouseenter = () => {
@@ -448,12 +461,12 @@ class Product extends PureComponent {
                                 <div className={cx('library-filter-sort')}>
                                     <div className={cx('library-filter')}>
                                         <input
+                                            id={`js-search-input-FE-${productInfo?.id}`}
                                             autoComplete="off"
                                             type="text"
                                             placeholder="Tìm kiếm thư viện"
                                             className={cx('library-filter-search')}
                                             spellCheck="false"
-                                            onInput={(e) => this.handleSearchLibrary(e, 'FE')}
                                         />
                                     </div>
 
@@ -518,6 +531,7 @@ class Product extends PureComponent {
                                     // Search - Sort
                                     isSearch={this.state.FE_isSearch}
                                     isSortBy={this.state.FE_sortBy}
+                                    onSearchLibrary={() => this.handleSearchLibrary('FE')}
                                 />
 
                                 {!this.state.FE_isSearch && this.state.FE_isPagination && (
@@ -588,12 +602,12 @@ class Product extends PureComponent {
                                 <div className={cx('library-filter-sort')}>
                                     <div className={cx('library-filter')}>
                                         <input
+                                            id={`js-search-input-BE-${productInfo?.id}`}
                                             autoComplete="off"
                                             type="text"
                                             placeholder="Tìm kiếm thư viện"
                                             className={cx('library-filter-search')}
                                             spellCheck="false"
-                                            onInput={(e) => this.handleSearchLibrary(e, 'BE')}
                                         />
                                     </div>
 
@@ -658,6 +672,7 @@ class Product extends PureComponent {
                                     // Search - Sort
                                     isSearch={this.state.BE_isSearch}
                                     isSortBy={this.state.BE_sortBy}
+                                    onSearchLibrary={() => this.handleSearchLibrary('BE')}
                                 />
 
                                 {!this.state.BE_isSearch && this.state.BE_isPagination && (

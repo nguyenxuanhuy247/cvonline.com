@@ -20,18 +20,17 @@ class TechnologyList extends PureComponent {
             dragOverItemId: undefined,
             dragOverElement: null,
         };
-
-        this.technologyRef = React.createRef();
     }
 
     // =================================================================
     // DRAG AND DROP
-    handleDragStart = (id, buttonID) => {
+    handleDragStart = (id, editButtonID, buttonID) => {
         const dragButton = document.getElementById(buttonID);
+
         this.setState({ dragItemId: id, dragElement: dragButton });
     };
 
-    handleDragEnd = (e, editButtonID, buttonID) => {
+    handleDragEnd = (editButtonID) => {
         // After dropping, setting dragElement and dragOverElement turn to orginal state
         this.state.dragElement?.classList.remove(cx('drag-drop-hover'));
         this.state.dragOverElement?.classList.remove(cx('drag-drop-hover'));
@@ -42,13 +41,11 @@ class TechnologyList extends PureComponent {
         if (dragEditButton) {
             Array.from(dragEditButton.children).forEach((button) => {
                 if (button.getAttribute('drag') === 'true') {
-                    button.style.opacity = 1;
-                    button.style.visibility = 'visible';
+                    button.style.display = 'inline-flex';
                 }
             });
 
-            dragEditButton.style.opacity = 0;
-            dragEditButton.style.visibility = 'hidden';
+            dragEditButton.style.display = 'none';
         }
     };
 
@@ -130,15 +127,16 @@ class TechnologyList extends PureComponent {
                 });
             }
         }
+
+        if (this.props.isSearch) {
+            this.props.onSearchLibrary();
+        }
     };
 
     // =================================================================
     // Show / Hide Create Technology container
 
     handleShowCreateTechnology = async () => {
-        const closeEditTechnology = this.technologyRef.current?.handleCloseEditTechnology;
-        closeEditTechnology?.();
-
         await this.setState({ isCreateTechnology: true });
 
         const autofocusInputElement = document.getElementById(`js-autofocus-input-${this.props.type}`);
@@ -152,7 +150,8 @@ class TechnologyList extends PureComponent {
     // =================================================================
 
     render() {
-        const { draggable, type, keyprop, side, productId, label, technologyList } = this.props;
+        const { draggable, type, keyprop, side, productId, label, technologyList, isSearch, onSearchLibrary } =
+            this.props;
 
         return (
             <div
@@ -175,7 +174,6 @@ class TechnologyList extends PureComponent {
                             <Technology
                                 key={technology?.id}
                                 // =================================================================
-                                ref={this.technologyRef}
                                 draggable={draggable}
                                 librarylist={technologyList}
                                 // Common info
@@ -192,6 +190,7 @@ class TechnologyList extends PureComponent {
                                 href={technology?.link}
                                 // =================================================================
                                 // Show and Hide Create Technology Container
+                                isCloseEditTechnology={this.state.isCreateTechnology}
                                 onShowCreateTechnology={this.handleShowCreateTechnology}
                                 onCloseCreateTechnology={this.handleCloseCreateTechnology}
                                 // =================================================================
@@ -200,8 +199,8 @@ class TechnologyList extends PureComponent {
                                 onDeleteTechnology={this.props.onDeleteTechnology}
                                 // =================================================================
                                 // Drag and drop
-                                onDragStart={() => this.handleDragStart(technology?.id, buttonID)}
-                                onDragEnd={(e) => this.handleDragEnd(e, editButtonID, buttonID)}
+                                onDragStart={() => this.handleDragStart(technology?.id, editButtonID, buttonID)}
+                                onDragEnd={() => this.handleDragEnd(editButtonID)}
                                 onDragEnter={() => this.handleDragEnter(technology?.id, buttonID)}
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={this.handleDropAndSort}
@@ -209,7 +208,7 @@ class TechnologyList extends PureComponent {
                         );
                     })}
                 </div>
-                {!this.props.isSearch && !this.state.isCreateTechnology ? (
+                {!this.state.isCreateTechnology ? (
                     <Button
                         className={cx('add-technology-button', {
                             'sourcecode-list': type === 'SOURCECODE',
@@ -222,18 +221,18 @@ class TechnologyList extends PureComponent {
                         <span className={cx('text')}>{`Thêm ${label}`}</span>
                     </Button>
                 ) : (
-                    !this.props.isSearch && (
-                        <CreateEditTechnology
-                            id={`${this.props.technologyListID}-create-container`}
-                            label={label}
-                            type={type}
-                            keyprop={keyprop}
-                            side={side}
-                            productId={productId}
-                            onCloseCreateTechnology={this.handleCloseCreateTechnology}
-                            onCreateTechnology={this.props.onCreateTechnology}
-                        />
-                    )
+                    <CreateEditTechnology
+                        id={`${this.props.technologyListID}-create-container`}
+                        label={label}
+                        type={type}
+                        keyprop={keyprop}
+                        side={side}
+                        productId={productId}
+                        onCloseCreateTechnology={this.handleCloseCreateTechnology}
+                        onCreateTechnology={this.props.onCreateTechnology}
+                        isSearch={isSearch}
+                        onSearchLibrary={onSearchLibrary}
+                    />
                 )}
             </div>
         );

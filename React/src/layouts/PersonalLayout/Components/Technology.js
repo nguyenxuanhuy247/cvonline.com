@@ -27,7 +27,14 @@ class Technology extends PureComponent {
     }
 
     // =================================================================
-    handleShowEditTechnology = async (id) => {
+    handleShowEditTechnology = async (id, editButtonID) => {
+        const editButton = document.getElementById(editButtonID);
+
+        // Hide Edit Button
+        if (editButton) {
+            editButton.style.display = 'none';
+        }
+
         this.props.onCloseCreateTechnology();
 
         let selectedLibrary;
@@ -67,8 +74,7 @@ class Technology extends PureComponent {
 
             // Show all drag buttons
             if (editButton) {
-                editButton.style.opacity = 1;
-                editButton.style.visibility = 'visible';
+                editButton.style.display = 'flex';
             }
         }
     };
@@ -77,24 +83,38 @@ class Technology extends PureComponent {
         const editButton = document.getElementById(editButtonID);
         const button = document.getElementById(buttonID);
 
-        if (editButton) {
-            this.idTimeout.current = setTimeout(() => {
-                editButton.style.opacity = 0;
-                editButton.style.visibility = 'hidden';
-            }, 0);
-        }
-
         if (button) {
             button.classList.remove(cx('hover-button'));
+
+            if (editButton) {
+                this.idTimeout.current = setTimeout(() => (editButton.style.display = 'none'), 0);
+            }
         }
     };
 
-    handleHoverEditButton = (e, buttonID) => {
+    handleDragButton = (editButtonID) => {
+        const dragEditButton = document.getElementById(editButtonID);
+
+        if (dragEditButton) {
+            dragEditButton.style.display = 'none';
+        }
+    };
+
+    handleDropButton = (editButtonID) => {
+        const dragEditButton = document.getElementById(editButtonID);
+
+        if (dragEditButton) {
+            dragEditButton.style.display = 'flex';
+        }
+    };
+
+    handleHoverEditButton = (buttonID) => {
         // Skip hide Edit button
         clearTimeout(this.idTimeout.current);
 
         // Still Hover Button
         const button = document.getElementById(buttonID);
+
         if (button) {
             button.classList.add(cx('hover-button'));
         }
@@ -107,15 +127,20 @@ class Technology extends PureComponent {
         // Unhover Button
         if (button) {
             button.classList.remove(cx('hover-button'));
-        }
 
-        if (editButton) {
-            editButton.style.opacity = 0;
-            editButton.style.visibility = 'hidden';
+            if (editButton) {
+                editButton.style.display = 'none';
+            }
         }
     };
 
     // =================================================================
+
+    componentDidUpdate() {
+        if (this.props.isCloseEditTechnology === true) {
+            this.setState({ isEdit: false });
+        }
+    }
 
     componentWillUnmount() {
         clearTimeout(this.idTimeout.current);
@@ -170,10 +195,10 @@ class Technology extends PureComponent {
                         type={type}
                         // =================================================================
                         onShowCreateTechnology={this.props?.onShowCreateTechnology}
-                        onShowEditTechnology={() => this.handleShowEditTechnology(id)}
+                        onShowEditTechnology={() => this.handleShowEditTechnology(id, editButtonID)}
                         onDeleteTechnology={() => this.handleDeleteTechnology(id)}
                         // =================================================================
-                        onMouseEnter={(e) => this.handleHoverEditButton(e, buttonID)}
+                        onMouseEnter={() => this.handleHoverEditButton(buttonID)}
                         onMouseLeave={(className) => this.handleUnhoverEditButton(editButtonID, buttonID, className)}
                         classHover={cx('hover-button')}
                         // =================================================================
@@ -187,8 +212,10 @@ class Technology extends PureComponent {
                             'library-list': type === 'LIBRARY',
                         })}
                         // =================================================================
-                        onmouseenter={() => this.handleHoverButtonAndShowEditButton(editButtonID, buttonID)}
-                        onmouseleave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonID)}
+                        onMouseEnter={() => this.handleHoverButtonAndShowEditButton(editButtonID, buttonID)}
+                        onMouseLeave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonID)}
+                        onMouseDown={() => this.handleDragButton(editButtonID)}
+                        onMouseUp={() => this.handleDropButton(editButtonID)}
                         // =================================================================
                         draggable={draggable}
                         href={href}

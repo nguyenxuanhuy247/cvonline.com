@@ -63,6 +63,10 @@ class CreateEditTechnology extends PureComponent {
                     const errorCode = await this.props.onCreateTechnology(data);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
+
+                        if (this.props?.isSearch) {
+                            this.props?.onSearchLibrary();
+                        }
                     }
                 } else if (!this.state.name) {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
@@ -74,6 +78,10 @@ class CreateEditTechnology extends PureComponent {
                     const errorCode = await this.props.onCreateTechnology(data);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
+
+                        if (this.props?.isSearch) {
+                            this.props?.onSearchLibrary();
+                        }
                     }
                 } else {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);

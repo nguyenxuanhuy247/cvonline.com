@@ -10,7 +10,6 @@ import styles from './Header.module.scss';
 import logoWithText from '~/assets/logo/logo-with-text.png';
 import logo from '~/assets/logo/logo.png';
 import Image from '~/components/Image/Image.js';
-import { JpgImages } from '~/components/Image/Images.js';
 import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
 import Button from '~/components/Button/Button.js';

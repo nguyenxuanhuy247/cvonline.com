@@ -19,8 +19,7 @@ class EditButton extends PureComponent {
         if (editItem) {
             Array.from(editItem.children).forEach((button) => {
                 if (button.getAttribute('drag') === 'true') {
-                    button.style.opacity = 0;
-                    button.style.visibility = 'hidden';
+                    button.style.display = 'none';
                 }
             });
         }
@@ -33,9 +32,7 @@ class EditButton extends PureComponent {
         if (editItem) {
             Array.from(editItem?.children).forEach((button) => {
                 if (button.getAttribute('drag') === 'true') {
-                    button.style.opacity = 1;
-                    button.style.visibility = 'visible';
-                    button.preventDefault();
+                    button.style.display = 'inline-flex';
                 }
             });
         }
