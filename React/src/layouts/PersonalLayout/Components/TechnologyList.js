@@ -24,7 +24,7 @@ class TechnologyList extends PureComponent {
 
     // =================================================================
     // DRAG AND DROP
-    handleDragStart = (id, editButtonID, buttonID) => {
+    handleDragStart = (id, buttonID) => {
         const dragButton = document.getElementById(buttonID);
 
         this.setState({ dragItemId: id, dragElement: dragButton });
@@ -199,7 +199,7 @@ class TechnologyList extends PureComponent {
                                 onDeleteTechnology={this.props.onDeleteTechnology}
                                 // =================================================================
                                 // Drag and drop
-                                onDragStart={() => this.handleDragStart(technology?.id, editButtonID, buttonID)}
+                                onDragStart={() => this.handleDragStart(technology?.id, buttonID)}
                                 onDragEnd={() => this.handleDragEnd(editButtonID)}
                                 onDragEnter={() => this.handleDragEnter(technology?.id, buttonID)}
                                 onDragOver={(e) => e.preventDefault()}

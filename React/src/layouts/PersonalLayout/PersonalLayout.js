@@ -1,12 +1,12 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
+import { FaUserCircle, FaAddressBook, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
-import { MdOutlineError } from 'react-icons/md';
 import HeadlessTippy from '@tippyjs/react/headless';
+import DefaultTippy from '@tippyjs/react';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import Header from '~/containers/Header/Header.js';
@@ -28,7 +28,6 @@ class PersonalLayout extends PureComponent {
         super(props);
         this.state = {
             isModalOpen: false,
-            languages: '',
         };
     }
 
@@ -85,7 +84,6 @@ class PersonalLayout extends PureComponent {
         const value = e.target.innerText;
 
         if (value !== languages) {
-            console.log(`Update language`);
             const data = { userId: userId, languages: value, label: 'Ngoại ngữ' };
             const errorCode = await this.props.updateUserInformation(data);
 
@@ -278,15 +276,12 @@ class PersonalLayout extends PureComponent {
 
         if (userId) {
             // Get all data for CV Layout when sign in
-            const errorCode = await this.props.readUserInformation(userId);
-            if (errorCode === 0) {
-                await this.setState({ languages: this.props?.user?.languages });
-            }
+            await this.props.readUserInformation(userId);
             await this.props.readProductList(userId);
 
             // Set languages from database by JS
             const languagesElement = document.getElementById(`js-language-desc`);
-            languagesElement.innerText = this.props?.user?.languages;
+            languagesElement.innerText = this.props?.user?.languages || '';
 
             // Press ENTER to change input field or submit
             const container = document.querySelector(`.${cx('content')}`);
@@ -311,6 +306,37 @@ class PersonalLayout extends PureComponent {
         } else {
             Toast.TOP_CENTER_WARN('Vui lòng đăng nhập lại');
             await this.props.userSignOut();
+        }
+
+        // Set event for scroll to top button
+        const scrollToTopBottom = document.getElementById('scroll-to-top-bottom');
+        const goToTopButton = document.getElementById('go-top-button');
+        const goToBottomButton = document.getElementById('go-bottom-button');
+
+        if (goToTopButton && goToBottomButton) {
+            const checkHeight = () => {
+                const documentHeight = document.body.scrollHeight;
+                console.log('window.scrollY', window.scrollHeight);
+
+                if (window.scrollY > 0) {
+                    goToTopButton.style.display = 'grid';
+                } else if (window.scrollY === 0) {
+                    goToTopButton.style.display = 'none';
+                }
+                // else {
+                //     scrollToTopBottom.style.display = 'none';
+                // }
+            };
+
+            window.addEventListener('scroll', checkHeight);
+
+            goToTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            goToBottomButton.addEventListener('click', () => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            });
         }
     }
 
@@ -364,10 +390,10 @@ class PersonalLayout extends PureComponent {
                                 </div>
                             </div>
                             <ContentEditableTag
-                                content={this.props?.user?.fullName}
+                                content={this.props?.user?.fullName || ''}
                                 className={cx('full-name')}
                                 placeholder="Nguyễn Xuân Huy"
-                                onblur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
+                                onBlur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
                             />
                             <select
                                 className={cx('select-job-title')}
@@ -394,10 +420,10 @@ class PersonalLayout extends PureComponent {
                                             <BsFillCalendarDayFill />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.dateOfBirth}
+                                            content={this.props?.user?.dateOfBirth || ''}
                                             className={cx('info-text')}
                                             placeholder="Ngày tháng năm sinh"
-                                            onblur={(e) =>
+                                            onBlur={(e) =>
                                                 this.handleUpdateUserInformation(e, 'dateOfBirth', 'Ngày sinh')
                                             }
                                         />
@@ -407,7 +433,7 @@ class PersonalLayout extends PureComponent {
                                             <FaUserCircle />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.gender}
+                                            content={this.props?.user?.gender || ''}
                                             className={cx('info-text')}
                                             placeholder="Giới tính"
                                             onblur={(e) => this.handleUpdateUserInformation(e, 'gender', 'Giới tính')}
@@ -418,7 +444,7 @@ class PersonalLayout extends PureComponent {
                                             <BsFillTelephoneFill />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.phoneNumber}
+                                            content={this.props?.user?.phoneNumber || ''}
                                             className={cx('info-text')}
                                             placeholder="Số điện thoại"
                                             onblur={(e) =>
@@ -430,8 +456,8 @@ class PersonalLayout extends PureComponent {
                                         <span className={cx('icon')}>
                                             <MdEmail />
                                         </span>
-                                        <p
-                                            dangerouslySetInnerHTML={{ __html: this.props?.user?.email }}
+                                        <ContentEditableTag
+                                            content={this.props?.user?.email || ''}
                                             className={cx('info-text', 'email')}
                                             placeholder="Email"
                                         />
@@ -441,7 +467,7 @@ class PersonalLayout extends PureComponent {
                                             <FaAddressBook />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.address}
+                                            content={this.props?.user?.address || ''}
                                             className={cx('info-text')}
                                             placeholder="Địa chỉ"
                                             onblur={(e) => this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')}
@@ -465,52 +491,53 @@ class PersonalLayout extends PureComponent {
                     </div>
 
                     <div className={cx('product-list-container')}>
-                        {this.props.productList ? (
-                            <Fragment>
-                                <div className={cx('product-list')}>
-                                    {ASCOrderProductList?.map((product, index) => {
-                                        return (
-                                            <Product
-                                                key={index}
-                                                productData={product}
-                                                index={index}
-                                                // =================================================================
-                                                onCreateProduct={this.handleCreateProduct}
-                                                onUpdateProduct={this.handleUpdateProduct}
-                                                onDeleteProduct={this.handleDeleteProduct}
-                                                onMoveUpProduct={this.handleMoveUpProduct}
-                                                onMoveDownProduct={this.handleMoveDownProduct}
-                                                // =================================================================
-                                                onCreateTechnology={this.handleCreateTechnology}
-                                                onUpdateTechnology={this.handleUpdateTechnology}
-                                                onDeleteTechnology={this.handleDeleteTechnology}
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className={cx('add-new-product-container')}>
-                                    <Button
-                                        className={cx('add-new-product-button')}
-                                        onClick={() => this.handleCreateProduct()}
-                                    >
-                                        <span className={cx('add-new-product-icon')}>
-                                            <IoIosAddCircle />
-                                        </span>
-                                        THÊM SẢN PHẨM
-                                    </Button>
-                                </div>
-                            </Fragment>
-                        ) : (
-                            <div className={cx('product-list-error-load')}>
-                                <p className={cx('error-text')}>
-                                    <MdOutlineError className={cx('icon')} />
-                                    <span>Không tải được danh sách sản phẩm</span>
-                                </p>
+                        {this.props.productList && (
+                            <div className={cx('product-list')}>
+                                {ASCOrderProductList?.map((product, index) => {
+                                    return (
+                                        <Product
+                                            key={index}
+                                            productData={product}
+                                            index={index}
+                                            // =================================================================
+                                            onCreateProduct={this.handleCreateProduct}
+                                            onUpdateProduct={this.handleUpdateProduct}
+                                            onDeleteProduct={this.handleDeleteProduct}
+                                            onMoveUpProduct={this.handleMoveUpProduct}
+                                            onMoveDownProduct={this.handleMoveDownProduct}
+                                            // =================================================================
+                                            onCreateTechnology={this.handleCreateTechnology}
+                                            onUpdateTechnology={this.handleUpdateTechnology}
+                                            onDeleteTechnology={this.handleDeleteTechnology}
+                                        />
+                                    );
+                                })}
                             </div>
                         )}
+                        <div className={cx('add-new-product-container')}>
+                            <Button className={cx('add-new-product-button')} onClick={() => this.handleCreateProduct()}>
+                                <span className={cx('add-new-product-icon')}>
+                                    <IoIosAddCircle />
+                                </span>
+                                THÊM SẢN PHẨM
+                            </Button>
+                        </div>
                     </div>
 
                     {this.props.isLoading && <Loading />}
+                </div>
+
+                <div className={cx('scroll-to-top-bottom')} id="scroll-to-top-bottom">
+                    <DefaultTippy content="Cuộn lên đầu trang" arrow="">
+                        <span className={cx('go-to-button', 'go-top')} id="go-top-button">
+                            <FaArrowUp />
+                        </span>
+                    </DefaultTippy>
+                    <DefaultTippy content="Cuộn lên đầu trang" arrow="">
+                        <span className={cx('go-to-button', 'go-bottom')} id="go-bottom-button">
+                            <FaArrowDown />
+                        </span>
+                    </DefaultTippy>
                 </div>
             </div>
         );
@@ -541,6 +568,9 @@ const mapDispatchToProps = (dispatch) => {
         createTechnology: (data) => dispatch(userActions.createTechnology(data)),
         updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
         deleteTechnology: (technologyId, label) => dispatch(userActions.deleteTechnology(technologyId, label)),
+
+        // Sign out
+        userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };
 

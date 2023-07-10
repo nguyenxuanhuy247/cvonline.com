@@ -115,13 +115,19 @@
 
 // Tablet + Mobile
 @media (max-width: 991px) {
-    .hide-on-table-mobile {
-        display: none;
-    }
-
     .header {
         .logo-link {
             flex: 0;
+            display: grid;
+            place-items: center;
+
+            &.hide-on-table-mobile {
+                display: none;
+            }
+
+            .logo {
+                height: 36px;
+            }
         }
 
         .login {

@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import Pagination from '@mui/material/Pagination';
-import { AiOutlineSortAscending, AiOutlineSortDescending } from 'react-icons/ai';
+import { AiOutlineSortAscending, AiOutlineSortDescending, AiFillCloseCircle } from 'react-icons/ai';
 import _ from 'lodash';
-import { Toast } from '~/components/Toast/Toast.js';
 
+import { Toast } from '~/components/Toast/Toast.js';
 import styles from './Product.module.scss';
 import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
@@ -24,12 +24,14 @@ class Product extends PureComponent {
             FE_PageSize: 10,
             FE_sortBy: '',
             FE_isSearch: false,
+            FE_searchInputValue: '',
 
             BE_isPagination: true,
             BE_Page: 1,
             BE_PageSize: 10,
             BE_sortBy: '',
             BE_isSearch: false,
+            BE_searchInputValue: '',
 
             isModalOpen: false,
         };
@@ -143,14 +145,18 @@ class Product extends PureComponent {
     handleSearchLibrary = async (side) => {
         const { productInfo, FELibraryList, BELibraryList } = this.props?.productData ?? {};
 
+        const isSearch = side === 'FE' ? 'FE_isSearch' : 'BE_isSearch';
+        const searchInputValue = side === 'FE' ? 'FE_searchInputValue' : 'BE_searchInputValue';
+        const libraryList = side === 'FE' ? FELibraryList : BELibraryList;
+
+        const searchLibraryList = document.getElementById(`js-library-list-${side}-${productInfo?.id}`);
+        const resultNotFound = document.getElementById(`js-result-not-found-${side}`);
         const searchInputElement = document.getElementById(`js-search-input-${side}-${productInfo?.id}`);
         const value = searchInputElement?.value?.trim();
 
         // Check value is not empty
         if (value) {
-            await this.setState({ [`${side === 'FE' ? 'FE_isSearch' : 'BE_isSearch'}`]: true });
-
-            const libraryList = side === 'FE' ? FELibraryList : BELibraryList;
+            await this.setState({ [isSearch]: true, [searchInputValue]: value });
 
             // Loop through all library button in list
             _.forEach(libraryList, function (library) {
@@ -180,11 +186,6 @@ class Product extends PureComponent {
                 }
             });
 
-            const searchLibraryList = document.getElementById(
-                `js-library-list-${side === 'FE' ? 'FE' : 'BE'}-${productInfo?.id}`,
-            );
-            const resultNotFound = document.getElementById(`js-result-not-found-${side === 'FE' ? 'FE' : 'BE'}`);
-
             // Remove not found text of all buttons
             if (resultNotFound) {
                 resultNotFound.remove();
@@ -201,8 +202,8 @@ class Product extends PureComponent {
                 // if library list doesn't have nay 'display: block' button, set Not found Text
                 if (!isEmptyArray) {
                     const notFoundElement = document.createElement('p');
-                    notFoundElement.className = cx(`search-result-not-found-${side === 'FE' ? 'FE' : 'BE'}`);
-                    notFoundElement.id = `js-result-not-found-${side === 'FE' ? 'FE' : 'BE'}`;
+                    notFoundElement.className = cx(`search-result-not-found-${side}`);
+                    notFoundElement.id = `js-result-not-found-${side}`;
                     notFoundElement.innerText = 'Không tìm thấy kết quả';
 
                     searchLibraryList.appendChild(notFoundElement);
@@ -210,9 +211,12 @@ class Product extends PureComponent {
             }
         } else {
             // If value is empty
-            await this.setState({ [`${side === 'FE' ? 'FE_isSearch' : 'BE_isSearch'}`]: false });
+            await this.setState({ [isSearch]: false, [searchInputValue]: value });
 
-            const libraryList = side === 'FE' ? FELibraryList : BELibraryList;
+            // Remove not found text when search input is empty
+            if (resultNotFound) {
+                resultNotFound.remove();
+            }
 
             // Restore the original state of the button
             _.forEach(libraryList, function (library) {
@@ -228,6 +232,12 @@ class Product extends PureComponent {
                 }
             });
         }
+    };
+
+    handleClearSearchValueInput = async (side) => {
+        const searchInputValue = side === 'FE' ? 'FE_searchInputValue' : 'BE_searchInputValue';
+        await this.setState({ [searchInputValue]: '' });
+        this.handleSearchLibrary(side);
     };
 
     // =================================================================
@@ -439,7 +449,7 @@ class Product extends PureComponent {
                                     <TechnologyList
                                         technologyListID={`js-technology-list-FE-${productInfo?.id}`}
                                         draggable
-                                        label="công nghệ ở FE"
+                                        label="công nghệ FE"
                                         type="TECHNOLOGY"
                                         keyprop="TE"
                                         side="FE"
@@ -462,12 +472,21 @@ class Product extends PureComponent {
                                     <div className={cx('library-filter')}>
                                         <input
                                             id={`js-search-input-FE-${productInfo?.id}`}
+                                            value={this.state.FE_searchInputValue}
                                             autoComplete="off"
                                             type="text"
                                             placeholder="Tìm kiếm thư viện"
                                             className={cx('library-filter-search')}
                                             spellCheck="false"
                                         />
+                                        <span
+                                            className={cx('library-filter-clear', {
+                                                show: this.state.FE_searchInputValue,
+                                            })}
+                                            onClick={() => this.handleClearSearchValueInput('FE')}
+                                        >
+                                            <AiFillCloseCircle />
+                                        </span>
                                     </div>
 
                                     <div className={cx('library-sort')}>
@@ -580,7 +599,7 @@ class Product extends PureComponent {
                                     <TechnologyList
                                         technologyListID={`js-technology-list-BE-${productInfo?.id}`}
                                         draggable
-                                        label="công nghệ ở BE"
+                                        label="công nghệ BE"
                                         type="TECHNOLOGY"
                                         keyprop="TE"
                                         side="BE"
@@ -603,12 +622,21 @@ class Product extends PureComponent {
                                     <div className={cx('library-filter')}>
                                         <input
                                             id={`js-search-input-BE-${productInfo?.id}`}
+                                            value={this.state.BE_searchInputValue}
                                             autoComplete="off"
                                             type="text"
                                             placeholder="Tìm kiếm thư viện"
                                             className={cx('library-filter-search')}
                                             spellCheck="false"
                                         />
+                                        <span
+                                            className={cx('library-filter-clear', {
+                                                show: this.state.BE_searchInputValue,
+                                            })}
+                                            onClick={() => this.handleClearSearchValueInput('BE')}
+                                        >
+                                            <AiFillCloseCircle />
+                                        </span>
                                     </div>
 
                                     <div className={cx('library-sort')}>

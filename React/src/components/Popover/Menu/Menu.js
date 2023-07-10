@@ -70,7 +70,7 @@ class Menu extends Component {
 
                                         if (item.title === 'Đăng xuất') {
                                             await this.props.userSignOut();
-                                            Toast.TOP_CENTER_SUCCESS('Bạn vừa đăng xuất khỏi trang CV')
+                                            Toast.TOP_CENTER_SUCCESS('Bạn vừa đăng xuất khỏi trang CV');
                                         }
                                     }}
                                 >
@@ -90,6 +90,7 @@ class Menu extends Component {
             <TippyHeadless
                 interactive
                 hideOnClick
+                trigger="click"
                 placement="bottom-end"
                 render={() => this.handleShowMenuContent()}
             >

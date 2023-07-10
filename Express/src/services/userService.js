@@ -1,13 +1,12 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
-const fs = require('fs');
 
 const salt = bcrypt.genSaltSync(10);
 
 // Email check function
 const checkUserEmailInDB = async (email) => {
     try {
-        let user = await db.User.findOne({ where: { email: email } });
+        let user = await db.users.findOne({ where: { email: email } });
 
         if (user) {
             return {
@@ -44,7 +43,7 @@ export const postUserSignUp = async (fullName, email, password) => {
     try {
         let hashPassword = await hashUserPassword(password);
 
-        const [user, created] = await db.User.findOrCreate({
+        const [user, created] = await db.users.findOrCreate({
             where: {
                 email: email,
             },
@@ -56,7 +55,7 @@ export const postUserSignUp = async (fullName, email, password) => {
         });
 
         if (created) {
-            await db.Technology.create({
+            await db.technologies.create({
                 type: 'PRODUCTDESC',
                 key: 'PD',
                 userId: user.id,
@@ -90,11 +89,9 @@ export const postUserSignIn = async (userEmail, userPassword) => {
 
         if (errorCode === 0) {
             // Get user's data again prevent someone from deleting/changing data
-            let user = await db.User.findOne({
+            let user = await db.users.findOne({
                 where: { email: userEmail },
-                attributes: {
-                    exclude: ['createdAt', 'updatedAt'],
-                },
+                attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
             });
 
             if (user) {
@@ -104,10 +101,15 @@ export const postUserSignIn = async (userEmail, userPassword) => {
                 if (isPasswordMatch) {
                     delete user.password;
 
+                    const avatar = user.avatar;
+                    const binaryAvatar = avatar?.toString('binary');
+
+                    const newUser = { ...user, avatar: binaryAvatar };
+
                     return {
                         errorCode: 0,
                         errorMessage: `Bạn vừa đăng nhập thành công`,
-                        data: user,
+                        data: newUser,
                     };
                 } else {
                     return {
@@ -144,7 +146,7 @@ export const handleGetUserInformation = async (data) => {
     try {
         const { userId } = data;
 
-        let user = await db.User.findOne({
+        let user = await db.users.findOne({
             where: { id: userId },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         });
@@ -180,12 +182,12 @@ export const handleUpdateUserInformation = async (data) => {
     const { userId, label } = data;
 
     try {
-        const user = await db.User.findOne({
+        const user = await db.users.findOne({
             where: { id: userId },
             raw: false,
         });
 
-        const keyArray = Object.keys(await db.User.rawAttributes);
+        const keyArray = Object.keys(await db.users.rawAttributes);
 
         if (user) {
             const newData = { ...data };
@@ -229,7 +231,7 @@ export const handleCreateProduct = async (data) => {
     try {
         const { userId } = data;
 
-        const productIDs = await db.Technology.findAll({
+        const productIDs = await db.technologies.findAll({
             where: { userId: userId, key: 'PD' },
             attributes: ['productOrder'],
         });
@@ -240,7 +242,7 @@ export const handleCreateProduct = async (data) => {
             let maxOrder = Math.max(...productIDArrWithNULL);
 
             if (maxOrder !== 0) {
-                await db.Technology.create({
+                await db.technologies.create({
                     type: 'PRODUCTDESC',
                     key: 'PD',
                     userId: userId,
@@ -277,13 +279,13 @@ export const handleGetProductList = async (data) => {
     try {
         const { userId } = data;
 
-        const user = await db.User.findOne({
+        const user = await db.users.findOne({
             where: { id: userId },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         });
 
         if (user) {
-            const productIDs = await db.Technology.findAll({
+            const productIDs = await db.technologies.findAll({
                 where: { userId: userId, key: 'PD' },
                 attributes: ['id'],
             });
@@ -307,9 +309,10 @@ export const handleGetProductList = async (data) => {
                         numberofBELibrary: undefined,
                     };
 
-                    const productDesc = await db.Technology.findOne({
+                    const productDesc = await db.technologies.findOne({
                         where: { id: productID, key: 'PD' },
                         attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
+                        order: [['id', 'ASC']],
                     });
 
                     if (productDesc) {
@@ -325,9 +328,10 @@ export const handleGetProductList = async (data) => {
                         product.order = productDesc.productOrder;
                     }
 
-                    const sourceCodes = await db.Technology.findAll({
+                    const sourceCodes = await db.technologies.findAll({
                         where: { userId: userId, productId: productID, key: 'SC' },
                         attributes: ['id', 'image', 'name', 'link'],
+                        order: [['id', 'ASC']],
                     });
 
                     if (sourceCodes) {
@@ -339,9 +343,10 @@ export const handleGetProductList = async (data) => {
                         product.sourceCodeList = sourceCodeList;
                     }
 
-                    const FETechnologies = await db.Technology.findAll({
+                    const FETechnologies = await db.technologies.findAll({
                         where: { userId: userId, productId: productID, key: 'TE', side: 'FE' },
                         attributes: ['id', 'image', 'name', 'link'],
+                        order: [['id', 'ASC']],
                     });
 
                     if (FETechnologies) {
@@ -353,9 +358,10 @@ export const handleGetProductList = async (data) => {
                         product.FETechnologyList = FETechnologyList;
                     }
 
-                    const BETechnologies = await db.Technology.findAll({
+                    const BETechnologies = await db.technologies.findAll({
                         where: { userId: userId, productId: productID, key: 'TE', side: 'BE' },
                         attributes: ['id', 'image', 'name', 'link'],
+                        order: [['id', 'ASC']],
                     });
 
                     if (BETechnologies) {
@@ -367,9 +373,10 @@ export const handleGetProductList = async (data) => {
                         product.BETechnologyList = BETechnologyList;
                     }
 
-                    const FELibraries = await db.Technology.findAndCountAll({
+                    const FELibraries = await db.technologies.findAndCountAll({
                         where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
+                        order: [['id', 'ASC']],
                     });
 
                     if (FELibraries.rows.length > 0) {
@@ -382,9 +389,10 @@ export const handleGetProductList = async (data) => {
                     }
                     product.numberofFELibrary = FELibraries.count;
 
-                    const BELibraries = await db.Technology.findAndCountAll({
+                    const BELibraries = await db.technologies.findAndCountAll({
                         where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
                         attributes: ['id', 'image', 'name', 'version', 'link'],
+                        order: [['id', 'ASC']],
                     });
 
                     if (BELibraries.rows.length > 0) {
@@ -430,7 +438,7 @@ export const handleGetProductList = async (data) => {
 export const handleUpdateProduct = async (data) => {
     const { userId, productId, label } = data;
     try {
-        const product = await db.Technology.findOne({
+        const product = await db.technologies.findOne({
             where: { id: productId, userId: userId },
             raw: false,
         });
@@ -473,13 +481,13 @@ export const handleDeleteProduct = async (data) => {
     try {
         const { userId, productId } = data ?? {};
 
-        const product = await db.Technology.findOne({
+        const product = await db.technologies.findOne({
             where: { id: productId, userId: userId },
         });
 
         if (product) {
-            await db.Technology.destroy({ where: { id: productId } });
-            await db.Technology.destroy({ where: { productId: productId } });
+            await db.technologies.destroy({ where: { id: productId } });
+            await db.technologies.destroy({ where: { productId: productId } });
 
             return {
                 errorCode: 0,
@@ -515,7 +523,7 @@ export const handleCreateTechnology = async (data) => {
             whereQuery = { side: side, name: name, userId: userId, productId: productId };
         }
 
-        const technology = await db.Technology.findOne({
+        const technology = await db.technologies.findOne({
             where: whereQuery,
             attributes: ['name'],
         });
@@ -524,7 +532,7 @@ export const handleCreateTechnology = async (data) => {
             const queryData = { ...data };
             delete queryData?.label;
 
-            await db.Technology.create({ ...queryData });
+            await db.technologies.create({ ...queryData });
 
             return {
                 errorCode: 0,
@@ -550,7 +558,7 @@ export const handleUpdateTechnology = async (data) => {
     const { id, image, name, version, link, label } = data ?? {};
 
     try {
-        const result = await db.Technology.findOne({
+        const result = await db.technologies.findOne({
             where: { id: id },
             raw: false,
         });
@@ -587,11 +595,11 @@ export const handleDeleteTechnology = async (data) => {
     const { technologyId, label } = data;
 
     try {
-        const isExisted = await db.Technology.findOne({
+        const isExisted = await db.technologies.findOne({
             where: { id: technologyId },
         });
         if (isExisted) {
-            await db.Technology.destroy({ where: { id: technologyId } });
+            await db.technologies.destroy({ where: { id: technologyId } });
 
             return {
                 errorCode: 0,

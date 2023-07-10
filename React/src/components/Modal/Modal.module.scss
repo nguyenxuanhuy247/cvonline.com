@@ -11,6 +11,8 @@
     z-index: 1000;
 
     .container {
+        max-height: calc(100% - 24px);
+        overflow: auto;
         width: 700px;
         max-width: calc(100% - 24px);
         background-color: #fff;
@@ -40,7 +42,7 @@
                 display: flex;
                 align-items: center;
                 color: red;
-                font-size: 40px;
+                font-size: 32px;
 
                 &:hover {
                     cursor: pointer;
@@ -91,6 +93,17 @@
     }
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.container {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
 }
@@ -103,50 +116,8 @@
                 min-width: 100px;
             }
 
-            .modal-header {
-                .title {
-                }
-
-                .close {
-                    &:hover {
-                    }
-                }
-            }
-
             .modal-body {
-                .image-display {
-                    .label {
-                        .image {
-                        }
-                    }
-                }
-
-                .actions {
-                    .change {
-                        .label {
-                        }
-                    }
-
-                    .crop {
-                    }
-
-                    .delete {
-                    }
-
-                    .right-icon {
-                    }
-                }
-            }
-
-            .modal-footer {
-                .btn {
-                }
-
-                .cancel {
-                }
-
-                .finish {
-                }
+                flex-direction: column;
             }
         }
     }

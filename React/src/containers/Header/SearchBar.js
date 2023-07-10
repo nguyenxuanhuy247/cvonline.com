@@ -74,7 +74,7 @@ class SearchBar extends PureComponent {
         }
     };
 
-    handleClearInputValue = (e) => {
+    handleClearInputValue = () => {
         const clearInputValueButton = document.getElementById('js-clear-input-value-button');
         clearInputValueButton?.classList.add(cx('hide'));
 
@@ -155,7 +155,7 @@ class SearchBar extends PureComponent {
                             <DefaultTippy content="Xóa" arrow="">
                                 <Button
                                     className={cx('clear', 'hide')}
-                                    onClick={(e) => this.handleClearInputValue(e)}
+                                    onClick={() => this.handleClearInputValue()}
                                     id="js-clear-input-value-button"
                                 >
                                     <GrClose />

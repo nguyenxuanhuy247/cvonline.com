@@ -25,7 +25,6 @@ class ContentEditableTag extends PureComponent {
                 placeholder={placeholder}
                 spellCheck="false"
                 tabIndex="0"
-                onMouseEnter={(e) => e.target.focus()}
                 dangerouslySetInnerHTML={{ __html: content }}
             ></p>
         );

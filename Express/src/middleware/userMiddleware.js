@@ -29,7 +29,7 @@ export const checkReqSignUp = (req, res, next) => {
 // CHECK SIGNIN INFO
 export const checkReqSignIn = (req, res, next) => {
     const { email, password } = req.body;
-
+    
     if (!email) {
         return res.status(400).json({
             errorCode: 10,

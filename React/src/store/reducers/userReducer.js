@@ -97,6 +97,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
+                productList: [],
             };
 
         default:

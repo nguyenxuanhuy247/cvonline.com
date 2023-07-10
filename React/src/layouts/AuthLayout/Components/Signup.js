@@ -19,11 +19,11 @@ class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            firstName: '',
-            lastName: '',
+            fullName: '',
             email: '',
             password: '',
             passwordConfirmation: '',
+            
             isShowPassword: false,
             delayRedirect: false,
         };

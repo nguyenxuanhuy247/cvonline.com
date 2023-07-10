@@ -100,7 +100,7 @@ class Technology extends PureComponent {
         }
     };
 
-    handleDropButton = (editButtonID) => {
+    handleClickToButton = (editButtonID) => {
         const dragEditButton = document.getElementById(editButtonID);
 
         if (dragEditButton) {
@@ -127,6 +127,10 @@ class Technology extends PureComponent {
         // Unhover Button
         if (button) {
             button.classList.remove(cx('hover-button'));
+
+            button.onmouseover = () => {
+                console.log('Unhover            ')
+            }
 
             if (editButton) {
                 editButton.style.display = 'none';
@@ -215,13 +219,18 @@ class Technology extends PureComponent {
                         onMouseEnter={() => this.handleHoverButtonAndShowEditButton(editButtonID, buttonID)}
                         onMouseLeave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonID)}
                         onMouseDown={() => this.handleDragButton(editButtonID)}
-                        onMouseUp={() => this.handleDropButton(editButtonID)}
+                        onMouseUp={() => this.handleClickToButton(editButtonID)}
+                        onMouseOver={() => console.log(1111111111)}
                         // =================================================================
                         draggable={draggable}
                         href={href}
                         dragDropAPIProps={dragDropAPIProps}
                     >
-                        <Image src={src || JpgImages.placeholder} className={cx('image')} />
+                        {type === 'TECHNOLOGY' ? (
+                            src && <Image src={src || JpgImages.placeholder} className={cx('image')} />
+                        ) : (
+                            <Image src={src || JpgImages.placeholder} className={cx('image')} />
+                        )}
 
                         {name && (
                             <span className={cx('name')} id={`js-name-button-${type}-${id}`}>
