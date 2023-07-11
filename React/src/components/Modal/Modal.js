@@ -1,6 +1,6 @@
 import { PureComponent } from 'react';
 import classnames from 'classnames/bind';
-import { AiFillCloseSquare } from 'react-icons/ai';
+import { MdClose } from 'react-icons/md';
 
 import styles from './Modal.module.scss';
 import Button from '~/components/Button/Button.js';
@@ -9,19 +9,19 @@ const cx = classnames.bind(styles);
 
 class ChangeImageModal extends PureComponent {
     render() {
-        const { title = 'Nhập tiêu đề của modal', onClose, onFinish, children, isCrop } = this.props;
+        const { title = 'Nhập tiêu đề của modal', round, onClose, onFinish, children } = this.props;
 
         return (
             <div className={cx('overlay')} onClick={onClose}>
-                <div className={cx('container')} onClick={(e) => e.stopPropagation()}>
+                <div className={cx('container', { 'round': round })} onClick={(e) => e.stopPropagation()}>
                     <div className={cx('modal-header')}>
                         <p className={cx('title')}>{title}</p>
                         <span className={cx('close')} onClick={onClose}>
-                            <AiFillCloseSquare />
+                            <MdClose />
                         </span>
                     </div>
 
-                    <div className={cx('modal-body', { 'iscrop': isCrop })}>{children}</div>
+                    <div className={cx('modal-body')}>{children}</div>
 
                     <div className={cx('modal-footer')}>
                         <Button className={cx('btn', 'cancel')} onClick={onClose}>

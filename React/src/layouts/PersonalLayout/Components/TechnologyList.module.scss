@@ -92,6 +92,7 @@
     .technology-list {
         &.sourcecode-list {
             flex-direction: column;
+            padding: 0;
         }
 
         .technology-list-inner {

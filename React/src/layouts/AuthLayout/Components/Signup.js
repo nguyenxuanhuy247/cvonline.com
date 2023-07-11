@@ -23,7 +23,7 @@ class Signup extends Component {
             email: '',
             password: '',
             passwordConfirmation: '',
-            
+
             isShowPassword: false,
             delayRedirect: false,
         };
@@ -101,6 +101,7 @@ class Signup extends Component {
                                             id="fullName"
                                             name="fullName"
                                             type="text"
+                                            spellCheck="false"
                                             placeholder="VD: Nguyễn Xuân Huy"
                                             className={cx('form-control')}
                                             value={this.state.fullName}
@@ -119,6 +120,7 @@ class Signup extends Component {
                                             id="email"
                                             name="email"
                                             type="text"
+                                            spellCheck="false"
                                             placeholder="VD: nguyenxuanhuy@gmail.com"
                                             className={cx('form-control')}
                                             value={this.state.email}
@@ -136,6 +138,7 @@ class Signup extends Component {
                                         <input
                                             id="password"
                                             name="password"
+                                            spellCheck="false"
                                             type={this.state.isShowPassword ? 'type' : 'password'}
                                             placeholder="VD: Abc123456@#"
                                             className={cx('form-control')}
@@ -157,6 +160,7 @@ class Signup extends Component {
                                         <input
                                             id="password_confirmation"
                                             name="password_confirmation"
+                                            spellCheck="false"
                                             placeholder="VD: Abc123456@#"
                                             type={this.state.isShowPassword ? 'type' : 'password'}
                                             className={cx('form-control')}

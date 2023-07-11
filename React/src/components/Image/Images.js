@@ -1,5 +1,5 @@
-
-import placeholder from '~/assets/img/img-placeholder.jpg';
+import imagePlaceholder from '~/assets/img/image-placeholder.jpg';
 import avatarPlaceholder from '~/assets/img/avatar-placeholder.jpg';
+import productPlaceholder from '~/assets/img/product-placeholder.jpg';
 
-export const JpgImages = { placeholder, avatarPlaceholder };
+export const JpgImages = { productPlaceholder, imagePlaceholder, avatarPlaceholder };

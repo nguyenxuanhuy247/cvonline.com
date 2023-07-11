@@ -166,6 +166,7 @@ class CreateEditTechnology extends PureComponent {
                     <input
                         id={`js-autofocus-input-${this.props.type}`}
                         type="text"
+                        spellCheck="false"
                         className={cx('input-form')}
                         placeholder={`Nhập tên ${label}`}
                         value={this.state.name}
@@ -174,6 +175,7 @@ class CreateEditTechnology extends PureComponent {
                     <input
                         hidden={type !== 'LIBRARY'}
                         type="text"
+                        spellCheck="false"
                         className={cx('input-form')}
                         placeholder="Nhập version"
                         value={this.state.version}
@@ -181,6 +183,7 @@ class CreateEditTechnology extends PureComponent {
                     />
                     <input
                         type="text"
+                        spellCheck="false"
                         className={cx('input-form')}
                         placeholder="Nhập link website"
                         value={this.state.link}

@@ -61,6 +61,7 @@
         }
 
         .image {
+            flex-shrink: 0;
             width: 24px;
             height: 24px;
             border-radius: 50%;
@@ -81,7 +82,7 @@
         .version {
             @include line-clamp;
 
-            padding-left: 8px;
+            max-width: 40%;
             margin-left: auto;
         }
     }

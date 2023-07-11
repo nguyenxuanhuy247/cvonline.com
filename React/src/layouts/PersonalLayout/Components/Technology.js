@@ -70,12 +70,14 @@ class Technology extends PureComponent {
         const button = document.getElementById(buttonID);
 
         if (button) {
-            button.classList.add(cx('hover-button'));
+            // After sorting, mouse keep hovering button
+            button.onmouseover = () => {
+                button.classList.add(cx('hover-button'));
 
-            // Show all drag buttons
-            if (editButton) {
-                editButton.style.display = 'flex';
-            }
+                if (editButton) {
+                    editButton.style.display = 'flex';
+                }
+            };
         }
     };
 
@@ -127,10 +129,6 @@ class Technology extends PureComponent {
         // Unhover Button
         if (button) {
             button.classList.remove(cx('hover-button'));
-
-            button.onmouseover = () => {
-                console.log('Unhover            ')
-            }
 
             if (editButton) {
                 editButton.style.display = 'none';
@@ -220,16 +218,15 @@ class Technology extends PureComponent {
                         onMouseLeave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonID)}
                         onMouseDown={() => this.handleDragButton(editButtonID)}
                         onMouseUp={() => this.handleClickToButton(editButtonID)}
-                        onMouseOver={() => console.log(1111111111)}
                         // =================================================================
                         draggable={draggable}
                         href={href}
                         dragDropAPIProps={dragDropAPIProps}
                     >
                         {type === 'TECHNOLOGY' ? (
-                            src && <Image src={src || JpgImages.placeholder} className={cx('image')} />
+                            src && <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
                         ) : (
-                            <Image src={src || JpgImages.placeholder} className={cx('image')} />
+                            <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
                         )}
 
                         {name && (

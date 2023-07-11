@@ -119,7 +119,22 @@ class TechnologyList extends PureComponent {
                     await this.props.onUpdateTechnology(dragOverItem_NewData);
                 }
 
-                this.setState({
+                const libraryList = document.getElementById(this.props.technologyListID);
+                if (libraryList) {
+                    Array.from(libraryList.childNodes).forEach((library) => {
+                        library.childNodes.forEach((button) => {
+                            if (button.nodeName === 'DIV') {
+                                button.style.display = 'none';
+                            }
+
+                            if (button.nodeName === 'BUTTON') {
+                                button.classList.remove(cx('drag-drop-hover'));
+                            }
+                        });
+                    });
+                }
+
+                await this.setState({
                     dragItemId: undefined,
                     dragElement: null,
                     dragOverItemId: undefined,

@@ -14,6 +14,7 @@ import { path } from '~/utils';
 import Menu from '~/components/Popover/Menu/Menu.js';
 import Button from '~/components/Button/Button.js';
 import SearchBar from '~/containers/Header/SearchBar.js';
+import { JpgImages } from '~/components/Image/Images.js';
 
 import { MENU_AVATAR_DATA } from '~/components/Popover/Menu/MenuData.js';
 
@@ -90,7 +91,7 @@ class Header extends PureComponent {
                         <Menu data={MENU_AVATAR_DATA}>
                             <Button className={cx('user')}>
                                 <Image
-                                    src={this.props?.avatar}
+                                    src={this.props?.avatar || JpgImages.avatarPlaceholder}
                                     wrapperClass={cx('wapper')}
                                     className={cx('avatar')}
                                     alt={this.props?.fullName}

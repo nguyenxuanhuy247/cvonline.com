@@ -21,6 +21,7 @@
     --button-bgc-green-01: #41bc8a;
     --button-bgc-green-02: #e5f7ed;
     --button-bgc-grey-01: #f4f5f5;
+    --button-bgc-grey-02: #ddd;
     --button-bgc-white: #fff;
 
     // Font fimily
@@ -42,6 +43,19 @@ body {
     font-family: var(--roboto-font) !important;
     font-size: 1.6rem !important;
     line-height: 1.4;
+}
+
+@media (max-width: 991px) {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    body {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
 }
 
 // Common

@@ -8,6 +8,7 @@ import Image from '~/components/Image/Image.js';
 import CommonUtils from '~/utils/CommonUtils.js';
 import Modal from '~/components/Modal/Modal.js';
 import CropImage from '~/components/Image/CropImage/CropImage.js';
+import { JpgImages } from '~/components/Image/Images.js';
 
 const cx = classnames.bind(styles);
 
@@ -66,22 +67,35 @@ class ChangeImageModal extends PureComponent {
         const { isOpenCropImageModal } = this.state;
 
         return !isOpenCropImageModal ? (
-            <Modal title="Thay đổi hình ảnh" onClose={() => onClose()} onFinish={() => this.handleFinishChangeImage()}>
-                <div className={cx('image-display')}>
-                    <div
-                        className={cx('label')}
+            <Modal
+                round={round}
+                title="Thay đổi hình ảnh"
+                onClose={() => onClose()}
+                onFinish={() => this.handleFinishChangeImage()}
+            >
+                <label
+                    className={cx('image-display')}
+                    style={{
+                        borderRadius: round ? '999px' : '0',
+                        aspectRatio: round ? 1 : 'auto',
+                    }}
+                    onChange={this.handleUploadImage}
+                    htmlFor="upload"
+                >
+                    <Image
+                        src={this.state.image || (!round && JpgImages.productPlaceholder)}
                         style={{
                             borderRadius: round ? '999px' : '0',
                             aspectRatio: round ? 1 : 'auto',
                         }}
-                    >
-                        <Image src={this.state.image} className={cx('image')} alt="Product Image" />
-                    </div>
-                </div>
+                        className={cx('image')}
+                        alt="Product Image"
+                    />
+                </label>
                 <div className={cx('actions')}>
                     <label className={cx('btn', 'change')} onChange={this.handleUploadImage} htmlFor="upload">
                         Tải ảnh
-                        <input id="upload" type="file" hidden />
+                        <input id="upload" type="file" hidden readOnly />
                     </label>
                     <Button
                         className={cx('btn', 'crop')}
@@ -97,7 +111,7 @@ class ChangeImageModal extends PureComponent {
             </Modal>
         ) : (
             <Modal
-                isCrop
+                round={round}
                 title="Thay đổi hình ảnh"
                 onClose={this.handleCloseCropImageModal}
                 onFinish={this.handleFinishDropImage}

@@ -17,6 +17,11 @@
                 font-weight: 600;
                 color: var(--text-color);
                 border-left: 4px solid var(--green-color-01);
+
+                &:hover {
+                    border: 1px dashed var(--green-color-01);
+                    border-left: 4px solid var(--green-color-01);
+                }
             }
 
             .product-desc {
@@ -48,8 +53,8 @@
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    font-size: 2rem;
-                    padding: 8px 16px;
+                    font-size: 1.8rem;
+                    padding: 8px 12px;
                     border-radius: 4px;
                     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
                     background-color: var(--primary-color);
@@ -260,6 +265,8 @@
                             display: flex;
                             align-items: center;
                             justify-content: space-between;
+                            flex-wrap: wrap;
+                            row-gap: 4px;
 
                             .button {
                                 flex: 0 1 14%;
@@ -328,6 +335,8 @@
 @media (min-width: 768px) and (max-width: 991px) {
     .product-container {
         .product {
+            padding: 12px;
+
             .product-name-desc-image {
                 .product-image {
                     margin-top: 12px;
@@ -349,6 +358,8 @@
 @media (max-width: 767px) {
     .product-container {
         .product {
+            padding: 12px;
+
             .product-name-desc-image {
                 .product-name {
                     word-break: break-word;

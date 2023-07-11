@@ -3,6 +3,7 @@ import classnames from 'classnames/bind';
 import Pagination from '@mui/material/Pagination';
 import { AiOutlineSortAscending, AiOutlineSortDescending, AiFillCloseCircle } from 'react-icons/ai';
 import _ from 'lodash';
+import { JpgImages } from '~/components/Image/Images.js';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import styles from './Product.module.scss';
@@ -398,7 +399,6 @@ class Product extends PureComponent {
                             className={cx('product-desc')}
                             spellCheck={false}
                             onBlur={(e) => this.handleUpdateProductDescToDatabase(e)}
-                            onMouseEnter={(e) => e.target.focus()}
                         ></p>
 
                         <div className={cx('product-image')}>
@@ -408,7 +408,7 @@ class Product extends PureComponent {
                             >
                                 Sửa ảnh
                             </div>
-                            <Image src={productInfo?.image} className={cx('image')} alt="Ảnh sản phẩm" />
+                            <Image src={productInfo?.image || JpgImages.productPlaceholder} className={cx('image')} alt="Ảnh sản phẩm" />
 
                             {this.state.isModalOpen && (
                                 <ChangeImageModal
@@ -473,6 +473,7 @@ class Product extends PureComponent {
                                         <input
                                             id={`js-search-input-FE-${productInfo?.id}`}
                                             value={this.state.FE_searchInputValue}
+                                            onChange={() => {}}
                                             autoComplete="off"
                                             type="text"
                                             placeholder="Tìm kiếm thư viện"
@@ -622,7 +623,8 @@ class Product extends PureComponent {
                                     <div className={cx('library-filter')}>
                                         <input
                                             id={`js-search-input-BE-${productInfo?.id}`}
-                                            value={this.state.BE_searchInputValue}
+                                            defaultValue={this.state.BE_searchInputValue}
+                                            onChange={() => {}}
                                             autoComplete="off"
                                             type="text"
                                             placeholder="Tìm kiếm thư viện"

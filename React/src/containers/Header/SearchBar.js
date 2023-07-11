@@ -142,7 +142,7 @@ class SearchBar extends PureComponent {
                                 value={this.state.searchValue}
                                 placeholder="Tìm kiếm sản phẩm"
                                 spellCheck={false}
-                                onInput={(e) => this.handleInputValue(e)}
+                                onChange={(e) => this.handleInputValue(e)}
                                 onFocus={(e) => this.handleInputValue(e)}
                             />
 

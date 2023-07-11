@@ -309,23 +309,22 @@ class PersonalLayout extends PureComponent {
         }
 
         // Set event for scroll to top button
-        const scrollToTopBottom = document.getElementById('scroll-to-top-bottom');
         const goToTopButton = document.getElementById('go-top-button');
         const goToBottomButton = document.getElementById('go-bottom-button');
 
         if (goToTopButton && goToBottomButton) {
             const checkHeight = () => {
                 const documentHeight = document.body.scrollHeight;
-                console.log('window.scrollY', window.scrollHeight);
+                const scrollTY_innerHeight = window.scrollY + window.innerHeight;
 
-                if (window.scrollY > 0) {
+                if (scrollTY_innerHeight >= documentHeight - 50) {
+                    goToBottomButton.style.display = 'none';
+                } else if (window.scrollY > 0) {
                     goToTopButton.style.display = 'grid';
+                    goToBottomButton.style.display = 'grid';
                 } else if (window.scrollY === 0) {
                     goToTopButton.style.display = 'none';
                 }
-                // else {
-                //     scrollToTopBottom.style.display = 'none';
-                // }
             };
 
             window.addEventListener('scroll', checkHeight);
@@ -396,6 +395,7 @@ class PersonalLayout extends PureComponent {
                                 onBlur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
                             />
                             <select
+                                value={this.props?.user?.jobPosition || ''}
                                 className={cx('select-job-title')}
                                 onMouseEnter={(e) => e.target.focus()}
                                 onChange={(e) => this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')}
@@ -484,7 +484,6 @@ class PersonalLayout extends PureComponent {
                                     className={cx('language-desc')}
                                     spellCheck={false}
                                     onBlur={(e) => this.handleUpdateLanguagesToDatabase(e)}
-                                    onMouseEnter={(e) => e.target.focus()}
                                 ></p>
                             </div>
                         </div>
@@ -527,7 +526,7 @@ class PersonalLayout extends PureComponent {
                     {this.props.isLoading && <Loading />}
                 </div>
 
-                <div className={cx('scroll-to-top-bottom')} id="scroll-to-top-bottom">
+                <div className={cx('scroll-to-top-bottom')}>
                     <DefaultTippy content="Cuộn lên đầu trang" arrow="">
                         <span className={cx('go-to-button', 'go-top')} id="go-top-button">
                             <FaArrowUp />

@@ -63,7 +63,7 @@ const CropImage = ({ src, round = false }, ref) => {
             </div>
             {!round && (
                 <div className={cx('ratio')}>
-                    <p className={cx('ratio-label')}>Tỉ lệ khung hình</p>
+                    <p className={cx('ratio-label')}>Tỉ lệ</p>
                     <div className={cx('ratio-list')}>
                         <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={1 / 1}>
                             1 : 1
