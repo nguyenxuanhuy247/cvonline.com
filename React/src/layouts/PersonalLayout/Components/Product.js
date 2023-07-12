@@ -290,7 +290,11 @@ class Product extends PureComponent {
             productContainer.onmouseleave = (e) => {
                 e.stopPropagation();
                 this.editProductId.current = setTimeout(() => {
-                    editProduct.style.display = 'none';
+                    //  [Responsive] Edit product only toggle in PC
+                    const viewportWidth = window.innerWidth;
+                    if (viewportWidth > 991) {
+                        editProduct.style.display = 'none';
+                    }
                 }, 200);
             };
 
@@ -372,6 +376,13 @@ class Product extends PureComponent {
 
         // =================================================================
 
+        const editProduct = document.getElementById(`js-edit-product-${productInfo?.id}`);
+        // [Responsive] Edit product always show in Mobile and Tablet
+        const viewportWidth = window.innerWidth;
+        if (editProduct && viewportWidth < 992) {
+            editProduct.style.display = 'flex';
+        }
+
         return (
             <div className={cx('product-container')} id={`js-product-${productInfo?.id}`}>
                 <EditProduct
@@ -408,7 +419,11 @@ class Product extends PureComponent {
                             >
                                 Sửa ảnh
                             </div>
-                            <Image src={productInfo?.image || JpgImages.productPlaceholder} className={cx('image')} alt="Ảnh sản phẩm" />
+                            <Image
+                                src={productInfo?.image || JpgImages.productPlaceholder}
+                                className={cx('image')}
+                                alt="Ảnh sản phẩm"
+                            />
 
                             {this.state.isModalOpen && (
                                 <ChangeImageModal

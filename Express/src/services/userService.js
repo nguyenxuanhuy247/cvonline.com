@@ -453,7 +453,7 @@ export const handleUpdateProduct = async (data) => {
     try {
         const product = await db.technologies.findOne({
             where: { id: productId, userId: userId },
-            raw: true,
+            raw: false,
         });
 
         if (product) {
@@ -575,7 +575,7 @@ export const handleUpdateTechnology = async (data) => {
     try {
         const result = await db.technologies.findOne({
             where: { id: id },
-            raw: true,
+            raw: false,
         });
 
         if (result) {
@@ -613,7 +613,7 @@ export const handleDeleteTechnology = async (data) => {
         const isExisted = await db.technologies.findOne({
             where: { id: technologyId },
         });
-        
+
         if (isExisted) {
             await db.technologies.destroy({ where: { id: technologyId } });
 

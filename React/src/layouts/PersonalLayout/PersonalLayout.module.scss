@@ -270,6 +270,7 @@
             .user-information {
                 @include flex-max-width-100;
                 display: flex;
+                padding: 12px;
 
                 .user-information-basic {
                     @include flex-max-width-50;
