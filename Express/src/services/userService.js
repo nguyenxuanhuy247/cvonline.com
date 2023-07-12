@@ -6,7 +6,7 @@ const salt = bcrypt.genSaltSync(10);
 // Email check function
 const checkUserEmailInDB = async (email) => {
     try {
-        let user = await db.users.findOne({ where: { email: email }, raw: false });
+        let user = await db.users.findOne({ where: { email: email }, raw: true });
 
         if (user) {
             return {
@@ -53,7 +53,7 @@ export const postUserSignUp = async (fullName, email, password) => {
                 email: email,
                 password: hashPassword,
             },
-            raw: false,
+            raw: true,
         });
 
         if (created) {
@@ -94,7 +94,7 @@ export const postUserSignIn = async (userEmail, userPassword) => {
             let user = await db.users.findOne({
                 where: { email: userEmail },
                 attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
-                raw: false,
+                raw: true,
             });
 
             if (user) {
@@ -152,7 +152,7 @@ export const handleGetUserInformation = async (data) => {
         let user = await db.users.findOne({
             where: { id: userId },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
-            raw: false,
+            raw: true,
         });
 
         if (user) {
@@ -188,7 +188,7 @@ export const handleUpdateUserInformation = async (data) => {
     try {
         const user = await db.users.findOne({
             where: { id: userId },
-            raw: false,
+            raw: true,
         });
 
         const keyArray = Object.keys(await db.users.rawAttributes);
