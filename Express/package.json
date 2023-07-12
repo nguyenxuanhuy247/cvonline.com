@@ -26,14 +26,15 @@
         "sequelize": "^6.31.0"
     },
     "devDependencies": {
-        "@babel/cli": "^7.21.0",
-        "@babel/core": "^7.21.4",
-        "@babel/node": "^7.20.7",
+        "@babel/cli": "^7.22.6",
+        "@babel/core": "^7.22.8",
+        "@babel/node": "^7.22.6",
         "@babel/plugin-transform-runtime": "^7.21.4",
         "@babel/preset-env": "^7.21.4",
-        "babel-cli": "^6.26.0",
+        "babel-jest": "^29.6.1",
         "babel-plugin-module-resolver": "^5.0.0",
         "nodemon": "^2.0.22",
+        "regenerator-runtime": "^0.13.11",
         "sequelize-cli": "^6.6.0"
     }
 }

@@ -1,11 +1,11 @@
 import { Component } from 'react';
-import className from 'classnames/bind';
+import classnames from 'classnames/bind';
 import { FaFacebook } from 'react-icons/fa';
 import { BsGoogle } from 'react-icons/bs';
 
 import styles from './FacebookGoogle.module.scss';
 
-const cx = className.bind(styles);
+const cx = classnames.bind(styles);
 
 class FacebookGoogle extends Component {
     render() {

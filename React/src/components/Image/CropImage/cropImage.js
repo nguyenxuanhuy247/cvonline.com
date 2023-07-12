@@ -8,6 +8,7 @@ import Button from '~/components/Button/Button.js';
 import styles from './CropImage.module.scss';
 
 const cx = classnames.bind(styles);
+
 const CropImage = ({ src, round = false }, ref) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [rotation, setRotation] = useState(0);
