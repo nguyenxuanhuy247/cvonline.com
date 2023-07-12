@@ -108,7 +108,7 @@ class Signup extends Component {
                                             onChange={(event) => this.handleChangeInputField(event, 'fullName')}
                                         />
                                     </div>
-                                    <span className={cx('form-message')}></span>
+                                    <p className={cx('form-message')}></p>
                                 </div>
 
                                 <div className={cx('form-group')}>
@@ -127,7 +127,7 @@ class Signup extends Component {
                                             onChange={(event) => this.handleChangeInputField(event, 'email')}
                                         />
                                     </div>
-                                    <span className={cx('form-message')}></span>
+                                    <p className={cx('form-message')}></p>
                                 </div>
 
                                 <div className={cx('form-group')}>
@@ -149,7 +149,7 @@ class Signup extends Component {
                                             <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
                                         </div>
                                     </div>
-                                    <span className={cx('form-message')}></span>
+                                    <p className={cx('form-message')}></p>
                                 </div>
 
                                 <div className={cx('form-group')}>
@@ -173,7 +173,7 @@ class Signup extends Component {
                                             <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
                                         </div>
                                     </div>
-                                    <span className={cx('form-message')}></span>
+                                    <p className={cx('form-message')}></p>
                                 </div>
                                 <Button className={cx('submit-btn')}>Đăng ký</Button>
                             </form>

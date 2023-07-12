@@ -19,6 +19,14 @@
         .form-group {
             overflow: hidden;
 
+            &.invalid {
+                .form-input {
+                    .form-control {
+                        border-color: #f33a58;
+                    }
+                }
+            }
+
             .form-input {
                 display: flex;
                 flex-direction: column;
@@ -38,10 +46,6 @@
                     border-radius: 4px;
                     outline: none;
                     font-size: 1.4rem;
-
-                    &.invalid {
-                        border-color: #f33a58;
-                    }
 
                     &:hover {
                         border-color: #1dbfaf;
@@ -70,7 +74,7 @@
                 margin: 4px 0 16px;
                 height: 20px;
                 overflow: hidden;
-                text-align: left;
+                text-align: center;
                 color: #f33a58;
             }
         }

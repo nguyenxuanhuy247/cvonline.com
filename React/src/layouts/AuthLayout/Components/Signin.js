@@ -130,7 +130,7 @@ class SignIn extends Component {
                                             <Eye className={cx('eye')} onClick={() => this.handleShowHidePassword()} />
                                         </div>
                                     </div>
-                                    <span className={cx('form-message')}></span>
+                                    <p className={cx('form-message')}></p>
                                 </div>
 
                                 <a href="#!" className={cx('forgot-password')}>

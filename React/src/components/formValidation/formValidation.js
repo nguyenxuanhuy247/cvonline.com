@@ -24,9 +24,7 @@ const Validator = (options, invalid, fetchData) => {
             switch (inputElement.type) {
                 case 'radio':
                 case 'checkbox':
-                    errorMessage = rules[i](
-                        formElement.querySelector(rule.selector + ':checked')
-                    );
+                    errorMessage = rules[i](formElement.querySelector(rule.selector + ':checked'));
                     break;
                 default:
                     errorMessage = rules[i](inputElement.value);
@@ -34,7 +32,7 @@ const Validator = (options, invalid, fetchData) => {
             if (errorMessage) break;
         }
 
-        if (errorMessage) {
+        if (errorMessage && messageElement) {
             messageElement.innerText = errorMessage;
             getParent(inputElement, options.formGroupSelector).classList.add(invalid);
         } else {
@@ -111,7 +109,7 @@ const Validator = (options, invalid, fetchData) => {
             }
 
             let inputElements = formElement.querySelectorAll(rule.selector);
-            
+
             Array.from(inputElements).forEach(function (inputElement) {
                 // Xử lý trường hợp blur khỏi input
                 inputElement.onblur = function () {
