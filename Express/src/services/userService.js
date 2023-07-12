@@ -6,11 +6,12 @@ const salt = bcrypt.genSaltSync(10);
 // Email check function
 const checkUserEmailInDB = async (email) => {
     try {
-        let user = await db.users.findOne({ where: { email: email } });
+        let user = await db.users.findOne({ where: { email: email }, raw: false });
 
         if (user) {
             return {
                 errorCode: 0,
+                errorMessage: `Email hợp lệ`,
             };
         } else {
             return {
@@ -52,6 +53,7 @@ export const postUserSignUp = async (fullName, email, password) => {
                 email: email,
                 password: hashPassword,
             },
+            raw: false,
         });
 
         if (created) {
@@ -92,6 +94,7 @@ export const postUserSignIn = async (userEmail, userPassword) => {
             let user = await db.users.findOne({
                 where: { email: userEmail },
                 attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
+                raw: false,
             });
 
             if (user) {
@@ -149,6 +152,7 @@ export const handleGetUserInformation = async (data) => {
         let user = await db.users.findOne({
             where: { id: userId },
             attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+            raw: false,
         });
 
         if (user) {
