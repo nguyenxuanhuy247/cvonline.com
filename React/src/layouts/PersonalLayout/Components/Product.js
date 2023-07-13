@@ -154,7 +154,7 @@ class Product extends PureComponent {
         const resultNotFound = document.getElementById(`js-result-not-found-${side}`);
         const searchInputElement = document.getElementById(`js-search-input-${side}-${productInfo?.id}`);
         const value = searchInputElement?.value?.trim();
-
+        console.log('Search ', value);
         // Check value is not empty
         if (value) {
             await this.setState({ [isSearch]: true, [searchInputValue]: value });
@@ -237,8 +237,9 @@ class Product extends PureComponent {
 
     handleClearSearchValueInput = async (side) => {
         const searchInputValue = side === 'FE' ? 'FE_searchInputValue' : 'BE_searchInputValue';
+        console.log(searchInputValue);
         await this.setState({ [searchInputValue]: '' });
-        this.handleSearchLibrary(side);
+        await this.handleSearchLibrary(side);
     };
 
     // =================================================================
@@ -261,6 +262,13 @@ class Product extends PureComponent {
             const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
             productDescElement.innerText = productInfo?.desc;
         }
+
+        // [Responsive] Edit product always show in Mobile and Tablet
+        const editProduct = document.getElementById(`js-edit-product-${productInfo?.id}`);
+        const viewportWidth = window.innerWidth;
+        if (editProduct && viewportWidth < 992) {
+            editProduct.style.display = 'flex';
+        }
     }
 
     async componentDidMount() {
@@ -270,8 +278,10 @@ class Product extends PureComponent {
         const BE_searchInputElement = document.getElementById(`js-search-input-BE-${productInfo?.id}`);
 
         // Handle event Input search Library
-        FE_searchInputElement.oninput = () => this.handleSearchLibrary('FE');
-        BE_searchInputElement.oninput = () => this.handleSearchLibrary('BE');
+        if (FE_searchInputElement && BE_searchInputElement) {
+            FE_searchInputElement.oninput = () => this.handleSearchLibrary('FE');
+            BE_searchInputElement.oninput = () => this.handleSearchLibrary('BE');
+        }
 
         // Set product desc from database by JS
         const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
@@ -301,6 +311,13 @@ class Product extends PureComponent {
             editProduct.onmouseenter = () => {
                 clearTimeout(this.editProductId.current);
             };
+        }
+
+        // [Responsive] Edit product always show in Mobile and Tablet
+        const editProductEl = document.getElementById(`js-edit-product-${productInfo?.id}`);
+        const viewportWidth = window.innerWidth;
+        if (editProductEl && viewportWidth < 992) {
+            editProductEl.style.display = 'flex';
         }
     }
 
@@ -375,13 +392,6 @@ class Product extends PureComponent {
         }
 
         // =================================================================
-
-        const editProduct = document.getElementById(`js-edit-product-${productInfo?.id}`);
-        // [Responsive] Edit product always show in Mobile and Tablet
-        const viewportWidth = window.innerWidth;
-        if (editProduct && viewportWidth < 992) {
-            editProduct.style.display = 'flex';
-        }
 
         return (
             <div className={cx('product-container')} id={`js-product-${productInfo?.id}`}>

@@ -16,13 +16,6 @@ export const checkReqSignUp = (req, res, next) => {
         });
     }
 
-    if (!password) {
-        return res.status(400).json({
-            errorCode: 12,
-            errorMessage: 'Vui lòng nhập Mật khẩu',
-        });
-    }
-
     next();
 };
 

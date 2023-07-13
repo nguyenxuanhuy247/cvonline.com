@@ -40,10 +40,8 @@ const hashUserPassword = async (password) => {
 };
 
 // Connect signup with Database
-export const postUserSignUp = async (fullName, email, password) => {
+export const postUserSignUp = async (fullName, email) => {
     try {
-        let hashPassword = await hashUserPassword(password);
-
         const [user, created] = await db.users.findOrCreate({
             where: {
                 email: email,
@@ -51,8 +49,8 @@ export const postUserSignUp = async (fullName, email, password) => {
             defaults: {
                 fullName: fullName,
                 email: email,
-                password: hashPassword,
             },
+            attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
             raw: true,
         });
 
@@ -64,15 +62,30 @@ export const postUserSignUp = async (fullName, email, password) => {
                 productOrder: 1,
             });
 
+
             return {
                 errorCode: 0,
                 errorMessage: `Bạn vừa đăng ký tài khoản thành công`,
+                data: user,
             };
         } else {
-            return {
-                errorCode: 32,
-                errorMessage: `Email của bạn đã được đăng ký`,
-            };
+            // Compare password
+            let isPasswordMatch = await bcrypt.compareSync(userPassword, user.password);
+
+            if (isPasswordMatch) {
+                delete user.password;
+                console.log('sssssssss', user.password);
+                const avatar = user.avatar;
+                const binaryAvatar = avatar?.toString('binary');
+
+                const newUser = { ...user, avatar: binaryAvatar };
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Đăng nhập bằng Google thành công`,
+                    data: newUser,
+                };
+            }
         }
     } catch (error) {
         console.log('An error in postUserSignUp() in userService.js : ', error);
@@ -188,7 +201,7 @@ export const handleUpdateUserInformation = async (data) => {
     try {
         const user = await db.users.findOne({
             where: { id: userId },
-            raw: true,
+            raw: false,
         });
 
         const keyArray = Object.keys(await db.users.rawAttributes);

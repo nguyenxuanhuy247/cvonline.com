@@ -36,149 +36,153 @@
             background-color: #37474f;
             height: auto;
 
-            .avatar-wrapper {
-                display: grid;
-                place-items: center;
-                margin: 20px 0;
+            .user-information-basic {
+                .avatar-wrapper {
+                    display: grid;
+                    place-items: center;
+                    margin: 20px 0;
 
-                .border-outline {
-                    border-radius: 50%;
-                    border: 8px solid var(--primary-color);
-                    outline: 12px solid rgba(73, 178, 83, 0.4);
+                    .border-outline {
+                        border-radius: 50%;
+                        border: 8px solid var(--primary-color);
+                        outline: 12px solid rgba(73, 178, 83, 0.4);
 
-                    .tooltip {
-                        padding: 8px 16px;
-                        border-radius: 4px;
-                        box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
-                        background-color: var(--primary-color);
-                        color: #fff;
-
-                        &:hover {
-                            cursor: pointer;
-                        }
-                    }
-
-                    .avatar {
-                        width: 170px;
-                        height: 170px;
-                    }
-                }
-            }
-
-            .full-name {
-                margin-top: 24px;
-                text-align: center;
-                font-size: 2.5rem;
-                line-height: 1.5;
-                font-weight: 600;
-                word-break: break-word;
-            }
-
-            .select-job-title {
-                margin-bottom: 20px;
-                width: 100%;
-                font-weight: 400;
-                background-color: transparent;
-                padding: 4px;
-                color: #fff;
-                font-size: 2.2rem;
-                text-align: center;
-                border: 1px dashed transparent;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                appearance: none;
-
-                &:hover {
-                    cursor: pointer;
-                    border: 1px dashed #999;
-                }
-
-                .option-job-title {
-                    display: block;
-                    background: var(--button-bgc-green-02);
-                    color: var(--primary-color);
-                }
-            }
-
-            .candidate-info {
-                margin-top: 12px;
-                padding: 24px 0;
-                border-top: 1px solid #fff;
-
-                .text {
-                    font-size: 1.8rem;
-                    font-weight: 600;
-                }
-
-                .content {
-                    margin-top: 12px;
-                    display: flex;
-                    flex-direction: column;
-                    row-gap: 8px;
-
-                    .info {
-                        display: flex;
-                        padding-left: 8px;
-
-                        .icon {
-                            height: 30px;
-                            width: 30px;
-                            border-radius: 50%;
+                        .tooltip {
+                            padding: 8px 16px;
+                            border-radius: 4px;
+                            box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
                             background-color: var(--primary-color);
-                            margin-right: 8px;
-                            padding: 4px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            flex-shrink: 0;
                             color: #fff;
+
+                            &:hover {
+                                cursor: pointer;
+                            }
                         }
 
-                        .info-text {
-                            width: 100%;
-                            font-size: 1.5rem;
-                            line-height: 1.6;
-                            font-weight: 300;
-                            word-break: break-word;
+                        .avatar {
+                            width: 200px;
+                            height: 200px;
+                        }
+                    }
+                }
 
-                            &.email {
-                                padding: 0.1em 0.4em;
-                                cursor: not-allowed;
-                                outline: none;
-                                border: none;
+                .full-name {
+                    margin-top: 24px;
+                    text-align: center;
+                    font-size: 2.5rem;
+                    line-height: 1.5;
+                    font-weight: 600;
+                    word-break: break-word;
+                }
+
+                .select-job-title {
+                    margin-bottom: 20px;
+                    width: 100%;
+                    font-weight: 400;
+                    background-color: transparent;
+                    padding: 4px;
+                    color: #fff;
+                    font-size: 2.2rem;
+                    text-align: center;
+                    border: 1px dashed transparent;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    appearance: none;
+
+                    &:hover {
+                        cursor: pointer;
+                        border: 1px dashed #999;
+                    }
+
+                    .option-job-title {
+                        display: block;
+                        background: var(--button-bgc-green-02);
+                        color: var(--primary-color);
+                    }
+                }
+            }
+
+            .user-information-detail {
+                .candidate-info {
+                    margin-top: 12px;
+                    padding: 24px 0;
+                    border-top: 1px solid #fff;
+
+                    .text {
+                        font-size: 1.8rem;
+                        font-weight: 600;
+                    }
+
+                    .content {
+                        margin-top: 12px;
+                        display: flex;
+                        flex-direction: column;
+                        row-gap: 8px;
+
+                        .info {
+                            display: flex;
+                            padding-left: 8px;
+
+                            .icon {
+                                height: 30px;
+                                width: 30px;
+                                border-radius: 50%;
+                                background-color: var(--primary-color);
+                                margin-right: 8px;
+                                padding: 4px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                flex-shrink: 0;
+                                color: #fff;
+                            }
+
+                            .info-text {
+                                width: 100%;
+                                font-size: 1.5rem;
+                                line-height: 1.6;
+                                font-weight: 300;
+                                word-break: break-word;
+
+                                &.email {
+                                    padding: 0.1em 0.4em;
+                                    cursor: not-allowed;
+                                    outline: none;
+                                    border: none;
+                                }
                             }
                         }
                     }
-                }
 
-                .language-desc {
-                    width: 100%;
-                    background-color: transparent;
-                    color: #fff;
-                    font-size: 1.5rem;
-                    line-height: 1.6;
-                    font-weight: 300;
-                    word-break: break-all;
-                    overflow: hidden;
-                    margin-top: 12px;
-                    overflow: hidden;
-                    padding: 4px 4px 4px 12px;
-                    resize: none;
-                    border: 1px solid transparent;
-                    word-break: break-word;
-
-                    &:empty:not(:focus):before {
-                        content: attr(placeholder);
-                        color: #999;
-                        font-style: italic;
+                    .language-desc {
+                        width: 100%;
+                        background-color: transparent;
+                        color: #fff;
+                        font-size: 1.5rem;
+                        line-height: 1.6;
                         font-weight: 300;
-                    }
+                        word-break: break-all;
+                        overflow: hidden;
+                        margin-top: 12px;
+                        overflow: hidden;
+                        padding: 4px 4px 4px 12px;
+                        resize: none;
+                        border: 1px solid transparent;
+                        word-break: break-word;
 
-                    &:focus,
-                    &:hover {
-                        cursor: text;
-                        outline: none;
-                        border: 1px dashed #999;
+                        &:empty:not(:focus):before {
+                            content: attr(placeholder);
+                            color: #999;
+                            font-style: italic;
+                            font-weight: 300;
+                        }
+
+                        &:focus,
+                        &:hover {
+                            cursor: text;
+                            outline: none;
+                            border: 1px dashed #999;
+                        }
                     }
                 }
             }
@@ -239,9 +243,6 @@
             color: #fff;
             font-size: 20px;
             cursor: pointer;
-
-            &.go-top {
-            }
 
             &.go-bottom {
                 display: grid;
@@ -312,6 +313,13 @@
 
             .user-information {
                 @include flex-max-width-100;
+                padding: 12px;
+
+                .user-information-basic {
+                    .select-job-title {
+                        margin-bottom: 12px;
+                    }
+                }
 
                 .user-information-detail {
                     .candidate-info {

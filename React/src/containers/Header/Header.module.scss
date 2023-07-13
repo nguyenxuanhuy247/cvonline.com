@@ -142,7 +142,6 @@
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
     .header {
-
         .search-bar {
             @include flex-max-width-50;
         }
@@ -155,12 +154,20 @@
         column-gap: 12px;
         padding: 0 12px;
 
+        .logo-link {
+
+            .logo {
+                height: 36px;
+            }
+        }
+
         .search-bar {
             @include flex-max-width-60;
         }
 
         .login {
             .user {
+                padding: 0;
                 background-color: #fff;
 
                 .fullname {

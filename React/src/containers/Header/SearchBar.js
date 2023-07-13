@@ -85,92 +85,88 @@ class SearchBar extends PureComponent {
         const { className } = this.props;
 
         return (
-            <div className={cx('container', className)}>
-                <div style={{ width: '100%' }}>
-                    <HeadlessTippy
-                        visible={this.state.visible}
-                        onClickOutside={() => this.setState({ visible: false })}
-                        zIndex="10"
-                        placement="bottom"
-                        interactive
-                        delay={[0, 300]}
-                        offset={[0, 10]}
-                        render={(attrs) => (
-                            <div tabIndex="-1" {...attrs}>
-                                <div className={cx('search-result-tooltip')}>
-                                    <div className={cx('search-result-container')} id="js-container-search-result">
-                                        {this.props.productList?.map((product, index) => {
-                                            const productDescResult = document.getElementById(
-                                                `js-search-result-desc-${product.id}`,
-                                            );
+            <HeadlessTippy
+                visible={this.state.visible}
+                onClickOutside={() => this.setState({ visible: false })}
+                zIndex="10"
+                placement="bottom"
+                interactive
+                delay={[0, 300]}
+                offset={[0, 10]}
+                render={(attrs) => (
+                    <div tabIndex="-1" {...attrs}>
+                        <div className={cx('search-result-tooltip')}>
+                            <div className={cx('search-result-container')} id="js-container-search-result">
+                                {this.props.productList?.map((product, index) => {
+                                    const productDescResult = document.getElementById(
+                                        `js-search-result-desc-${product.id}`,
+                                    );
 
-                                            if (productDescResult) {
-                                                productDescResult.innerText = product.desc;
-                                            }
+                                    if (productDescResult) {
+                                        productDescResult.innerText = product.desc;
+                                    }
 
-                                            return (
-                                                <div
-                                                    key={index}
-                                                    className={cx('short-search-result')}
-                                                    id={`js-short-search-result-${product.id}`}
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={cx('short-search-result')}
+                                            id={`js-short-search-result-${product.id}`}
+                                        >
+                                            <div className={cx('product-name-desc')}>
+                                                <p
+                                                    className={cx('product-name')}
+                                                    id={`js-search-result-name-${product.id}`}
                                                 >
-                                                    <div className={cx('product-name-desc')}>
-                                                        <p
-                                                            className={cx('product-name')}
-                                                            id={`js-search-result-name-${product.id}`}
-                                                        >
-                                                            {product.name}
-                                                        </p>
-                                                        <p
-                                                            className={cx('product-desc')}
-                                                            id={`js-search-result-desc-${product.id}`}
-                                                        ></p>
-                                                    </div>
-                                                    <Image src={product.image} className={cx('product-image')} />
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                    <p className={cx('not-found-result', 'hide')}>Không tìm thấy sản phẩm nào</p>
-                                </div>
+                                                    {product.name}
+                                                </p>
+                                                <p
+                                                    className={cx('product-desc')}
+                                                    id={`js-search-result-desc-${product.id}`}
+                                                ></p>
+                                            </div>
+                                            <Image src={product.image} className={cx('product-image')} />
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        )}
-                    >
-                        <div className={cx('search-bar')}>
-                            <input
-                                className={cx('search-input')}
-                                value={this.state.searchValue}
-                                placeholder="Tìm kiếm sản phẩm"
-                                spellCheck={false}
-                                onChange={(e) => this.handleInputValue(e)}
-                                onFocus={(e) => this.handleInputValue(e)}
-                            />
-
-                            <DefaultTippy content="Bàn phím ảo" arrow="">
-                                <Button className={cx('keyboard')}>
-                                    <BsKeyboard />
-                                </Button>
-                            </DefaultTippy>
-
-                            <DefaultTippy content="Xóa" arrow="">
-                                <Button
-                                    className={cx('clear', 'hide')}
-                                    onClick={() => this.handleClearInputValue()}
-                                    id="js-clear-input-value-button"
-                                >
-                                    <GrClose />
-                                </Button>
-                            </DefaultTippy>
-
-                            <DefaultTippy content="Tìm kiếm" arrow="">
-                                <Button className={cx('magnify')}>
-                                    <FiSearch />
-                                </Button>
-                            </DefaultTippy>
+                            <p className={cx('not-found-result', 'hide')}>Không tìm thấy sản phẩm nào</p>
                         </div>
-                    </HeadlessTippy>
+                    </div>
+                )}
+            >
+                <div className={cx('search-bar', className)}>
+                    <input
+                        className={cx('search-input')}
+                        value={this.state.searchValue}
+                        placeholder="Tìm kiếm sản phẩm"
+                        spellCheck={false}
+                        onChange={(e) => this.handleInputValue(e)}
+                        onFocus={(e) => this.handleInputValue(e)}
+                    />
+
+                    <DefaultTippy content="Bàn phím ảo" arrow="">
+                        <Button className={cx('keyboard')}>
+                            <BsKeyboard />
+                        </Button>
+                    </DefaultTippy>
+
+                    <DefaultTippy content="Xóa" arrow="">
+                        <Button
+                            className={cx('clear', 'hide')}
+                            onClick={() => this.handleClearInputValue()}
+                            id="js-clear-input-value-button"
+                        >
+                            <GrClose />
+                        </Button>
+                    </DefaultTippy>
+
+                    <DefaultTippy content="Tìm kiếm" arrow="">
+                        <Button className={cx('magnify')}>
+                            <FiSearch />
+                        </Button>
+                    </DefaultTippy>
                 </div>
-            </div>
+            </HeadlessTippy>
         );
     }
 }

@@ -12,15 +12,18 @@ export const userSignUpStart = (userData) => {
             if (errorCode === 0) {
                 Toast.TOP_CENTER_SUCCESS(errorMessage, 3000);
                 dispatch(userSignUpSuccess());
+                return errorCode;
             } else {
                 Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(userSignUpFail());
+                return errorCode;
             }
         } catch (error) {
-            const { errorMessage } = error.response?.data ?? {};
+            const { errorMessage, errorCode } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             dispatch(userSignUpFail());
             console.log('An error in userSignUpStart() - userActions.js: ', error);
+            return errorCode;
         }
     };
 };
@@ -38,7 +41,7 @@ export const userSignInStart = (userData) => {
     return async (dispatch) => {
         dispatch({ type: actionNames.USER_SIGNIN_START });
         try {
-            let res = await userService.postSignIn(userData.email, userData.password);
+            let res = await userService.postSignIn(userData);
             const { errorCode, errorMessage, data } = res;
             if (errorCode === 0) {
                 Toast.TOP_CENTER_SUCCESS(errorMessage, 3000);

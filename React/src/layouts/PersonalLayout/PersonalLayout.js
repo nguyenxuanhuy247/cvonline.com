@@ -6,7 +6,6 @@ import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
 import HeadlessTippy from '@tippyjs/react/headless';
-import DefaultTippy from '@tippyjs/react';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import Header from '~/containers/Header/Header.js';
@@ -220,6 +219,11 @@ class PersonalLayout extends PureComponent {
 
                 if (errorCode2 === 0) {
                     await this.props.readProductList(userId);
+
+                    const upperEditProduct = document.getElementById(`js-edit-product-${moveItemOrder.productId}`);
+                    if (upperEditProduct) {
+                        upperEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
             }
         } else {
@@ -233,6 +237,7 @@ class PersonalLayout extends PureComponent {
         const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
             return a.order - b.order;
         });
+
         const productExchange = ASCOrderProductList?.map((productID) => {
             return { userId: userId, productId: productID.productInfo.id, productOrder: productID.order };
         });
@@ -250,6 +255,7 @@ class PersonalLayout extends PureComponent {
                 label: 'Vị trí của sản phẩm',
             };
 
+            
             const changedMoveItem = {
                 userId: userId,
                 productId: moveItemOrder.productId,
@@ -263,6 +269,12 @@ class PersonalLayout extends PureComponent {
 
                 if (errorCode2 === 0) {
                     await this.props.readProductList(userId);
+
+                    const lowerEditProduct = document.getElementById(`js-edit-product-${moveItemOrder.productId}`);
+                    if (lowerEditProduct) {
+                        console.log(lowerEditProduct)
+                        lowerEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
             }
         } else {
@@ -318,6 +330,7 @@ class PersonalLayout extends PureComponent {
                 const scrollTY_innerHeight = window.scrollY + window.innerHeight;
 
                 if (scrollTY_innerHeight >= documentHeight - 50) {
+                    goToTopButton.style.display = 'grid';
                     goToBottomButton.style.display = 'none';
                 } else if (window.scrollY > 0) {
                     goToTopButton.style.display = 'grid';
@@ -527,16 +540,12 @@ class PersonalLayout extends PureComponent {
                 </div>
 
                 <div className={cx('scroll-to-top-bottom')}>
-                    <DefaultTippy content="Cuộn lên đầu trang" arrow="">
-                        <span className={cx('go-to-button', 'go-top')} id="go-top-button">
-                            <FaArrowUp />
-                        </span>
-                    </DefaultTippy>
-                    <DefaultTippy content="Cuộn lên đầu trang" arrow="">
-                        <span className={cx('go-to-button', 'go-bottom')} id="go-bottom-button">
-                            <FaArrowDown />
-                        </span>
-                    </DefaultTippy>
+                    <span className={cx('go-to-button', 'go-top')} id="go-top-button">
+                        <FaArrowUp />
+                    </span>
+                    <span className={cx('go-to-button', 'go-bottom')} id="go-bottom-button">
+                        <FaArrowDown />
+                    </span>
                 </div>
             </div>
         );

@@ -3,19 +3,12 @@ import axios from '~/config/axios.js';
 // =============================================================================
 // HANDLE SIGNUP
 export const postSignUp = (userData) => {
-    return axios.post(`/api/signup`, {
-        fullName: userData.fullName,
-        email: userData.email,
-        password: userData.password,
-    });
+    return axios.post(`/api/signup`, userData);
 };
 
 // HANDLE SIGNIN
-export const postSignIn = (userEmail, userPassword) => {
-    return axios.post(`/api/signin`, {
-        email: userEmail,
-        password: userPassword,
-    });
+export const postSignIn = (userData) => {
+    return axios.post(`/api/signin`, userData);
 };
 
 // =============================================================================

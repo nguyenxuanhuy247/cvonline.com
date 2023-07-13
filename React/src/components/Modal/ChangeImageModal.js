@@ -78,6 +78,7 @@ class ChangeImageModal extends PureComponent {
                     style={{
                         borderRadius: round ? '999px' : '0',
                         aspectRatio: round ? 1 : 'auto',
+                        margin: round ? '8px' : '0',
                     }}
                     onChange={this.handleUploadImage}
                     htmlFor="upload"

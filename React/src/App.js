@@ -33,7 +33,7 @@ class App extends Component {
                     draggable
                     pauseOnHover
                     theme="colored"
-                    style={{ width: 'fit-content' }}
+                    style={{ width: 'fit-content', textAlign: 'center' }}
                 />
             </div>
         );

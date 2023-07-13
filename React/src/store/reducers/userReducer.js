@@ -30,7 +30,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, signup: false },
-                isSignUp: false,
+                isSignUp: true,
             };
 
         // USER SIGN IN

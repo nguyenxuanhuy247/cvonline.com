@@ -115,16 +115,6 @@ a {
     overflow: hidden;
 }
 
-@mixin signin-signup-container {
-    font-family: var(--alexandria-font);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    user-select: none;
-    background-color: var(--bgc-white);
-}
-
 @mixin auth-logo {
     display: block;
     height: 10vmin;
