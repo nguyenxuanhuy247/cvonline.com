@@ -8,14 +8,10 @@ const actionMaker = (text_1, text_2) => {
 
 const actionNames = Object.freeze({
     // USER SIGN IN
-    USER_SIGNUP_START: 'USER_SIGNUP_START',
-    USER_SIGNUP_SUCCESS: 'USER_SIGNUP_SUCCESS',
-    USER_SIGNUP_FAIL: 'USER_SIGNUP_FAIL',
+    ...actionMaker(`USER`, `SIGNIN`),
 
-    // USER SIGN UP
-    USER_SIGNIN_START: 'USER_SIGNIN_START',
-    USER_SIGNIN_SUCCESS: 'USER_SIGNIN_SUCCESS',
-    USER_SIGNIN_FAIL: 'USER_SIGNIN_FAIL',
+    // USER CHANGE PASSWORD
+    ...actionMaker(`USER`, `CHANGE_PASSWORD`),
 
     // USER SIGN OUT
     USER_SIGNOUT: 'USER_SIGNOUT',

@@ -20,6 +20,7 @@ class Product extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            isFE: true,
             FE_isPagination: true,
             FE_Page: 1,
             FE_PageSize: 10,
@@ -27,6 +28,7 @@ class Product extends PureComponent {
             FE_isSearch: false,
             FE_searchInputValue: '',
 
+            isBE: true,
             BE_isPagination: true,
             BE_Page: 1,
             BE_PageSize: 10,
@@ -36,8 +38,6 @@ class Product extends PureComponent {
 
             isModalOpen: false,
         };
-
-        this.editProductId = React.createRef();
     }
 
     // =================================================================
@@ -154,7 +154,7 @@ class Product extends PureComponent {
         const resultNotFound = document.getElementById(`js-result-not-found-${side}`);
         const searchInputElement = document.getElementById(`js-search-input-${side}-${productInfo?.id}`);
         const value = searchInputElement?.value?.trim();
-        console.log('Search ', value);
+
         // Check value is not empty
         if (value) {
             await this.setState({ [isSearch]: true, [searchInputValue]: value });
@@ -237,7 +237,7 @@ class Product extends PureComponent {
 
     handleClearSearchValueInput = async (side) => {
         const searchInputValue = side === 'FE' ? 'FE_searchInputValue' : 'BE_searchInputValue';
-        console.log(searchInputValue);
+
         await this.setState({ [searchInputValue]: '' });
         await this.handleSearchLibrary(side);
     };
@@ -246,6 +246,7 @@ class Product extends PureComponent {
 
     async componentDidUpdate(prevProps) {
         const { productInfo, numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
+        const { side } = this.props;
 
         // Turn to last page when add a library
         if (numberofFELibrary > prevProps?.productData?.numberofFELibrary) {
@@ -263,66 +264,32 @@ class Product extends PureComponent {
             productDescElement.innerText = productInfo?.desc;
         }
 
-        // [Responsive] Edit product always show in Mobile and Tablet
-        const editProduct = document.getElementById(`js-edit-product-${productInfo?.id}`);
-        const viewportWidth = window.innerWidth;
-        if (editProduct && viewportWidth < 992) {
-            editProduct.style.display = 'flex';
+        // Set display BE, FE Technology
+        if (side === 'Fullstack developer') {
+            this.setState({ isFE: true, isBE: true });
+        } else if (side === 'Frontend developer') {
+            this.setState({ isFE: true, isBE: false });
+        } else if (side === 'Backend developer') {
+            this.setState({ isFE: false, isBE: true });
         }
     }
 
     async componentDidMount() {
         const { productInfo } = this.props?.productData ?? {};
-
-        const FE_searchInputElement = document.getElementById(`js-search-input-FE-${productInfo?.id}`);
-        const BE_searchInputElement = document.getElementById(`js-search-input-BE-${productInfo?.id}`);
-
-        // Handle event Input search Library
-        if (FE_searchInputElement && BE_searchInputElement) {
-            FE_searchInputElement.oninput = () => this.handleSearchLibrary('FE');
-            BE_searchInputElement.oninput = () => this.handleSearchLibrary('BE');
-        }
+        const { side } = this.props;
 
         // Set product desc from database by JS
         const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
         productDescElement.innerText = productInfo?.desc;
 
-        // Hover product and show Edit Product
-        const productContainer = document.getElementById(`js-product-${productInfo?.id}`);
-        const editProduct = document.getElementById(`js-edit-product-${productInfo?.id}`);
-
-        if (productContainer && editProduct) {
-            productContainer.onmouseover = (e) => {
-                e.stopPropagation();
-                editProduct.style.display = 'flex';
-            };
-
-            productContainer.onmouseleave = (e) => {
-                e.stopPropagation();
-                this.editProductId.current = setTimeout(() => {
-                    //  [Responsive] Edit product only toggle in PC
-                    const viewportWidth = window.innerWidth;
-                    if (viewportWidth > 991) {
-                        editProduct.style.display = 'none';
-                    }
-                }, 200);
-            };
-
-            editProduct.onmouseenter = () => {
-                clearTimeout(this.editProductId.current);
-            };
+        // Set display BE, FE Technology
+        if (side === 'Fullstack developer') {
+            this.setState({ isFE: true, isBE: true });
+        } else if (side === 'Frontend developer') {
+            this.setState({ isFE: true, isBE: false });
+        } else if (side === 'Backend developer') {
+            this.setState({ isFE: false, isBE: true });
         }
-
-        // [Responsive] Edit product always show in Mobile and Tablet
-        const editProductEl = document.getElementById(`js-edit-product-${productInfo?.id}`);
-        const viewportWidth = window.innerWidth;
-        if (editProductEl && viewportWidth < 992) {
-            editProductEl.style.display = 'flex';
-        }
-    }
-
-    componentWillUnmount() {
-        clearTimeout(this.editProductId.current);
     }
 
     render() {
@@ -406,6 +373,7 @@ class Product extends PureComponent {
                 <div className={cx('product')}>
                     <div className={cx('product-name-desc-image')} spellCheck="false">
                         <ContentEditableTag
+                            id={`js-product-name-${productInfo?.id}`}
                             content={productInfo?.name}
                             className={cx('product-name')}
                             placeholder="Tên sản phẩm"
@@ -464,307 +432,317 @@ class Product extends PureComponent {
                     </div>
 
                     <div className={cx('technology')}>
-                        <div className={cx('server', 'front-end')}>
-                            <span className={cx('server-side-title')}>FRONT-END</span>
-                            <div className={cx('technology-used')}>
-                                <div className={cx('technology-used-title')}>
-                                    <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                        {this.state.isFE && (
+                            <div className={cx('server', 'front-end', { 'hide-FE': !this.state.isBE })}>
+                                <span className={cx('server-side-title', { 'hide-FE': !this.state.isBE })}>
+                                    FRONT-END
+                                </span>
+                                <div className={cx('technology-used', { 'hide-FE': !this.state.isBE })}>
+                                    <div className={cx('technology-used-title')}>
+                                        <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                    </div>
+                                    <div className={cx('list')}>
+                                        <TechnologyList
+                                            technologyListID={`js-technology-list-FE-${productInfo?.id}`}
+                                            draggable
+                                            label="công nghệ FE"
+                                            type="TECHNOLOGY"
+                                            keyprop="TE"
+                                            side="FE"
+                                            productId={productInfo?.id}
+                                            technologyList={FETechnologyList}
+                                            // =================================================================
+                                            // CRUD FE Technology List
+                                            onCreateTechnology={this.props.onCreateTechnology}
+                                            onUpdateTechnology={this.props.onUpdateTechnology}
+                                            onDeleteTechnology={this.props.onDeleteTechnology}
+                                        />
+                                    </div>
                                 </div>
-                                <div className={cx('list')}>
+
+                                <div className={cx('library-used', { 'hide-FE': !this.state.isBE })}>
+                                    <div className={cx('library-used-title')}>
+                                        <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
+                                    </div>
+                                    <div className={cx('library-filter-sort')}>
+                                        <div className={cx('library-filter')}>
+                                            <input
+                                                id={`js-search-input-FE-${productInfo?.id}`}
+                                                value={this.state.FE_searchInputValue}
+                                                onChange={() => {}}
+                                                autoComplete="off"
+                                                type="text"
+                                                placeholder="Tìm kiếm thư viện"
+                                                className={cx('library-filter-search')}
+                                                spellCheck="false"
+                                                onInput={() => this.handleSearchLibrary('FE')}
+                                            />
+                                            <span
+                                                className={cx('library-filter-clear', {
+                                                    show: this.state.FE_searchInputValue,
+                                                })}
+                                                onClick={() => this.handleClearSearchValueInput('FE')}
+                                            >
+                                                <AiFillCloseCircle />
+                                            </span>
+                                        </div>
+
+                                        <div className={cx('library-sort')}>
+                                            <span className={cx('label')}>Sắp xếp</span>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.FE_sortBy === 'asc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'FE', 'asc')}
+                                            >
+                                                <AiOutlineSortAscending />
+                                            </Button>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.FE_sortBy === 'desc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'FE', 'desc')}
+                                            >
+                                                <AiOutlineSortDescending />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {!this.state.FE_isSearch && (
+                                        <div className={cx('display')}>
+                                            <span className={cx('label')}>Hiển thị</span>
+                                            <div className={cx('select')}>
+                                                {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
+                                                    return (
+                                                        <Button
+                                                            id={`js-display-paginition-FE-${productInfo?.id}`}
+                                                            key={index}
+                                                            className={cx('button', {
+                                                                active: button === this.state.FE_PageSize,
+                                                            })}
+                                                            onClick={(e) => this.handleChangePageSize(e, 'FE')}
+                                                        >
+                                                            {button}
+                                                        </Button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <TechnologyList
-                                        technologyListID={`js-technology-list-FE-${productInfo?.id}`}
+                                        technologyListID={`js-library-list-FE-${productInfo?.id}`}
                                         draggable
-                                        label="công nghệ FE"
-                                        type="TECHNOLOGY"
-                                        keyprop="TE"
+                                        label="thư viện FE"
+                                        type="LIBRARY"
+                                        keyprop="LI"
                                         side="FE"
                                         productId={productInfo?.id}
-                                        technologyList={FETechnologyList}
+                                        technologyList={FE_LibraryList_SortedOrNot}
                                         // =================================================================
-                                        // CRUD FE Technology List
+                                        // CRUD FE Library List
                                         onCreateTechnology={this.props.onCreateTechnology}
                                         onUpdateTechnology={this.props.onUpdateTechnology}
                                         onDeleteTechnology={this.props.onDeleteTechnology}
+                                        // =================================================================
+                                        // Search - Sort
+                                        isSearch={this.state.FE_isSearch}
+                                        isSortBy={this.state.FE_sortBy}
+                                        onSearchLibrary={() => this.handleSearchLibrary('FE')}
                                     />
-                                </div>
-                            </div>
 
-                            <div className={cx('library-used')}>
-                                <div className={cx('library-used-title')}>
-                                    <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
-                                </div>
-                                <div className={cx('library-filter-sort')}>
-                                    <div className={cx('library-filter')}>
-                                        <input
-                                            id={`js-search-input-FE-${productInfo?.id}`}
-                                            value={this.state.FE_searchInputValue}
-                                            onChange={() => {}}
-                                            autoComplete="off"
-                                            type="text"
-                                            placeholder="Tìm kiếm thư viện"
-                                            className={cx('library-filter-search')}
-                                            spellCheck="false"
-                                        />
-                                        <span
-                                            className={cx('library-filter-clear', {
-                                                show: this.state.FE_searchInputValue,
-                                            })}
-                                            onClick={() => this.handleClearSearchValueInput('FE')}
-                                        >
-                                            <AiFillCloseCircle />
-                                        </span>
-                                    </div>
-
-                                    <div className={cx('library-sort')}>
-                                        <span className={cx('label')}>Sắp xếp</span>
-                                        <Button
-                                            className={cx('sort', {
-                                                'active-sort': this.state.FE_sortBy === 'asc',
-                                            })}
-                                            onClick={(e) => this.handeSortLibrary(e, 'FE', 'asc')}
-                                        >
-                                            <AiOutlineSortAscending />
-                                        </Button>
-                                        <Button
-                                            className={cx('sort', {
-                                                'active-sort': this.state.FE_sortBy === 'desc',
-                                            })}
-                                            onClick={(e) => this.handeSortLibrary(e, 'FE', 'desc')}
-                                        >
-                                            <AiOutlineSortDescending />
-                                        </Button>
-                                    </div>
-                                </div>
-
-                                {!this.state.FE_isSearch && (
-                                    <div className={cx('display')}>
-                                        <span className={cx('label')}>Hiển thị</span>
-                                        <div className={cx('select')}>
-                                            {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
-                                                return (
-                                                    <Button
-                                                        id={`js-display-paginition-FE-${productInfo?.id}`}
-                                                        key={index}
-                                                        className={cx('button', {
-                                                            active: button === this.state.FE_PageSize,
-                                                        })}
-                                                        onClick={(e) => this.handleChangePageSize(e, 'FE')}
-                                                    >
-                                                        {button}
-                                                    </Button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                )}
-
-                                <TechnologyList
-                                    technologyListID={`js-library-list-FE-${productInfo?.id}`}
-                                    draggable
-                                    label="thư viện FE"
-                                    type="LIBRARY"
-                                    keyprop="LI"
-                                    side="FE"
-                                    productId={productInfo?.id}
-                                    technologyList={FE_LibraryList_SortedOrNot}
-                                    // =================================================================
-                                    // CRUD FE Library List
-                                    onCreateTechnology={this.props.onCreateTechnology}
-                                    onUpdateTechnology={this.props.onUpdateTechnology}
-                                    onDeleteTechnology={this.props.onDeleteTechnology}
-                                    // =================================================================
-                                    // Search - Sort
-                                    isSearch={this.state.FE_isSearch}
-                                    isSortBy={this.state.FE_sortBy}
-                                    onSearchLibrary={() => this.handleSearchLibrary('FE')}
-                                />
-
-                                {!this.state.FE_isSearch && this.state.FE_isPagination && (
-                                    <div className={cx('pagination-container')}>
-                                        <Pagination
-                                            count={FETotalPage}
-                                            variant="outlined"
-                                            size="medium"
-                                            siblingCount={1}
-                                            boundaryCount={1}
-                                            page={this.state.FE_Page}
-                                            sx={{
-                                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                                    color: 'var(--primary-color)',
-                                                    fontSize: '12px',
-                                                    borderColor: 'var(--green-color-02)',
-                                                },
-                                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                                    backgroundColor: 'var(--button-bgc-green-02)',
-                                                },
-
-                                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
-                                                    {
-                                                        color: '#fff',
-                                                        backgroundColor: 'var(--button-bgc-green-01)',
+                                    {!this.state.FE_isSearch && this.state.FE_isPagination && (
+                                        <div className={cx('pagination-container')}>
+                                            <Pagination
+                                                count={FETotalPage}
+                                                variant="outlined"
+                                                size="medium"
+                                                siblingCount={1}
+                                                boundaryCount={1}
+                                                page={this.state.FE_Page}
+                                                sx={{
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
+                                                        color: 'var(--primary-color)',
+                                                        fontSize: '12px',
+                                                        borderColor: 'var(--green-color-02)',
+                                                    },
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
+                                                        backgroundColor: 'var(--button-bgc-green-02)',
                                                     },
 
-                                                '& .Mui-selected:hover': {
-                                                    backgroundColor: 'var(--button-bgc-green-01) !important',
-                                                },
-                                            }}
-                                            onChange={(e, value) => this.handleChangePage(e, value, 'FE')}
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
+                                                        {
+                                                            color: '#fff',
+                                                            backgroundColor: 'var(--button-bgc-green-01)',
+                                                        },
+
+                                                    '& .Mui-selected:hover': {
+                                                        backgroundColor: 'var(--button-bgc-green-01) !important',
+                                                    },
+                                                }}
+                                                onChange={(e, value) => this.handleChangePage(e, value, 'FE')}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {this.state.isBE && (
+                            <div className={cx('server', 'back-end', { 'hide-BE': !this.state.isFE })}>
+                                <span className={cx('server-side-title', { 'hide-BE': !this.state.isFE })}>
+                                    BACK-END
+                                </span>
+                                <div className={cx('technology-used', { 'hide-BE': !this.state.isFE })}>
+                                    <div className={cx('technology-used-title')}>
+                                        <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
+                                    </div>
+                                    <div className={cx('list')}>
+                                        <TechnologyList
+                                            technologyListID={`js-technology-list-BE-${productInfo?.id}`}
+                                            draggable
+                                            label="công nghệ BE"
+                                            type="TECHNOLOGY"
+                                            keyprop="TE"
+                                            side="BE"
+                                            productId={productInfo?.id}
+                                            technologyList={BETechnologyList}
+                                            // =================================================================
+                                            // CRUD FE Technology List
+                                            onCreateTechnology={this.props.onCreateTechnology}
+                                            onUpdateTechnology={this.props.onUpdateTechnology}
+                                            onDeleteTechnology={this.props.onDeleteTechnology}
                                         />
                                     </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className={cx('server', 'back-end')}>
-                            <span className={cx('server-side-title')}>BACK-END</span>
-                            <div className={cx('technology-used')}>
-                                <div className={cx('technology-used-title')}>
-                                    <span className={cx('title')}>CÔNG NGHỆ SỬ DỤNG</span>
                                 </div>
-                                <div className={cx('list')}>
+                                <div className={cx('library-used', { 'hide-BE': !this.state.isFE })}>
+                                    <div className={cx('library-used-title')}>
+                                        <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
+                                    </div>
+
+                                    <div className={cx('library-filter-sort')}>
+                                        <div className={cx('library-filter')}>
+                                            <input
+                                                id={`js-search-input-BE-${productInfo?.id}`}
+                                                value={this.state.BE_searchInputValue}
+                                                onChange={() => {}}
+                                                autoComplete="off"
+                                                type="text"
+                                                placeholder="Tìm kiếm thư viện"
+                                                className={cx('library-filter-search')}
+                                                spellCheck="false"
+                                                onInput={() => this.handleSearchLibrary('BE')}
+                                            />
+                                            <span
+                                                className={cx('library-filter-clear', {
+                                                    show: this.state.BE_searchInputValue,
+                                                })}
+                                                onClick={() => this.handleClearSearchValueInput('BE')}
+                                            >
+                                                <AiFillCloseCircle />
+                                            </span>
+                                        </div>
+
+                                        <div className={cx('library-sort')}>
+                                            <span className={cx('label')}>Sắp xếp</span>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.BE_sortBy === 'asc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'BE', 'asc')}
+                                            >
+                                                <AiOutlineSortAscending />
+                                            </Button>
+                                            <Button
+                                                className={cx('sort', {
+                                                    'active-sort': this.state.BE_sortBy === 'desc',
+                                                })}
+                                                onClick={(e) => this.handeSortLibrary(e, 'BE', 'desc')}
+                                            >
+                                                <AiOutlineSortDescending />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {!this.state.BE_isSearch && (
+                                        <div className={cx('display')}>
+                                            <span className={cx('label')}>Hiển thị</span>
+                                            <div className={cx('select')}>
+                                                {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
+                                                    return (
+                                                        <Button
+                                                            id={`js-display-paginition-BE-${productInfo?.id}`}
+                                                            key={index}
+                                                            className={cx('button', {
+                                                                active: button === this.state.BE_PageSize,
+                                                            })}
+                                                            onClick={(e) => this.handleChangePageSize(e, 'BE')}
+                                                        >
+                                                            {button}
+                                                        </Button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <TechnologyList
-                                        technologyListID={`js-technology-list-BE-${productInfo?.id}`}
+                                        technologyListID={`js-library-list-BE-${productInfo?.id}`}
                                         draggable
-                                        label="công nghệ BE"
-                                        type="TECHNOLOGY"
-                                        keyprop="TE"
+                                        label="thư viện BE"
+                                        type="LIBRARY"
+                                        keyprop="LI"
                                         side="BE"
                                         productId={productInfo?.id}
-                                        technologyList={BETechnologyList}
+                                        technologyList={BE_LibraryList_SortedOrNot}
                                         // =================================================================
-                                        // CRUD FE Technology List
+                                        // CRUD BE Library List
                                         onCreateTechnology={this.props.onCreateTechnology}
                                         onUpdateTechnology={this.props.onUpdateTechnology}
                                         onDeleteTechnology={this.props.onDeleteTechnology}
+                                        // =================================================================
+                                        // Search - Sort
+                                        isSearch={this.state.BE_isSearch}
+                                        isSortBy={this.state.BE_sortBy}
+                                        onSearchLibrary={() => this.handleSearchLibrary('BE')}
                                     />
-                                </div>
-                            </div>
-                            <div className={cx('library-used')}>
-                                <div className={cx('library-used-title')}>
-                                    <span className={cx('title')}>THƯ VIỆN SỬ DỤNG</span>
-                                </div>
 
-                                <div className={cx('library-filter-sort')}>
-                                    <div className={cx('library-filter')}>
-                                        <input
-                                            id={`js-search-input-BE-${productInfo?.id}`}
-                                            defaultValue={this.state.BE_searchInputValue}
-                                            onChange={() => {}}
-                                            autoComplete="off"
-                                            type="text"
-                                            placeholder="Tìm kiếm thư viện"
-                                            className={cx('library-filter-search')}
-                                            spellCheck="false"
-                                        />
-                                        <span
-                                            className={cx('library-filter-clear', {
-                                                show: this.state.BE_searchInputValue,
-                                            })}
-                                            onClick={() => this.handleClearSearchValueInput('BE')}
-                                        >
-                                            <AiFillCloseCircle />
-                                        </span>
-                                    </div>
-
-                                    <div className={cx('library-sort')}>
-                                        <span className={cx('label')}>Sắp xếp</span>
-                                        <Button
-                                            className={cx('sort', {
-                                                'active-sort': this.state.BE_sortBy === 'asc',
-                                            })}
-                                            onClick={(e) => this.handeSortLibrary(e, 'BE', 'asc')}
-                                        >
-                                            <AiOutlineSortAscending />
-                                        </Button>
-                                        <Button
-                                            className={cx('sort', {
-                                                'active-sort': this.state.BE_sortBy === 'desc',
-                                            })}
-                                            onClick={(e) => this.handeSortLibrary(e, 'BE', 'desc')}
-                                        >
-                                            <AiOutlineSortDescending />
-                                        </Button>
-                                    </div>
-                                </div>
-
-                                {!this.state.BE_isSearch && (
-                                    <div className={cx('display')}>
-                                        <span className={cx('label')}>Hiển thị</span>
-                                        <div className={cx('select')}>
-                                            {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
-                                                return (
-                                                    <Button
-                                                        id={`js-display-paginition-BE-${productInfo?.id}`}
-                                                        key={index}
-                                                        className={cx('button', {
-                                                            active: button === this.state.BE_PageSize,
-                                                        })}
-                                                        onClick={(e) => this.handleChangePageSize(e, 'BE')}
-                                                    >
-                                                        {button}
-                                                    </Button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                )}
-
-                                <TechnologyList
-                                    technologyListID={`js-library-list-BE-${productInfo?.id}`}
-                                    draggable
-                                    label="thư viện BE"
-                                    type="LIBRARY"
-                                    keyprop="LI"
-                                    side="BE"
-                                    productId={productInfo?.id}
-                                    technologyList={BE_LibraryList_SortedOrNot}
-                                    // =================================================================
-                                    // CRUD BE Library List
-                                    onCreateTechnology={this.props.onCreateTechnology}
-                                    onUpdateTechnology={this.props.onUpdateTechnology}
-                                    onDeleteTechnology={this.props.onDeleteTechnology}
-                                    // =================================================================
-                                    // Search - Sort
-                                    isSearch={this.state.BE_isSearch}
-                                    isSortBy={this.state.BE_sortBy}
-                                    onSearchLibrary={() => this.handleSearchLibrary('BE')}
-                                />
-
-                                {!this.state.BE_isSearch && this.state.BE_isPagination && (
-                                    <div className={cx('pagination-container')}>
-                                        <Pagination
-                                            count={BETotalPage}
-                                            variant="outlined"
-                                            size="medium"
-                                            siblingCount={1}
-                                            boundaryCount={1}
-                                            page={this.state.BE_Page}
-                                            sx={{
-                                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                                    color: 'var(--primary-color)',
-                                                    fontSize: '12px',
-                                                    borderColor: 'var(--green-color-02)',
-                                                },
-                                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                                    backgroundColor: 'var(--button-bgc-green-02)',
-                                                },
-
-                                                '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
-                                                    {
-                                                        color: '#fff',
-                                                        backgroundColor: 'var(--button-bgc-green-01)',
+                                    {!this.state.BE_isSearch && this.state.BE_isPagination && (
+                                        <div className={cx('pagination-container')}>
+                                            <Pagination
+                                                count={BETotalPage}
+                                                variant="outlined"
+                                                size="medium"
+                                                siblingCount={1}
+                                                boundaryCount={1}
+                                                page={this.state.BE_Page}
+                                                sx={{
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
+                                                        color: 'var(--primary-color)',
+                                                        fontSize: '12px',
+                                                        borderColor: 'var(--green-color-02)',
+                                                    },
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
+                                                        backgroundColor: 'var(--button-bgc-green-02)',
                                                     },
 
-                                                '& .Mui-selected:hover': {
-                                                    backgroundColor: 'var(--button-bgc-green-01) !important',
-                                                },
-                                            }}
-                                            onChange={(e, value) => this.handleChangePage(e, value, 'BE')}
-                                        />
-                                    </div>
-                                )}
+                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
+                                                        {
+                                                            color: '#fff',
+                                                            backgroundColor: 'var(--button-bgc-green-01)',
+                                                        },
+
+                                                    '& .Mui-selected:hover': {
+                                                        backgroundColor: 'var(--button-bgc-green-01) !important',
+                                                    },
+                                                }}
+                                                onChange={(e, value) => this.handleChangePage(e, value, 'BE')}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

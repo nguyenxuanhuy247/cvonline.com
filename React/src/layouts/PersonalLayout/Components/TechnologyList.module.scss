@@ -21,11 +21,6 @@
         &.library-list {
             flex-direction: column;
         }
-
-        .drag-drop-hover {
-            border: 1px solid var(--primary-color);
-            outline: 3px solid var(--primary-color);
-        }
     }
 
     .add-technology-button {
@@ -64,6 +59,11 @@
 
 .show-all-edit-button {
     visibility: visible;
+}
+
+.dragging-item {
+    border: 1px solid var(--primary-color);
+    outline: 3px solid var(--primary-color);
 }
 
 // =================================================================

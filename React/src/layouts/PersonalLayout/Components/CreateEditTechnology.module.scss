@@ -6,7 +6,6 @@
     margin: 12px auto;
     border: 1px dashed #333;
     position: relative;
-    width: 400px;
     max-width: 100%;
 
     &.create-source-code {
@@ -120,6 +119,8 @@
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
     .create-edit-technology {
+        width: 400px;
+        
         &.edit-technology {
             margin: 0;
         }
@@ -129,6 +130,8 @@
 // Mobile
 @media (max-width: 767px) {
     .create-edit-technology {
+        width: 400px;
+
         &.create-source-code {
             margin-top: 12px;
             width: 400px;

@@ -10,6 +10,10 @@ export const MENU_AVATAR_DATA = [
         title: 'Tài khoản',
         rightIcon: <BsArrowRight />,
         to: '/feedback',
+        children: {
+            title: 'Thiết lập mật khẩu',
+            isSetPassword: true,
+        },
     },
     {
         id: 12,
@@ -22,14 +26,10 @@ export const MENU_AVATAR_DATA = [
             data: [
                 {
                     id: 21,
-                    type: 'Ngôn ngữ',
-                    code: 'en',
                     title: 'English',
                 },
                 {
                     id: 22,
-                    type: 'Ngôn ngữ',
-                    code: 'vi',
                     title: 'Tiếng Việt',
                 },
             ],

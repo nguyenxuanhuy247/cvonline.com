@@ -6,7 +6,11 @@ const salt = bcrypt.genSaltSync(10);
 // Email check function
 const checkUserEmailInDB = async (email) => {
     try {
-        let user = await db.users.findOne({ where: { email: email }, raw: true });
+        let user = await db.users.findOne({
+            where: { email: email },
+            attributes: ['email'],
+            raw: true,
+        });
 
         if (user) {
             return {
@@ -33,115 +37,160 @@ const checkUserEmailInDB = async (email) => {
 const hashUserPassword = async (password) => {
     try {
         let hashPassword = await bcrypt.hashSync(password, salt);
-        return hashPassword;
+
+        return {
+            errorCode: 0,
+            errorMessage: `Hash password thành công`,
+            hashPassword: hashPassword,
+        };
     } catch (error) {
         console.log('An error in hashUserPassword() : ', error);
-    }
-};
 
-// Connect signup with Database
-export const postUserSignUp = async (fullName, email) => {
-    try {
-        const [user, created] = await db.users.findOrCreate({
-            where: {
-                email: email,
-            },
-            defaults: {
-                fullName: fullName,
-                email: email,
-            },
-            attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
-            raw: true,
-        });
-
-        if (created) {
-            await db.technologies.create({
-                type: 'PRODUCTDESC',
-                key: 'PD',
-                userId: user.id,
-                productOrder: 1,
-            });
-
-
-            return {
-                errorCode: 0,
-                errorMessage: `Bạn vừa đăng ký tài khoản thành công`,
-                data: user,
-            };
-        } else {
-            // Compare password
-            let isPasswordMatch = await bcrypt.compareSync(userPassword, user.password);
-
-            if (isPasswordMatch) {
-                delete user.password;
-                console.log('sssssssss', user.password);
-                const avatar = user.avatar;
-                const binaryAvatar = avatar?.toString('binary');
-
-                const newUser = { ...user, avatar: binaryAvatar };
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Đăng nhập bằng Google thành công`,
-                    data: newUser,
-                };
-            }
-        }
-    } catch (error) {
-        console.log('An error in postUserSignUp() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Đăng ký thất bại`,
+            errorMessage: `[Kết nối Database] Hash password thất bại`,
         };
     }
 };
 
-// Handle User Sign In with Database
-export const postUserSignIn = async (userEmail, userPassword) => {
+// Update password
+export const postChangePassword = async (data) => {
     try {
+        const { userId, password } = data;
+
+        const user = await db.users.findOne({
+            where: { id: userId },
+            raw: false,
+        });
+
+        if (user) {
+            let userData = await db.users.findOne({
+                where: { id: userId },
+                attributes: ['password'],
+                raw: true,
+            });
+
+            if (userData) {
+                let isPasswordMatch = await bcrypt.compareSync(password, userData.password);
+
+                if (!isPasswordMatch) {
+                    const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
+
+                    if (errorCode === 0) {
+                        user.password = hashPassword;
+                        await user.save();
+
+                        return {
+                            errorCode: 0,
+                            errorMessage: `Cập nhật Mật khẩu thành công`,
+                        };
+                    } else {
+                        return {
+                            errorCode: 34,
+                            errorMessage: errorMessage,
+                        };
+                    }
+                } else {
+                    return {
+                        errorCode: 33,
+                        errorMessage: `Mật khẩu đã được sử dụng`,
+                    };
+                }
+            }
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `[Không tìm thấy user ID] Cập nhật Password thất bại`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in postUserSignIn() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Đăng nhập thất bại`,
+        };
+    }
+};
+
+// SIGIN IN
+export const postUserSignIn = async (data) => {
+    try {
+        const { email, password, fullName, isGoogle } = data;
+
         // Use email to check whether the user exists
-        let { errorCode, errorMessage } = await checkUserEmailInDB(userEmail);
+        let { errorCode, errorMessage } = await checkUserEmailInDB(email);
 
         if (errorCode === 0) {
             // Get user's data again prevent someone from deleting/changing data
             let user = await db.users.findOne({
-                where: { email: userEmail },
+                where: { email: email },
                 attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
                 raw: true,
             });
 
             if (user) {
-                // Compare password
-                let isPasswordMatch = await bcrypt.compareSync(userPassword, user.password);
+                let newUser;
 
-                if (isPasswordMatch) {
-                    delete user.password;
+                // Convert avatar to Base64
+                const avatar = user.avatar;
+                const binaryAvatar = avatar?.toString('binary');
+                newUser = { ...user, avatar: binaryAvatar };
 
-                    const avatar = user.avatar;
-                    const binaryAvatar = avatar?.toString('binary');
+                console.log(111111111111111111111, user.password);
+                if (!isGoogle) {
+                    if (user.password) {
+                        let isPasswordMatch = await bcrypt.compareSync(password, user.password);
 
-                    const newUser = { ...user, avatar: binaryAvatar };
+                        if (isPasswordMatch) {
+                            newUser.isPassword = !!user.password;
+
+                            delete newUser.password;
+                            return {
+                                errorCode: 0,
+                                errorMessage: `Đăng nhập với Email thành công`,
+                                data: newUser,
+                            };
+                        } else {
+                            return {
+                                errorCode: 34,
+                                errorMessage: `Mật khẩu không chính xác`,
+                            };
+                        }
+                    } else {
+                        return {
+                            errorCode: 33,
+                            errorMessage: `Đăng nhập bằng Google để thiết lập mật khẩu`,
+                        };
+                    }
+                } else {
+                    newUser.isPassword = !!user.password;
+                    delete newUser.password;
 
                     return {
                         errorCode: 0,
-                        errorMessage: `Bạn vừa đăng nhập thành công`,
+                        errorMessage: `Đăng nhập với tài khoản Google thành công`,
                         data: newUser,
-                    };
-                } else {
-                    return {
-                        errorCode: 34,
-                        errorMessage: `Mật khẩu không chính xác. Vui lòng kiểm tra lại`,
                     };
                 }
             } else {
                 return {
-                    errorCode: 33,
-                    errorMessage: `Không tìm thấy người dùng trong hệ thống`,
+                    errorCode: 32,
+                    errorMessage: `Email không tồn tại trong hệ thống`,
                 };
             }
-        } else {
+        } else if (errorCode === 32) {
+            await db.users.create({
+                email: email,
+                fullName: fullName,
+            });
+
             return {
-                errorCode: 32,
+                errorCode: 0,
+                errorMessage: `Đăng ký tài khoản với Google thành công`,
+            };
+        } else if (errorCode === 31) {
+            return {
+                errorCode: 31,
                 errorMessage: errorMessage,
             };
         }
@@ -164,15 +213,17 @@ export const handleGetUserInformation = async (data) => {
 
         let user = await db.users.findOne({
             where: { id: userId },
-            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
             raw: true,
         });
 
         if (user) {
             const avatar = user.avatar;
-            const binaryAvatar = avatar?.toString('binary');
+            const password = user.password;
 
-            const newUser = { ...user, avatar: binaryAvatar };
+            const binaryAvatar = avatar?.toString('binary');
+            const newUser = { ...user, avatar: binaryAvatar, isPassword: !!password };
+            delete newUser.password;
 
             return {
                 errorCode: 0,
@@ -182,7 +233,7 @@ export const handleGetUserInformation = async (data) => {
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `[Không tìm thấy ID] Tải thông tin người dùng thất bại`,
+                errorMessage: `[Không tìm thấy user ID] Tải thông tin người dùng thất bại`,
             };
         }
     } catch (error) {
@@ -228,7 +279,7 @@ export const handleUpdateUserInformation = async (data) => {
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `[Không tìm thấy ID] Cập nhật ${label} thất bại`,
+                errorMessage: `[Không tìm thấy user ID] Cập nhật ${label} thất bại`,
             };
         }
     } catch (error) {

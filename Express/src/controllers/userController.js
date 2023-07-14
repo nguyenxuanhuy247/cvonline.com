@@ -1,34 +1,32 @@
 import * as userService from '~/services';
 
-// HANDLE USER SIGNUP
-export const handleUserSignUp = async (req, res) => {
-    let { fullName, email, password } = req.body;
+// HANDLE USER CHANGE PASSWORD
+export const handleChangePassword = async (req, res) => {
+    const data = req.body;
 
-    let message = await userService.postUserSignUp(fullName, email, password);
-
-    if (message.errorCode === 0) {
-        return res.status(201).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(409).json(message);
-    }
-};
-
-// HANDLE USER SIGNIN
-export const handleUserSignIn = async (req, res) => {
-    let { email, password } = req.body;
-
-    let message = await userService.postUserSignIn(email, password);
+    let message = await userService.postChangePassword(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);
     } else if (message.errorCode === 31) {
         res.status(503).json(message);
-    } else if (message.errorCode === 32 || message.errorCode === 33) {
+    } else {
         res.status(404).json(message);
-    } else if (message.errorCode === 34) {
-        res.status(401).json(message);
+    }
+};
+
+// HANDLE USER SIGNIN
+export const handleUserSignIn = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.postUserSignIn(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32 || message.errorCode === 33 || message.errorCode === 34) {
+        res.status(404).json(message);
     }
 };
 

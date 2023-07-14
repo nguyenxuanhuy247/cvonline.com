@@ -24,7 +24,6 @@ function Button({
     onMouseLeave,
     onMouseDown,
     forwardRef,
-    dragDropAPIProps,
     ...passProps
 }) {
     const props = {
@@ -66,7 +65,7 @@ function Button({
     });
 
     return (
-        <Button className={classes} {...props} ref={forwardRef} {...dragDropAPIProps}>
+        <Button className={classes} {...props} ref={forwardRef}>
             {children}
         </Button>
     );

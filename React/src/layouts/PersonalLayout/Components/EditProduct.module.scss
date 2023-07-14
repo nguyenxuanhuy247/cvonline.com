@@ -1,11 +1,11 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .wrapper {
-    display: none;
+    display: flex;
     position: absolute;
-    top: 50%;
+    top: 0;
     right: 0;
-    transform: translate(130%, -100%);
+    transform: translate(120%, 25%);
     flex-direction: column;
     row-gap: 6px;
     z-index: 1;
@@ -36,28 +36,23 @@
 // PC revolution < 1300px
 @media (max-width: 1300px) {
     .wrapper {
-        left: 0;
-        right: auto;
-        transform: translate(-130%, -100%);
-    }
-}
-
-// Tablet + Mobile
-@media (max-width: 991px) {
-    .wrapper {
         flex-direction: row;
         position: static;
         transform: translate(0%, 0%);
         justify-content: flex-end;
         column-gap: 6px;
         background: rgb(255, 255, 255);
+        padding: 16px 16px 0 16px;
+    }
+}
+
+// Tablet + Mobile
+@media (max-width: 991px) {
+    .wrapper {
         padding: 12px 12px 0 12px;
     }
 }
 
 // Mobile
 @media (max-width: 767px) {
-    .wrapper {
-        padding: 12px 12px 0 12px;
-    }
 }

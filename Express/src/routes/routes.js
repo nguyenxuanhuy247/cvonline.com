@@ -5,8 +5,8 @@ import * as userController from '~/controllers';
 let router = express.Router();
 
 let initWebRoutes = (app) => {
-    router.post('/api/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/api/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
+    router.post('/api/change-password', userMiddleware.checkReqChangePassword, userController.handleChangePassword);
 
     // CRUD USER INFOMATION
     router.get(
@@ -29,7 +29,11 @@ let initWebRoutes = (app) => {
     // CRUD TECHNOLOGY
     router.post('/api/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
     router.put('/api/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
-    router.delete('/api/delete-technology', userMiddleware.checkReqDeleteTechnology, userController.handleDeleteTechnology);
+    router.delete(
+        '/api/delete-technology',
+        userMiddleware.checkReqDeleteTechnology,
+        userController.handleDeleteTechnology,
+    );
 
     return app.use('/', router);
 };

@@ -149,32 +149,7 @@ class Technology extends PureComponent {
     }
 
     render() {
-        const {
-            draggable,
-            label,
-            type,
-            productId,
-            keyprop,
-            href,
-            id,
-            side,
-            src,
-            name,
-            version,
-            onDragStart,
-            onDragEnd,
-            onDragEnter,
-            onDragOver,
-            onDrop,
-        } = this.props;
-
-        const dragDropAPIProps = {
-            onDragStart,
-            onDragEnd,
-            onDragEnter,
-            onDragOver,
-            onDrop,
-        };
+        const { label, type, productId, keyprop, href, id, side, src, name, version } = this.props;
 
         const ID = side ? `${side}-${type}-${id}` : `${type}-${id}`;
         const editButtonID = side ? `js-edit-button-${ID}` : `js-edit-button-${ID}`;
@@ -203,10 +178,9 @@ class Technology extends PureComponent {
                         onMouseEnter={() => this.handleHoverEditButton(buttonID)}
                         onMouseLeave={(className) => this.handleUnhoverEditButton(editButtonID, buttonID, className)}
                         classHover={cx('hover-button')}
-                        // =================================================================
-                        dragDropAPIProps={dragDropAPIProps}
                     />
                     <Button
+                        href={href}
                         id={buttonID}
                         className={cx('button', {
                             'sourcecode-list': type === 'SOURCECODE',
@@ -218,10 +192,6 @@ class Technology extends PureComponent {
                         onMouseLeave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonID)}
                         onMouseDown={() => this.handleDragButton(editButtonID)}
                         onMouseUp={() => this.handleClickToButton(editButtonID)}
-                        // =================================================================
-                        draggable={draggable}
-                        href={href}
-                        dragDropAPIProps={dragDropAPIProps}
                     >
                         {type === 'TECHNOLOGY' ? (
                             src && <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />

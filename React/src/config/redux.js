@@ -11,10 +11,10 @@ export const history = createBrowserHistory({ basename: process.env.REACT_APP_RO
 const rootReducer = createRootReducer(history);
 
 const allMiddleware = [routerMiddleware(history), thunk];
-// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
-// const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...allMiddleware)));
-const store = createStore(rootReducer, {}, applyMiddleware(...allMiddleware));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...allMiddleware)));
+// const store = createStore(rootReducer, {}, applyMiddleware(...allMiddleware));
 
 export const dispatch = store.dispatch;
 

@@ -3,10 +3,8 @@ import actionNames from '../actions/actionNames';
 const initialState = {
     isLoading: {
         signin: false,
-        signup: false,
         CVLayout: false,
     },
-    isSignUp: false,
     isSignIn: false,
     user: null,
     productList: undefined,
@@ -14,23 +12,19 @@ const initialState = {
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
-        // USER SIGN UP
-        case actionNames.USER_SIGNUP_START:
+        // USER CHANGE PASSWORD
+        case actionNames.USER_CHANGE_PASSWORD_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signup: true },
             };
-        case actionNames.USER_SIGNUP_SUCCESS:
+        case actionNames.USER_CHANGE_PASSWORD_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signup: false },
-                isSignUp: true,
+                user: { ...state.user, isPasword: true },
             };
-        case actionNames.USER_SIGNUP_FAIL:
+        case actionNames.USER_CHANGE_PASSWORD_FAIL:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signup: false },
-                isSignUp: true,
             };
 
         // USER SIGN IN
@@ -49,7 +43,6 @@ const userReducer = (state = initialState, action) => {
         case actionNames.USER_SIGNIN_FAIL:
             return {
                 ...state,
-                isSignIn: false,
                 isLoading: { ...state.isLoading, signin: false },
             };
 
@@ -58,7 +51,6 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSignIn: false,
-                isSignUp: false,
             };
 
         // =================================================================

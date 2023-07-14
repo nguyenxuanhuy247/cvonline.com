@@ -158,8 +158,8 @@ class PersonalLayout extends PureComponent {
             const lastProductData = ASCOrderProductList?.at(-1);
             const lastProductId = lastProductData?.productInfo?.id;
 
-            const lastProduct = document.getElementById(`js-product-${lastProductId}`);
-            lastProduct?.scrollIntoView();
+            const lastProductName = document.getElementById(`js-product-name-${lastProductId}`);
+            lastProductName?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     };
 
@@ -255,7 +255,6 @@ class PersonalLayout extends PureComponent {
                 label: 'Vị trí của sản phẩm',
             };
 
-            
             const changedMoveItem = {
                 userId: userId,
                 productId: moveItemOrder.productId,
@@ -272,7 +271,6 @@ class PersonalLayout extends PureComponent {
 
                     const lowerEditProduct = document.getElementById(`js-edit-product-${moveItemOrder.productId}`);
                     if (lowerEditProduct) {
-                        console.log(lowerEditProduct)
                         lowerEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 }
@@ -284,16 +282,22 @@ class PersonalLayout extends PureComponent {
 
     // =================================================================
     async componentDidMount() {
-        const { id: userId } = this.props?.user ?? {};
+        const { id: userId, isPassword } = this.props?.user ?? {};
 
         if (userId) {
             // Get all data for CV Layout when sign in
             await this.props.readUserInformation(userId);
             await this.props.readProductList(userId);
 
+            if (!isPassword) {
+                Toast.TOP_CENTER_INFO('Vào mục Tài khoản để thiết lập mật khẩu', 100000000);
+            }
+
             // Set languages from database by JS
             const languagesElement = document.getElementById(`js-language-desc`);
-            languagesElement.innerText = this.props?.user?.languages || '';
+            if (languagesElement) {
+                languagesElement.innerText = this.props?.user?.languages || '';
+            }
 
             // Press ENTER to change input field or submit
             const container = document.querySelector(`.${cx('content')}`);
@@ -410,7 +414,6 @@ class PersonalLayout extends PureComponent {
                             <select
                                 value={this.props?.user?.jobPosition || ''}
                                 className={cx('select-job-title')}
-                                onMouseEnter={(e) => e.target.focus()}
                                 onChange={(e) => this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')}
                             >
                                 <option className={cx('option-job-title')} value="Fullstack developer">
@@ -508,6 +511,7 @@ class PersonalLayout extends PureComponent {
                                 {ASCOrderProductList?.map((product, index) => {
                                     return (
                                         <Product
+                                            side={this.props?.user?.jobPosition}
                                             key={index}
                                             productData={product}
                                             index={index}

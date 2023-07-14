@@ -70,12 +70,11 @@ class SignIn extends Component {
 
     handleSignInWithGoogle = (response) => {
         const user = jwt_decode(response.credential);
+
         if (user) {
-            const userData = { email: user.email, fullName: user.name };
-            const errorCode = this.props.userSignUp(userData);
-            if (errorCode === 0) {
-                this.props.userSignIn({ email: user.email, password: '' });
-            }
+            const userData = { email: user.email, fullName: user.name, isGoogle: true };
+
+            this.props.userSignIn(userData);
         }
     };
 
@@ -99,7 +98,7 @@ class SignIn extends Component {
 
         window.google.accounts.id.renderButton(document.getElementById('g_id_signin'), {
             theme: 'outline',
-            size: 'medium',
+            size: 'large',
             type: 'standard',
         });
     };
@@ -212,15 +211,13 @@ class SignIn extends Component {
 const mapStateToProps = (state) => {
     return {
         isSignIn: state.user.isSignIn,
-        isSignUp: state.user.isSignUp,
-        isLoading: state.user.isLoading.signin || state.user.isLoading.signup,
+        isLoading: state.user.isLoading.signin,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         userSignIn: (userData) => dispatch(userActions.userSignInStart(userData)),
-        userSignUp: (userData) => dispatch(userActions.userSignUpStart(userData)),
     };
 };
 
