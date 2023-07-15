@@ -40,7 +40,7 @@ const hashUserPassword = async (password) => {
 
         return {
             errorCode: 0,
-            errorMessage: `Hash password thành công`,
+            errorMessage: `Mã hóa mật khẩu thành công`,
             hashPassword: hashPassword,
         };
     } catch (error) {
@@ -48,7 +48,7 @@ const hashUserPassword = async (password) => {
 
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Hash password thất bại`,
+            errorMessage: `[Kết nối Database] Mã hóa mật khẩu thất bại`,
         };
     }
 };
@@ -112,13 +112,66 @@ export const postChangePassword = async (data) => {
     }
 };
 
-// SIGIN IN
+// HANDLE USER SIGNUP
+export const postUserSignUp = async (data) => {
+    try {
+        const { fullName, email, password } = data;
+        
+        const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
+
+        if (errorCode === 0) {
+            const [user, created] = await db.users.findOrCreate({
+                where: {
+                    email: email,
+                },
+                defaults: {
+                    fullName: fullName,
+                    email: email,
+                    password: hashPassword,
+                },
+                raw: true,
+            });
+
+            if (created) {
+                await db.technologies.create({
+                    type: 'PRODUCTDESC',
+                    key: 'PD',
+                    userId: user.id,
+                    productOrder: 1,
+                });
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Đăng ký tài khoản thành công`,
+                };
+            } else {
+                return {
+                    errorCode: 32,
+                    errorMessage: `Địa chỉ email đã được sử dụng`,
+                };
+            }
+        } else {
+            return {
+                errorCode: 31,
+                errorMessage: errorMessage,
+            };
+        }
+    } catch (error) {
+        console.log('An error in postUserSignUp() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Đăng ký tài khoản thất bại`,
+        };
+    }
+};
+
+// HANDLE USER SIGNIN
 export const postUserSignIn = async (data) => {
     try {
         const { email, password, fullName, isGoogle } = data;
 
         // Use email to check whether the user exists
-        let { errorCode, errorMessage } = await checkUserEmailInDB(email);
+        const { errorCode, errorMessage } = await checkUserEmailInDB(email);
 
         if (errorCode === 0) {
             // Get user's data again prevent someone from deleting/changing data
@@ -136,7 +189,6 @@ export const postUserSignIn = async (data) => {
                 const binaryAvatar = avatar?.toString('binary');
                 newUser = { ...user, avatar: binaryAvatar };
 
-                console.log(111111111111111111111, user.password);
                 if (!isGoogle) {
                     if (user.password) {
                         let isPasswordMatch = await bcrypt.compareSync(password, user.password);

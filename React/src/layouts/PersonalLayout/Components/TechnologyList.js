@@ -34,10 +34,14 @@ class TechnologyList extends PureComponent {
 
     // =================================================================
 
+    handleSortList = (newState) => {
+        this.setState({ list: newState });
+    };
+
     render() {
         const { draggable, type, keyprop, side, productId, label, technologyList, isSearch, onSearchLibrary } =
             this.props;
-        console.log('list ', this.state.list);
+
         return (
             <div
                 className={cx('technology-list', {
@@ -47,12 +51,13 @@ class TechnologyList extends PureComponent {
                 <ReactSortable
                     multiDrag
                     list={this.state.list}
-                    setList={(newState) => this.setState({ list: newState })}
+                    setList={(newState) => this.handleSortList(newState)}
                     id={this.props.technologyListID}
                     className={cx('technology-list-inner', {
                         'library-list': type === 'LIBRARY',
                     })}
                     chosenClass={cx('dragging-item')}
+                    animation={150}
                 >
                     {this.state.list?.map((technology) => {
                         return (
@@ -60,7 +65,7 @@ class TechnologyList extends PureComponent {
                                 key={technology.id}
                                 // =================================================================
                                 draggable={draggable}
-                                librarylist={technologyList}
+                                librarylist={this.state.list}
                                 // Common info
                                 side={side}
                                 label={label}

@@ -1,7 +1,34 @@
+// CHECK SIGNUP INFO
+export const checkReqSignUp = (req, res, next) => {
+    const { fullName, email, password } = req.body;
+
+    if (!fullName) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập Họ và tên',
+        });
+    }
+
+    if (!email) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: 'Vui lòng nhập Email',
+        });
+    }
+
+    if (!password) {
+        return res.status(400).json({
+            errorCode: 12,
+            errorMessage: 'Vui lòng nhập Mật khẩu',
+        });
+    }
+
+    next();
+};
+
 // CHECK SIGNIN INFO
 export const checkReqSignIn = (req, res, next) => {
     const { email, password, isGoogle } = req.body;
-    console.log(11111111, email, password, isGoogle);
 
     if (!email) {
         return res.status(400).json({

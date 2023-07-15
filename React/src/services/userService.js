@@ -1,6 +1,11 @@
 import axios from '~/config/axios.js';
 
 // =============================================================================
+// HANDLE SIGNUP
+export const postSignUp = (userData) => {
+    return axios.post(`/api/signup`, userData);
+};
+
 // HANDLE SIGNIN
 export const postSignIn = (userData) => {
     return axios.post(`/api/signin`, userData);

@@ -64,29 +64,53 @@ class Technology extends PureComponent {
     };
 
     // =================================================================
-    // Hover and Unhover Button and Edit Button
-    handleHoverButtonAndShowEditButton = (editButtonID, buttonID) => {
-        const editButton = document.getElementById(editButtonID);
-        const button = document.getElementById(buttonID);
+    // Hover and Unhover Edit Button
 
-        if (button) {
-            // After sorting, mouse keep hovering button
-            button.onmouseover = () => {
-                button.classList.add(cx('hover-button'));
+    handleHoverEditButton = (buttonContainerID) => {
+        // Skip hide Edit button
+        clearTimeout(this.idTimeout.current);
 
-                if (editButton) {
-                    editButton.style.display = 'flex';
-                }
-            };
+        // Still Hover Button
+        const buttonContainer = document.getElementById(buttonContainerID);
+
+        if (buttonContainer) {
+            buttonContainer.classList.add(cx('hover-button'));
         }
     };
 
-    handleUnhoverButtonAndHideEditButton = (editButtonID, buttonID) => {
+    handleUnhoverEditButton = (editButtonID, buttonContainerID) => {
         const editButton = document.getElementById(editButtonID);
-        const button = document.getElementById(buttonID);
+        const buttonContainer = document.getElementById(buttonContainerID);
 
-        if (button) {
-            button.classList.remove(cx('hover-button'));
+        // Unhover Button
+        if (buttonContainer) {
+            buttonContainer.classList.remove(cx('hover-button'));
+
+            if (editButton) {
+                editButton.style.display = 'none';
+            }
+        }
+    };
+
+    handleHoverButtonAndShowEditButton = (editButtonID, buttonContainerID) => {
+        const editButton = document.getElementById(editButtonID);
+        const buttonContainer = document.getElementById(buttonContainerID);
+
+        if (buttonContainer) {
+            buttonContainer.classList.add(cx('hover-button'));
+
+            if (editButton) {
+                editButton.style.display = 'flex';
+            }
+        }
+    };
+
+    handleUnhoverButtonAndHideEditButton = (editButtonID, buttonContainerID) => {
+        const editButton = document.getElementById(editButtonID);
+        const buttonContainer = document.getElementById(buttonContainerID);
+
+        if (buttonContainer) {
+            buttonContainer.classList.remove(cx('hover-button'));
 
             if (editButton) {
                 this.idTimeout.current = setTimeout(() => (editButton.style.display = 'none'), 0);
@@ -94,46 +118,8 @@ class Technology extends PureComponent {
         }
     };
 
-    handleDragButton = (editButtonID) => {
-        const dragEditButton = document.getElementById(editButtonID);
-
-        if (dragEditButton) {
-            dragEditButton.style.display = 'none';
-        }
-    };
-
-    handleClickToButton = (editButtonID) => {
-        const dragEditButton = document.getElementById(editButtonID);
-
-        if (dragEditButton) {
-            dragEditButton.style.display = 'flex';
-        }
-    };
-
-    handleHoverEditButton = (buttonID) => {
-        // Skip hide Edit button
-        clearTimeout(this.idTimeout.current);
-
-        // Still Hover Button
-        const button = document.getElementById(buttonID);
-
-        if (button) {
-            button.classList.add(cx('hover-button'));
-        }
-    };
-
-    handleUnhoverEditButton = (editButtonID, buttonID) => {
-        const editButton = document.getElementById(editButtonID);
-        const button = document.getElementById(buttonID);
-
-        // Unhover Button
-        if (button) {
-            button.classList.remove(cx('hover-button'));
-
-            if (editButton) {
-                editButton.style.display = 'none';
-            }
-        }
+    handleDoubleClickButtonAndOpenLink = (href) => {
+        window.open(href, '_blank', 'noopener');
     };
 
     // =================================================================
@@ -154,6 +140,7 @@ class Technology extends PureComponent {
         const ID = side ? `${side}-${type}-${id}` : `${type}-${id}`;
         const editButtonID = side ? `js-edit-button-${ID}` : `js-edit-button-${ID}`;
         const buttonID = side ? `js-button-${ID}` : `js-button-${ID}`;
+        const buttonContainerID = side ? `js-container-button-${ID}` : `js-container-button-${ID}`;
 
         return !this.state.isEdit ? (
             <HeadlessTippy
@@ -165,7 +152,14 @@ class Technology extends PureComponent {
                     </div>
                 )}
             >
-                <div id={`js-container-button-${type}-${id}`} className={cx('button-container')}>
+                <div
+                    id={buttonContainerID}
+                    className={cx('button-container', {
+                        'sourcecode-list': type === 'SOURCECODE',
+                        'technology-list': type === 'TECHNOLOGY',
+                        'library-list': type === 'LIBRARY',
+                    })}
+                >
                     <EditButton
                         editButtonID={editButtonID}
                         side={side}
@@ -175,23 +169,17 @@ class Technology extends PureComponent {
                         onShowEditTechnology={() => this.handleShowEditTechnology(id, editButtonID)}
                         onDeleteTechnology={() => this.handleDeleteTechnology(id)}
                         // =================================================================
-                        onMouseEnter={() => this.handleHoverEditButton(buttonID)}
-                        onMouseLeave={(className) => this.handleUnhoverEditButton(editButtonID, buttonID, className)}
-                        classHover={cx('hover-button')}
+                        onMouseEnter={() => this.handleHoverEditButton(buttonContainerID)}
+                        onMouseLeave={() => this.handleUnhoverEditButton(editButtonID, buttonContainerID)}
                     />
                     <Button
                         href={href}
                         id={buttonID}
-                        className={cx('button', {
-                            'sourcecode-list': type === 'SOURCECODE',
-                            'technology-list': type === 'TECHNOLOGY',
-                            'library-list': type === 'LIBRARY',
-                        })}
+                        className={cx('button')}
                         // =================================================================
-                        onMouseEnter={() => this.handleHoverButtonAndShowEditButton(editButtonID, buttonID)}
-                        onMouseLeave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonID)}
-                        onMouseDown={() => this.handleDragButton(editButtonID)}
-                        onMouseUp={() => this.handleClickToButton(editButtonID)}
+                        onMouseEnter={() => this.handleHoverButtonAndShowEditButton(editButtonID, buttonContainerID)}
+                        onMouseLeave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonContainerID)}
+                        onDoubleClick={() => this.handleDoubleClickButtonAndOpenLink(href)}
                     >
                         {type === 'TECHNOLOGY' ? (
                             src && <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />

@@ -1,255 +1,156 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
-.auth-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--auth-bgc-grey);
-    min-height: 100vh;
+.signin-container {
+    @include signin-signup-container;
 
-    .signin-container {
-        width: 600px;
-        max-width: calc(100% - 24px);
-        margin: auto;
-        font-family: var(--alexandria-font);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        user-select: none;
-        background-color: var(--bgc-white);
-        padding: 40px 24px;
-        border-radius: 4px;
+    .form-signin {
+        width: 100%;
+        text-align: right;
 
-        .form-signin {
-            width: 100%;
-            text-align: right;
+        .title {
+            @include auth-title;
+        }
 
-            .form-logo {
-                @include auth-logo;
-            }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
 
-            .title {
-                margin-bottom: 40px;
-                color: var(--primary-color);
-                font-size: 2rem;
+            .form-label {
+                margin-top: 20px;
                 font-weight: 600;
-                text-align: center;
+                line-height: 1.5rem;
+                font-size: 1.4;
             }
 
-            .form-group {
-                &.invalid {
-                    .form-input {
-                        border-color: #f33a58;
+            .input-form-container {
+                margin-top: 8px;
+                position: relative;
+                height: 40px;
+                border: 1px solid #b3b3b3;
+                border-radius: 4px;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
 
-                        .form-label {
-                            border-color: #f33a58;
-                        }
-                    }
-                }
-
-                .form-input {
-                    height: 44px;
-                    border: 1px solid #b3b3b3;
-                    border-radius: 4px;
-                    overflow: hidden;
-                    position: relative;
+                .label {
                     display: flex;
                     align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    width: 44px;
+                    padding: 8px;
+                    border-right: 1px solid #b3b3b3;
+                    background-color: #fff;
 
-                    &:hover {
-                        border-color: var(--primary-color);
-                        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-
-                        .form-label {
-                            border-color: var(--primary-color);
-                        }
-                    }
-
-                    .form-label {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        height: 100%;
-                        width: 44px;
-                        padding: 8px;
-                        border-right: 1px solid #b3b3b3;
-                        background-color: #fff;
-
-                        .form-icon {
-                            font-size: 20px;
-                            color: var(--primary-color);
-                        }
-                    }
-
-                    .form-control {
-                        outline: none;
-                        border: none;
-                        background-color: transparent;
-                        padding: 0 16px 0 8px;
-                        flex: 1;
-                        height: 100%;
-                        font-size: 1.6rem;
-
-                        &::placeholder {
-                            color: #8d8b8b;
-                        }
-
-                        &:focus {
-                            background-color: #fff;
-                        }
-
-                        &[id='password'] {
-                            padding-right: 44px;
-                        }
-                    }
-
-                    .toggle-show-password {
-                        position: absolute;
-                        right: 10px;
-
-                        .eye {
-                            font-size: 30px;
-                            padding: 4px;
-                            cursor: pointer;
-                            color: #444;
-                        }
+                    .form-icon {
+                        font-size: 20px;
+                        color: var(--primary-color);
                     }
                 }
 
-                .form-message {
-                    display: block;
-                    height: 20px;
+                .input-form {
+                    outline: none;
+                    border: none;
+                    background-color: transparent;
+                    padding: 0 16px 0 8px;
+                    flex: 1;
+                    height: 100%;
                     font-size: 1.4rem;
-                    line-height: 1.5;
-                    margin-top: 4px;
-                    height: 20px;
-                    overflow: hidden;
-                    text-align: center;
-                    color: #f33a58;
+
+                    &::placeholder {
+                        color: #8d8b8b;
+                    }
+
+                    &:focus {
+                        background-color: #fff;
+                    }
                 }
 
-                & + .form-group {
-                    margin-top: 16px;
-                }
-            }
+                .toggle-show-password {
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translate(0, -40%);
 
-            .forgot-password {
-                display: inline-block;
-                margin-top: 16px;
-                font-size: 1.4rem;
-                font-weight: 500;
-                color: #1c74e4;
-                background-color: #fff;
-
-                &:hover {
-                    cursor: pointer;
-                    text-decoration: underline;
-                    text-underline-offset: 3px;
+                    .eye {
+                        font-size: 30px;
+                        padding: 4px;
+                        cursor: pointer;
+                        color: #444;
+                    }
                 }
             }
 
-            .submit-btn {
-                @include solid-btn;
+            .error-message {
+                @include error-message-form;
+            }
 
-                font-family: inherit !important;
-                margin-top: 20px;
-                width: 100%;
+            &:nth-child(3) {
+                .input-form {
+                    padding-right: 42px;
+                }
             }
         }
 
-        .signin-signup-with-google {
-            width: 100%;
-            margin-top: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            column-gap: 12px;
+        .forgot-password {
+            display: inline-block;
+            margin-top: 16px;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #1c74e4;
+            background-color: #fff;
 
-            .text {
-                font-size: 1.4rem;
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+                text-underline-offset: 3px;
             }
+        }
+
+        .submit-btn {
+            @include solid-btn;
+
+            font-family: inherit !important;
+            margin-top: 20px;
+            width: 100%;
         }
     }
-}
 
-.form-forgot-password {
-    padding: 20px;
-    width: 500px;
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-
-    .form-input {
-        min-width: 0;
+    .signin-with-google {
         width: 100%;
-        height: 44px;
-        border: 1px solid #b3b3b3;
-        border-radius: 4px;
-        overflow: hidden;
-        position: relative;
+        margin-top: 22px;
         display: flex;
         align-items: center;
+        justify-content: flex-end;
+        flex-direction: column;
+        row-gap: 12px;
+        column-gap: 12px;
 
-        .form-control {
-            outline: none;
-            border: none;
-            background-color: transparent;
-            padding: 0 16px 0 8px;
-            flex: 1;
-            height: 100%;
-            font-size: 1.6rem;
-
-            &::placeholder {
-                color: #8d8b8b;
-            }
-
-            &:focus {
-                background-color: var(--button-bgc-green-02);
-            }
-        }
-
-        .arrow-right {
-            aspect-ratio: 1;
-            height: 100%;
-            display: grid;
-            place-items: center;
-            color: #fff;
-            font-size: 20px;
-            background: var(--button-bgc-green-01);
-            background-color: var(--primary-color);
-            cursor: pointer;
+        .text {
+            font-size: 1.4rem;
         }
     }
 
-    .arrow-back {
-        padding: 4px 30px;
-        margin-top: 20px;
-        background-color: #666;
-        display: grid;
-        place-items: center;
-        font-size: 30px;
-        border-radius: 8px;
-        color: #fff;
+    .switch-to-signin-signup {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .text {
+            font-size: 1.4rem;
+        }
+
+        & > .signup-btn {
+            @include regular-btn;
+
+            font-family: inherit !important;
+            margin-left: 12px;
+        }
     }
 }
 
 // Mobile
 @media (max-width: 767px) {
-    .auth-container {
-        .signin-container {
-            padding: 20px;
-            max-width: 100%;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .signin-signup-with-google {
-            display: flex;
-            flex-direction: column;
-            row-gap: 12px;
-        }
-    }
 }

@@ -2,7 +2,7 @@ import actionNames from './actionNames';
 import * as userService from '~/services';
 import { Toast } from '~/components/Toast/Toast.js';
 
-// USER SIGN UP - CREATE USER INFORMATION
+// CHANGE PASSWORD
 export const userChangePasswordStart = (userData) => {
     return async (dispatch) => {
         dispatch({
@@ -36,6 +36,37 @@ export const userChangePasswordSuccess = () => ({
 
 export const userChangePasswordFail = () => ({
     type: 'USER_CHANGE_PASSWORD_FAIL',
+});
+
+// USER SIGN UP - CREATE USER INFORMATION
+export const userSignUpStart = (userData) => {
+    return async (dispatch) => {
+        dispatch({ type: 'USER_SIGNUP_START' });
+        try {
+            let res = await userService.postSignUp(userData);
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
+                dispatch(userSignUpSuccess());
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+                dispatch(userSignUpFail());
+            }
+        } catch (error) {
+            const { errorMessage } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            dispatch(userSignUpFail());
+            console.log('An error in userSignUpStart() - userActions.js: ', error);
+        }
+    };
+};
+
+export const userSignUpSuccess = () => ({
+    type: 'USER_SIGNUP_SUCCESS',
+});
+
+export const userSignUpFail = () => ({
+    type: 'USER_SIGNUP_FAIL',
 });
 
 // USER SIGN IN

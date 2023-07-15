@@ -3,9 +3,11 @@ import actionNames from '../actions/actionNames';
 const initialState = {
     isLoading: {
         signin: false,
+        signup: false,
         CVLayout: false,
     },
     isSignIn: false,
+    isSignUp: false,
     user: null,
     productList: undefined,
 };
@@ -27,27 +29,45 @@ const userReducer = (state = initialState, action) => {
                 ...state,
             };
 
+        // USER SIGN UP
+        case 'USER_SIGNUP_START':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, signup: true },
+            };
+        case 'USER_SIGNUP_SUCCESS':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, signup: false },
+                isSignUp: true,
+            };
+        case 'USER_SIGNUP_FAIL':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, signup: false },
+            };
+
         // USER SIGN IN
-        case actionNames.USER_SIGNIN_START:
+        case 'USER_SIGNIN_START':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, signin: true },
             };
-        case actionNames.USER_SIGNIN_SUCCESS:
+        case 'USER_SIGNIN_SUCCESS':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, signin: false },
                 isSignIn: true,
                 user: action.payload,
             };
-        case actionNames.USER_SIGNIN_FAIL:
+        case 'USER_SIGNIN_FAIL':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, signin: false },
             };
 
         // USER SIGN OUT
-        case actionNames.USER_SIGNOUT:
+        case 'USER_SIGNOUT':
             return {
                 ...state,
                 isSignIn: false,

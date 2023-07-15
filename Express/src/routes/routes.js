@@ -5,6 +5,7 @@ import * as userController from '~/controllers';
 let router = express.Router();
 
 let initWebRoutes = (app) => {
+    router.post('/api/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/api/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
     router.post('/api/change-password', userMiddleware.checkReqChangePassword, userController.handleChangePassword);
 

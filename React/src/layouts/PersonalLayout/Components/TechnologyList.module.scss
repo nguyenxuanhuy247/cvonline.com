@@ -14,8 +14,8 @@
     .technology-list-inner {
         @include flex-max-width-100;
         display: flex;
-        column-gap: 4px;
-        row-gap: 4px;
+        column-gap: 6px;
+        row-gap: 6px;
         flex-wrap: wrap;
 
         &.library-list {
@@ -53,6 +53,17 @@
 
         .text {
             font-size: 1.4rem;
+        }
+    }
+
+    &.unhover-button {
+        cursor: pointer;
+        border: 1px solid var(--primary-color);
+        outline: none;
+
+        & > {
+            font-weight: 200;
+            color: #000;
         }
     }
 }

@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, Link, Switch } from 'react-router-dom';
+import { Redirect, Route, Link } from 'react-router-dom';
 import className from 'classnames/bind';
-import { FaEyeSlash, FaEye, FaArrowRight } from 'react-icons/fa';
-import { BsArrowLeft } from 'react-icons/bs';
+import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import jwt_decode from 'jwt-decode';
 
-import logoWithText from '~/assets/logo/logo-with-text.png';
-import Validator from '~/components/formValidation/formValidation.js';
 import styles from './Signin.module.scss';
 import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
-import Loading from '~/components/Modal/Loading.js';
 import { path } from '~/utils';
 
 const cx = className.bind(styles);
@@ -22,50 +20,15 @@ class SignIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            password: '',
-            errorMessage: '',
-            forgotPassword: '',
-
             isShowPassword: false,
             delayRedirect: false,
         };
+
+        this.id = React.createRef();
     }
-
-    id = React.createRef();
-
-    handleOnChangeEmail = (event) => {
-        this.setState({ email: event.target.value });
-    };
-
-    handleOnChangePassword = (event) => {
-        this.setState({ password: event.target.value });
-    };
 
     handleShowHidePassword = () => {
         this.setState({ isShowPassword: !this.state.isShowPassword });
-    };
-
-    handleOnChangeForgotPassword = (event) => {
-        this.setState({ forgotPassword: event.target.value });
-    };
-
-    handleValidateForm = () => {
-        Validator(
-            {
-                formSelector: `.${cx('form-signin')}`,
-                formGroupSelector: `.${cx('form-group')}`,
-                messageSelector: `.${cx('form-message')}`,
-                rules: [
-                    Validator.isRequired(`#${cx('email')}`),
-                    Validator.isEmail(`#${cx('email')}`),
-                    Validator.isRequired(`#${cx('password')}`),
-                    Validator.minLength(`#${cx('password')}`, 6),
-                ],
-            },
-            cx('invalid'),
-            this.props.userSignIn,
-        );
     };
 
     handleSignInWithGoogle = (response) => {
@@ -78,25 +41,20 @@ class SignIn extends Component {
         }
     };
 
-    handleRetrievePassword = () => {
-        this.setState({ isForgotPassword: false });
-    };
-
     componentDidUpdate(prevProps) {
         if (this.props.isSignIn !== prevProps.isSignIn) {
-            this.id.current = setTimeout(() => this.setState({ delayRedirect: true }), 1000);
+            console.log('IS sign in', this.props.isSignIn);
+            this.id.current = setTimeout(() => this.setState({ delayRedirect: true }), 2000);
         }
     }
 
     componentDidMount = () => {
-        this.handleValidateForm();
-
-        window.google.accounts.id.initialize({
+        window.google?.accounts?.id?.initialize?.({
             client_id: '926424110135-dpsp6egfi7g128s401rparkaba2gtq1c.apps.googleusercontent.com',
             callback: this.handleSignInWithGoogle,
         });
 
-        window.google.accounts.id.renderButton(document.getElementById('g_id_signin'), {
+        window.google?.accounts?.id?.renderButton?.(document.getElementById('google_id_signin'), {
             theme: 'outline',
             size: 'large',
             type: 'standard',
@@ -109,101 +67,105 @@ class SignIn extends Component {
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
-        let { isLoading } = this.props;
 
         return (
-            <div className={cx('auth-container')}>
-                <Switch>
-                    <Route exact path={path.SIGNIN}>
-                        {this.state.delayRedirect ? (
-                            <Redirect to={path.HOME} />
-                        ) : (
-                            <div className={cx('signin-container')}>
-                                <form className={cx('form-signin')} autoomplete="on">
-                                    <img src={logoWithText} alt="mycompany" className={cx('form-logo')} />
-                                    <p className={cx('title')}>Chào mừng bạn đã quay trở lại</p>
+            <Route exact path={path.SIGNIN}>
+                <div className={cx('signin-container')}>
+                    <Formik
+                        initialValues={{ email: '', password: '' }}
+                        validationSchema={Yup.object().shape({
+                            email: Yup.string()
+                                .required('Hãy nhập địa chỉ email của bạn')
+                                .email('Hãy nhập đúng định dạng email'),
+                            password: Yup.string()
+                                .required('Hãy nhập mật khẩu của bạn')
+                                .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
+                                .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự'),
+                        })}
+                        onSubmit={async (values, actions) => {
+                            this.props.userSignIn(values);
+                        }}
+                    >
+                        {(props) => (
+                            <Form className={cx('form-signin')}>
+                                <p className={cx('title')}>Chào mừng bạn đến với cvonline.com</p>
 
-                                    <div className={cx('form-group')}>
-                                        <div className={cx('form-input')}>
-                                            <label htmlFor="email" className={cx('form-label')}>
-                                                <MdEmail className={cx('form-icon')} />
-                                            </label>
-                                            <input
-                                                type="email"
-                                                className={cx('form-control')}
-                                                id="email"
-                                                placeholder="Nhập email của bạn"
-                                                name="email"
-                                                spellCheck={false}
-                                                value={this.state.email}
-                                                onChange={(event) => this.handleOnChangeEmail(event)}
-                                            />
-                                        </div>
-                                        <p className={cx('form-message')}></p>
+                                <div className={cx('form-group')}>
+                                    <label htmlFor="email" className={cx('form-label')}>
+                                        Email
+                                    </label>
+                                    <div className={cx('input-form-container')}>
+                                        <label htmlFor="email" className={cx('label')}>
+                                            <MdEmail className={cx('form-icon')} />
+                                        </label>
+                                        <Field
+                                            type="email"
+                                            id="email"
+                                            className={cx('input-form')}
+                                            name="email"
+                                            placeholder="VD: nguyenxuanhuy@gmail.com"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.email}
+                                        />
                                     </div>
-
-                                    <div className={cx('form-group')}>
-                                        <div className={cx('form-input')}>
-                                            <label htmlFor="password" className={cx('form-label')}>
-                                                <RiLockPasswordFill className={cx('form-icon')} />
-                                            </label>
-                                            <input
-                                                type={this.state.isShowPassword ? 'text' : 'password'}
-                                                className={cx('form-control')}
-                                                id="password"
-                                                placeholder="Nhập mật khẩu"
-                                                name="password"
-                                                spellCheck={false}
-                                                value={this.state.password}
-                                                onChange={(event) => this.handleOnChangePassword(event)}
-                                            />
-                                            <div className={cx('toggle-show-password')}>
-                                                <Eye
-                                                    className={cx('eye')}
-                                                    onClick={() => this.handleShowHidePassword()}
-                                                />
-                                            </div>
-                                        </div>
-                                        <p className={cx('form-message')}></p>
-                                    </div>
-
-                                    <Link to={path.FORGOTPASSWORD} className={cx('forgot-password')}>
-                                        Quên mật khẩu?
-                                    </Link>
-
-                                    <Button className={cx('submit-btn')}>Đăng nhập</Button>
-                                </form>
-
-                                <div className={cx('signin-signup-with-google')}>
-                                    <span className={cx('text')}>Bạn chưa có tài khoản?</span>
-                                    <div id="g_id_signin"></div>
+                                    <ErrorMessage component="p" name="email">
+                                        {(msg) => <div className={cx('error-message')}>{msg}</div>}
+                                    </ErrorMessage>
                                 </div>
-                            </div>
-                        )}
-                    </Route>
-                    <Route path={path.FORGOTPASSWORD}>
-                        <div className={cx('form-forgot-password')}>
-                            <div className={cx('form-input')}>
-                                <input
-                                    type="email"
-                                    className={cx('form-control')}
-                                    placeholder="Nhập email để lấy lại mật khẩu"
-                                    spellCheck={false}
-                                    value={this.state.forgotPassword}
-                                    onChange={(event) => this.handleOnChangeForgotPassword(event)}
-                                />
-                                <button className={cx('arrow-right')} onClick={() => this.handleRetrievePassword()}>
-                                    <FaArrowRight />
+
+                                <div className={cx('form-group')}>
+                                    <label htmlFor="password" className={cx('form-label')}>
+                                        Mật khẩu
+                                    </label>
+                                    <div className={cx('input-form-container')}>
+                                        <label htmlFor="password" className={cx('label')}>
+                                            <RiLockPasswordFill className={cx('form-icon')} />
+                                        </label>
+                                        <Field
+                                            type={this.state.isShowPassword ? 'text' : 'password'}
+                                            id="password"
+                                            className={cx('input-form')}
+                                            name="password"
+                                            placeholder="VD: Abc123456@"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.password}
+                                        />
+                                        <div className={cx('toggle-show-password')}>
+                                            <Eye
+                                                className={cx('eye')}
+                                                onClick={() => this.handleShowHidePassword(true)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <ErrorMessage component="p" name="password">
+                                        {(msg) => <div className={cx('error-message')}>{msg}</div>}
+                                    </ErrorMessage>
+                                </div>
+                                <Link to={path.FORGOTPASSWORD} className={cx('forgot-password')}>
+                                    Quên mật khẩu?
+                                </Link>
+                                <button type="submit" className={cx('submit-btn')}>
+                                    Đăng nhập
                                 </button>
-                            </div>
-                            <Link to={path.SIGNIN} className={cx('arrow-back')}>
-                                <BsArrowLeft />
-                            </Link>
-                        </div>
-                    </Route>
-                </Switch>
-                {isLoading && <Loading />}
-            </div>
+                            </Form>
+                        )}
+                    </Formik>
+
+                    <div className={cx('signin-with-google')}>
+                        <p className={cx('text')}>Hoặc đăng nhập bằng</p>
+                        <div id="google_id_signin"></div>
+                    </div>
+
+                    <div className={cx('switch-to-signin-signup')}>
+                        <span className={cx('text')}>Bạn chưa có tài khoản?</span>
+                        <Button className={cx('signup-btn')} route="/signup">
+                            Đăng ký
+                        </Button>
+                    </div>
+                </div>
+            </Route>
         );
     }
 }
@@ -211,7 +173,6 @@ class SignIn extends Component {
 const mapStateToProps = (state) => {
     return {
         isSignIn: state.user.isSignIn,
-        isLoading: state.user.isLoading.signin,
     };
 };
 
