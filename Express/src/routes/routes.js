@@ -26,9 +26,11 @@ let initWebRoutes = (app) => {
     router.get('/api/get-product-list', userMiddleware.checkReqGetProductList, userController.handleGetProductList);
     router.put('/api/put-product', userMiddleware.checkReqUpdateProduct, userController.handleUpdateProduct);
     router.delete('/api/delete-product', userMiddleware.checkReqDeleteProduct, userController.handleDeleteProduct);
+    router.put('/api/move-product', userMiddleware.checkReqMoveProduct, userController.handleMoveProduct);
 
     // CRUD TECHNOLOGY
     router.post('/api/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
+    router.get('/api/get-technology', userMiddleware.checkReqGetTechnology, userController.handleGetTechnology);
     router.put('/api/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
     router.delete(
         '/api/delete-technology',

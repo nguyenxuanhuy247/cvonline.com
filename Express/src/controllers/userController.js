@@ -103,7 +103,7 @@ export const handleGetProductList = async (req, res) => {
         return res.status(200).json(message);
     } else if (message.errorCode === 31) {
         res.status(503).json(message);
-    } else if (message.errorCode === 32 || message.errorCode === 33 || message.errorCode === 34) {
+    } else if (message.errorCode === 32) {
         res.status(404).json(message);
     }
 };
@@ -136,6 +136,20 @@ export const handleDeleteProduct = async (req, res) => {
     }
 };
 
+// MOVE PRODUCT
+export const handleMoveProduct = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.handleMoveProduct(data);
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
 // =================================================================
 // CRUD TECHNOLOGY
 
@@ -150,6 +164,21 @@ export const handleCreateTechnology = async (req, res) => {
         res.status(503).json(message);
     } else if (message.errorCode === 32) {
         res.status(409).json(message);
+    }
+};
+
+// READ TECHNOLOGY
+export const handleGetTechnology = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.handleGetTechnology(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
     }
 };
 

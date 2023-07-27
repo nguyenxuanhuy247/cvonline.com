@@ -1,4 +1,3 @@
-import actionNames from './actionNames';
 import * as userService from '~/services';
 import { Toast } from '~/components/Toast/Toast.js';
 
@@ -167,21 +166,44 @@ export const updateUserInformation = (data) => {
 
 // CREATE PRODUCT
 export const createProduct = (userId) => {
-    return async () => {
+    return async (dispatch) => {
+        dispatch(createProduct_Start());
         try {
             const res = await userService.createProduct(userId);
-            const { errorCode } = res ?? {};
+            const { errorCode, errorMessage, data } = res ?? {};
 
-            return errorCode;
+            if (errorCode === 0) {
+                dispatch(createProduct_Success(data));
+
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(createProduct_Failure());
+
+                return errorCode;
+            }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
             console.log('An error in createProduct() - userActions.js: ', error);
 
             return errorCode;
         }
     };
 };
+
+export const createProduct_Start = () => ({
+    type: `CREATE_PRODUCT_START`,
+});
+
+export const createProduct_Success = (data) => ({
+    type: `CREATE_PRODUCT_SUCCESS`,
+    payload: data,
+});
+
+export const createProduct_Failure = () => ({
+    type: `CREATE_PRODUCT_FAILURE`,
+});
 
 // READ PRODUCT LIST
 export const readProductList = (userId) => {
@@ -190,19 +212,20 @@ export const readProductList = (userId) => {
         try {
             const res = await userService.readProductList(userId);
             const { errorCode, errorMessage, data } = res ?? {};
+
             if (errorCode === 0) {
                 dispatch(readProductList_Success(data));
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
                 dispatch(readProductList_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
             dispatch(readProductList_Failure());
             console.log('An error in readProductList() - userActions.js: ', error);
 
@@ -234,7 +257,7 @@ export const updateProduct = (data) => {
             return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
             console.log('An error in updateProduct() - userActions.js: ', error);
 
             return errorCode;
@@ -243,16 +266,25 @@ export const updateProduct = (data) => {
 };
 
 // DELETE PRODUCT
-export const deleteProduct = (userId, productId) => {
-    return async () => {
+export const deleteProduct = (productId) => {
+    return async (dispatch) => {
+        dispatch(deleteProduct_Start());
         try {
-            const res = await userService.deleteProduct(userId, productId);
-            const { errorCode } = res ?? {};
+            const res = await userService.deleteProduct(productId);
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                dispatch(deleteProduct_Success(productId));
 
-            return errorCode;
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(deleteProduct_Failure());
+
+                return errorCode;
+            }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
             console.log('An error in deleteProduct() - userActions.js: ', error);
 
             return errorCode;
@@ -260,12 +292,68 @@ export const deleteProduct = (userId, productId) => {
     };
 };
 
+export const deleteProduct_Start = () => ({
+    type: `DELETE_PRODUCT_START`,
+});
+
+export const deleteProduct_Success = (productId) => ({
+    type: `DELETE_PRODUCT_SUCCESS`,
+    payload: productId,
+});
+
+export const deleteProduct_Failure = () => ({
+    type: `DELETE_PRODUCT_FAILURE`,
+});
+
+// MOVE PRODUCT
+export const moveProduct = (userData) => {
+    return async (dispatch) => {
+        dispatch(moveProduct_Start());
+        try {
+            const res = await userService.moveProduct(userData);
+            const { errorCode, errorMessage, data } = res ?? {};
+
+            if (errorCode === 0) {
+                dispatch(moveProduct_Success(data));
+
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(moveProduct_Failure());
+
+                return errorCode;
+            }
+        } catch (error) {
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(moveProduct_Failure());
+            console.log('An error in readProductList() - userActions.js: ', error);
+
+            return errorCode;
+        }
+    };
+};
+
+export const moveProduct_Start = () => ({
+    type: `MOVE_PRODUCT_START`,
+});
+
+export const moveProduct_Success = (data) => ({
+    type: `MOVE_PRODUCT_SUCCESS`,
+    payload: data,
+});
+
+export const moveProduct_Failure = () => ({
+    type: `MOVE_PRODUCT_FAILURE`,
+});
+
 // =================================================================================================
 // CRUD TECHNOLOGY
 
 // CREATE TECHNOLOGY
 export const createTechnology = (data) => {
     return async () => {
+        console.log('Creating', data);
         try {
             let res = await userService.createTechnology(data);
             const { errorCode } = res ?? {};
@@ -280,6 +368,44 @@ export const createTechnology = (data) => {
         }
     };
 };
+
+// READ TECHNOLOGY
+export const readTechnology = (data) => {
+    return async (dispatch) => {
+        dispatch(readTechnology_Start());
+        try {
+            const res = await userService.readTechnology(data);
+            const { errorCode, errorMessage } = res ?? {};
+
+            if (errorCode === 0) {
+                dispatch(readTechnology_Success(res));
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+                dispatch(readTechnology_Failure());
+                return errorCode;
+            }
+        } catch (error) {
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            console.log('An error in readTechnology() - userActions.js: ', error);
+            return errorCode;
+        }
+    };
+};
+
+export const readTechnology_Start = () => ({
+    type: `READ_PRODUCT_LIST_START`,
+});
+
+export const readTechnology_Success = (data) => ({
+    type: `READ_PRODUCT_LIST_SUCCESS`,
+    payload: data,
+});
+
+export const readTechnology_Failure = () => ({
+    type: `READ_PRODUCT_LIST_FAILURE`,
+});
 
 // UPDATE TECHNOLOGY
 export const updateTechnology = (data) => {

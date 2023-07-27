@@ -93,7 +93,7 @@ class PersonalLayout extends PureComponent {
     };
 
     // =================================================================
-    // CRUD PRODUCT
+    // CRUD TECHNOLOGY
 
     handleCreateTechnology = async (data) => {
         const { id: userId } = this.props?.user ?? {};
@@ -141,7 +141,7 @@ class PersonalLayout extends PureComponent {
     };
 
     // =================================================================
-    // CRUD Product
+    // CRUD PRODUCT
 
     handleCreateProduct = async () => {
         const { id: userId } = this.props?.user ?? {};
@@ -149,134 +149,81 @@ class PersonalLayout extends PureComponent {
         const errorCode = await this.props.createProduct(userId);
 
         if (errorCode === 0) {
-            await this.props.readProductList(userId);
-
-            const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-                return a.order - b.order;
-            });
-
-            const lastProductData = ASCOrderProductList?.at(-1);
-            const lastProductId = lastProductData?.productInfo?.id;
+            const lastProductData = this.props.productInfoList?.at(-1);
+            const lastProductId = lastProductData?.id;
 
             const lastProductName = document.getElementById(`js-product-name-${lastProductId}`);
             lastProductName?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     };
 
-    handleUpdateProduct = async (data) => {
-        const { id: userId } = this.props?.user ?? {};
-        const newData = { ...data, userId: userId };
-
-        const errorCode = await this.props.updateProduct(newData);
-        if (errorCode === 0) {
-            await this.props.readProductList(userId);
-        }
+    handleDeleteProduct = (productId) => {
+        this.props.deleteProduct(productId);
     };
 
-    handleDeleteProduct = async (productId) => {
-        const { id: userId } = this.props?.user ?? {};
-        const errorCode = await this.props.deleteProduct(userId, productId);
+    // =================================================================
+    // MOVE PRODUCT
 
-        if (errorCode === 0) {
-            await this.props.readProductList(userId);
-        }
-    };
-
-    handleMoveUpProduct = async (order) => {
-        const { id: userId } = this.props?.user ?? {};
-
-        const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-            return a.order - b.order;
+    exchangeDataBetween2Product = (order, operator) => {
+        const productList_IDAndOrder = this.props.productInfoList?.map((productData) => {
+            return { productId: productData.id, productOrder: productData.productOrder };
         });
 
-        const productExchange = ASCOrderProductList?.map((productID) => {
-            return { userId: userId, productId: productID.productInfo.id, productOrder: productID.order };
-        });
+        const moveItemIndex = productList_IDAndOrder.findIndex((product) => product.productOrder === order);
 
-        const moveItemIndex = productExchange.findIndex((product) => product.productOrder === order);
+        const siblingIndex = operator === 'move up' ? moveItemIndex - 1 : moveItemIndex + 1;
+        const siblingItem_IDAndOrder = productList_IDAndOrder[siblingIndex];
+        const movedItem_IDAndOrder = productList_IDAndOrder[moveItemIndex];
 
-        let upperItemOrder = productExchange[moveItemIndex - 1];
-        let moveItemOrder = productExchange[moveItemIndex];
-
-        if (moveItemOrder && upperItemOrder) {
-            const changedUpperItem = {
-                userId: userId,
-                productId: upperItemOrder.productId,
-                productOrder: moveItemOrder.productOrder,
+        if (movedItem_IDAndOrder && siblingItem_IDAndOrder) {
+            const newDataOfMovedItem = {
+                productId: movedItem_IDAndOrder.productId,
+                productOrder: siblingItem_IDAndOrder.productOrder,
                 label: 'Vị trí của sản phẩm',
             };
 
-            const changedMoveItem = {
-                userId: userId,
-                productId: moveItemOrder.productId,
-                productOrder: upperItemOrder.productOrder,
+            const newDataOfSiblingItem = {
+                productId: siblingItem_IDAndOrder.productId,
+                productOrder: movedItem_IDAndOrder.productOrder,
                 label: 'Vị trí của sản phẩm',
             };
 
-            const errorCode1 = await this.props.updateProduct(changedUpperItem);
-            if (errorCode1 === 0) {
-                const errorCode2 = await this.props.updateProduct(changedMoveItem);
-
-                if (errorCode2 === 0) {
-                    await this.props.readProductList(userId);
-
-                    const upperEditProduct = document.getElementById(`js-edit-product-${moveItemOrder.productId}`);
-                    if (upperEditProduct) {
-                        upperEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-            }
+            return { newDataOfMovedItem, newDataOfSiblingItem };
         } else {
-            Toast.TOP_CENTER_WARN('Không thể di chuyển sản phẩm này lên trên', 3000);
+            const text = operator === 'move up' ? 'lên trên' : 'xuống dưới';
+            Toast.TOP_CENTER_WARN(`Không thể di chuyển sản phẩm này ${text}`, 3000);
         }
     };
 
-    handleMoveDownProduct = async (order) => {
-        const { id: userId } = this.props?.user ?? {};
-
-        const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-            return a.order - b.order;
+    handleMoveProduct = async (order, operator) => {
+        const productList_IDAndOrder = this.props.productInfoList?.map((productData) => {
+            return { productId: productData.id, productOrder: productData.productOrder };
         });
 
-        const productExchange = ASCOrderProductList?.map((productID) => {
-            return { userId: userId, productId: productID.productInfo.id, productOrder: productID.order };
-        });
+        const moveItemIndex = productList_IDAndOrder.findIndex((product) => product.productOrder === order);
 
-        const moveItemIndex = productExchange.findIndex((product) => product.productOrder === order);
+        const siblingIndex = operator === 'move up' ? moveItemIndex - 1 : moveItemIndex + 1;
+        const siblingItem_IDAndOrder = productList_IDAndOrder[siblingIndex];
+        const movedItem_IDAndOrder = productList_IDAndOrder[moveItemIndex];
 
-        let lowerItemOrder = productExchange[moveItemIndex + 1];
-        let moveItemOrder = productExchange[moveItemIndex];
-
-        if (moveItemOrder && lowerItemOrder) {
-            const changedUpperItem = {
-                userId: userId,
-                productId: lowerItemOrder.productId,
-                productOrder: moveItemOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
+        if (movedItem_IDAndOrder && siblingItem_IDAndOrder) {
+            const data = {
+                movedItemID: movedItem_IDAndOrder.productId,
+                movedItemOrder: siblingItem_IDAndOrder.productOrder,
+                siblingItemID: siblingItem_IDAndOrder.productId,
+                siblingItemOrder: movedItem_IDAndOrder.productOrder,
             };
 
-            const changedMoveItem = {
-                userId: userId,
-                productId: moveItemOrder.productId,
-                productOrder: lowerItemOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
-            };
-
-            const errorCode1 = await this.props.updateProduct(changedUpperItem);
-            if (errorCode1 === 0) {
-                const errorCode2 = await this.props.updateProduct(changedMoveItem);
-
-                if (errorCode2 === 0) {
-                    await this.props.readProductList(userId);
-
-                    const lowerEditProduct = document.getElementById(`js-edit-product-${moveItemOrder.productId}`);
-                    if (lowerEditProduct) {
-                        lowerEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-            }
+            const errorCode1 = await this.props.moveProduct(data);
+            // if (errorCode1 === 0) {
+            //     const upperEditProduct = document.getElementById(`js-edit-product-${newDataOfMovedItem.productId}`);
+            //     if (upperEditProduct) {
+            //         upperEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            //     }
+            // }
         } else {
-            Toast.TOP_CENTER_WARN('Không thể di chuyển sản phẩm này xuống dưới', 3000);
+            const text = operator === 'move up' ? 'lên trên' : 'xuống dưới';
+            Toast.TOP_CENTER_WARN(`Không thể di chuyển sản phẩm này ${text}`, 3000);
         }
     };
 
@@ -357,14 +304,10 @@ class PersonalLayout extends PureComponent {
     }
 
     render = () => {
-        // Make product List in ascending order
-        const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-            return a.order - b.order;
-        });
-
         return (
             <div className={cx('body')}>
-                <Header productList={ASCOrderProductList} />
+                <Header productList={this.props.productInfoList} />
+
                 <div className={cx('cv-container')}>
                     <div className={cx('user-information')}>
                         <div className={cx('user-information-basic')}>
@@ -506,30 +449,32 @@ class PersonalLayout extends PureComponent {
                     </div>
 
                     <div className={cx('product-list-container')}>
-                        {this.props.productList && (
-                            <div className={cx('product-list')}>
-                                {ASCOrderProductList?.map((product, index) => {
-                                    return (
-                                        <Product
-                                            side={this.props?.user?.jobPosition}
-                                            key={index}
-                                            productData={product}
-                                            index={index}
-                                            // =================================================================
-                                            onCreateProduct={this.handleCreateProduct}
-                                            onUpdateProduct={this.handleUpdateProduct}
-                                            onDeleteProduct={this.handleDeleteProduct}
-                                            onMoveUpProduct={this.handleMoveUpProduct}
-                                            onMoveDownProduct={this.handleMoveDownProduct}
-                                            // =================================================================
-                                            onCreateTechnology={this.handleCreateTechnology}
-                                            onUpdateTechnology={this.handleUpdateTechnology}
-                                            onDeleteTechnology={this.handleDeleteTechnology}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        )}
+                        <div className={cx('product-list')}>
+                            {this.props.productInfoList?.map((product, index) => {
+                                const totalPage = this.props.productInfoList?.length;
+
+                                return (
+                                    <Product
+                                        key={index}
+                                        // =================================================================
+                                        jobTitle={this.props?.user?.jobPosition}
+                                        productData={product}
+                                        index={index}
+                                        totalPage={totalPage}
+                                        // =================================================================
+                                        onCreateProduct={this.handleCreateProduct}
+                                        onDeleteProduct={this.handleDeleteProduct}
+                                        // =================================================================
+                                        onMoveUpProduct={(order) => this.handleMoveProduct(order, 'move up')}
+                                        onMoveDownProduct={(order) => this.handleMoveProduct(order, 'move down')}
+                                        // =================================================================
+                                        onCreateTechnology={this.handleCreateTechnology}
+                                        onUpdateTechnology={this.handleUpdateTechnology}
+                                        onDeleteTechnology={this.handleDeleteTechnology}
+                                    />
+                                );
+                            })}
+                        </div>
                         <div className={cx('add-new-product-container')}>
                             <Button className={cx('add-new-product-button')} onClick={() => this.handleCreateProduct()}>
                                 <span className={cx('add-new-product-icon')}>
@@ -559,8 +504,9 @@ class PersonalLayout extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         user: state.user.user,
-        productList: state.user.productList,
         isLoading: state.user.isLoading.CVLayout,
+
+        productInfoList: state.user.productInfoList,
     };
 };
 
@@ -574,12 +520,8 @@ const mapDispatchToProps = (dispatch) => {
         createProduct: (userId) => dispatch(userActions.createProduct(userId)),
         readProductList: (userId) => dispatch(userActions.readProductList(userId)),
         updateProduct: (data) => dispatch(userActions.updateProduct(data)),
-        deleteProduct: (userId, productId) => dispatch(userActions.deleteProduct(userId, productId)),
-
-        // CRUD Source code, Technology, Library
-        createTechnology: (data) => dispatch(userActions.createTechnology(data)),
-        updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
-        deleteTechnology: (technologyId, label) => dispatch(userActions.deleteTechnology(technologyId, label)),
+        deleteProduct: (productId) => dispatch(userActions.deleteProduct(productId)),
+        moveProduct: (data) => dispatch(userActions.moveProduct(data)),
 
         // Sign out
         userSignOut: () => dispatch(userActions.userSignOut()),

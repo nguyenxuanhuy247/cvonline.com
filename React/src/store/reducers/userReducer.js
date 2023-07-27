@@ -1,5 +1,3 @@
-import actionNames from '../actions/actionNames';
-
 const initialState = {
     isLoading: {
         signin: false,
@@ -9,22 +7,29 @@ const initialState = {
     isSignIn: false,
     isSignUp: false,
     user: null,
-    productList: undefined,
+    productInfoList: [],
+    sourceCodeList: [],
+    FETechnologyList: [],
+    BETechnologyList: [],
+    FELibraryList: [],
+    numberofFELibrary: [],
+    BELibraryList: [],
+    numberofBELibrary: [],
 };
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         // USER CHANGE PASSWORD
-        case actionNames.USER_CHANGE_PASSWORD_START:
+        case 'USER_CHANGE_PASSWORD_START':
             return {
                 ...state,
             };
-        case actionNames.USER_CHANGE_PASSWORD_SUCCESS:
+        case 'USER_CHANGE_PASSWORD_SUCCESS':
             return {
                 ...state,
                 user: { ...state.user, isPasword: true },
             };
-        case actionNames.USER_CHANGE_PASSWORD_FAIL:
+        case 'USER_CHANGE_PASSWORD_FAIL':
             return {
                 ...state,
             };
@@ -75,41 +80,86 @@ const userReducer = (state = initialState, action) => {
 
         // =================================================================
         // READ USER INFORMATION
-        case actionNames.READ_USER_INFORMATION_START:
+        case 'READ_USER_INFORMATION_START':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: true },
             };
-        case actionNames.READ_USER_INFORMATION_SUCCESS:
+        case 'READ_USER_INFORMATION_SUCCESS':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
                 user: action.payload,
             };
-        case actionNames.READ_USER_INFORMATION_FAILURE:
+        case 'READ_USER_INFORMATION_FAILURE':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
             };
 
         // =================================================================
-        // READ PRODUCT LIST
-        case actionNames.READ_PRODUCT_LIST_START:
+
+        // CREATE PRODUCT
+        case 'CREATE_PRODUCT_START':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: true },
             };
-        case actionNames.READ_PRODUCT_LIST_SUCCESS:
+        case 'CREATE_PRODUCT_SUCCESS':
+            const data = action.payload;
+            const newProduct = { id: data.id, name: '', desc: '', productOrder: data.productOrder };
+            const newProductInfoListArray = [...state.productInfoList];
+            newProductInfoListArray.push(newProduct);
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                productList: action.payload,
+                productInfoList: newProductInfoListArray,
             };
-        case actionNames.READ_PRODUCT_LIST_FAILURE:
+        case 'CREATE_PRODUCT_FAILURE':
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                productList: [],
+            };
+
+        // READ PRODUCT LIST
+        case 'READ_PRODUCT_LIST_START':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: true },
+            };
+        case 'READ_PRODUCT_LIST_SUCCESS':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                ...action.payload,
+            };
+        case 'READ_PRODUCT_LIST_FAILURE':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+            };
+
+        // DELETE PRODUCT
+        case 'DELETE_PRODUCT_START':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: true },
+            };
+        case 'DELETE_PRODUCT_SUCCESS':
+            const deleted_ProductInfoList = state.productInfoList.filter((productInfo) => {
+                return productInfo.id !== action.payload;
+            });
+
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                productInfoList: deleted_ProductInfoList,
+            };
+        case 'DELETE_PRODUCT_FAILURE':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
             };
 
         default:

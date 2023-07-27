@@ -38,10 +38,10 @@ class Header extends PureComponent {
     render = () => {
         const shortProductList = this.props.productList?.map((product) => {
             return {
-                id: product.productInfo.id,
-                name: product.productInfo.name,
-                desc: product.productInfo.desc,
-                image: product.productInfo.image,
+                id: product.id,
+                name: product.name,
+                desc: product.desc,
+                image: product.image,
             };
         });
 

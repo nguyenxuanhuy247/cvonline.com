@@ -116,7 +116,7 @@ export const postChangePassword = async (data) => {
 export const postUserSignUp = async (data) => {
     try {
         const { fullName, email, password } = data;
-        
+
         const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
 
         if (errorCode === 0) {
@@ -363,16 +363,19 @@ export const handleCreateProduct = async (data) => {
             let maxOrder = Math.max(...productIDArrWithNULL);
 
             if (maxOrder !== 0) {
-                await db.technologies.create({
+                const newProductInfo = await db.technologies.create({
                     type: 'PRODUCTDESC',
                     key: 'PD',
                     userId: userId,
                     productOrder: maxOrder + 1,
                 });
 
+                const retrieveProduct = { id: newProductInfo.id, productOrder: newProductInfo.productOrder };
+
                 return {
                     errorCode: 0,
                     errorMessage: `Tạo sản phẩm mới thành công`,
+                    data: retrieveProduct,
                 };
             } else {
                 return {
@@ -400,158 +403,147 @@ export const handleGetProductList = async (data) => {
     try {
         const { userId } = data;
 
-        const user = await db.users.findOne({
-            where: { id: userId },
-            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        const productIDs = await db.technologies.findAll({
+            where: { userId: userId, key: 'PD' },
+            attributes: ['id'],
+            order: [['productOrder', 'ASC']],
             raw: true,
         });
 
-        if (user) {
-            const productIDs = await db.technologies.findAll({
-                where: { userId: userId, key: 'PD' },
-                attributes: ['id'],
-                raw: true,
-            });
-            const productIDArr = productIDs?.map((productID) => productID.id);
-            const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+        const productIDArr = productIDs?.map((productID) => productID.id);
+        const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+        const uniqueProductIDArr = [...new Set(productIDArrWithNULL)];
 
-            if (productIDArrWithNULL.length > 0) {
-                const uniqueProductIDArr = [...new Set(productIDArrWithNULL)]?.sort();
+        if (uniqueProductIDArr.length > 0) {
+            let productList = {
+                productInfoList: [],
+                sourceCodeList: [],
+                FETechnologyList: [],
+                BETechnologyList: [],
+                FELibraryList: [],
+                numberofFELibrary: [],
+                BELibraryList: [],
+                numberofBELibrary: [],
+            };
 
-                let productListData = [];
-                for (let productID of uniqueProductIDArr) {
-                    const product = {
-                        order: undefined,
-                        productInfo: {},
-                        sourceCodeList: [],
-                        FETechnologyList: [],
-                        BETechnologyList: [],
-                        FELibraryList: [],
-                        numberofFELibrary: undefined,
-                        BELibraryList: [],
-                        numberofBELibrary: undefined,
-                    };
+            for (let productID of uniqueProductIDArr) {
+                const productInfo = await db.technologies.findOne({
+                    where: { id: productID, key: 'PD' },
+                    attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
+                    raw: true,
+                });
 
-                    const productDesc = await db.technologies.findOne({
-                        where: { id: productID, key: 'PD' },
-                        attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
+                if (productInfo) {
+                    let binaryImage;
 
-                    if (productDesc) {
-                        const productImage = productDesc.image;
-                        let binaryImage;
-                        if (productImage) {
-                            binaryImage = productImage.toString('binary');
-                        }
-
-                        const newProductDesc = { ...productDesc, image: binaryImage };
-
-                        product.productInfo = newProductDesc;
-                        product.order = productDesc.productOrder;
+                    const productImage = productInfo.image;
+                    if (productImage) {
+                        binaryImage = productImage.toString('binary');
                     }
 
-                    const sourceCodes = await db.technologies.findAll({
-                        where: { userId: userId, productId: productID, key: 'SC' },
-                        attributes: ['id', 'image', 'name', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
+                    const newProductDesc = { ...productInfo, image: binaryImage };
 
-                    if (sourceCodes) {
-                        const sourceCodeList = sourceCodes.map((sourceCode) => {
-                            const binaryImage = sourceCode?.image?.toString('binary');
-                            return { ...sourceCode, image: binaryImage };
-                        });
-
-                        product.sourceCodeList = sourceCodeList;
-                    }
-
-                    const FETechnologies = await db.technologies.findAll({
-                        where: { userId: userId, productId: productID, key: 'TE', side: 'FE' },
-                        attributes: ['id', 'image', 'name', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (FETechnologies) {
-                        const FETechnologyList = FETechnologies.map((FETechnology) => {
-                            const binaryImage = FETechnology?.image?.toString('binary');
-                            return { ...FETechnology, image: binaryImage };
-                        });
-
-                        product.FETechnologyList = FETechnologyList;
-                    }
-
-                    const BETechnologies = await db.technologies.findAll({
-                        where: { userId: userId, productId: productID, key: 'TE', side: 'BE' },
-                        attributes: ['id', 'image', 'name', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (BETechnologies) {
-                        const BETechnologyList = BETechnologies.map((BETechnology) => {
-                            const binaryImage = BETechnology?.image?.toString('binary');
-                            return { ...BETechnology, image: binaryImage };
-                        });
-
-                        product.BETechnologyList = BETechnologyList;
-                    }
-
-                    const FELibraries = await db.technologies.findAndCountAll({
-                        where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
-                        attributes: ['id', 'image', 'name', 'version', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (FELibraries.rows.length > 0) {
-                        const FELibraryList = FELibraries.rows.map((library) => {
-                            const binaryImage = library?.image?.toString('binary');
-                            return { ...library, image: binaryImage };
-                        });
-
-                        product.FELibraryList = FELibraryList;
-                    }
-                    product.numberofFELibrary = FELibraries.count;
-
-                    const BELibraries = await db.technologies.findAndCountAll({
-                        where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
-                        attributes: ['id', 'image', 'name', 'version', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (BELibraries.rows.length > 0) {
-                        const FELibraryList = BELibraries.rows.map((library) => {
-                            const binaryImage = library?.image?.toString('binary');
-                            return { ...library, image: binaryImage };
-                        });
-
-                        product.BELibraryList = FELibraryList;
-                    }
-                    product.numberofBELibrary = BELibraries.count;
-
-                    productListData.push(product);
+                    productList.productInfoList.push(newProductDesc);
                 }
 
-                return {
-                    errorCode: 0,
-                    errorMessage: `Tải danh sách sản phẩm thành công`,
-                    data: productListData,
-                };
-            } else {
-                return {
-                    errorCode: 33,
-                    errorMessage: `Không tìm thấy danh sách sản phẩm`,
-                };
+                const sourceCodes = await db.technologies.findAll({
+                    where: { userId: userId, productId: productID, key: 'SC' },
+                    attributes: ['id', 'image', 'name', 'link'],
+                    order: [['id', 'ASC']],
+                    raw: true,
+                });
+
+                if (sourceCodes) {
+                    const sourceCodeList = sourceCodes.map((sourceCode) => {
+                        const binaryImage = sourceCode?.image?.toString('binary');
+                        return { ...sourceCode, image: binaryImage };
+                    });
+
+                    productList.sourceCodeList.push(sourceCodeList);
+                }
+
+                const FETechnologies = await db.technologies.findAll({
+                    where: { userId: userId, productId: productID, key: 'TE', side: 'FE' },
+                    attributes: ['id', 'image', 'name', 'link'],
+                    order: [['id', 'ASC']],
+                    raw: true,
+                });
+
+                if (FETechnologies) {
+                    const FETechnologyList = FETechnologies.map((FETechnology) => {
+                        const binaryImage = FETechnology?.image?.toString('binary');
+                        return { ...FETechnology, image: binaryImage };
+                    });
+
+                    productList.FETechnologyList.push(FETechnologyList);
+                }
+
+                const BETechnologies = await db.technologies.findAll({
+                    where: { userId: userId, productId: productID, key: 'TE', side: 'BE' },
+                    attributes: ['id', 'image', 'name', 'link'],
+                    order: [['id', 'ASC']],
+                    raw: true,
+                });
+
+                if (BETechnologies) {
+                    const BETechnologyList = BETechnologies.map((BETechnology) => {
+                        const binaryImage = BETechnology?.image?.toString('binary');
+                        return { ...BETechnology, image: binaryImage };
+                    });
+
+                    productList.BETechnologyList.push(BETechnologyList);
+                }
+
+                const FELibraries = await db.technologies.findAndCountAll({
+                    where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
+                    attributes: ['id', 'image', 'name', 'version', 'link'],
+                    order: [['id', 'ASC']],
+                    raw: true,
+                });
+
+                if (FELibraries.rows.length > 0) {
+                    const FELibraryList = FELibraries.rows.map((library) => {
+                        const binaryImage = library?.image?.toString('binary');
+                        return { ...library, image: binaryImage };
+                    });
+
+                    productList.FELibraryList.push(FELibraryList);
+                    productList.numberofFELibrary.push(FELibraries.count);
+                } else {
+                    productList.FELibraryList.push([]);
+                    productList.numberofFELibrary.push(0);
+                }
+
+                const BELibraries = await db.technologies.findAndCountAll({
+                    where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
+                    attributes: ['id', 'image', 'name', 'version', 'link'],
+                    order: [['id', 'ASC']],
+                    raw: true,
+                });
+
+                if (BELibraries.rows.length > 0) {
+                    const FELibraryList = BELibraries.rows.map((library) => {
+                        const binaryImage = library?.image?.toString('binary');
+                        return { ...library, image: binaryImage };
+                    });
+
+                    productList.BELibraryList.push(FELibraryList);
+                    productList.numberofBELibrary.push(BELibraries.count);
+                } else {
+                    productList.BELibraryList.push([]);
+                    productList.numberofBELibrary.push(0);
+                }
             }
+
+            return {
+                errorCode: 0,
+                errorMessage: `Tải danh sách sản phẩm thành công`,
+                data: productList,
+            };
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy ID người dùng để tải danh sách sản phẩm`,
+                errorMessage: `Không tìm thấy danh sách sản phẩm`,
             };
         }
     } catch (error) {
@@ -565,10 +557,10 @@ export const handleGetProductList = async (data) => {
 
 // UPDATE PRODUCT
 export const handleUpdateProduct = async (data) => {
-    const { userId, productId, label } = data;
+    const { productId, label } = data;
     try {
         const product = await db.technologies.findOne({
-            where: { id: productId, userId: userId },
+            where: { id: productId },
             raw: false,
         });
 
@@ -608,10 +600,10 @@ export const handleUpdateProduct = async (data) => {
 // DELETE PRODUCT
 export const handleDeleteProduct = async (data) => {
     try {
-        const { userId, productId } = data ?? {};
+        const { productId } = data ?? {};
 
         const product = await db.technologies.findOne({
-            where: { id: productId, userId: userId },
+            where: { id: productId },
             raw: true,
         });
 
@@ -634,6 +626,48 @@ export const handleDeleteProduct = async (data) => {
         return {
             errorCode: 31,
             errorMessage: `[Kết nối Database] Xóa sản phẩm thất bại`,
+        };
+    }
+};
+
+// MOVE PRODUCT
+export const handleMoveProduct = async (data) => {
+    const { movedItemID, movedItemOrder, siblingItemID, siblingItemOrder } = data;
+    try {
+        const product = await db.technologies.findOne({
+            where: { id: productId },
+            raw: false,
+        });
+
+        if (product) {
+            const newData = { ...data };
+            delete newData.userId;
+            delete newData.productId;
+            delete newData?.label;
+
+            for (let prop in newData) {
+                if (newData[prop] !== undefined) {
+                    product[prop] = newData[prop];
+                }
+            }
+
+            await product.save();
+
+            return {
+                errorCode: 0,
+                errorMessage: `Cập nhật ${label} thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy ${label}`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleUpdateProduct() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Cập nhật ${label} thất bại`,
         };
     }
 };
@@ -680,6 +714,59 @@ export const handleCreateTechnology = async (data) => {
         return {
             errorCode: 31,
             errorMessage: `[Kết nối Database] Tạo mới ${label} thất bại`,
+        };
+    }
+};
+
+// READ TECHNOLOGY
+export const handleGetTechnology = async (data) => {
+    try {
+        const { userId, productId, key, side, label } = data;
+
+        let whereQuery;
+        let technologiesData = {};
+
+        if (key === 'SC') {
+            whereQuery = { userId, productId, key };
+        } else {
+            whereQuery = { userId, productId, key, side };
+        }
+
+        const technologies = await db.technologies.findAndCountAll({
+            where: whereQuery,
+            attributes: ['id', 'image', 'name', 'version', 'link'],
+            order: [['id', 'ASC']],
+            raw: true,
+        });
+
+        if (technologies.rows.length > 0) {
+            const technologyList = technologies.rows.map((library) => {
+                const binaryImage = library?.image?.toString('binary');
+                return { ...library, image: binaryImage };
+            });
+
+            technologiesData.technologyList = technologyList;
+
+            if (key === 'LI') {
+                technologiesData.numberOfTechnology = technologies.count;
+            }
+
+            return {
+                errorCode: 0,
+                errorMessage: `Tải danh sách ${label} thành công`,
+                data: technologiesData,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy danh sách ${label}`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleGetTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Không kết nối được với Database`,
         };
     }
 };

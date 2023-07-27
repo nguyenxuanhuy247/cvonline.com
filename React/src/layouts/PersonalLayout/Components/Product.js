@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import Pagination from '@mui/material/Pagination';
 import { AiOutlineSortAscending, AiOutlineSortDescending, AiFillCloseCircle } from 'react-icons/ai';
@@ -13,6 +14,7 @@ import TechnologyList from './TechnologyList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import Button from '~/components/Button/Button.js';
 import EditProduct from '~/layouts/PersonalLayout/Components/EditProduct.js';
+import * as userActions from '~/store/actions';
 
 const cx = classnames.bind(styles);
 
@@ -43,14 +45,17 @@ class Product extends PureComponent {
     // =================================================================
     // CHANGE PRODUCT DESCRIPTION
 
-    handleUpdateProductName = async (e, productId) => {
-        const { productInfo } = this.props?.productData ?? {};
+    handleUpdateProductName = async (e) => {
+        const { name: productDesc, id: productID } = this.props?.productData ?? {};
 
         const value = e.target.innerText?.trim();
-        const data = { productId: productId, name: value, label: 'Tên sản phẩm' };
+        const data = { productId: productID, name: value, label: 'Tên sản phẩm' };
 
-        if (value !== productInfo?.name) {
-            await this.props?.onUpdateProduct(data);
+        if (value !== productDesc) {
+            const errorCode = await this.props.updateProduct(data);
+            if (errorCode === 0) {
+                await this.props.readProductList();
+            }
         }
     };
 
@@ -76,6 +81,18 @@ class Product extends PureComponent {
             await this.props?.onUpdateProduct(data);
         }
     };
+
+    // Fix bug
+    handleUpdateProduct = async (data) => {
+        const { id: userId } = this.props?.user ?? {};
+        const newData = { ...data, userId: userId };
+
+        const errorCode = await this.props.updateProduct(newData);
+        if (errorCode === 0) {
+            await this.props.readProductList(userId);
+        }
+    };
+    // Fix bug
 
     // ----------------------------------------------------------------
 
@@ -244,9 +261,16 @@ class Product extends PureComponent {
 
     // =================================================================
 
+    handleCreateTechnology = (productID) => {
+        // console.log('createTechnology', productID);
+        const data = { productID };
+        this.props.createTechnology(data);
+    };
+    // =================================================================
+
     async componentDidUpdate(prevProps) {
         const { productInfo, numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
-        const { side } = this.props;
+        const { jobTitle } = this.props;
 
         // Turn to last page when add a library
         if (numberofFELibrary > prevProps?.productData?.numberofFELibrary) {
@@ -265,124 +289,59 @@ class Product extends PureComponent {
         }
 
         // Set display BE, FE Technology
-        if (side === 'Fullstack developer') {
+        if (jobTitle === 'Fullstack developer') {
             this.setState({ isFE: true, isBE: true });
-        } else if (side === 'Frontend developer') {
+        } else if (jobTitle === 'Frontend developer') {
             this.setState({ isFE: true, isBE: false });
-        } else if (side === 'Backend developer') {
+        } else if (jobTitle === 'Backend developer') {
             this.setState({ isFE: false, isBE: true });
         }
     }
 
     async componentDidMount() {
-        const { productInfo } = this.props?.productData ?? {};
-        const { side } = this.props;
+        const { id: productID, desc: productDesc } = this.props?.productData ?? {};
+        const { jobTitle } = this.props;
 
         // Set product desc from database by JS
-        const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
-        productDescElement.innerText = productInfo?.desc;
+        const productDescElement = document.getElementById(`js-product-desc-${productID}`);
+        productDescElement.innerText = productDesc;
 
         // Set display BE, FE Technology
-        if (side === 'Fullstack developer') {
+        if (jobTitle === 'Fullstack developer') {
             this.setState({ isFE: true, isBE: true });
-        } else if (side === 'Frontend developer') {
+        } else if (jobTitle === 'Frontend developer') {
             this.setState({ isFE: true, isBE: false });
-        } else if (side === 'Backend developer') {
+        } else if (jobTitle === 'Backend developer') {
             this.setState({ isFE: false, isBE: true });
         }
     }
 
     render() {
-        const {
-            order,
-            productInfo,
-            sourceCodeList,
-            FETechnologyList,
-            BETechnologyList,
-            FELibraryList: FE_AllLibraryList,
-            numberofFELibrary,
-            BELibraryList: BE_AllLibraryList,
-            numberofBELibrary,
-        } = this.props?.productData ?? {};
-
-        // =================================================================
-        // PAGINATION
-
-        const FETotalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
-        const BETotalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
-
-        const FE_paginatedLibraryList = _.chunk(FE_AllLibraryList, this.state.FE_PageSize);
-        const FE_paginationLibraryList = FE_paginatedLibraryList[this.state.FE_Page - 1];
-        const BE_paginatedLibraryList = _.chunk(BE_AllLibraryList, this.state.BE_PageSize);
-        const BE_paginationLibraryList = BE_paginatedLibraryList[this.state.BE_Page - 1];
-
-        const FELibraryListArray = this.state.FE_isPagination ? FE_paginationLibraryList : FE_AllLibraryList;
-        const BELibraryListArray = this.state.BE_isPagination ? BE_paginationLibraryList : BE_AllLibraryList;
-
-        // =================================================================
-        // SORT LIST
-
-        // Check FE_isSearch and FE_sortBy in order to use FE Library List
-        const FE_LibraryList = this.state.FE_isSearch ? FE_AllLibraryList : FELibraryListArray;
-
-        let FE_LibraryList_SortedOrNot;
-        if (FE_LibraryList?.length > 0) {
-            FE_LibraryList_SortedOrNot = this.state.FE_sortBy
-                ? _.orderBy(
-                      [...FE_LibraryList],
-                      [
-                          (value) => {
-                              return value.name?.toLowerCase();
-                          },
-                      ],
-                      [this.state.FE_sortBy],
-                  )
-                : FE_LibraryList;
-        }
-
-        // Check BE_isSearch and BE_sortBy in order to use BE Library List
-        const BE_LibraryList = this.state.BE_isSearch ? BE_AllLibraryList : BELibraryListArray;
-
-        let BE_LibraryList_SortedOrNot;
-        if (BE_LibraryList?.length > 0) {
-            BE_LibraryList_SortedOrNot = this.state.BE_sortBy
-                ? _.orderBy(
-                      [...BE_LibraryList],
-                      [
-                          (value) => {
-                              return value.name?.toLowerCase();
-                          },
-                      ],
-                      [this.state.BE_sortBy],
-                  )
-                : BE_LibraryList;
-        }
-
-        // =================================================================
+        const { id: productID, name: productName, image: productImage, productOrder } = this.props?.productData ?? {};
 
         return (
-            <div className={cx('product-container')} id={`js-product-${productInfo?.id}`}>
+            <div className={cx('product-container')} id={`js-product-${productID}`}>
                 <EditProduct
-                    id={`js-edit-product-${productInfo?.id}`}
-                    onMoveUpProduct={() => this.props.onMoveUpProduct(order)}
-                    onMoveDownProduct={() => this.props.onMoveDownProduct(order)}
+                    id={`js-edit-product-${productID}`}
+                    onMoveUpProduct={() => this.props.onMoveUpProduct(productOrder)}
+                    onMoveDownProduct={() => this.props.onMoveDownProduct(productOrder)}
                     onCreateProduct={() => this.props.onCreateProduct()}
-                    onDeleteProduct={() => this.props.onDeleteProduct(productInfo?.id)}
+                    onDeleteProduct={() => this.props.onDeleteProduct(productID)}
                 />
 
                 <div className={cx('product')}>
                     <div className={cx('product-name-desc-image')} spellCheck="false">
                         <ContentEditableTag
-                            id={`js-product-name-${productInfo?.id}`}
-                            content={productInfo?.name}
+                            id={`js-product-name-${productID}`}
+                            content={productName}
                             className={cx('product-name')}
                             placeholder="Tên sản phẩm"
-                            onBlur={(e) => this.handleUpdateProductName(e, productInfo?.id)}
-                            onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productInfo?.id)}
+                            onBlur={(e) => this.handleUpdateProductName(e)}
+                            onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productID)}
                         />
 
                         <p
-                            id={`js-product-desc-${productInfo?.id}`}
+                            id={`js-product-desc-${productID}`}
                             contentEditable
                             placeholder="Mô tả sản phẩm"
                             className={cx('product-desc')}
@@ -398,7 +357,7 @@ class Product extends PureComponent {
                                 Sửa ảnh
                             </div>
                             <Image
-                                src={productInfo?.image || JpgImages.productPlaceholder}
+                                src={productImage || JpgImages.productPlaceholder}
                                 className={cx('image')}
                                 alt="Ảnh sản phẩm"
                             />
@@ -406,7 +365,7 @@ class Product extends PureComponent {
                             {this.state.isModalOpen && (
                                 <ChangeImageModal
                                     round={false}
-                                    src={productInfo?.image}
+                                    src={productImage}
                                     onClose={() => this.handleCloseChangeImageModal()}
                                     onGetUrl={this.handleUpdateImageFromChangeImageModal}
                                 />
@@ -416,13 +375,13 @@ class Product extends PureComponent {
 
                     <div className={cx('source-code-section')}>
                         <TechnologyList
-                            technologyListID={`js-source-code-list-${productInfo?.id}`}
+                            technologyListID={`js-source-code-list-${productID}`}
                             draggable
                             label="source code"
                             type="SOURCECODE"
                             keyprop="SC"
-                            productId={productInfo?.id}
-                            technologyList={sourceCodeList}
+                            productId={productID}
+                            // technologyList={sourceCodeList}
                             // =================================================================
                             // CRUD Source Code
                             onCreateTechnology={this.props.onCreateTechnology}
@@ -443,14 +402,14 @@ class Product extends PureComponent {
                                     </div>
                                     <div className={cx('list')}>
                                         <TechnologyList
-                                            technologyListID={`js-technology-list-FE-${productInfo?.id}`}
+                                            technologyListID={`js-technology-list-FE-${productID}`}
                                             draggable
                                             label="công nghệ FE"
                                             type="TECHNOLOGY"
                                             keyprop="TE"
                                             side="FE"
-                                            productId={productInfo?.id}
-                                            technologyList={FETechnologyList}
+                                            productId={productID}
+                                            // technologyList={FETechnologyList}
                                             // =================================================================
                                             // CRUD FE Technology List
                                             onCreateTechnology={this.props.onCreateTechnology}
@@ -467,7 +426,7 @@ class Product extends PureComponent {
                                     <div className={cx('library-filter-sort')}>
                                         <div className={cx('library-filter')}>
                                             <input
-                                                id={`js-search-input-FE-${productInfo?.id}`}
+                                                id={`js-search-input-FE-${productID}`}
                                                 value={this.state.FE_searchInputValue}
                                                 onChange={() => {}}
                                                 autoComplete="off"
@@ -515,7 +474,7 @@ class Product extends PureComponent {
                                                 {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                                     return (
                                                         <Button
-                                                            id={`js-display-paginition-FE-${productInfo?.id}`}
+                                                            id={`js-display-paginition-FE-${productID}`}
                                                             key={index}
                                                             className={cx('button', {
                                                                 active: button === this.state.FE_PageSize,
@@ -531,14 +490,14 @@ class Product extends PureComponent {
                                     )}
 
                                     <TechnologyList
-                                        technologyListID={`js-library-list-FE-${productInfo?.id}`}
+                                        technologyListID={`js-library-list-FE-${productID}`}
                                         draggable
                                         label="thư viện FE"
                                         type="LIBRARY"
                                         keyprop="LI"
                                         side="FE"
-                                        productId={productInfo?.id}
-                                        technologyList={FE_LibraryList_SortedOrNot}
+                                        productId={productID}
+                                        // technologyList={FE_LibraryList_SortedOrNot}
                                         // =================================================================
                                         // CRUD FE Library List
                                         onCreateTechnology={this.props.onCreateTechnology}
@@ -554,7 +513,7 @@ class Product extends PureComponent {
                                     {!this.state.FE_isSearch && this.state.FE_isPagination && (
                                         <div className={cx('pagination-container')}>
                                             <Pagination
-                                                count={FETotalPage}
+                                                // count={FETotalPage}
                                                 variant="outlined"
                                                 size="medium"
                                                 siblingCount={1}
@@ -599,14 +558,14 @@ class Product extends PureComponent {
                                     </div>
                                     <div className={cx('list')}>
                                         <TechnologyList
-                                            technologyListID={`js-technology-list-BE-${productInfo?.id}`}
+                                            technologyListID={`js-technology-list-BE-${productID}`}
                                             draggable
                                             label="công nghệ BE"
                                             type="TECHNOLOGY"
                                             keyprop="TE"
                                             side="BE"
-                                            productId={productInfo?.id}
-                                            technologyList={BETechnologyList}
+                                            // productId={productInfo?.id}
+                                            // technologyList={BETechnologyList}
                                             // =================================================================
                                             // CRUD FE Technology List
                                             onCreateTechnology={this.props.onCreateTechnology}
@@ -623,7 +582,7 @@ class Product extends PureComponent {
                                     <div className={cx('library-filter-sort')}>
                                         <div className={cx('library-filter')}>
                                             <input
-                                                id={`js-search-input-BE-${productInfo?.id}`}
+                                                id={`js-search-input-BE-${productID}`}
                                                 value={this.state.BE_searchInputValue}
                                                 onChange={() => {}}
                                                 autoComplete="off"
@@ -671,7 +630,7 @@ class Product extends PureComponent {
                                                 {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                                     return (
                                                         <Button
-                                                            id={`js-display-paginition-BE-${productInfo?.id}`}
+                                                            id={`js-display-paginition-BE-${productID}`}
                                                             key={index}
                                                             className={cx('button', {
                                                                 active: button === this.state.BE_PageSize,
@@ -687,14 +646,14 @@ class Product extends PureComponent {
                                     )}
 
                                     <TechnologyList
-                                        technologyListID={`js-library-list-BE-${productInfo?.id}`}
+                                        technologyListID={`js-library-list-BE-${productID}`}
                                         draggable
                                         label="thư viện BE"
                                         type="LIBRARY"
                                         keyprop="LI"
                                         side="BE"
-                                        productId={productInfo?.id}
-                                        technologyList={BE_LibraryList_SortedOrNot}
+                                        productId={productID}
+                                        // technologyList={BE_LibraryList_SortedOrNot}
                                         // =================================================================
                                         // CRUD BE Library List
                                         onCreateTechnology={this.props.onCreateTechnology}
@@ -710,7 +669,7 @@ class Product extends PureComponent {
                                     {!this.state.BE_isSearch && this.state.BE_isPagination && (
                                         <div className={cx('pagination-container')}>
                                             <Pagination
-                                                count={BETotalPage}
+                                                // count={BETotalPage}
                                                 variant="outlined"
                                                 size="medium"
                                                 siblingCount={1}
@@ -744,10 +703,24 @@ class Product extends PureComponent {
                             </div>
                         )}
                     </div>
+
+                    <div className={cx('page-number')}>
+                        {`${this.props.index + 1} / ${this.props.totalPage} trang`}{' '}
+                    </div>
                 </div>
             </div>
         );
     }
 }
 
-export default Product;
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateProduct: (data) => dispatch(userActions.updateProduct(data)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Product);

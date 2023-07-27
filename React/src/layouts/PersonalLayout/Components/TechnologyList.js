@@ -1,14 +1,16 @@
 import React, { PureComponent } from 'react';
-import className from 'classnames/bind';
+import { connect } from 'react-redux';
+import classnames from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { ReactSortable } from 'react-sortablejs';
 
+import * as userActions from '~/store/actions';
 import styles from './TechnologyList.module.scss';
 import Button from '~/components/Button/Button.js';
 import Technology from '~/layouts/PersonalLayout/Components/Technology.js';
 import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
 
-const cx = className.bind(styles);
+const cx = classnames.bind(styles);
 
 class TechnologyList extends PureComponent {
     constructor(props) {
@@ -123,4 +125,19 @@ class TechnologyList extends PureComponent {
     }
 }
 
-export default TechnologyList;
+const mapStateToProps = (state) => {
+    return {
+        productList: state.user.productList,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createTechnology: (data) => dispatch(userActions.createTechnology(data)),
+        readTechnology: (data) => dispatch(userActions.readTechnology(data)),
+        updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
+        deleteTechnology: (technologyId, label) => dispatch(userActions.deleteTechnology(technologyId, label)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TechnologyList);

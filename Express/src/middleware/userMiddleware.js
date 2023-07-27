@@ -133,19 +133,13 @@ export const checkReqGetProductList = (req, res, next) => {
     next();
 };
 
+// UPDATE PRODUCT
 export const checkReqUpdateProduct = (req, res, next) => {
-    const { userId, productId, label } = req.body;
-
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: `Nhập User ID để cập nhật ${label}`,
-        });
-    }
+    const { productId, label } = req.body;
 
     if (!productId) {
         return res.status(400).json({
-            errorCode: 11,
+            errorCode: 10,
             errorMessage: `Nhập Product ID để cập nhật ${label}`,
         });
     }
@@ -153,20 +147,28 @@ export const checkReqUpdateProduct = (req, res, next) => {
     next();
 };
 
+// DELETE PRODUCT
 export const checkReqDeleteProduct = (req, res, next) => {
-    const { userId, productId } = req.query;
-
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Nhập User ID người dùng để xóa sản phẩm',
-        });
-    }
+    const { productId } = req.query;
 
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
             errorMessage: 'Nhập Product ID để xóa sản phẩm',
+        });
+    }
+
+    next();
+};
+
+// MOVE PRODUCT
+export const checkReqMoveProduct = (req, res, next) => {
+    const { movedItemID, siblingItemID } = req.body;
+
+    if (!movedItemID || !siblingItemID) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Nhập Product ID để di chuyển sản phẩm',
         });
     }
 
@@ -190,7 +192,7 @@ export const checkReqCreateTechnology = (req, res, next) => {
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
-            errorMessage: `Nhập Product ID sản phẩm để tạo mới ${label}`,
+            errorMessage: `Nhập Product ID để tạo mới ${label}`,
         });
     }
 
@@ -215,6 +217,34 @@ export const checkReqCreateTechnology = (req, res, next) => {
                 errorMessage: `Nhập tên của ${label} mới`,
             });
         }
+    }
+
+    next();
+};
+
+// READ LIBRARY
+export const checkReqGetTechnology = (req, res, next) => {
+    const { userId, productId, key, side, label } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: `Nhập User ID để tải ${label}`,
+        });
+    }
+
+    if (!productId) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: `Nhập Product ID để tải ${label}`,
+        });
+    }
+
+    if (!(key || side)) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: `Nhập key, side để tải ${label}`,
+        });
     }
 
     next();

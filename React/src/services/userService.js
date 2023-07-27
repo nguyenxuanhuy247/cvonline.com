@@ -42,12 +42,20 @@ export const updateProduct = (data) => {
     return axios.put(`/api/put-product`, data);
 };
 
-export const deleteProduct = (userId, productId) => {
-    return axios.delete(`/api/delete-product?userId=${userId}&&productId=${productId}`);
+export const deleteProduct = (productId) => {
+    return axios.delete(`/api/delete-product?productId=${productId}`);
+};
+
+export const moveProduct = (data) => {
+    return axios.put(`/api/move-product`, data);
 };
 
 // =============================================================================
 // CRUD TECHNOLOGY
+
+export const readTechnology = (data) => {
+    return axios.get(`/api/get-technology`, data);
+};
 
 export const createTechnology = (data) => {
     return axios.post('/api/post-technology', data);
