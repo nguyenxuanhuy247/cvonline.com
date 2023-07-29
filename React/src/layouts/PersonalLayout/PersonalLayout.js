@@ -93,54 +93,6 @@ class PersonalLayout extends PureComponent {
     };
 
     // =================================================================
-    // CRUD TECHNOLOGY
-
-    handleCreateTechnology = async (data) => {
-        const { id: userId } = this.props?.user ?? {};
-        const newData = {
-            ...data,
-            userId: userId,
-        };
-
-        const errorCode = await this.props.createTechnology(newData);
-
-        if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-
-            if (errorCode === 0) {
-                return errorCode;
-            }
-        }
-    };
-
-    handleUpdateTechnology = async (data) => {
-        const { id: userId } = this.props?.user ?? {};
-        const newData = {
-            ...data,
-            userId: userId,
-        };
-
-        const errorCode = await this.props.updateTechnology(newData);
-
-        if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-
-            if (errorCode === 0) {
-                return errorCode;
-            }
-        }
-    };
-
-    handleDeleteTechnology = async (technologyId, label) => {
-        const { id: userId } = this.props?.user ?? {};
-
-        const errorCode = await this.props.deleteTechnology(technologyId, label);
-        if (errorCode === 0) {
-            await this.props.readProductList(userId);
-        }
-    };
-
-    // =================================================================
     // CRUD PRODUCT
 
     handleCreateProduct = async () => {
@@ -164,47 +116,16 @@ class PersonalLayout extends PureComponent {
     // =================================================================
     // MOVE PRODUCT
 
-    exchangeDataBetween2Product = (order, operator) => {
-        const productList_IDAndOrder = this.props.productInfoList?.map((productData) => {
-            return { productId: productData.id, productOrder: productData.productOrder };
-        });
-
-        const moveItemIndex = productList_IDAndOrder.findIndex((product) => product.productOrder === order);
-
-        const siblingIndex = operator === 'move up' ? moveItemIndex - 1 : moveItemIndex + 1;
-        const siblingItem_IDAndOrder = productList_IDAndOrder[siblingIndex];
-        const movedItem_IDAndOrder = productList_IDAndOrder[moveItemIndex];
-
-        if (movedItem_IDAndOrder && siblingItem_IDAndOrder) {
-            const newDataOfMovedItem = {
-                productId: movedItem_IDAndOrder.productId,
-                productOrder: siblingItem_IDAndOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
-            };
-
-            const newDataOfSiblingItem = {
-                productId: siblingItem_IDAndOrder.productId,
-                productOrder: movedItem_IDAndOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
-            };
-
-            return { newDataOfMovedItem, newDataOfSiblingItem };
-        } else {
-            const text = operator === 'move up' ? 'lên trên' : 'xuống dưới';
-            Toast.TOP_CENTER_WARN(`Không thể di chuyển sản phẩm này ${text}`, 3000);
-        }
-    };
-
     handleMoveProduct = async (order, operator) => {
         const productList_IDAndOrder = this.props.productInfoList?.map((productData) => {
             return { productId: productData.id, productOrder: productData.productOrder };
         });
 
-        const moveItemIndex = productList_IDAndOrder.findIndex((product) => product.productOrder === order);
+        const movedItemIndex = productList_IDAndOrder.findIndex((product) => product.productOrder === order);
 
-        const siblingIndex = operator === 'move up' ? moveItemIndex - 1 : moveItemIndex + 1;
-        const siblingItem_IDAndOrder = productList_IDAndOrder[siblingIndex];
-        const movedItem_IDAndOrder = productList_IDAndOrder[moveItemIndex];
+        const siblingItemIndex = operator === 'move up' ? movedItemIndex - 1 : movedItemIndex + 1;
+        const siblingItem_IDAndOrder = productList_IDAndOrder[siblingItemIndex];
+        const movedItem_IDAndOrder = productList_IDAndOrder[movedItemIndex];
 
         if (movedItem_IDAndOrder && siblingItem_IDAndOrder) {
             const data = {
@@ -214,13 +135,22 @@ class PersonalLayout extends PureComponent {
                 siblingItemOrder: movedItem_IDAndOrder.productOrder,
             };
 
-            const errorCode1 = await this.props.moveProduct(data);
-            // if (errorCode1 === 0) {
-            //     const upperEditProduct = document.getElementById(`js-edit-product-${newDataOfMovedItem.productId}`);
-            //     if (upperEditProduct) {
-            //         upperEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            //     }
-            // }
+            const index = {
+                movedItemIndex,
+                siblingItemIndex,
+            };
+
+            const errorCode = await this.props.moveProduct(data, index);
+
+            if (errorCode === 0) {
+                const siblingItem_EditProduct = document.getElementById(
+                    `js-edit-product-${movedItem_IDAndOrder.productId}`,
+                );
+
+                if (siblingItem_EditProduct) {
+                    siblingItem_EditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         } else {
             const text = operator === 'move up' ? 'lên trên' : 'xuống dưới';
             Toast.TOP_CENTER_WARN(`Không thể di chuyển sản phẩm này ${text}`, 3000);
@@ -467,10 +397,6 @@ class PersonalLayout extends PureComponent {
                                         // =================================================================
                                         onMoveUpProduct={(order) => this.handleMoveProduct(order, 'move up')}
                                         onMoveDownProduct={(order) => this.handleMoveProduct(order, 'move down')}
-                                        // =================================================================
-                                        onCreateTechnology={this.handleCreateTechnology}
-                                        onUpdateTechnology={this.handleUpdateTechnology}
-                                        onDeleteTechnology={this.handleDeleteTechnology}
                                     />
                                 );
                             })}
@@ -503,9 +429,8 @@ class PersonalLayout extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user.user,
         isLoading: state.user.isLoading.CVLayout,
-
+        user: state.user.user,
         productInfoList: state.user.productInfoList,
     };
 };
@@ -521,7 +446,7 @@ const mapDispatchToProps = (dispatch) => {
         readProductList: (userId) => dispatch(userActions.readProductList(userId)),
         updateProduct: (data) => dispatch(userActions.updateProduct(data)),
         deleteProduct: (productId) => dispatch(userActions.deleteProduct(productId)),
-        moveProduct: (data) => dispatch(userActions.moveProduct(data)),
+        moveProduct: (data, index) => dispatch(userActions.moveProduct(data, index)),
 
         // Sign out
         userSignOut: () => dispatch(userActions.userSignOut()),

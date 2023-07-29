@@ -98,7 +98,6 @@ const userReducer = (state = initialState, action) => {
             };
 
         // =================================================================
-
         // CREATE PRODUCT
         case 'CREATE_PRODUCT_START':
             return {
@@ -140,6 +139,31 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, CVLayout: false },
             };
 
+        // UPDATE PRODUCT LIST
+        case 'UPDATE_PRODUCT_START':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: true },
+            };
+        case 'UPDATE_PRODUCT_SUCCESS':
+            const { productData, index, updatedItem } = action.payload;
+            const updatedProductInfo = state.productInfoList[index];
+            updatedProductInfo[updatedItem] = productData[updatedItem];
+
+            const newUpdatedProductInfoList = [...state.productInfoList];
+            newUpdatedProductInfoList[index] = updatedProductInfo;
+
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                productInfoList: newUpdatedProductInfoList,
+            };
+        case 'UPDATE_PRODUCT_FAILURE':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+            };
+
         // DELETE PRODUCT
         case 'DELETE_PRODUCT_START':
             return {
@@ -160,6 +184,48 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
+            };
+
+        // MOVE PRODUCT
+        case 'MOVE_PRODUCT_START':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: true },
+            };
+        case 'MOVE_PRODUCT_SUCCESS':
+            const newProductInfoList = [...state.productInfoList];
+            const { movedItemIndex, siblingItemIndex } = action.payload;
+
+            const movedProductInfo = newProductInfoList[movedItemIndex];
+            const siblingProductInfo = newProductInfoList[siblingItemIndex];
+
+            newProductInfoList[movedItemIndex] = siblingProductInfo;
+            newProductInfoList[siblingItemIndex] = movedProductInfo;
+
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                productInfoList: newProductInfoList,
+            };
+        case 'MOVE_PRODUCT_FAILURE':
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+            };
+        // =================================================================
+        // CREATE TECHONOLOGY
+        case 'CREATE_TECHONOLOGY_START':
+            return {
+                ...state,
+            };
+        case 'CREATE_TECHONOLOGY_SUCCESS':
+            return {
+                ...state,
+                ...action.payload,
+            };
+        case 'CREATE_TECHONOLOGY_FAILURE':
+            return {
+                ...state,
             };
 
         default:

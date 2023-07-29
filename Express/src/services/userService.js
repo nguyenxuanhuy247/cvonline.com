@@ -566,7 +566,6 @@ export const handleUpdateProduct = async (data) => {
 
         if (product) {
             const newData = { ...data };
-            delete newData.userId;
             delete newData.productId;
             delete newData?.label;
 
@@ -634,40 +633,42 @@ export const handleDeleteProduct = async (data) => {
 export const handleMoveProduct = async (data) => {
     const { movedItemID, movedItemOrder, siblingItemID, siblingItemOrder } = data;
     try {
-        const product = await db.technologies.findOne({
-            where: { id: productId },
+        const movedProduct = await db.technologies.findOne({
+            where: { id: movedItemID },
+            attributes: ['productOrder'],
             raw: false,
         });
 
-        if (product) {
-            const newData = { ...data };
-            delete newData.userId;
-            delete newData.productId;
-            delete newData?.label;
+        const siblingProduct = await db.technologies.findOne({
+            where: { id: siblingItemID },
+            attributes: ['productOrder'],
+            raw: false,
+        });
 
-            for (let prop in newData) {
-                if (newData[prop] !== undefined) {
-                    product[prop] = newData[prop];
-                }
-            }
-
-            await product.save();
+        if (movedProduct && siblingProduct) {
+            await db.technologies.bulkCreate(
+                [
+                    { id: movedItemID, productOrder: siblingItemOrder },
+                    { id: siblingItemID, productOrder: movedItemOrder },
+                ],
+                { updateOnDuplicate: ['productOrder'] },
+            );
 
             return {
                 errorCode: 0,
-                errorMessage: `Cập nhật ${label} thành công`,
+                errorMessage: `Di chuyển sản phẩm thành công`,
             };
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy ${label}`,
+                errorMessage: `Không tìm thấy sản phẩm cần di chuyển`,
             };
         }
     } catch (error) {
-        console.log('An error in handleUpdateProduct() in userService.js : ', error);
+        console.log('An error in handleMoveProduct() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Cập nhật ${label} thất bại`,
+            errorMessage: `[Kết nối Database] Di chuyển sản phẩm thất bại`,
         };
     }
 };
@@ -745,10 +746,18 @@ export const handleGetTechnology = async (data) => {
                 return { ...library, image: binaryImage };
             });
 
-            technologiesData.technologyList = technologyList;
-
-            if (key === 'LI') {
-                technologiesData.numberOfTechnology = technologies.count;
+            if (key === 'SC') {
+                technologiesData.sourceCodeList = technologyList;
+            } else if (key === 'TE' && side === 'FE') {
+                technologiesData.FETechnologyList = technologyList;
+            } else if (key === 'TE' && side === 'BE') {
+                technologiesData.BETechnologyList = technologyList;
+            } else if (key === 'LI' && side === 'FE') {
+                technologiesData.FELibraryList = technologyList;
+                technologiesData.numberofFELibrary = technologies.count;
+            } else if (key === 'LI' && side === 'BE') {
+                technologiesData.BELibraryList = technologyList;
+                technologiesData.numberofBELibrary = technologies.count;
             }
 
             return {

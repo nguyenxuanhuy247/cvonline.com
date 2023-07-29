@@ -21,7 +21,7 @@ let initWebRoutes = (app) => {
         userController.handleUpdateUserInformation,
     );
 
-    // CRUD PRODUCT LIST
+    // CRUD PRODUCT
     router.post('/api/post-product', userMiddleware.checkReqCreateProduct, userController.handleCreateProduct);
     router.get('/api/get-product-list', userMiddleware.checkReqGetProductList, userController.handleGetProductList);
     router.put('/api/put-product', userMiddleware.checkReqUpdateProduct, userController.handleUpdateProduct);

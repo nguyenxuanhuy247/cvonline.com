@@ -185,6 +185,7 @@ export const createProduct = (userId) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(createProduct_Failure());
             console.log('An error in createProduct() - userActions.js: ', error);
 
             return errorCode;
@@ -248,22 +249,46 @@ export const readProductList_Failure = () => ({
 });
 
 // UPDATE PRODUCT
-export const updateProduct = (data) => {
-    return async () => {
+export const updateProduct = (productData, index, updatedItem) => {
+    return async (dispatch) => {
+        dispatch(updateProduct_Start());
         try {
-            const res = await userService.updateProduct(data);
-            const { errorCode } = res ?? {};
+            const res = await userService.updateProduct(productData);
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                const reduxData = { productData, index, updatedItem };
+                dispatch(updateProduct_Success(reduxData));
 
-            return errorCode;
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(updateProduct_Failure());
+
+                return errorCode;
+            }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(updateProduct_Failure());
             console.log('An error in updateProduct() - userActions.js: ', error);
 
             return errorCode;
         }
     };
 };
+
+export const updateProduct_Start = () => ({
+    type: `UPDATE_PRODUCT_START`,
+});
+
+export const updateProduct_Success = (data) => ({
+    type: `UPDATE_PRODUCT_SUCCESS`,
+    payload: data,
+});
+
+export const updateProduct_Failure = () => ({
+    type: `UPDATE_PRODUCT_FAILURE`,
+});
 
 // DELETE PRODUCT
 export const deleteProduct = (productId) => {
@@ -285,6 +310,7 @@ export const deleteProduct = (productId) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(deleteProduct_Failure());
             console.log('An error in deleteProduct() - userActions.js: ', error);
 
             return errorCode;
@@ -306,15 +332,15 @@ export const deleteProduct_Failure = () => ({
 });
 
 // MOVE PRODUCT
-export const moveProduct = (userData) => {
+export const moveProduct = (userData, index) => {
     return async (dispatch) => {
         dispatch(moveProduct_Start());
         try {
             const res = await userService.moveProduct(userData);
-            const { errorCode, errorMessage, data } = res ?? {};
+            const { errorCode, errorMessage } = res ?? {};
 
             if (errorCode === 0) {
-                dispatch(moveProduct_Success(data));
+                dispatch(moveProduct_Success(index));
 
                 return errorCode;
             } else {
@@ -327,7 +353,7 @@ export const moveProduct = (userData) => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 4000);
             dispatch(moveProduct_Failure());
-            console.log('An error in readProductList() - userActions.js: ', error);
+            console.log('An error in moveProduct() - userActions.js: ', error);
 
             return errorCode;
         }
@@ -352,16 +378,25 @@ export const moveProduct_Failure = () => ({
 
 // CREATE TECHNOLOGY
 export const createTechnology = (data) => {
-    return async () => {
-        console.log('Creating', data);
+    return async (dispatch) => {
+        dispatch(createTechnology_Start());
         try {
             let res = await userService.createTechnology(data);
-            const { errorCode } = res ?? {};
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                dispatch(createTechnology_Success(data));
 
-            return errorCode;
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(createTechnology_Failure());
+
+                return errorCode;
+            }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            dispatch(createTechnology_Failure());
             console.log('An error in createTechnology() - userActions.js: ', error);
 
             return errorCode;
@@ -369,42 +404,60 @@ export const createTechnology = (data) => {
     };
 };
 
+export const createTechnology_Start = () => ({
+    type: `CREATE_TECHNOLOGY_START`,
+});
+
+export const createTechnology_Success = (data) => ({
+    type: `CREATE_TECHNOLOGY_SUCCESS`,
+    payload: data,
+});
+
+export const createTechnology_Failure = () => ({
+    type: `CREATE_TECHNOLOGY_FAILURE`,
+});
+
 // READ TECHNOLOGY
-export const readTechnology = (data) => {
+export const readTechnology = (technologyData, index) => {
     return async (dispatch) => {
         dispatch(readTechnology_Start());
         try {
-            const res = await userService.readTechnology(data);
-            const { errorCode, errorMessage } = res ?? {};
+            const res = await userService.readTechnology(technologyData);
+            const { errorCode, errorMessage, data } = res ?? {};
 
             if (errorCode === 0) {
-                dispatch(readTechnology_Success(res));
+                const reduxData = { index, data };
+                dispatch(readTechnology_Success(data));
+
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
                 dispatch(readTechnology_Failure());
+
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(readTechnology_Failure());
             console.log('An error in readTechnology() - userActions.js: ', error);
+
             return errorCode;
         }
     };
 };
 
 export const readTechnology_Start = () => ({
-    type: `READ_PRODUCT_LIST_START`,
+    type: `READ_TECHNOLOGY_START`,
 });
 
 export const readTechnology_Success = (data) => ({
-    type: `READ_PRODUCT_LIST_SUCCESS`,
+    type: `READ_TECHNOLOGY_SUCCESS`,
     payload: data,
 });
 
 export const readTechnology_Failure = () => ({
-    type: `READ_PRODUCT_LIST_FAILURE`,
+    type: `READ_TECHNOLOGY_FAILURE`,
 });
 
 // UPDATE TECHNOLOGY

@@ -25,11 +25,15 @@ const actionNames = Object.freeze({
     // PRODUCT LIST
     ...actionMaker(`CREATE`, `PRODUCT`),
     ...actionMaker(`READ`, `PRODUCT_LIST`),
+    ...actionMaker(`UPDATE`, `PRODUCT`),
     ...actionMaker(`DELETE`, `PRODUCT`),
     ...actionMaker(`MOVE`, `PRODUCT`),
 
     // TECHNOLOGY
+    ...actionMaker(`CREATE`, `TECHNOLOGY`),
     ...actionMaker(`READ`, `TECHNOLOGY`),
+    ...actionMaker(`UPDATE`, `TECHNOLOGY`),
+    ...actionMaker(`DELETE`, `TECHNOLOGY`),
 });
 
 export default actionNames;

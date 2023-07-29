@@ -222,7 +222,7 @@ export const checkReqCreateTechnology = (req, res, next) => {
     next();
 };
 
-// READ LIBRARY
+// READ TECHNOLOGY
 export const checkReqGetTechnology = (req, res, next) => {
     const { userId, productId, key, side, label } = req.body;
 

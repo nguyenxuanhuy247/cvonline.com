@@ -36,13 +36,60 @@ class TechnologyList extends PureComponent {
 
     // =================================================================
 
+    // =================================================================
+    // CRUD TECHNOLOGY
+
+    handleCreateTechnology = async (data) => {
+        const { id: userId } = this.props?.user ?? {};
+        const newData = {
+            ...data,
+            userId: userId,
+        };
+
+        const errorCode = await this.props.createTechnology(newData);
+
+        if (errorCode === 0) {
+            const errorCode = await this.props.readProductList(userId);
+
+            if (errorCode === 0) {
+                return errorCode;
+            }
+        }
+    };
+
+    handleUpdateTechnology = async (data) => {
+        const { id: userId } = this.props?.user ?? {};
+        const newData = {
+            ...data,
+            userId: userId,
+        };
+
+        const errorCode = await this.props.updateTechnology(newData);
+
+        if (errorCode === 0) {
+            const errorCode = await this.props.readProductList(userId);
+
+            if (errorCode === 0) {
+                return errorCode;
+            }
+        }
+    };
+
+    handleDeleteTechnology = async (technologyId, label) => {
+        const { id: userId } = this.props?.user ?? {};
+
+        const errorCode = await this.props.deleteTechnology(technologyId, label);
+        if (errorCode === 0) {
+            await this.props.readProductList(userId);
+        }
+    };
+
     handleSortList = (newState) => {
         this.setState({ list: newState });
     };
 
     render() {
-        const { draggable, type, keyprop, side, productId, label, technologyList, isSearch, onSearchLibrary } =
-            this.props;
+        const { draggable, type, keyprop, side, productId, label, index, isSearch, onSearchLibrary } = this.props;
 
         return (
             <div
@@ -109,6 +156,7 @@ class TechnologyList extends PureComponent {
                 ) : (
                     <CreateEditTechnology
                         id={`${this.props.technologyListID}-create-container`}
+                        index={index}
                         label={label}
                         type={type}
                         keyprop={keyprop}
@@ -126,9 +174,7 @@ class TechnologyList extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    return {
-        productList: state.user.productList,
-    };
+    return {};
 };
 
 const mapDispatchToProps = (dispatch) => {
