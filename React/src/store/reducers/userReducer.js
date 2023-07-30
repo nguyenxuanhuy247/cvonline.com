@@ -7,14 +7,7 @@ const initialState = {
     isSignIn: false,
     isSignUp: false,
     user: null,
-    productInfoList: [],
-    sourceCodeList: [],
-    FETechnologyList: [],
-    BETechnologyList: [],
-    FELibraryList: [],
-    numberofFELibrary: [],
-    BELibraryList: [],
-    numberofBELibrary: [],
+    productList: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -131,7 +124,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                ...action.payload,
+                productList: action.payload,
             };
         case 'READ_PRODUCT_LIST_FAILURE':
             return {
@@ -212,18 +205,26 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
             };
+
         // =================================================================
         // CREATE TECHONOLOGY
-        case 'CREATE_TECHONOLOGY_START':
+        case 'CREATE_TECHNOLOGY_START':
             return {
                 ...state,
             };
-        case 'CREATE_TECHONOLOGY_SUCCESS':
+        case 'CREATE_TECHNOLOGY_SUCCESS':
+            const { index: createdIndex, dataFromDB } = action.payload;
+
+            const selectedTechnologyList = state.technologyList[createdIndex];
+
+            const newTechnologyList = { ...selectedTechnologyList, ...dataFromDB };
+            const copyState = { ...state };
+            copyState.technologyList[createdIndex] = newTechnologyList;
+
             return {
-                ...state,
-                ...action.payload,
+                ...copyState,
             };
-        case 'CREATE_TECHONOLOGY_FAILURE':
+        case 'CREATE_TECHNOLOGY_FAILURE':
             return {
                 ...state,
             };

@@ -88,6 +88,8 @@ class TechnologyList extends PureComponent {
         this.setState({ list: newState });
     };
 
+    componentDidUpdate(prevProps) {}
+
     render() {
         const { draggable, type, keyprop, side, productId, label, index, isSearch, onSearchLibrary } = this.props;
 
@@ -163,7 +165,6 @@ class TechnologyList extends PureComponent {
                         side={side}
                         productId={productId}
                         onCloseCreateTechnology={this.handleCloseCreateTechnology}
-                        onCreateTechnology={this.props.onCreateTechnology}
                         isSearch={isSearch}
                         onSearchLibrary={onSearchLibrary}
                     />
@@ -174,12 +175,13 @@ class TechnologyList extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        technologyList: state.user.technologyList,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createTechnology: (data) => dispatch(userActions.createTechnology(data)),
         readTechnology: (data) => dispatch(userActions.readTechnology(data)),
         updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
         deleteTechnology: (technologyId, label) => dispatch(userActions.deleteTechnology(technologyId, label)),

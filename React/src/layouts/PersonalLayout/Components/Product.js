@@ -300,16 +300,9 @@ class Product extends PureComponent {
 
     render() {
         const { id: productID, name: productName, image: productImage, productOrder } = this.props?.productData ?? {};
-        const {
-            index,
-            sourceCodeList,
-            FETechnologyList,
-            BETechnologyList,
-            FELibraryList,
-            numberofFELibrary,
-            BELibraryList,
-            numberofBELibrary,
-        } = this.props ?? {};
+        const { index, technologyList } = this.props ?? {};
+
+        console.log('aaaaaaaaaaaa', technologyList?.[index]);
 
         return (
             <div className={cx('product-container')} id={`js-product-${productID}`}>
@@ -374,12 +367,7 @@ class Product extends PureComponent {
                             type="SOURCECODE"
                             keyprop="SC"
                             productId={productID}
-                            technologyList={sourceCodeList[index]}
-                            // =================================================================
-                            // CRUD Source Code
-                            onCreateTechnology={this.props.onCreateTechnology}
-                            onUpdateTechnology={this.props.onUpdateTechnology}
-                            onDeleteTechnology={this.props.onDeleteTechnology}
+                            technologyList={technologyList?.[index]?.sourceCodeList}
                         />
                     </div>
 
@@ -403,12 +391,7 @@ class Product extends PureComponent {
                                             keyprop="TE"
                                             side="FE"
                                             productId={productID}
-                                            technologyList={FETechnologyList[index]}
-                                            // =================================================================
-                                            // CRUD FE Technology List
-                                            onCreateTechnology={this.props.onCreateTechnology}
-                                            onUpdateTechnology={this.props.onUpdateTechnology}
-                                            onDeleteTechnology={this.props.onDeleteTechnology}
+                                            technologyList={technologyList?.[index]?.FETechnologyList}
                                         />
                                     </div>
                                 </div>
@@ -492,12 +475,7 @@ class Product extends PureComponent {
                                         keyprop="LI"
                                         side="FE"
                                         productId={productID}
-                                        technologyList={FELibraryList[index]}
-                                        // =================================================================
-                                        // CRUD FE Library List
-                                        onCreateTechnology={this.props.onCreateTechnology}
-                                        onUpdateTechnology={this.props.onUpdateTechnology}
-                                        onDeleteTechnology={this.props.onDeleteTechnology}
+                                        technologyList={technologyList?.[index]?.FELibraryList}
                                         // =================================================================
                                         // Search - Sort
                                         isSearch={this.state.FE_isSearch}
@@ -561,12 +539,7 @@ class Product extends PureComponent {
                                             keyprop="TE"
                                             side="BE"
                                             productId={productID}
-                                            technologyList={BETechnologyList[index]}
-                                            // =================================================================
-                                            // CRUD FE Technology List
-                                            onCreateTechnology={this.props.onCreateTechnology}
-                                            onUpdateTechnology={this.props.onUpdateTechnology}
-                                            onDeleteTechnology={this.props.onDeleteTechnology}
+                                            technologyList={technologyList?.[index]?.BETechnologyList}
                                         />
                                     </div>
                                 </div>
@@ -650,12 +623,7 @@ class Product extends PureComponent {
                                         keyprop="LI"
                                         side="BE"
                                         productId={productID}
-                                        technologyList={BELibraryList[index]}
-                                        // =================================================================
-                                        // CRUD BE Library List
-                                        onCreateTechnology={this.props.onCreateTechnology}
-                                        onUpdateTechnology={this.props.onUpdateTechnology}
-                                        onDeleteTechnology={this.props.onDeleteTechnology}
+                                        technologyList={technologyList?.[index]?.BELibraryList}
                                         // =================================================================
                                         // Search - Sort
                                         isSearch={this.state.BE_isSearch}
@@ -712,13 +680,7 @@ class Product extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        sourceCodeList: state.user.sourceCodeList,
-        FETechnologyList: state.user.FETechnologyList,
-        BETechnologyList: state.user.FETechnologyList,
-        FELibraryList: state.user.FELibraryList,
-        numberofFELibrary: state.user.numberofFELibrary,
-        BELibraryList: state.user.BELibraryList,
-        numberofBELibrary: state.user.numberofBELibrary,
+        technologyList: state.user.technologyList,
     };
 };
 

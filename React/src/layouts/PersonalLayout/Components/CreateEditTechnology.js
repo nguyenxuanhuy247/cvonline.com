@@ -52,7 +52,7 @@ class CreateEditTechnology extends PureComponent {
             image: this.state.image,
             name: this.state.name?.trim(),
             version: this.state.version?.trim(),
-            link: this.state.link,
+            link: this.state.link?.trim(),
             userId: userId,
             productId: this.props?.productId,
             label: this.props?.label,
@@ -66,15 +66,13 @@ class CreateEditTechnology extends PureComponent {
         } else {
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
-                    const errorCode = await this.props.createTechnology(data);
+                    const errorCode = await this.props.createTechnology(data, index);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
-                        console.log('aaaaaa', data);
-                        await this.props.readTechnology(data, index);
 
-                        if (this.props?.isSearch) {
-                            this.props?.onSearchLibrary();
-                        }
+                        // if (this.props?.isSearch) {
+                        //     this.props?.onSearchLibrary();
+                        // }
                     }
                 } else if (!this.state.name) {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
@@ -223,10 +221,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createTechnology: (data) => dispatch(userActions.createTechnology(data)),
-        readTechnology: (data, index) => dispatch(userActions.readTechnology(data, index)),
-        updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
-        deleteTechnology: (technologyId, label) => dispatch(userActions.deleteTechnology(technologyId, label)),
+        createTechnology: (data, index) => dispatch(userActions.createTechnology(data, index)),
     };
 };
 

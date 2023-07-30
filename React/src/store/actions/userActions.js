@@ -377,14 +377,15 @@ export const moveProduct_Failure = () => ({
 // CRUD TECHNOLOGY
 
 // CREATE TECHNOLOGY
-export const createTechnology = (data) => {
+export const createTechnology = (technologyData, index) => {
     return async (dispatch) => {
         dispatch(createTechnology_Start());
         try {
-            let res = await userService.createTechnology(data);
-            const { errorCode, errorMessage } = res ?? {};
+            let res = await userService.createTechnology(technologyData);
+            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
             if (errorCode === 0) {
-                dispatch(createTechnology_Success(data));
+                const reduxData = { index, dataFromDB };
+                dispatch(createTechnology_Success(reduxData));
 
                 return errorCode;
             } else {
@@ -427,7 +428,7 @@ export const readTechnology = (technologyData, index) => {
 
             if (errorCode === 0) {
                 const reduxData = { index, data };
-                dispatch(readTechnology_Success(data));
+                dispatch(readTechnology_Success(reduxData));
 
                 return errorCode;
             } else {

@@ -415,42 +415,42 @@ export const handleGetProductList = async (data) => {
         const uniqueProductIDArr = [...new Set(productIDArrWithNULL)];
 
         if (uniqueProductIDArr.length > 0) {
-            let productList = {
-                productInfoList: [],
-                sourceCodeList: [],
-                FETechnologyList: [],
-                BETechnologyList: [],
-                FELibraryList: [],
-                numberofFELibrary: [],
-                BELibraryList: [],
-                numberofBELibrary: [],
-            };
+            let productListData = [];
 
             for (let productID of uniqueProductIDArr) {
-                const productInfo = await db.technologies.findOne({
+                const product = {
+                    productInfo: {},
+                    sourceCodeList: [],
+                    FETechnologyList: [],
+                    BETechnologyList: [],
+                    FELibraryList: [],
+                    numberofFELibrary: undefined,
+                    BELibraryList: [],
+                    numberofBELibrary: undefined,
+                };
+
+                const productDesc = await db.technologies.findOne({
                     where: { id: productID, key: 'PD' },
                     attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
-                    raw: true,
+                    order: [['productOrder', 'ASC']],
                 });
 
-                if (productInfo) {
+                if (productDesc) {
+                    const productImage = productDesc.image;
                     let binaryImage;
-
-                    const productImage = productInfo.image;
                     if (productImage) {
                         binaryImage = productImage.toString('binary');
                     }
 
-                    const newProductDesc = { ...productInfo, image: binaryImage };
+                    const newProductDesc = { ...productDesc, image: binaryImage };
 
-                    productList.productInfoList.push(newProductDesc);
+                    product.productInfo = newProductDesc;
                 }
 
                 const sourceCodes = await db.technologies.findAll({
                     where: { userId: userId, productId: productID, key: 'SC' },
                     attributes: ['id', 'image', 'name', 'link'],
                     order: [['id', 'ASC']],
-                    raw: true,
                 });
 
                 if (sourceCodes) {
@@ -459,14 +459,13 @@ export const handleGetProductList = async (data) => {
                         return { ...sourceCode, image: binaryImage };
                     });
 
-                    productList.sourceCodeList.push(sourceCodeList);
+                    product.sourceCodeList = sourceCodeList;
                 }
 
                 const FETechnologies = await db.technologies.findAll({
                     where: { userId: userId, productId: productID, key: 'TE', side: 'FE' },
                     attributes: ['id', 'image', 'name', 'link'],
                     order: [['id', 'ASC']],
-                    raw: true,
                 });
 
                 if (FETechnologies) {
@@ -475,14 +474,13 @@ export const handleGetProductList = async (data) => {
                         return { ...FETechnology, image: binaryImage };
                     });
 
-                    productList.FETechnologyList.push(FETechnologyList);
+                    product.FETechnologyList = FETechnologyList;
                 }
 
                 const BETechnologies = await db.technologies.findAll({
                     where: { userId: userId, productId: productID, key: 'TE', side: 'BE' },
                     attributes: ['id', 'image', 'name', 'link'],
                     order: [['id', 'ASC']],
-                    raw: true,
                 });
 
                 if (BETechnologies) {
@@ -491,14 +489,13 @@ export const handleGetProductList = async (data) => {
                         return { ...BETechnology, image: binaryImage };
                     });
 
-                    productList.BETechnologyList.push(BETechnologyList);
+                    product.BETechnologyList = BETechnologyList;
                 }
 
                 const FELibraries = await db.technologies.findAndCountAll({
                     where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
                     attributes: ['id', 'image', 'name', 'version', 'link'],
                     order: [['id', 'ASC']],
-                    raw: true,
                 });
 
                 if (FELibraries.rows.length > 0) {
@@ -507,18 +504,14 @@ export const handleGetProductList = async (data) => {
                         return { ...library, image: binaryImage };
                     });
 
-                    productList.FELibraryList.push(FELibraryList);
-                    productList.numberofFELibrary.push(FELibraries.count);
-                } else {
-                    productList.FELibraryList.push([]);
-                    productList.numberofFELibrary.push(0);
+                    product.FELibraryList = FELibraryList;
                 }
+                product.numberofFELibrary = FELibraries.count;
 
                 const BELibraries = await db.technologies.findAndCountAll({
                     where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
                     attributes: ['id', 'image', 'name', 'version', 'link'],
                     order: [['id', 'ASC']],
-                    raw: true,
                 });
 
                 if (BELibraries.rows.length > 0) {
@@ -527,18 +520,17 @@ export const handleGetProductList = async (data) => {
                         return { ...library, image: binaryImage };
                     });
 
-                    productList.BELibraryList.push(FELibraryList);
-                    productList.numberofBELibrary.push(BELibraries.count);
-                } else {
-                    productList.BELibraryList.push([]);
-                    productList.numberofBELibrary.push(0);
+                    product.BELibraryList = FELibraryList;
                 }
+                product.numberofBELibrary = BELibraries.count;
+
+                productListData.push(product);
             }
 
             return {
                 errorCode: 0,
                 errorMessage: `Tải danh sách sản phẩm thành công`,
-                data: productList,
+                data: productListData,
             };
         } else {
             return {
@@ -678,7 +670,7 @@ export const handleMoveProduct = async (data) => {
 
 // CREATE TECHNOLOGY
 export const handleCreateTechnology = async (data) => {
-    const { type, side, name, userId, productId, label } = data ?? {};
+    const { type, key, side, name, userId, productId, label } = data ?? {};
 
     try {
         let whereQuery;
@@ -698,12 +690,57 @@ export const handleCreateTechnology = async (data) => {
             const queryData = { ...data };
             delete queryData?.label;
 
-            await db.technologies.create({ ...queryData });
+            await db.technologies.create({
+                ...queryData,
+            });
 
-            return {
-                errorCode: 0,
-                errorMessage: `Tạo ${label} này thành công`,
-            };
+            let findAllQuery;
+            if (type === 'SOURCECODE') {
+                findAllQuery = { key: key, userId: userId, productId: productId };
+            } else {
+                findAllQuery = { side: side, key: key, userId: userId, productId: productId };
+            }
+
+            const { rows, count } = await db.technologies.findAndCountAll({
+                where: findAllQuery,
+                attributes: ['id', 'image', 'name', 'version', 'link'],
+                order: [['id', 'ASC']],
+                raw: true,
+            });
+
+            if (rows.length > 0) {
+                let dataSentToClient = {};
+
+                const technologyList = rows.map((library) => {
+                    const binaryImage = library?.image?.toString('binary');
+                    return { ...library, image: binaryImage };
+                });
+
+                if (type === 'SOURCECODE') {
+                    dataSentToClient.sourceCodeList = technologyList;
+                } else if (type === 'TECHNOLOGY' && side === 'FE') {
+                    dataSentToClient.FETechnologyList = technologyList;
+                } else if (type === 'TECHNOLOGY' && side === 'BE') {
+                    dataSentToClient.BETechnologyList = technologyList;
+                } else if (type === 'LIBRARY' && side === 'FE') {
+                    dataSentToClient.FELibraryList = technologyList;
+                    dataSentToClient.numberofFELibrary = count;
+                } else if (type === 'LIBRARY' && side === 'BE') {
+                    dataSentToClient.BELibraryList = technologyList;
+                    dataSentToClient.numberofBELibrary = count;
+                }
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Tạo ${label} này thành công`,
+                    data: dataSentToClient,
+                };
+            } else {
+                return {
+                    errorCode: 33,
+                    errorMessage: `Không tìm thấy danh sách ${label}`,
+                };
+            }
         } else {
             return {
                 errorCode: 32,

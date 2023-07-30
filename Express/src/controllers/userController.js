@@ -164,6 +164,8 @@ export const handleCreateTechnology = async (req, res) => {
         res.status(503).json(message);
     } else if (message.errorCode === 32) {
         res.status(409).json(message);
+    } else if (message.errorCode === 33) {
+        res.status(404).json(message);
     }
 };
 

@@ -380,7 +380,7 @@ class PersonalLayout extends PureComponent {
 
                     <div className={cx('product-list-container')}>
                         <div className={cx('product-list')}>
-                            {this.props.productInfoList?.map((product, index) => {
+                            {this.props.productInfoList?.map((productInfo, index) => {
                                 const totalPage = this.props.productInfoList?.length;
 
                                 return (
@@ -388,7 +388,7 @@ class PersonalLayout extends PureComponent {
                                         key={index}
                                         // =================================================================
                                         jobTitle={this.props?.user?.jobPosition}
-                                        productData={product}
+                                        productData={productInfo}
                                         index={index}
                                         totalPage={totalPage}
                                         // =================================================================
