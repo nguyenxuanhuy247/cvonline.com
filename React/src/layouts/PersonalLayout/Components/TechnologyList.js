@@ -38,9 +38,14 @@ class TechnologyList extends PureComponent {
         this.setState({ list: newState });
     };
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.technologyList !== this.props.technologyList) {
+            this.setState({ list: this.props.technologyList });
+        }
+    }
+
     render() {
-        const { draggable, type, keyprop, side, productId, label, technologyList, isSearch, onSearchLibrary } =
-            this.props;
+        const { draggable, type, keyprop, side, productId, label, isSearch, onSearchLibrary } = this.props;
 
         return (
             <div
@@ -63,6 +68,7 @@ class TechnologyList extends PureComponent {
                         return (
                             <Technology
                                 key={technology.id}
+                                index={this.props.index}
                                 // =================================================================
                                 draggable={draggable}
                                 librarylist={this.state.list}
@@ -83,10 +89,6 @@ class TechnologyList extends PureComponent {
                                 isCloseEditTechnology={this.state.isCreateTechnology}
                                 onShowCreateTechnology={this.handleShowCreateTechnology}
                                 onCloseCreateTechnology={this.handleCloseCreateTechnology}
-                                // =================================================================
-                                // CRUD
-                                onUpdateTechnology={this.props.onUpdateTechnology}
-                                onDeleteTechnology={this.props.onDeleteTechnology}
                             />
                         );
                     })}
@@ -107,13 +109,13 @@ class TechnologyList extends PureComponent {
                 ) : (
                     <CreateEditTechnology
                         id={`${this.props.technologyListID}-create-container`}
+                        index={this.props.index}
                         label={label}
                         type={type}
                         keyprop={keyprop}
                         side={side}
                         productId={productId}
                         onCloseCreateTechnology={this.handleCloseCreateTechnology}
-                        onCreateTechnology={this.props.onCreateTechnology}
                         isSearch={isSearch}
                         onSearchLibrary={onSearchLibrary}
                     />

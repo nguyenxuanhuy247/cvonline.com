@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { BsKeyboard } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
@@ -6,6 +7,7 @@ import { GrClose } from 'react-icons/gr';
 import DefaultTippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
 
+import * as userActions from '~/store/actions';
 import styles from './SearchBar.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
@@ -81,13 +83,21 @@ class SearchBar extends PureComponent {
         this.setState({ searchValue: '', visible: false });
     };
 
+    handleHideTooltip = () => {
+        this.setState({ visible: false });
+    };
+
     render() {
         const { className } = this.props;
+
+        const productInfoList = this.props.productList?.map((product) => {
+            return product.productInfo;
+        });
 
         return (
             <HeadlessTippy
                 visible={this.state.visible}
-                onClickOutside={() => this.setState({ visible: false })}
+                onClickOutside={() => this.handleHideTooltip()}
                 zIndex="10"
                 placement="bottom"
                 interactive
@@ -97,7 +107,7 @@ class SearchBar extends PureComponent {
                     <div tabIndex="-1" {...attrs}>
                         <div className={cx('search-result-tooltip')}>
                             <div className={cx('search-result-container')} id="js-container-search-result">
-                                {this.props.productList?.map((product, index) => {
+                                {productInfoList?.map((product, index) => {
                                     const productDescResult = document.getElementById(
                                         `js-search-result-desc-${product.id}`,
                                     );
@@ -171,4 +181,14 @@ class SearchBar extends PureComponent {
     }
 }
 
-export default SearchBar;
+const mapStateToProps = (state) => {
+    return {
+        productList: state.user.productList,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

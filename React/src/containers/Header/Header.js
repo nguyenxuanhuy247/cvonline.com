@@ -36,15 +36,6 @@ class Header extends PureComponent {
     };
 
     render = () => {
-        const shortProductList = this.props.productList?.map((product) => {
-            return {
-                id: product.productInfo.id,
-                name: product.productInfo.name,
-                desc: product.productInfo.desc,
-                image: product.productInfo.image,
-            };
-        });
-
         return (
             <div className={cx('header')}>
                 <Link to={'/'} className={cx('logo-link', 'hide-on-table-mobile')}>
@@ -55,7 +46,7 @@ class Header extends PureComponent {
                     <img src={logo} className={cx('logo')} alt="cvonline.com" />
                 </Link>
 
-                <SearchBar productList={shortProductList} className={cx('search-bar')} />
+                <SearchBar className={cx('search-bar')} />
 
                 {!this.props.isSignIn ? (
                     <div className={cx('actions')}>
@@ -110,8 +101,9 @@ class Header extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         isSignIn: state.user.isSignIn,
-        fullName: state.user.user?.fullName,
-        avatar: state.user.user?.avatar,
+        fullName: state.user.userInfo?.fullName,
+        avatar: state.user.userInfo?.avatar,
+        productList: state.user.productList,
     };
 };
 

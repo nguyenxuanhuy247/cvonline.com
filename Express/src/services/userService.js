@@ -116,7 +116,7 @@ export const postChangePassword = async (data) => {
 export const postUserSignUp = async (data) => {
     try {
         const { fullName, email, password } = data;
-        
+
         const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
 
         if (errorCode === 0) {
@@ -363,16 +363,34 @@ export const handleCreateProduct = async (data) => {
             let maxOrder = Math.max(...productIDArrWithNULL);
 
             if (maxOrder !== 0) {
-                await db.technologies.create({
+                const { id, name, desc, image } = await db.technologies.create({
                     type: 'PRODUCTDESC',
                     key: 'PD',
                     userId: userId,
                     productOrder: maxOrder + 1,
                 });
 
+                let binaryImage;
+                if (image) {
+                    binaryImage = image.toString('binary');
+                }
+
+                const newProduct = {
+                    order: undefined,
+                    productInfo: { id, name, desc, image: binaryImage },
+                    sourceCodeList: [],
+                    FETechnologyList: [],
+                    BETechnologyList: [],
+                    FELibraryList: [],
+                    numberofFELibrary: 0,
+                    BELibraryList: [],
+                    numberofBELibrary: 0,
+                };
+
                 return {
                     errorCode: 0,
                     errorMessage: `Tạo sản phẩm mới thành công`,
+                    data: newProduct,
                 };
             } else {
                 return {
@@ -395,8 +413,8 @@ export const handleCreateProduct = async (data) => {
     }
 };
 
-// READ PRODUCT LIST
-export const handleGetProductList = async (data) => {
+// READ PRODUCT
+export const handleGetProduct = async (data) => {
     try {
         const { userId } = data;
 
@@ -410,18 +428,18 @@ export const handleGetProductList = async (data) => {
             const productIDs = await db.technologies.findAll({
                 where: { userId: userId, key: 'PD' },
                 attributes: ['id'],
+                order: [['productOrder', 'ASC']],
                 raw: true,
             });
+
             const productIDArr = productIDs?.map((productID) => productID.id);
             const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+            const uniqueProductIDArr = [...new Set(productIDArrWithNULL)];
 
-            if (productIDArrWithNULL.length > 0) {
-                const uniqueProductIDArr = [...new Set(productIDArrWithNULL)]?.sort();
-
+            if (uniqueProductIDArr.length > 0) {
                 let productListData = [];
                 for (let productID of uniqueProductIDArr) {
                     const product = {
-                        order: undefined,
                         productInfo: {},
                         sourceCodeList: [],
                         FETechnologyList: [],
@@ -435,7 +453,6 @@ export const handleGetProductList = async (data) => {
                     const productDesc = await db.technologies.findOne({
                         where: { id: productID, key: 'PD' },
                         attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
-                        order: [['id', 'ASC']],
                         raw: true,
                     });
 
@@ -449,7 +466,6 @@ export const handleGetProductList = async (data) => {
                         const newProductDesc = { ...productDesc, image: binaryImage };
 
                         product.productInfo = newProductDesc;
-                        product.order = productDesc.productOrder;
                     }
 
                     const sourceCodes = await db.technologies.findAll({
@@ -565,16 +581,15 @@ export const handleGetProductList = async (data) => {
 
 // UPDATE PRODUCT
 export const handleUpdateProduct = async (data) => {
-    const { userId, productId, label } = data;
+    const { productId, label } = data;
     try {
         const product = await db.technologies.findOne({
-            where: { id: productId, userId: userId },
+            where: { id: productId },
             raw: false,
         });
 
         if (product) {
             const newData = { ...data };
-            delete newData.userId;
             delete newData.productId;
             delete newData?.label;
 
@@ -608,10 +623,10 @@ export const handleUpdateProduct = async (data) => {
 // DELETE PRODUCT
 export const handleDeleteProduct = async (data) => {
     try {
-        const { userId, productId } = data ?? {};
+        const { productId } = data ?? {};
 
         const product = await db.technologies.findOne({
-            where: { id: productId, userId: userId },
+            where: { id: productId },
             raw: true,
         });
 
@@ -638,12 +653,52 @@ export const handleDeleteProduct = async (data) => {
     }
 };
 
+// MOVE PRODUCT
+export const handleMoveProduct = async (data) => {
+    const { movedItemID, movedItemOrder, siblingItemID, siblingItemOrder } = data;
+    try {
+        const movedProduct = await db.technologies.findOne({
+            where: { id: movedItemID },
+            raw: false,
+        });
+
+        const siblingProduct = await db.technologies.findOne({
+            where: { id: siblingItemID },
+            raw: false,
+        });
+
+        if (movedProduct && siblingProduct) {
+            movedProduct.productOrder = movedItemOrder;
+            siblingProduct.productOrder = siblingItemOrder;
+
+            movedProduct.save();
+            siblingProduct.save();
+
+            return {
+                errorCode: 0,
+                errorMessage: `Di chuyển sản phẩm thành công`,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy sản phẩm cần di chuyển`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleMoveProduct() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Di chuyển sản phẩm thất bại`,
+        };
+    }
+};
+
 // =================================================================
 // CRUD TECHNOLOGY
 
 // CREATE TECHNOLOGY
 export const handleCreateTechnology = async (data) => {
-    const { type, side, name, userId, productId, label } = data ?? {};
+    const { key, type, side, name, userId, productId, label } = data ?? {};
 
     try {
         let whereQuery;
@@ -660,15 +715,59 @@ export const handleCreateTechnology = async (data) => {
         });
 
         if (!technology || technology.name !== name) {
+            let findAllQuery;
             const queryData = { ...data };
+
             delete queryData?.label;
 
             await db.technologies.create({ ...queryData });
 
-            return {
-                errorCode: 0,
-                errorMessage: `Tạo ${label} này thành công`,
-            };
+            if (type === 'SOURCECODE') {
+                findAllQuery = { key: key, userId: userId, productId: productId };
+            } else {
+                findAllQuery = { side: side, key: key, userId: userId, productId: productId };
+            }
+
+            const { rows, count } = await db.technologies.findAndCountAll({
+                where: findAllQuery,
+                attributes: ['id', 'image', 'name', 'version', 'link'],
+                order: [['id', 'ASC']],
+                raw: true,
+            });
+
+            if (rows.length > 0) {
+                let dataSentToClient = {};
+
+                const technologyList = rows.map((library) => {
+                    const binaryImage = library?.image?.toString('binary');
+                    return { ...library, image: binaryImage };
+                });
+
+                if (type === 'SOURCECODE') {
+                    dataSentToClient.sourceCodeList = technologyList;
+                } else if (type === 'TECHNOLOGY' && side === 'FE') {
+                    dataSentToClient.FETechnologyList = technologyList;
+                } else if (type === 'TECHNOLOGY' && side === 'BE') {
+                    dataSentToClient.BETechnologyList = technologyList;
+                } else if (type === 'LIBRARY' && side === 'FE') {
+                    dataSentToClient.FELibraryList = technologyList;
+                    dataSentToClient.numberofFELibrary = count;
+                } else if (type === 'LIBRARY' && side === 'BE') {
+                    dataSentToClient.BELibraryList = technologyList;
+                    dataSentToClient.numberofBELibrary = count;
+                }
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Tạo ${label} này thành công`,
+                    data: dataSentToClient,
+                };
+            } else {
+                return {
+                    errorCode: 33,
+                    errorMessage: `Không tìm thấy danh sách ${label}`,
+                };
+            }
         } else {
             return {
                 errorCode: 32,
@@ -723,7 +822,9 @@ export const handleUpdateTechnology = async (data) => {
 
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (data) => {
-    const { technologyId, label } = data;
+    const { key, type, side, technologyId, label } = data ?? {};
+
+    console.log('delete', data);
 
     try {
         const isExisted = await db.technologies.findOne({
@@ -733,10 +834,59 @@ export const handleDeleteTechnology = async (data) => {
         if (isExisted) {
             await db.technologies.destroy({ where: { id: technologyId } });
 
-            return {
-                errorCode: 0,
-                errorMessage: `Xóa ${label} thành công`,
-            };
+            let findAllQuery;
+            const queryData = { ...data };
+
+            delete queryData?.label;
+
+            await db.technologies.create({ ...queryData });
+
+            if (type === 'SOURCECODE') {
+                findAllQuery = { key: key, userId: userId, productId: productId };
+            } else {
+                findAllQuery = { side: side, key: key, userId: userId, productId: productId };
+            }
+
+            const { rows, count } = await db.technologies.findAndCountAll({
+                where: findAllQuery,
+                attributes: ['id', 'image', 'name', 'version', 'link'],
+                order: [['id', 'ASC']],
+                raw: true,
+            });
+
+            if (rows.length > 0) {
+                let dataSentToClient = {};
+
+                const technologyList = rows.map((library) => {
+                    const binaryImage = library?.image?.toString('binary');
+                    return { ...library, image: binaryImage };
+                });
+
+                if (type === 'SOURCECODE') {
+                    dataSentToClient.sourceCodeList = technologyList;
+                } else if (type === 'TECHNOLOGY' && side === 'FE') {
+                    dataSentToClient.FETechnologyList = technologyList;
+                } else if (type === 'TECHNOLOGY' && side === 'BE') {
+                    dataSentToClient.BETechnologyList = technologyList;
+                } else if (type === 'LIBRARY' && side === 'FE') {
+                    dataSentToClient.FELibraryList = technologyList;
+                    dataSentToClient.numberofFELibrary = count;
+                } else if (type === 'LIBRARY' && side === 'BE') {
+                    dataSentToClient.BELibraryList = technologyList;
+                    dataSentToClient.numberofBELibrary = count;
+                }
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Xóa ${label} thành công`,
+                    data: dataSentToClient,
+                };
+            } else {
+                return {
+                    errorCode: 33,
+                    errorMessage: `Không tìm thấy danh sách ${label}`,
+                };
+            }
         } else {
             return {
                 errorCode: 32,

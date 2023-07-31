@@ -42,11 +42,13 @@ class ChangeImageModal extends PureComponent {
         this.setState({ image: '' });
     };
 
-    handleFinishChangeImage = () => {
+    handleFinishChangeImage = async () => {
         const { onGetUrl, onClose } = this.props;
 
-        onGetUrl(this.state.image);
-        onClose();
+        const errorCode = await onGetUrl(this.state.image);
+        if (errorCode === 0) {
+            onClose();
+        }
     };
 
     handleOpenCropModal = () => {

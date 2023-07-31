@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 
+import * as userActions from '~/store/actions';
 import styles from './CreateEditTechnology.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
@@ -38,7 +40,10 @@ class CreateEditTechnology extends PureComponent {
         this.setState({ [name]: value });
     };
 
-    handleCreateOrUpdateTechnology = async (isEdit) => {
+    handleCreateOrUpdateTechnology = async (isUpdate) => {
+        const { id: userId } = this.props?.userInfo ?? {};
+        const { index } = this.props ?? {};
+        
         const data = {
             id: this.state.id,
             type: this.props?.type,
@@ -47,20 +52,16 @@ class CreateEditTechnology extends PureComponent {
             image: this.state.image,
             name: this.state.name?.trim(),
             version: this.state.version?.trim(),
-            link: this.state.link,
+            link: this.state.link?.trim(),
+            userId: userId,
             productId: this.props?.productId,
             label: this.props?.label,
         };
 
-        if (isEdit) {
-            const errorCode = await this.props?.onUpdateTechnology(data);
-            if (errorCode === 0) {
-                this.props.onCloseCreateTechnology();
-            }
-        } else {
+        if (!isUpdate) {
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
-                    const errorCode = await this.props.onCreateTechnology(data);
+                    const errorCode = await this.props.createTechnology(data, index);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
 
@@ -75,7 +76,7 @@ class CreateEditTechnology extends PureComponent {
                 }
             } else {
                 if (this.state.name) {
-                    const errorCode = await this.props.onCreateTechnology(data);
+                    const errorCode = await this.props.createTechnology(data, index);
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
 
@@ -86,6 +87,11 @@ class CreateEditTechnology extends PureComponent {
                 } else {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
                 }
+            }
+        } else {
+            const errorCode = await this.props?.updateTechnology(data);
+            if (errorCode === 0) {
+                this.props.onCloseCreateTechnology();
             }
         }
     };
@@ -207,4 +213,17 @@ class CreateEditTechnology extends PureComponent {
     }
 }
 
-export default CreateEditTechnology;
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.user.userInfo,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createTechnology: (data, index) => dispatch(userActions.createTechnology(data, index)),
+        updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateEditTechnology);

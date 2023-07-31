@@ -21,11 +21,12 @@ let initWebRoutes = (app) => {
         userController.handleUpdateUserInformation,
     );
 
-    // CRUD PRODUCT LIST
+    // CRUD PRODUCT
     router.post('/api/post-product', userMiddleware.checkReqCreateProduct, userController.handleCreateProduct);
-    router.get('/api/get-product-list', userMiddleware.checkReqGetProductList, userController.handleGetProductList);
+    router.get('/api/get-product', userMiddleware.checkReqGetProduct, userController.handleGetProduct);
     router.put('/api/put-product', userMiddleware.checkReqUpdateProduct, userController.handleUpdateProduct);
     router.delete('/api/delete-product', userMiddleware.checkReqDeleteProduct, userController.handleDeleteProduct);
+    router.put('/api/move-product', userMiddleware.checkReqMoveProduct, userController.handleMoveProduct);
 
     // CRUD TECHNOLOGY
     router.post('/api/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);

@@ -120,7 +120,7 @@ export const checkReqCreateProduct = (req, res, next) => {
 };
 
 // READ PRODUCT
-export const checkReqGetProductList = (req, res, next) => {
+export const checkReqGetProduct = (req, res, next) => {
     const { userId } = req.query;
 
     if (!userId) {
@@ -133,19 +133,13 @@ export const checkReqGetProductList = (req, res, next) => {
     next();
 };
 
+// UPDATE PRODUCT
 export const checkReqUpdateProduct = (req, res, next) => {
-    const { userId, productId, label } = req.body;
-
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: `Nhập User ID để cập nhật ${label}`,
-        });
-    }
+    const { productId, label } = req.body;
 
     if (!productId) {
         return res.status(400).json({
-            errorCode: 11,
+            errorCode: 10,
             errorMessage: `Nhập Product ID để cập nhật ${label}`,
         });
     }
@@ -153,20 +147,35 @@ export const checkReqUpdateProduct = (req, res, next) => {
     next();
 };
 
+// DELETE PRODUCT
 export const checkReqDeleteProduct = (req, res, next) => {
-    const { userId, productId } = req.query;
-
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Nhập User ID người dùng để xóa sản phẩm',
-        });
-    }
+    const { productId } = req.query;
 
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
             errorMessage: 'Nhập Product ID để xóa sản phẩm',
+        });
+    }
+
+    next();
+};
+
+// MOVE PRODUCT
+export const checkReqMoveProduct = (req, res, next) => {
+    const { movedItemID, movedItemOrder, siblingItemID, siblingItemOrder } = req.body;
+
+    if (!movedItemID || !siblingItemID) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Nhập Product ID để di chuyển sản phẩm',
+        });
+    }
+
+    if (!movedItemOrder || !siblingItemOrder) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Nhập Product Order để di chuyển sản phẩm',
         });
     }
 

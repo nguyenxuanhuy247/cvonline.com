@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 
+import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
 import styles from './Technology.module.scss';
 import Image from '~/components/Image/Image.js';
@@ -60,7 +62,15 @@ class Technology extends PureComponent {
     };
 
     handleDeleteTechnology = (technologyId) => {
-        this.props.onDeleteTechnology(technologyId, this.props.label);
+        const data = {
+            technologyId: technologyId,
+            type: this.props?.type,
+            key: this.props?.keyprop,
+            side: this.props?.side,
+            label: this.props?.label,
+        };
+
+        this.props.deleteTechnology(data, this.props.index);
     };
 
     // =================================================================
@@ -181,7 +191,7 @@ class Technology extends PureComponent {
                         onMouseLeave={() => this.handleUnhoverButtonAndHideEditButton(editButtonID, buttonContainerID)}
                         onDoubleClick={() => this.handleDoubleClickButtonAndOpenLink(href)}
                     >
-                        {type === 'TECHNOLOGY' ? (
+                        {type !== 'LIBRARY' ? (
                             src && <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
                         ) : (
                             <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
@@ -199,6 +209,7 @@ class Technology extends PureComponent {
         ) : (
             <CreateEditTechnology
                 id={`js-edit-technology-${id}`}
+                index={this.props.index}
                 isedit
                 data={this.state}
                 type={type}
@@ -206,10 +217,19 @@ class Technology extends PureComponent {
                 keyprop={keyprop}
                 productId={productId}
                 onCloseCreateTechnology={this.handleCloseEditTechnology}
-                onUpdateTechnology={this.props.onUpdateTechnology}
             />
         );
     }
 }
 
-export default Technology;
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deleteTechnology: (technologyData, index) => dispatch(userActions.deleteTechnology(technologyData, index)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Technology);

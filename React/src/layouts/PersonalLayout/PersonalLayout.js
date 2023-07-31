@@ -42,7 +42,7 @@ class PersonalLayout extends PureComponent {
     };
 
     handleUpdateAvatarFromChangeImageModal = async (url) => {
-        const { id: userId, avatar } = this.props?.user ?? {};
+        const { id: userId, avatar } = this.props?.userInfo ?? {};
 
         if (url !== avatar) {
             // Update avatar to Database
@@ -58,7 +58,7 @@ class PersonalLayout extends PureComponent {
     };
 
     handleUpdateUserInformation = async (e, name, label) => {
-        const { id: userId } = this.props?.user ?? {};
+        const { id: userId } = this.props?.userInfo ?? {};
 
         let value;
         if (name === 'jobPosition') {
@@ -67,7 +67,7 @@ class PersonalLayout extends PureComponent {
             value = e.target.innerText?.trim();
         }
 
-        if (value !== this.props?.user?.[name]) {
+        if (value !== this.props?.userInfo?.[name]) {
             const data = { userId: userId, [name]: value, label: label };
 
             const errorCode = await this.props.updateUserInformation(data);
@@ -79,7 +79,7 @@ class PersonalLayout extends PureComponent {
     };
 
     handleUpdateLanguagesToDatabase = async (e) => {
-        const { id: userId, languages } = this.props?.user ?? {};
+        const { id: userId, languages } = this.props?.userInfo ?? {};
         const value = e.target.innerText;
 
         if (value !== languages) {
@@ -95,67 +95,13 @@ class PersonalLayout extends PureComponent {
     // =================================================================
     // CRUD PRODUCT
 
-    handleCreateTechnology = async (data) => {
-        const { id: userId } = this.props?.user ?? {};
-        const newData = {
-            ...data,
-            userId: userId,
-        };
-
-        const errorCode = await this.props.createTechnology(newData);
-
-        if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-
-            if (errorCode === 0) {
-                return errorCode;
-            }
-        }
-    };
-
-    handleUpdateTechnology = async (data) => {
-        const { id: userId } = this.props?.user ?? {};
-        const newData = {
-            ...data,
-            userId: userId,
-        };
-
-        const errorCode = await this.props.updateTechnology(newData);
-
-        if (errorCode === 0) {
-            const errorCode = await this.props.readProductList(userId);
-
-            if (errorCode === 0) {
-                return errorCode;
-            }
-        }
-    };
-
-    handleDeleteTechnology = async (technologyId, label) => {
-        const { id: userId } = this.props?.user ?? {};
-
-        const errorCode = await this.props.deleteTechnology(technologyId, label);
-        if (errorCode === 0) {
-            await this.props.readProductList(userId);
-        }
-    };
-
-    // =================================================================
-    // CRUD Product
-
     handleCreateProduct = async () => {
-        const { id: userId } = this.props?.user ?? {};
+        const { id: userId } = this.props?.userInfo ?? {};
 
         const errorCode = await this.props.createProduct(userId);
 
         if (errorCode === 0) {
-            await this.props.readProductList(userId);
-
-            const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-                return a.order - b.order;
-            });
-
-            const lastProductData = ASCOrderProductList?.at(-1);
+            const lastProductData = this.props.productList?.at(-1);
             const lastProductId = lastProductData?.productInfo?.id;
 
             const lastProductName = document.getElementById(`js-product-name-${lastProductId}`);
@@ -163,131 +109,60 @@ class PersonalLayout extends PureComponent {
         }
     };
 
-    handleUpdateProduct = async (data) => {
-        const { id: userId } = this.props?.user ?? {};
-        const newData = { ...data, userId: userId };
-
-        const errorCode = await this.props.updateProduct(newData);
-        if (errorCode === 0) {
-            await this.props.readProductList(userId);
-        }
+    handleDeleteProduct = (productId, index) => {
+        this.props.deleteProduct(productId, index);
     };
 
-    handleDeleteProduct = async (productId) => {
-        const { id: userId } = this.props?.user ?? {};
-        const errorCode = await this.props.deleteProduct(userId, productId);
-
-        if (errorCode === 0) {
-            await this.props.readProductList(userId);
-        }
-    };
-
-    handleMoveUpProduct = async (order) => {
-        const { id: userId } = this.props?.user ?? {};
-
-        const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-            return a.order - b.order;
+    handleMoveProduct = async (order, operator) => {
+        const productList_IDAndOrder = this.props.productList?.map((productData) => {
+            const productInfo = productData.productInfo;
+            return { productId: productInfo.id, productOrder: productInfo.productOrder };
         });
 
-        const productExchange = ASCOrderProductList?.map((productID) => {
-            return { userId: userId, productId: productID.productInfo.id, productOrder: productID.order };
-        });
+        const movedItemIndex = productList_IDAndOrder.findIndex((product) => product.productOrder === order);
 
-        const moveItemIndex = productExchange.findIndex((product) => product.productOrder === order);
+        const siblingItemIndex = operator === 'move up' ? movedItemIndex - 1 : movedItemIndex + 1;
+        const siblingItem_IDAndOrder = productList_IDAndOrder[siblingItemIndex];
+        const movedItem_IDAndOrder = productList_IDAndOrder[movedItemIndex];
 
-        let upperItemOrder = productExchange[moveItemIndex - 1];
-        let moveItemOrder = productExchange[moveItemIndex];
-
-        if (moveItemOrder && upperItemOrder) {
-            const changedUpperItem = {
-                userId: userId,
-                productId: upperItemOrder.productId,
-                productOrder: moveItemOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
+        if (movedItem_IDAndOrder && siblingItem_IDAndOrder) {
+            const data = {
+                movedItemID: movedItem_IDAndOrder.productId,
+                movedItemOrder: siblingItem_IDAndOrder.productOrder,
+                siblingItemID: siblingItem_IDAndOrder.productId,
+                siblingItemOrder: movedItem_IDAndOrder.productOrder,
             };
 
-            const changedMoveItem = {
-                userId: userId,
-                productId: moveItemOrder.productId,
-                productOrder: upperItemOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
+            const index = {
+                movedItemIndex,
+                siblingItemIndex,
             };
 
-            const errorCode1 = await this.props.updateProduct(changedUpperItem);
-            if (errorCode1 === 0) {
-                const errorCode2 = await this.props.updateProduct(changedMoveItem);
+            const errorCode = await this.props.moveProduct(data, index);
 
-                if (errorCode2 === 0) {
-                    await this.props.readProductList(userId);
+            if (errorCode === 0) {
+                const siblingItem_EditProduct = document.getElementById(
+                    `js-edit-product-${movedItem_IDAndOrder.productId}`,
+                );
 
-                    const upperEditProduct = document.getElementById(`js-edit-product-${moveItemOrder.productId}`);
-                    if (upperEditProduct) {
-                        upperEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                if (siblingItem_EditProduct) {
+                    siblingItem_EditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         } else {
-            Toast.TOP_CENTER_WARN('Không thể di chuyển sản phẩm này lên trên', 3000);
-        }
-    };
-
-    handleMoveDownProduct = async (order) => {
-        const { id: userId } = this.props?.user ?? {};
-
-        const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-            return a.order - b.order;
-        });
-
-        const productExchange = ASCOrderProductList?.map((productID) => {
-            return { userId: userId, productId: productID.productInfo.id, productOrder: productID.order };
-        });
-
-        const moveItemIndex = productExchange.findIndex((product) => product.productOrder === order);
-
-        let lowerItemOrder = productExchange[moveItemIndex + 1];
-        let moveItemOrder = productExchange[moveItemIndex];
-
-        if (moveItemOrder && lowerItemOrder) {
-            const changedUpperItem = {
-                userId: userId,
-                productId: lowerItemOrder.productId,
-                productOrder: moveItemOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
-            };
-
-            const changedMoveItem = {
-                userId: userId,
-                productId: moveItemOrder.productId,
-                productOrder: lowerItemOrder.productOrder,
-                label: 'Vị trí của sản phẩm',
-            };
-
-            const errorCode1 = await this.props.updateProduct(changedUpperItem);
-            if (errorCode1 === 0) {
-                const errorCode2 = await this.props.updateProduct(changedMoveItem);
-
-                if (errorCode2 === 0) {
-                    await this.props.readProductList(userId);
-
-                    const lowerEditProduct = document.getElementById(`js-edit-product-${moveItemOrder.productId}`);
-                    if (lowerEditProduct) {
-                        lowerEditProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-            }
-        } else {
-            Toast.TOP_CENTER_WARN('Không thể di chuyển sản phẩm này xuống dưới', 3000);
+            const text = operator === 'move up' ? 'lên trên' : 'xuống dưới';
+            Toast.TOP_CENTER_WARN(`Không thể di chuyển sản phẩm này ${text}`, 3000);
         }
     };
 
     // =================================================================
     async componentDidMount() {
-        const { id: userId, isPassword } = this.props?.user ?? {};
+        const { id: userId, isPassword } = this.props?.userInfo ?? {};
 
         if (userId) {
             // Get all data for CV Layout when sign in
             await this.props.readUserInformation(userId);
-            await this.props.readProductList(userId);
+            await this.props.readProduct(userId);
 
             if (!isPassword) {
                 Toast.TOP_CENTER_INFO('Vào mục Tài khoản để thiết lập mật khẩu', 100000000);
@@ -296,7 +171,7 @@ class PersonalLayout extends PureComponent {
             // Set languages from database by JS
             const languagesElement = document.getElementById(`js-language-desc`);
             if (languagesElement) {
-                languagesElement.innerText = this.props?.user?.languages || '';
+                languagesElement.innerText = this.props?.userInfo?.languages || '';
             }
 
             // Press ENTER to change input field or submit
@@ -357,14 +232,9 @@ class PersonalLayout extends PureComponent {
     }
 
     render = () => {
-        // Make product List in ascending order
-        const ASCOrderProductList = this.props.productList?.sort(function (a, b) {
-            return a.order - b.order;
-        });
-
         return (
             <div className={cx('body')}>
-                <Header productList={ASCOrderProductList} />
+                <Header />
                 <div className={cx('cv-container')}>
                     <div className={cx('user-information')}>
                         <div className={cx('user-information-basic')}>
@@ -389,8 +259,8 @@ class PersonalLayout extends PureComponent {
                                     >
                                         <Image
                                             className={cx('avatar')}
-                                            src={this.props.user?.avatar || JpgImages.avatarPlaceholder}
-                                            alt={`${this.props?.user?.fullName}`}
+                                            src={this.props.userInfo?.avatar || JpgImages.avatarPlaceholder}
+                                            alt={`${this.props?.userInfo?.fullName}`}
                                             round
                                         />
                                     </HeadlessTippy>
@@ -406,13 +276,13 @@ class PersonalLayout extends PureComponent {
                                 </div>
                             </div>
                             <ContentEditableTag
-                                content={this.props?.user?.fullName || ''}
+                                content={this.props?.userInfo?.fullName || ''}
                                 className={cx('full-name')}
                                 placeholder="Nguyễn Xuân Huy"
                                 onBlur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
                             />
                             <select
-                                value={this.props?.user?.jobPosition || ''}
+                                value={this.props?.userInfo?.jobPosition || ''}
                                 className={cx('select-job-title')}
                                 onChange={(e) => this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')}
                             >
@@ -436,7 +306,7 @@ class PersonalLayout extends PureComponent {
                                             <BsFillCalendarDayFill />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.dateOfBirth || ''}
+                                            content={this.props?.userInfo?.dateOfBirth || ''}
                                             className={cx('info-text')}
                                             placeholder="Ngày tháng năm sinh"
                                             onBlur={(e) =>
@@ -449,7 +319,7 @@ class PersonalLayout extends PureComponent {
                                             <FaUserCircle />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.gender || ''}
+                                            content={this.props?.userInfo?.gender || ''}
                                             className={cx('info-text')}
                                             placeholder="Giới tính"
                                             onblur={(e) => this.handleUpdateUserInformation(e, 'gender', 'Giới tính')}
@@ -460,7 +330,7 @@ class PersonalLayout extends PureComponent {
                                             <BsFillTelephoneFill />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.phoneNumber || ''}
+                                            content={this.props?.userInfo?.phoneNumber || ''}
                                             className={cx('info-text')}
                                             placeholder="Số điện thoại"
                                             onblur={(e) =>
@@ -473,7 +343,7 @@ class PersonalLayout extends PureComponent {
                                             <MdEmail />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.email || ''}
+                                            content={this.props?.userInfo?.email || ''}
                                             className={cx('info-text', 'email')}
                                             placeholder="Email"
                                         />
@@ -483,7 +353,7 @@ class PersonalLayout extends PureComponent {
                                             <FaAddressBook />
                                         </span>
                                         <ContentEditableTag
-                                            content={this.props?.user?.address || ''}
+                                            content={this.props?.userInfo?.address || ''}
                                             className={cx('info-text')}
                                             placeholder="Địa chỉ"
                                             onblur={(e) => this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')}
@@ -508,23 +378,22 @@ class PersonalLayout extends PureComponent {
                     <div className={cx('product-list-container')}>
                         {this.props.productList && (
                             <div className={cx('product-list')}>
-                                {ASCOrderProductList?.map((product, index) => {
+                                {this.props.productList?.map((product, index) => {
+                                    const totalPage = this.props.productList?.length;
                                     return (
                                         <Product
-                                            side={this.props?.user?.jobPosition}
                                             key={index}
+                                            side={this.props?.userInfo?.jobPosition}
                                             productData={product}
+                                            // =================================================================
                                             index={index}
+                                            totalPage={totalPage}
                                             // =================================================================
                                             onCreateProduct={this.handleCreateProduct}
-                                            onUpdateProduct={this.handleUpdateProduct}
                                             onDeleteProduct={this.handleDeleteProduct}
-                                            onMoveUpProduct={this.handleMoveUpProduct}
-                                            onMoveDownProduct={this.handleMoveDownProduct}
                                             // =================================================================
-                                            onCreateTechnology={this.handleCreateTechnology}
-                                            onUpdateTechnology={this.handleUpdateTechnology}
-                                            onDeleteTechnology={this.handleDeleteTechnology}
+                                            onMoveUpProduct={(order) => this.handleMoveProduct(order, 'move up')}
+                                            onMoveDownProduct={(order) => this.handleMoveProduct(order, 'move down')}
                                         />
                                     );
                                 })}
@@ -558,7 +427,7 @@ class PersonalLayout extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user.user,
+        userInfo: state.user.userInfo,
         productList: state.user.productList,
         isLoading: state.user.isLoading.CVLayout,
     };
@@ -572,14 +441,9 @@ const mapDispatchToProps = (dispatch) => {
 
         // CRUD Product
         createProduct: (userId) => dispatch(userActions.createProduct(userId)),
-        readProductList: (userId) => dispatch(userActions.readProductList(userId)),
-        updateProduct: (data) => dispatch(userActions.updateProduct(data)),
-        deleteProduct: (userId, productId) => dispatch(userActions.deleteProduct(userId, productId)),
-
-        // CRUD Source code, Technology, Library
-        createTechnology: (data) => dispatch(userActions.createTechnology(data)),
-        updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
-        deleteTechnology: (technologyId, label) => dispatch(userActions.deleteTechnology(technologyId, label)),
+        readProduct: (userId) => dispatch(userActions.readProduct(userId)),
+        deleteProduct: (productId, index) => dispatch(userActions.deleteProduct(productId, index)),
+        moveProduct: (data, index) => dispatch(userActions.moveProduct(data, index)),
 
         // Sign out
         userSignOut: () => dispatch(userActions.userSignOut()),
