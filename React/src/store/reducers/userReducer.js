@@ -2,8 +2,7 @@ import actionNames from '../actions/actionNames';
 
 const initialState = {
     isLoading: {
-        signin: false,
-        signup: false,
+        authLayout: false,
         CVLayout: false,
     },
     isSignIn: false,
@@ -18,52 +17,55 @@ const userReducer = (state = initialState, action) => {
         case actionNames.USER_CHANGE_PASSWORD_START:
             return {
                 ...state,
+                isLoading: { ...state.isLoading, authLayout: true },
             };
         case actionNames.USER_CHANGE_PASSWORD_SUCCESS:
             return {
                 ...state,
+                isLoading: { ...state.isLoading, authLayout: false },
                 user: { ...state.user, isPasword: true },
             };
         case actionNames.USER_CHANGE_PASSWORD_FAIL:
             return {
                 ...state,
+                isLoading: { ...state.isLoading, authLayout: false },
             };
 
         // USER SIGN UP
-        case 'USER_SIGNUP_START':
+        case actionNames.USER_SIGNUP_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signup: true },
+                isLoading: { ...state.isLoading, authLayout: true },
             };
-        case 'USER_SIGNUP_SUCCESS':
+        case actionNames.USER_SIGNUP_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signup: false },
+                isLoading: { ...state.isLoading, authLayout: false },
                 isSignUp: true,
             };
-        case 'USER_SIGNUP_FAIL':
+        case actionNames.USER_SIGNUP_FAIL:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signup: false },
+                isLoading: { ...state.isLoading, authLayout: false },
             };
 
         // USER SIGN IN
-        case 'USER_SIGNIN_START':
+        case actionNames.USER_SIGNIN_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signin: true },
+                isLoading: { ...state.isLoading, authLayout: true },
             };
-        case 'USER_SIGNIN_SUCCESS':
+        case actionNames.USER_SIGNIN_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signin: false },
+                isLoading: { ...state.isLoading, authLayout: false },
                 isSignIn: true,
                 userInfo: action.payload,
             };
-        case 'USER_SIGNIN_FAIL':
+        case actionNames.USER_SIGNIN_FAIL:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, signin: false },
+                isLoading: { ...state.isLoading, authLayout: false },
             };
 
         // USER SIGN OUT
@@ -212,47 +214,25 @@ const userReducer = (state = initialState, action) => {
             };
 
         // =================================================================
-        // CREATE TECHONOLOGY
-        case actionNames.CREATE_TECHNOLOGY_START:
-            return {
-                ...state,
-            };
+        // CRUD TECHONOLOGY
         case actionNames.CREATE_TECHNOLOGY_SUCCESS:
-            const { index: created_index, data: created_dataFromDB } = action.payload;
-
-            const created_changedProduct = state.productList[created_index];
-            const created_newProduct = { ...created_changedProduct, ...created_dataFromDB };
-            const created_newProductList = [...state.productList];
-
-            created_newProductList[created_index] = created_newProduct;
-
-            return {
-                ...state,
-                productList: created_newProductList,
-            };
-        case actionNames.CREATE_TECHNOLOGY_FAILURE:
-            return {
-                ...state,
-            };
-
-        // DELETE TECHONOLOGY
-        case actionNames.DELETE_TECHNOLOGY_START:
-            return {
-                ...state,
-            };
+        case actionNames.UPDATE_TECHNOLOGY_SUCCESS:
         case actionNames.DELETE_TECHNOLOGY_SUCCESS:
-            const { index: deleted_index, data: deleted_dataFromDB } = action.payload;
+            const { index: productIndex, data: dataFromDB } = action.payload;
 
-            const deleted_changedProduct = state.productList[deleted_index];
-            const deleted_newProduct = { ...deleted_changedProduct, ...deleted_dataFromDB };
-            const deleted_newProductList = [...state.productList];
+            const selectedProduct = state.productList[productIndex];
+            const newProduct = { ...selectedProduct, ...dataFromDB };
 
-            deleted_newProductList[deleted_index] = deleted_newProduct;
+            const CRUDTechnology_newProductList = [...state.productList];
+            CRUDTechnology_newProductList[productIndex] = newProduct;
 
             return {
                 ...state,
-                productList: deleted_newProductList,
+                productList: CRUDTechnology_newProductList,
             };
+
+        case actionNames.CREATE_TECHNOLOGY_FAILURE:
+        case actionNames.UPDATE_TECHNOLOGY_FAILURE:
         case actionNames.DELETE_TECHNOLOGY_FAILURE:
             return {
                 ...state,

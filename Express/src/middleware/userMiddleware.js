@@ -231,12 +231,19 @@ export const checkReqCreateTechnology = (req, res, next) => {
 
 // UPDATE TECHNOLOGY
 export const checkReqUpdateTechnology = (req, res, next) => {
-    const { userId, type, image, name, version, label } = req.body;
+    const { type, image, name, version, userId, productId, label } = req.body;
 
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: `Nhập User ID để cập nhật ${label}`,
+        });
+    }
+
+    if (!productId) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: `Nhập Product ID để cập nhật ${label}`,
         });
     }
 
@@ -261,12 +268,26 @@ export const checkReqUpdateTechnology = (req, res, next) => {
 
 // DELETE TECHNOLOGY
 export const checkReqDeleteTechnology = (req, res, next) => {
-    const { technologyId, label } = req.query;
+    const { technologyId, userId, productId, label } = req.query;
 
     if (!technologyId) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: `Nhập Technology ID để xóa ${label}`,
+        });
+    }
+
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: `Nhập User ID để xóa ${label}`,
+        });
+    }
+
+    if (!productId) {
+        return res.status(400).json({
+            errorCode: 12,
+            errorMessage: `Nhập Product ID để xóa ${label}`,
         });
     }
 

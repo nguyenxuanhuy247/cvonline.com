@@ -696,6 +696,59 @@ export const handleMoveProduct = async (data) => {
 // =================================================================
 // CRUD TECHNOLOGY
 
+const handleFindAllTechnologyList = async (data, CRUD) => {
+    console.log('DATA', data);
+    const { key, type, side, name, userId, productId, label } = data ?? {};
+
+    let findAllQuery;
+    if (type === 'SOURCECODE') {
+        findAllQuery = { key: key, userId: userId, productId: productId };
+    } else {
+        findAllQuery = { side: side, key: key, userId: userId, productId: productId };
+    }
+
+    const { rows, count } = await db.technologies.findAndCountAll({
+        where: findAllQuery,
+        attributes: ['id', 'image', 'name', 'version', 'link'],
+        order: [['id', 'ASC']],
+        raw: true,
+    });
+
+    if (rows.length > 0) {
+        let dataSentToClient = {};
+
+        const technologyList = rows.map((library) => {
+            const binaryImage = library?.image?.toString('binary');
+            return { ...library, image: binaryImage };
+        });
+
+        if (type === 'SOURCECODE') {
+            dataSentToClient.sourceCodeList = technologyList;
+        } else if (type === 'TECHNOLOGY' && side === 'FE') {
+            dataSentToClient.FETechnologyList = technologyList;
+        } else if (type === 'TECHNOLOGY' && side === 'BE') {
+            dataSentToClient.BETechnologyList = technologyList;
+        } else if (type === 'LIBRARY' && side === 'FE') {
+            dataSentToClient.FELibraryList = technologyList;
+            dataSentToClient.numberofFELibrary = count;
+        } else if (type === 'LIBRARY' && side === 'BE') {
+            dataSentToClient.BELibraryList = technologyList;
+            dataSentToClient.numberofBELibrary = count;
+        }
+
+        return {
+            errorCode: 0,
+            errorMessage: `${CRUD} ${label} thành công`,
+            data: dataSentToClient,
+        };
+    } else {
+        return {
+            errorCode: 33,
+            errorMessage: `Không tìm thấy danh sách ${label}`,
+        };
+    }
+};
+
 // CREATE TECHNOLOGY
 export const handleCreateTechnology = async (data) => {
     const { key, type, side, name, userId, productId, label } = data ?? {};
@@ -715,59 +768,13 @@ export const handleCreateTechnology = async (data) => {
         });
 
         if (!technology || technology.name !== name) {
-            let findAllQuery;
             const queryData = { ...data };
-
             delete queryData?.label;
-
             await db.technologies.create({ ...queryData });
 
-            if (type === 'SOURCECODE') {
-                findAllQuery = { key: key, userId: userId, productId: productId };
-            } else {
-                findAllQuery = { side: side, key: key, userId: userId, productId: productId };
-            }
+            const message = handleFindAllTechnologyList(data, 'Tạo');
 
-            const { rows, count } = await db.technologies.findAndCountAll({
-                where: findAllQuery,
-                attributes: ['id', 'image', 'name', 'version', 'link'],
-                order: [['id', 'ASC']],
-                raw: true,
-            });
-
-            if (rows.length > 0) {
-                let dataSentToClient = {};
-
-                const technologyList = rows.map((library) => {
-                    const binaryImage = library?.image?.toString('binary');
-                    return { ...library, image: binaryImage };
-                });
-
-                if (type === 'SOURCECODE') {
-                    dataSentToClient.sourceCodeList = technologyList;
-                } else if (type === 'TECHNOLOGY' && side === 'FE') {
-                    dataSentToClient.FETechnologyList = technologyList;
-                } else if (type === 'TECHNOLOGY' && side === 'BE') {
-                    dataSentToClient.BETechnologyList = technologyList;
-                } else if (type === 'LIBRARY' && side === 'FE') {
-                    dataSentToClient.FELibraryList = technologyList;
-                    dataSentToClient.numberofFELibrary = count;
-                } else if (type === 'LIBRARY' && side === 'BE') {
-                    dataSentToClient.BELibraryList = technologyList;
-                    dataSentToClient.numberofBELibrary = count;
-                }
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Tạo ${label} này thành công`,
-                    data: dataSentToClient,
-                };
-            } else {
-                return {
-                    errorCode: 33,
-                    errorMessage: `Không tìm thấy danh sách ${label}`,
-                };
-            }
+            return message;
         } else {
             return {
                 errorCode: 32,
@@ -801,10 +808,9 @@ export const handleUpdateTechnology = async (data) => {
 
             await result.save();
 
-            return {
-                errorCode: 0,
-                errorMessage: `Cập nhật ${label} thành công`,
-            };
+            const message = await handleFindAllTechnologyList(data, 'Cập nhật');
+
+            return message;
         } else {
             return {
                 errorCode: 32,
@@ -822,9 +828,7 @@ export const handleUpdateTechnology = async (data) => {
 
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (data) => {
-    const { key, type, side, technologyId, label } = data ?? {};
-
-    console.log('delete', data);
+    const { key, type, side, technologyId, userId, productId, label } = data ?? {};
 
     try {
         const isExisted = await db.technologies.findOne({
@@ -834,59 +838,9 @@ export const handleDeleteTechnology = async (data) => {
         if (isExisted) {
             await db.technologies.destroy({ where: { id: technologyId } });
 
-            let findAllQuery;
-            const queryData = { ...data };
+            const message = await handleFindAllTechnologyList(data, 'Xóa');
 
-            delete queryData?.label;
-
-            await db.technologies.create({ ...queryData });
-
-            if (type === 'SOURCECODE') {
-                findAllQuery = { key: key, userId: userId, productId: productId };
-            } else {
-                findAllQuery = { side: side, key: key, userId: userId, productId: productId };
-            }
-
-            const { rows, count } = await db.technologies.findAndCountAll({
-                where: findAllQuery,
-                attributes: ['id', 'image', 'name', 'version', 'link'],
-                order: [['id', 'ASC']],
-                raw: true,
-            });
-
-            if (rows.length > 0) {
-                let dataSentToClient = {};
-
-                const technologyList = rows.map((library) => {
-                    const binaryImage = library?.image?.toString('binary');
-                    return { ...library, image: binaryImage };
-                });
-
-                if (type === 'SOURCECODE') {
-                    dataSentToClient.sourceCodeList = technologyList;
-                } else if (type === 'TECHNOLOGY' && side === 'FE') {
-                    dataSentToClient.FETechnologyList = technologyList;
-                } else if (type === 'TECHNOLOGY' && side === 'BE') {
-                    dataSentToClient.BETechnologyList = technologyList;
-                } else if (type === 'LIBRARY' && side === 'FE') {
-                    dataSentToClient.FELibraryList = technologyList;
-                    dataSentToClient.numberofFELibrary = count;
-                } else if (type === 'LIBRARY' && side === 'BE') {
-                    dataSentToClient.BELibraryList = technologyList;
-                    dataSentToClient.numberofBELibrary = count;
-                }
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Xóa ${label} thành công`,
-                    data: dataSentToClient,
-                };
-            } else {
-                return {
-                    errorCode: 33,
-                    errorMessage: `Không tìm thấy danh sách ${label}`,
-                };
-            }
+            return message;
         } else {
             return {
                 errorCode: 32,

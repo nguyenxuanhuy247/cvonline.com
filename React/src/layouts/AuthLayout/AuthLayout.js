@@ -25,7 +25,7 @@ class Auth extends PureComponent {
                         <Route path={path.FORGOTPASSWORD} component={ForgotPassword} />
                     </Switch>
                 </div>
-                {this.props.isLoading && <Loading style={{ position: 'fixed' }} />}
+                {this.props.isLoading && <Loading text="Đang xác thực..." />}
             </div>
         );
     }
@@ -33,7 +33,7 @@ class Auth extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        isLoading: state.user.isLoading.signup || state.user.isLoading.signin,
+        isLoading: state.user.isLoading.authLayout,
     };
 };
 

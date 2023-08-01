@@ -59,9 +59,10 @@ class TechnologyList extends PureComponent {
                     setList={(newState) => this.handleSortList(newState)}
                     id={this.props.technologyListID}
                     className={cx('technology-list-inner', {
+                        'sourcecode-list': type === 'SOURCECODE',
+                        'technology-list': type === 'TECHNOLOGY',
                         'library-list': type === 'LIBRARY',
                     })}
-                    chosenClass={cx('dragging-item')}
                     animation={150}
                 >
                     {this.state.list?.map((technology) => {

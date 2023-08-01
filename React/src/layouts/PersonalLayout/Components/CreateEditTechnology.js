@@ -9,12 +9,15 @@ import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import { Toast } from '~/components/Toast/Toast.js';
+import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 class CreateEditTechnology extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
+
             id: this.props?.data?.id || undefined,
             image: this.props?.data?.image || '',
             name: this.props?.data?.name || '',
@@ -22,6 +25,8 @@ class CreateEditTechnology extends PureComponent {
             link: this.props?.data?.link || '',
         };
     }
+
+    // =================================================================
 
     handleOpenChangeImageModal = () => {
         this.setState({ isModalOpen: true });
@@ -43,7 +48,7 @@ class CreateEditTechnology extends PureComponent {
     handleCreateOrUpdateTechnology = async (isUpdate) => {
         const { id: userId } = this.props?.userInfo ?? {};
         const { index } = this.props ?? {};
-        
+
         const data = {
             id: this.state.id,
             type: this.props?.type,
@@ -61,25 +66,33 @@ class CreateEditTechnology extends PureComponent {
         if (!isUpdate) {
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
+                    await this.setState({ isLoading: true });
                     const errorCode = await this.props.createTechnology(data, index);
+                    await this.setState({ isLoading: false });
+
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
 
+                        // Fix bug
                         if (this.props?.isSearch) {
                             this.props?.onSearchLibrary();
                         }
                     }
                 } else if (!this.state.name) {
-                    Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
+                    Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của Source code`, 3000);
                 } else if (!this.state.link) {
-                    Toast.TOP_CENTER_INFO(`Vui lòng nhập link của ${this.props.label}`, 3000);
+                    Toast.TOP_CENTER_INFO(`Vui lòng nhập link của Source code`, 3000);
                 }
             } else {
                 if (this.state.name) {
+                    await this.setState({ isLoading: true });
                     const errorCode = await this.props.createTechnology(data, index);
+                    await this.setState({ isLoading: false });
+
                     if (errorCode === 0) {
                         this.props.onCloseCreateTechnology();
 
+                        // Fix bug
                         if (this.props?.isSearch) {
                             this.props?.onSearchLibrary();
                         }
@@ -89,7 +102,10 @@ class CreateEditTechnology extends PureComponent {
                 }
             }
         } else {
-            const errorCode = await this.props?.updateTechnology(data);
+            await this.setState({ isLoading: true });
+            const errorCode = await this.props?.updateTechnology(data, index);
+            await this.setState({ isLoading: false });
+
             if (errorCode === 0) {
                 this.props.onCloseCreateTechnology();
             }
@@ -208,6 +224,8 @@ class CreateEditTechnology extends PureComponent {
                         onClick={() => this.handleCreateOrUpdateTechnology(isedit)}
                     >{`${isedit ? `Cập nhật` : `Thêm`}`}</Button>
                 </div>
+
+                {this.state.isLoading && <Loading inner />}
             </div>
         );
     }
@@ -222,7 +240,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         createTechnology: (data, index) => dispatch(userActions.createTechnology(data, index)),
-        updateTechnology: (data) => dispatch(userActions.updateTechnology(data)),
+        updateTechnology: (data, index) => dispatch(userActions.updateTechnology(data, index)),
     };
 };
 

@@ -62,9 +62,9 @@ export const updateTechnology = (data) => {
 };
 
 export const deleteTechnology = (technologyData) => {
-    const { technologyId, label, type, key, side } = technologyData;
-    
+    const { technologyId, type, key, side, userId, productId, label } = technologyData;
+
     return axios.delete(
-        `/api/delete-technology?technologyId=${technologyId}&&label=${label}&&type=${type}&&key=${key}&&side=${side}`,
+        `/api/delete-technology?technologyId=${technologyId}&&type=${type}&&key=${key}&&side=${side}&&userId=${userId}&&productId=${productId}&&label=${label}`,
     );
 };

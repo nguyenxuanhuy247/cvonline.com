@@ -1,11 +1,11 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .create-edit-technology {
+    position: relative;
     font-family: var(--alexandria-font);
     padding: 8px;
     margin: 12px auto;
     border: 1px dashed #333;
-    position: relative;
     max-width: 100%;
 
     &.create-source-code {

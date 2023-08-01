@@ -41,69 +41,77 @@ export const userChangePasswordFail = () => ({
 // USER SIGN UP - CREATE USER INFORMATION
 export const userSignUpStart = (userData) => {
     return async (dispatch) => {
-        dispatch({ type: 'USER_SIGNUP_START' });
+        dispatch(userSignUp_Start());
         try {
             let res = await userService.postSignUp(userData);
             const { errorCode, errorMessage } = res ?? {};
             if (errorCode === 0) {
                 Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
-                dispatch(userSignUpSuccess());
+                dispatch(userSignUp_Success());
             } else {
                 Toast.TOP_CENTER_ERROR(errorMessage, 3000);
-                dispatch(userSignUpFail());
+                dispatch(userSignUp_Fail());
             }
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
-            dispatch(userSignUpFail());
+            dispatch(userSignUp_Fail());
             console.log('An error in userSignUpStart() - userActions.js: ', error);
         }
     };
 };
 
-export const userSignUpSuccess = () => ({
-    type: 'USER_SIGNUP_SUCCESS',
+export const userSignUp_Start = () => ({
+    type: actionNames.USER_SIGNUP_START,
 });
 
-export const userSignUpFail = () => ({
-    type: 'USER_SIGNUP_FAIL',
+export const userSignUp_Success = () => ({
+    type: actionNames.USER_SIGNUP_SUCCESS,
+});
+
+export const userSignUp_Fail = () => ({
+    type: actionNames.USER_SIGNUP_FAIL,
 });
 
 // USER SIGN IN
 export const userSignInStart = (userData) => {
     return async (dispatch) => {
-        dispatch({ type: 'USER_SIGNIN_START' });
+        dispatch(userSignIn_Start());
         try {
             let res = await userService.postSignIn(userData);
             const { errorCode, errorMessage, data } = res;
             if (errorCode === 0) {
-                dispatch(userSignInSuccess(data));
+                dispatch(userSignIn_Success(data));
             } else {
                 Toast.TOP_CENTER_ERROR(errorMessage, 3000);
-                dispatch(userSignInFail());
+                dispatch(userSignIn_Fail());
             }
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 3000);
-            dispatch(userSignInFail());
+            dispatch(userSignIn_Fail());
             console.log('An error in userSignInStart() - userActions.js: ', error);
         }
     };
 };
 
-export const userSignInSuccess = (user) => ({
-    type: 'USER_SIGNIN_SUCCESS',
+export const userSignIn_Start = () => ({
+    type: actionNames.USER_SIGNIN_START,
+});
+
+export const userSignIn_Success = (user) => ({
+    type: actionNames.USER_SIGNIN_SUCCESS,
     payload: user,
 });
 
-export const userSignInFail = () => ({
-    type: 'USER_SIGNIN_FAIL',
+export const userSignIn_Fail = () => ({
+    type: actionNames.USER_SIGNIN_FAIL,
 });
 
 // USER SIGN OUT
 export const userSignOut = () => {
     return {
-        type: 'USER_SIGNOUT',
+        type: actionNames.USER_SIGNOUT,
     };
 };
 
@@ -380,7 +388,6 @@ export const moveProduct_Failure = () => ({
 // CREATE TECHNOLOGY
 export const createTechnology = (technologyData, index) => {
     return async (dispatch) => {
-        dispatch(createTechnology_Start());
         try {
             let res = await userService.createTechnology(technologyData);
             const { errorCode, errorMessage, data } = res ?? {};
@@ -407,10 +414,6 @@ export const createTechnology = (technologyData, index) => {
     };
 };
 
-export const createTechnology_Start = () => ({
-    type: actionNames.CREATE_TECHNOLOGY_START,
-});
-
 export const createTechnology_Success = (data) => ({
     type: actionNames.CREATE_TECHNOLOGY_SUCCESS,
     payload: data,
@@ -421,26 +424,46 @@ export const createTechnology_Failure = () => ({
 });
 
 // UPDATE TECHNOLOGY
-export const updateTechnology = (data) => {
-    return async () => {
+export const updateTechnology = (technologyData, index) => {
+    return async (dispatch) => {
         try {
-            let res = await userService.updateTechnology(data);
-            const { errorCode } = res ?? {};
+            let res = await userService.updateTechnology(technologyData);
+            const { errorCode, errorMessage, data } = res ?? {};
 
-            return errorCode;
+            if (errorCode === 0) {
+                const reduxData = { data, index };
+                dispatch(updateTechnology_Success(reduxData));
+
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(updateTechnology_Failure());
+
+                return errorCode;
+            }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            dispatch(updateTechnology_Failure());
             console.log('An error in updateTechnology() - userActions.js: ', error);
+
             return errorCode;
         }
     };
 };
 
+export const updateTechnology_Success = (data) => ({
+    type: actionNames.UPDATE_TECHNOLOGY_SUCCESS,
+    payload: data,
+});
+
+export const updateTechnology_Failure = () => ({
+    type: actionNames.UPDATE_TECHNOLOGY_FAILURE,
+});
+
 // DELETE TECHNOLOGY
 export const deleteTechnology = (technologyData, index) => {
     return async (dispatch) => {
-        dispatch(deleteTechnology_Start());
         try {
             let res = await userService.deleteTechnology(technologyData);
             const { errorCode, errorMessage, data } = res ?? {};
@@ -466,10 +489,6 @@ export const deleteTechnology = (technologyData, index) => {
         }
     };
 };
-
-export const deleteTechnology_Start = () => ({
-    type: actionNames.DELETE_TECHNOLOGY_START,
-});
 
 export const deleteTechnology_Success = (data) => ({
     type: actionNames.DELETE_TECHNOLOGY_SUCCESS,

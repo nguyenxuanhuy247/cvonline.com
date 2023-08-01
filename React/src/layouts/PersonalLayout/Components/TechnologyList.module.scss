@@ -18,6 +18,11 @@
         row-gap: 6px;
         flex-wrap: wrap;
 
+        &.technology-list {
+            display: flex;
+            flex-direction: column;
+        }
+        
         &.library-list {
             flex-direction: column;
         }
@@ -70,11 +75,6 @@
 
 .show-all-edit-button {
     visibility: visible;
-}
-
-.dragging-item {
-    border: 1px solid var(--primary-color);
-    outline: 3px solid var(--primary-color);
 }
 
 // =================================================================

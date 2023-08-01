@@ -18,24 +18,38 @@
     position: relative;
     border: 1px solid transparent;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
 
-    &.sourcecode-list,
-    &.technology-list {
-        display: inline-flex;
-        align-items: center;
-        column-gap: 4px;
-        font-size: 1.4rem;
-        font-weight: 400;
-        line-height: 1.6;
-        color: #000;
-        background-color: transparent;
-        border-radius: 4px;
-        border: 1px solid #41bc8a;
-    }
+    .technology-button {
+        display: none;
+        padding: 0;
+        background-color: #fff;
 
-    &.library-list {
-        border: 1px solid #41bc8a;
-        border-radius: 99px;
+        &.move-button {
+            margin-left: -6px;
+            color: #666;
+            font-size: 20px;
+            cursor: all-scroll;
+
+            &.sourcecode-list {
+                margin-left: 0;
+            }
+        }
+
+        &.edit-button {
+            color: #212f3f;
+            font-size: 18px;
+            margin-left: 6px;
+            cursor: pointer;
+        }
+
+        &.delete-button {
+            position: relative;
+            font-size: 20px;
+            color: red;
+            cursor: pointer;
+        }
     }
 
     .button {
@@ -50,6 +64,11 @@
         width: 100%;
         color: #000;
         border: 1px solid transparent;
+        cursor: pointer;
+
+        &.no-link-cursor {
+            cursor: default;
+        }
 
         .image {
             flex-shrink: 0;
@@ -61,13 +80,25 @@
             border: 3px solid transparent;
         }
 
-        .name {
-            @include line-clamp;
-
+        .name-link {
             flex: 1;
-            margin-left: 0px;
-            text-align: left;
-            word-break: break-all;
+            display: flex;
+            column-gap: 4px;
+
+            .name {
+                @include line-clamp;
+
+                margin-left: 0px;
+                text-align: left;
+                word-break: break-all;
+            }
+
+            .link {
+                display: grid;
+                place-items: center;
+                font-size: 16px;
+                color: #2f8ec6;
+            }
         }
 
         .version {
@@ -76,16 +107,56 @@
             max-width: 40%;
             margin-left: auto;
         }
+
+        &.sourcecode-list,
+        &.technology-list {
+            display: inline-flex;
+            align-items: center;
+            column-gap: 4px;
+            font-size: 1.4rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #000;
+            background-color: transparent;
+            border-radius: 4px;
+            border: 1px solid #41bc8a;
+        }
+
+        &.library-list {
+            border: 1px solid #41bc8a;
+            border-radius: 99px;
+        }
     }
 
     &.hover-button {
-        cursor: pointer;
-        border: 1px solid var(--primary-color);
-        outline: 3px solid var(--primary-color);
+        .technology-button {
+            &.move-button {
+                display: flex;
+            }
 
-        .button {
-            font-weight: 400;
-            color: green;
+            &.edit-button {
+                display: flex;
+            }
+
+            &.delete-button {
+                display: flex;
+            }
+        }
+    }
+
+    &:hover {
+        .technology-button {
+            &.move-button {
+                display: flex;
+            }
+
+            &.edit-button {
+                display: flex;
+            }
+
+            &.delete-button {
+                display: flex;
+            }
         }
     }
 }

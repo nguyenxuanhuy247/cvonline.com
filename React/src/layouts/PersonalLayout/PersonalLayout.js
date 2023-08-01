@@ -409,7 +409,7 @@ class PersonalLayout extends PureComponent {
                         </div>
                     </div>
 
-                    {this.props.isLoading && <Loading />}
+                    {this.props.isLoading && <Loading text="Đang tải..." />}
                 </div>
 
                 <div className={cx('scroll-to-top-bottom')}>
