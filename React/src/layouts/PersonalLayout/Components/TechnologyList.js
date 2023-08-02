@@ -14,7 +14,7 @@ class TechnologyList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            list: this.props.technologyList || [],
+            list: [],
         };
     }
 
@@ -28,8 +28,8 @@ class TechnologyList extends PureComponent {
         autofocusInputElement.focus();
     };
 
-    handleCloseCreateTechnology = () => {
-        this.setState({ isCreateTechnology: false });
+    handleCloseCreateTechnology = async () => {
+        await this.setState({ isCreateTechnology: false });
     };
 
     // =================================================================
@@ -37,6 +37,10 @@ class TechnologyList extends PureComponent {
     handleSortList = (newState) => {
         this.setState({ list: newState });
     };
+
+    componentDidMount() {
+        this.setState({ list: this.props.technologyList });
+    }
 
     componentDidUpdate(prevProps) {
         if (prevProps.technologyList !== this.props.technologyList) {
@@ -54,7 +58,6 @@ class TechnologyList extends PureComponent {
                 })}
             >
                 <ReactSortable
-                    multiDrag
                     list={this.state.list}
                     setList={(newState) => this.handleSortList(newState)}
                     id={this.props.technologyListID}
@@ -78,9 +81,9 @@ class TechnologyList extends PureComponent {
                                 label={label}
                                 productId={productId}
                                 keyprop={keyprop}
+                                type={type}
                                 // Technology info
                                 id={technology?.id}
-                                type={type}
                                 src={technology?.image}
                                 name={technology?.name}
                                 version={technology?.version}
@@ -90,6 +93,9 @@ class TechnologyList extends PureComponent {
                                 isCloseEditTechnology={this.state.isCreateTechnology}
                                 onShowCreateTechnology={this.handleShowCreateTechnology}
                                 onCloseCreateTechnology={this.handleCloseCreateTechnology}
+                                // =================================================================
+                                isSearch={isSearch}
+                                onSearchLibrary={onSearchLibrary}
                             />
                         );
                     })}
@@ -116,7 +122,8 @@ class TechnologyList extends PureComponent {
                         keyprop={keyprop}
                         side={side}
                         productId={productId}
-                        onCloseCreateTechnology={this.handleCloseCreateTechnology}
+                        onClose={this.handleCloseCreateTechnology}
+                        // =================================================================
                         isSearch={isSearch}
                         onSearchLibrary={onSearchLibrary}
                     />

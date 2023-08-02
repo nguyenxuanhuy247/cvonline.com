@@ -38,7 +38,7 @@ class Product extends PureComponent {
             BE_isSearch: false,
             BE_searchInputValue: '',
 
-            isModalOpen: false,
+            isChangeImageModalOpen: false,
         };
     }
 
@@ -84,11 +84,11 @@ class Product extends PureComponent {
     };
 
     handleOpenChangeImageModal = () => {
-        this.setState({ isModalOpen: true });
+        this.setState({ isChangeImageModalOpen: true });
     };
 
     handleCloseChangeImageModal = () => {
-        this.setState({ isModalOpen: false });
+        this.setState({ isChangeImageModalOpen: false });
     };
 
     handlePressEnterKeyBoard = (e, productInfo) => {
@@ -151,38 +151,38 @@ class Product extends PureComponent {
         }
     };
 
-    handleSearchLibrary = async (side) => {
-        const { productInfo, FELibraryList, BELibraryList } = this.props?.productData ?? {};
+    handleSearchLibrary = async (side, productID, technologyListID) => {
+        const { FELibraryList, BELibraryList } = this.props?.productData ?? {};
 
         const isSearch = side === 'FE' ? 'FE_isSearch' : 'BE_isSearch';
         const searchInputValue = side === 'FE' ? 'FE_searchInputValue' : 'BE_searchInputValue';
         const libraryList = side === 'FE' ? FELibraryList : BELibraryList;
 
-        const searchLibraryList = document.getElementById(`js-library-list-${side}-${productInfo?.id}`);
+        const searchLibraryList = document.getElementById(`js-library-list-${side}-${productID}`);
         const resultNotFound = document.getElementById(`js-result-not-found-${side}`);
-        const searchInputElement = document.getElementById(`js-search-input-${side}-${productInfo?.id}`);
+        const searchInputElement = document.getElementById(`js-search-input-${side}-${productID}`);
+
         const value = searchInputElement?.value?.trim();
 
-        // Check value is not empty
         if (value) {
             await this.setState({ [isSearch]: true, [searchInputValue]: value });
 
             // Loop through all library button in list
             _.forEach(libraryList, function (library) {
-                const libraryName = document.getElementById(`js-name-button-LIBRARY-${library.id}`);
+                const libraryName = document.getElementById(`js-name-button-${side}-LIBRARY-${library.id}`);
 
                 if (libraryName) {
-                    const buttonContainer = libraryName.closest(`#js-container-button-LIBRARY-${library.id}`);
+                    const buttonContainer = libraryName.closest(`#js-container-button-${side}-LIBRARY-${library.id}`);
 
                     if (buttonContainer) {
                         // Clear background-color: yellow of all previous button
-                        buttonContainer.style.display = 'block';
+                        buttonContainer.style.display = 'flex';
                         libraryName.innerHTML = library.name;
 
                         // Set background-color: yellow for button matches search value input
                         const regex = new RegExp(value, 'gi');
                         const name = libraryName.innerHTML.replace(/(<mark}>|<\/mark>)/gim);
-                        const newName = name.replace(regex, `<mark  style={{ backgroundColor: 'yellow'}}>$&</mark>`);
+                        const newName = name.replace(regex, `<mark>$&</mark>`);
 
                         // Only set background-color: yellow for result matches search value input
                         if (name !== newName) {
@@ -219,7 +219,6 @@ class Product extends PureComponent {
                 }
             }
         } else {
-            // If value is empty
             await this.setState({ [isSearch]: false, [searchInputValue]: value });
 
             // Remove not found text when search input is empty
@@ -229,14 +228,14 @@ class Product extends PureComponent {
 
             // Restore the original state of the button
             _.forEach(libraryList, function (library) {
-                const libraryName = document.getElementById(`js-name-button-LIBRARY-${library.id}`);
+                const libraryName = document.getElementById(`js-name-button-${side}-LIBRARY-${library.id}`);
 
                 if (libraryName) {
                     libraryName.innerHTML = library.name;
-                    const closest = libraryName.closest(`#js-container-button-LIBRARY-${library.id}`);
+                    const closest = libraryName.closest(`#js-container-button-${side}-LIBRARY-${library.id}`);
 
                     if (closest) {
-                        closest.style.display = 'block';
+                        closest.style.display = 'flex';
                     }
                 }
             });
@@ -244,60 +243,64 @@ class Product extends PureComponent {
     };
 
     handleClearSearchValueInput = async (side) => {
+        const { productInfo } = this.props?.productData ?? {};
+
         const searchInputValue = side === 'FE' ? 'FE_searchInputValue' : 'BE_searchInputValue';
 
         await this.setState({ [searchInputValue]: '' });
-        await this.handleSearchLibrary(side);
+        await this.handleSearchLibrary(side, productInfo.id);
     };
 
     // =================================================================
 
+    displayJobPositionLayout = (jobTitle) => {
+        if (jobTitle === 'Fullstack developer') {
+            this.setState({ isFE: true, isBE: true });
+        } else if (jobTitle === 'Frontend developer') {
+            this.setState({ isFE: true, isBE: false });
+        } else if (jobTitle === 'Backend developer') {
+            this.setState({ isFE: false, isBE: true });
+        }
+    };
+
+    setTextForProductDesc = (productInfo) => {
+        const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
+        productDescElement.innerText = productInfo?.desc;
+    };
+
     async componentDidUpdate(prevProps) {
         const { productInfo, numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
-        const { side } = this.props;
+        const { jobTitle } = this.props;
 
-        // Turn to last page when add a library
-        if (numberofFELibrary > prevProps?.productData?.numberofFELibrary) {
+        // Turn to last page when add or delete a library
+        if (numberofFELibrary !== prevProps?.productData?.numberofFELibrary) {
             const FE_FinalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
             this.setState({ FE_Page: FE_FinalPage });
         }
 
-        if (numberofBELibrary > prevProps?.productData?.numberofBELibrary) {
+        if (numberofBELibrary !== prevProps?.productData?.numberofBELibrary) {
             const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
             this.setState({ BE_Page: BE_FinalPage });
         }
+
         // Set product desc after updateing from database by JS
         if (productInfo?.desc !== prevProps?.productData?.productInfo?.desc) {
-            const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
-            productDescElement.innerText = productInfo?.desc;
+            this.setTextForProductDesc(productInfo);
         }
 
         // Set display BE, FE Technology
-        if (side === 'Fullstack developer') {
-            this.setState({ isFE: true, isBE: true });
-        } else if (side === 'Frontend developer') {
-            this.setState({ isFE: true, isBE: false });
-        } else if (side === 'Backend developer') {
-            this.setState({ isFE: false, isBE: true });
-        }
+        this.displayJobPositionLayout(jobTitle);
     }
 
     async componentDidMount() {
         const { productInfo } = this.props?.productData ?? {};
-        const { side } = this.props;
+        const { jobTitle } = this.props;
 
         // Set product desc from database by JS
-        const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
-        productDescElement.innerText = productInfo?.desc;
+        this.setTextForProductDesc(productInfo);
 
         // Set display BE, FE Technology
-        if (side === 'Fullstack developer') {
-            this.setState({ isFE: true, isBE: true });
-        } else if (side === 'Frontend developer') {
-            this.setState({ isFE: true, isBE: false });
-        } else if (side === 'Backend developer') {
-            this.setState({ isFE: false, isBE: true });
-        }
+        this.displayJobPositionLayout(jobTitle);
     }
 
     render() {
@@ -311,6 +314,8 @@ class Product extends PureComponent {
             BELibraryList: BE_AllLibraryList,
             numberofBELibrary,
         } = this.props?.productData ?? {};
+
+        const { id: productID, productOrder, name: productName } = productInfo ?? {};
 
         // =================================================================
         // PAGINATION
@@ -365,31 +370,29 @@ class Product extends PureComponent {
                 : BE_LibraryList;
         }
 
-        // =================================================================
-
         return (
-            <div className={cx('product-container')} id={`js-product-${productInfo?.id}`}>
+            <div className={cx('product-container')} id={`js-product-${productID}`}>
                 <EditProduct
-                    id={`js-edit-product-${productInfo?.id}`}
-                    onMoveUpProduct={() => this.props.onMoveUpProduct(productInfo?.productOrder)}
-                    onMoveDownProduct={() => this.props.onMoveDownProduct(productInfo?.productOrder)}
+                    id={`js-edit-product-${productID}`}
+                    onMoveUpProduct={() => this.props.onMoveUpProduct(productOrder)}
+                    onMoveDownProduct={() => this.props.onMoveDownProduct(productOrder)}
                     onCreateProduct={() => this.props.onCreateProduct()}
-                    onDeleteProduct={() => this.props.onDeleteProduct(productInfo?.id, this.props.index)}
+                    onDeleteProduct={() => this.props.onDeleteProduct(productID, this.props.index)}
                 />
 
                 <div className={cx('product')}>
                     <div className={cx('product-name-desc-image')} spellCheck="false">
                         <ContentEditableTag
-                            id={`js-product-name-${productInfo?.id}`}
-                            content={productInfo?.name}
+                            id={`js-product-name-${productID}`}
+                            content={productName}
                             className={cx('product-name')}
                             placeholder="Tên sản phẩm"
                             onBlur={(e) => this.handleUpdateProductNameOrDesc(e, 'name')}
-                            onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productInfo?.id)}
+                            onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productID)}
                         />
 
                         <p
-                            id={`js-product-desc-${productInfo?.id}`}
+                            id={`js-product-desc-${productID}`}
                             contentEditable
                             placeholder="Mô tả sản phẩm"
                             className={cx('product-desc')}
@@ -407,7 +410,7 @@ class Product extends PureComponent {
                                 alt="Ảnh sản phẩm"
                             />
 
-                            {this.state.isModalOpen && (
+                            {this.state.isChangeImageModalOpen && (
                                 <ChangeImageModal
                                     round={false}
                                     src={productInfo?.image}
@@ -420,13 +423,13 @@ class Product extends PureComponent {
 
                     <div className={cx('source-code-section')}>
                         <TechnologyList
-                            technologyListID={`js-source-code-list-${productInfo?.id}`}
+                            technologyListID={`js-source-code-list-${productID}`}
                             index={this.props.index}
                             draggable
                             label="source code"
                             type="SOURCECODE"
                             keyprop="SC"
-                            productId={productInfo?.id}
+                            productId={productID}
                             technologyList={sourceCodeList}
                         />
                     </div>
@@ -443,14 +446,14 @@ class Product extends PureComponent {
                                     </div>
                                     <div className={cx('list')}>
                                         <TechnologyList
-                                            technologyListID={`js-technology-list-FE-${productInfo?.id}`}
+                                            technologyListID={`js-technology-list-FE-${productID}`}
                                             index={this.props.index}
                                             draggable
                                             label="công nghệ FE"
                                             type="TECHNOLOGY"
                                             keyprop="TE"
                                             side="FE"
-                                            productId={productInfo?.id}
+                                            productId={productID}
                                             technologyList={FETechnologyList}
                                         />
                                     </div>
@@ -463,7 +466,7 @@ class Product extends PureComponent {
                                     <div className={cx('library-filter-sort')}>
                                         <div className={cx('library-filter')}>
                                             <input
-                                                id={`js-search-input-FE-${productInfo?.id}`}
+                                                id={`js-search-input-FE-${productID}`}
                                                 value={this.state.FE_searchInputValue}
                                                 onChange={() => {}}
                                                 autoComplete="off"
@@ -471,7 +474,7 @@ class Product extends PureComponent {
                                                 placeholder="Tìm kiếm thư viện"
                                                 className={cx('library-filter-search')}
                                                 spellCheck="false"
-                                                onInput={() => this.handleSearchLibrary('FE')}
+                                                onInput={() => this.handleSearchLibrary('FE', productID)}
                                             />
                                             <span
                                                 className={cx('library-filter-clear', {
@@ -511,7 +514,7 @@ class Product extends PureComponent {
                                                 {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                                     return (
                                                         <Button
-                                                            id={`js-display-paginition-FE-${productInfo?.id}`}
+                                                            id={`js-display-paginition-FE-${productID}`}
                                                             key={index}
                                                             className={cx('button', {
                                                                 active: button === this.state.FE_PageSize,
@@ -527,20 +530,20 @@ class Product extends PureComponent {
                                     )}
 
                                     <TechnologyList
-                                        technologyListID={`js-library-list-FE-${productInfo?.id}`}
+                                        technologyListID={`js-library-list-FE-${productID}`}
                                         index={this.props.index}
                                         draggable
                                         label="thư viện FE"
                                         type="LIBRARY"
                                         keyprop="LI"
                                         side="FE"
-                                        productId={productInfo?.id}
+                                        productId={productID}
                                         technologyList={FE_LibraryList_SortedOrNot}
                                         // =================================================================
                                         // Search - Sort
                                         isSearch={this.state.FE_isSearch}
                                         isSortBy={this.state.FE_sortBy}
-                                        onSearchLibrary={() => this.handleSearchLibrary('FE')}
+                                        onSearchLibrary={() => this.handleSearchLibrary('FE', productID)}
                                     />
 
                                     {!this.state.FE_isSearch && this.state.FE_isPagination && (
@@ -591,14 +594,14 @@ class Product extends PureComponent {
                                     </div>
                                     <div className={cx('list')}>
                                         <TechnologyList
-                                            technologyListID={`js-technology-list-BE-${productInfo?.id}`}
+                                            technologyListID={`js-technology-list-BE-${productID}`}
                                             index={this.props.index}
                                             draggable
                                             label="công nghệ BE"
                                             type="TECHNOLOGY"
                                             keyprop="TE"
                                             side="BE"
-                                            productId={productInfo?.id}
+                                            productId={productID}
                                             technologyList={BETechnologyList}
                                         />
                                     </div>
@@ -611,7 +614,7 @@ class Product extends PureComponent {
                                     <div className={cx('library-filter-sort')}>
                                         <div className={cx('library-filter')}>
                                             <input
-                                                id={`js-search-input-BE-${productInfo?.id}`}
+                                                id={`js-search-input-BE-${productID}`}
                                                 value={this.state.BE_searchInputValue}
                                                 onChange={() => {}}
                                                 autoComplete="off"
@@ -619,7 +622,13 @@ class Product extends PureComponent {
                                                 placeholder="Tìm kiếm thư viện"
                                                 className={cx('library-filter-search')}
                                                 spellCheck="false"
-                                                onInput={() => this.handleSearchLibrary('BE')}
+                                                onInput={() =>
+                                                    this.handleSearchLibrary(
+                                                        'BE',
+                                                        productID,
+                                                        `js-library-list-BE-${productID}`,
+                                                    )
+                                                }
                                             />
                                             <span
                                                 className={cx('library-filter-clear', {
@@ -659,7 +668,7 @@ class Product extends PureComponent {
                                                 {['Tất cả', 10, 20, 30, 40, 50].map((button, index) => {
                                                     return (
                                                         <Button
-                                                            id={`js-display-paginition-BE-${productInfo?.id}`}
+                                                            id={`js-display-paginition-BE-${productID}`}
                                                             key={index}
                                                             className={cx('button', {
                                                                 active: button === this.state.BE_PageSize,
@@ -675,20 +684,22 @@ class Product extends PureComponent {
                                     )}
 
                                     <TechnologyList
-                                        technologyListID={`js-library-list-BE-${productInfo?.id}`}
+                                        technologyListID={`js-library-list-BE-${productID}`}
                                         index={this.props.index}
                                         draggable
                                         label="thư viện BE"
                                         type="LIBRARY"
                                         keyprop="LI"
                                         side="BE"
-                                        productId={productInfo?.id}
+                                        productId={productID}
                                         technologyList={BE_LibraryList_SortedOrNot}
                                         // =================================================================
                                         // Search - Sort
                                         isSearch={this.state.BE_isSearch}
                                         isSortBy={this.state.BE_sortBy}
-                                        onSearchLibrary={() => this.handleSearchLibrary('BE')}
+                                        onSearchLibrary={() =>
+                                            this.handleSearchLibrary('BE', productID, `js-library-list-BE-${productID}`)
+                                        }
                                     />
 
                                     {!this.state.BE_isSearch && this.state.BE_isPagination && (

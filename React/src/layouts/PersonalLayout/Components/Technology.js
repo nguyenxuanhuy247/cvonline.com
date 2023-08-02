@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-import { RxDragHandleDots2 } from 'react-icons/rx';
+import { BiMove } from 'react-icons/bi';
 import { MdDelete } from 'react-icons/md';
 import { FaEdit } from 'react-icons/fa';
 import { BsLink45Deg } from 'react-icons/bs';
@@ -33,14 +33,7 @@ class Technology extends PureComponent {
 
     // =================================================================
 
-    handleShowEditTechnology = async (id, editButtonID) => {
-        const editButton = document.getElementById(editButtonID);
-
-        // Hide Edit Button
-        if (editButton) {
-            editButton.style.display = 'none';
-        }
-
+    handleShowEditTechnology = async (id) => {
         this.props.onCloseCreateTechnology();
 
         let selectedLibrary;
@@ -61,14 +54,17 @@ class Technology extends PureComponent {
         });
     };
 
-    handleCloseEditTechnology = () => {
-        this.setState({ isEdit: false });
+    handleCloseEditTechnology = async (SIDE_TYPE_ID) => {
+        await this.setState({ isEdit: false });
+
+        const buttonContainer = document.getElementById(`js-container-button-${SIDE_TYPE_ID}`);
+        console.log('handleCloseEditTechnology ', buttonContainer);
     };
 
-    handleDeleteTechnology = async (technologyId, buttonContainerID) => {
+    handleDeleteTechnology = async (technologyId, SIDE_TYPE_ID) => {
         const { id: userId } = this.props?.userInfo ?? {};
 
-        const buttonContainer = document.getElementById(buttonContainerID);
+        const buttonContainer = document.getElementById(`js-container-button-${SIDE_TYPE_ID}`);
         if (buttonContainer) {
             const data = {
                 technologyId: technologyId,
@@ -98,16 +94,14 @@ class Technology extends PureComponent {
         }
     }
     render() {
-        const { label, type, productId, keyprop, href, id, side, src, name, version } = this.props;
+        const { label, type, productId, keyprop, href, id, side, src, name, version, isSearch, onSearchLibrary } =
+            this.props;
 
-        const ID = side ? `${side}-${type}-${id}` : `${type}-${id}`;
-        const editButtonID = side ? `js-edit-button-${ID}` : `js-edit-button-${ID}`;
-        const buttonID = side ? `js-button-${ID}` : `js-button-${ID}`;
-        const buttonContainerID = side ? `js-container-button-${ID}` : `js-container-button-${ID}`;
+        const SIDE_TYPE_ID = side ? `${side}-${type}-${id}` : `${type}-${id}`;
 
         return !this.state.isEdit ? (
             <div
-                id={buttonContainerID}
+                id={`js-container-button-${SIDE_TYPE_ID}`}
                 className={cx('button-container', {
                     'sourcecode-list': type === 'SOURCECODE',
                     'technology-list': type === 'TECHNOLOGY',
@@ -115,16 +109,8 @@ class Technology extends PureComponent {
                 })}
             >
                 <Button
-                    className={cx('technology-button', 'move-button', {
-                        'sourcecode-list': type === 'SOURCECODE',
-                    })}
-                >
-                    <RxDragHandleDots2 />
-                </Button>
-
-                <Button
                     href={href}
-                    id={buttonID}
+                    id={`js-button-${SIDE_TYPE_ID}`}
                     className={cx(
                         'button',
                         {
@@ -143,7 +129,7 @@ class Technology extends PureComponent {
 
                     <div className={cx('name-link')}>
                         {name && (
-                            <span className={cx('name')} id={`js-name-button-${type}-${id}`}>
+                            <span className={cx('name')} id={`js-name-button-${SIDE_TYPE_ID}`}>
                                 {name}
                             </span>
                         )}
@@ -167,14 +153,22 @@ class Technology extends PureComponent {
                     {version && <span className={cx('version')}>{version}</span>}
                 </Button>
                 <Button
+                    className={cx('technology-button', 'move-button', {
+                        'sourcecode-list': type === 'SOURCECODE',
+                    })}
+                >
+                    <BiMove />
+                </Button>
+
+                <Button
                     className={cx('technology-button', 'edit-button')}
-                    onClick={() => this.handleShowEditTechnology(id, editButtonID)}
+                    onClick={() => this.handleShowEditTechnology(id)}
                 >
                     <FaEdit />
                 </Button>
                 <Button
                     className={cx('technology-button', 'delete-button')}
-                    onClick={() => this.handleDeleteTechnology(id, buttonContainerID)}
+                    onClick={() => this.handleDeleteTechnology(id, SIDE_TYPE_ID)}
                 >
                     <MdDelete />
                     {this.state.isLoading && <Loading inner small />}
@@ -191,7 +185,10 @@ class Technology extends PureComponent {
                 side={side}
                 keyprop={keyprop}
                 productId={productId}
-                onCloseCreateTechnology={this.handleCloseEditTechnology}
+                onClose={() => this.handleCloseEditTechnology(SIDE_TYPE_ID)}
+                // =================================================================
+                isSearch={isSearch}
+                onSearchLibrary={onSearchLibrary}
             />
         );
     }

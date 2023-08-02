@@ -26,7 +26,7 @@ class PersonalLayout extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isModalOpen: false,
+            isModalChangeAvatarOpen: false,
         };
     }
 
@@ -34,11 +34,11 @@ class PersonalLayout extends PureComponent {
     // CRUD USER INFORMATION
 
     handleOpenChangeAvatarModal = () => {
-        this.setState({ isModalOpen: true });
+        this.setState({ isModalChangeAvatarOpen: true });
     };
 
     handleCloseChangeAvatarModal = () => {
-        this.setState({ isModalOpen: false });
+        this.setState({ isModalChangeAvatarOpen: false });
     };
 
     handleUpdateAvatarFromChangeImageModal = async (url) => {
@@ -63,27 +63,14 @@ class PersonalLayout extends PureComponent {
         let value;
         if (name === 'jobPosition') {
             value = e.target.value;
+        } else if (name === 'languages') {
+            value = e.target.innerText;
         } else {
             value = e.target.innerText?.trim();
         }
 
         if (value !== this.props?.userInfo?.[name]) {
             const data = { userId: userId, [name]: value, label: label };
-
-            const errorCode = await this.props.updateUserInformation(data);
-
-            if (errorCode === 0) {
-                await this.props.readUserInformation(userId);
-            }
-        }
-    };
-
-    handleUpdateLanguagesToDatabase = async (e) => {
-        const { id: userId, languages } = this.props?.userInfo ?? {};
-        const value = e.target.innerText;
-
-        if (value !== languages) {
-            const data = { userId: userId, languages: value, label: 'Ngoại ngữ' };
             const errorCode = await this.props.updateUserInformation(data);
 
             if (errorCode === 0) {
@@ -157,7 +144,7 @@ class PersonalLayout extends PureComponent {
 
     // =================================================================
     async componentDidMount() {
-        const { id: userId, isPassword } = this.props?.userInfo ?? {};
+        const { id: userId, isPassword, languages } = this.props?.userInfo ?? {};
 
         if (userId) {
             // Get all data for CV Layout when sign in
@@ -165,13 +152,13 @@ class PersonalLayout extends PureComponent {
             await this.props.readProduct(userId);
 
             if (!isPassword) {
-                Toast.TOP_CENTER_INFO('Vào mục Tài khoản để thiết lập mật khẩu', 100000000);
+                Toast.TOP_CENTER_INFO('Vào mục Tài khoản để thiết lập mật khẩu', 3000);
             }
 
             // Set languages from database by JS
             const languagesElement = document.getElementById(`js-language-desc`);
             if (languagesElement) {
-                languagesElement.innerText = this.props?.userInfo?.languages || '';
+                languagesElement.innerText = languages || '';
             }
 
             // Press ENTER to change input field or submit
@@ -265,7 +252,7 @@ class PersonalLayout extends PureComponent {
                                         />
                                     </HeadlessTippy>
 
-                                    {this.state.isModalOpen && (
+                                    {this.state.isModalChangeAvatarOpen && (
                                         <ChangeImageModal
                                             round
                                             src={this.props.user?.avatar}
@@ -322,7 +309,7 @@ class PersonalLayout extends PureComponent {
                                             content={this.props?.userInfo?.gender || ''}
                                             className={cx('info-text')}
                                             placeholder="Giới tính"
-                                            onblur={(e) => this.handleUpdateUserInformation(e, 'gender', 'Giới tính')}
+                                            onBlur={(e) => this.handleUpdateUserInformation(e, 'gender', 'Giới tính')}
                                         />
                                     </div>
                                     <div className={cx('info')}>
@@ -333,7 +320,7 @@ class PersonalLayout extends PureComponent {
                                             content={this.props?.userInfo?.phoneNumber || ''}
                                             className={cx('info-text')}
                                             placeholder="Số điện thoại"
-                                            onblur={(e) =>
+                                            onBlur={(e) =>
                                                 this.handleUpdateUserInformation(e, 'phoneNumber', 'Số điện thoại')
                                             }
                                         />
@@ -356,7 +343,7 @@ class PersonalLayout extends PureComponent {
                                             content={this.props?.userInfo?.address || ''}
                                             className={cx('info-text')}
                                             placeholder="Địa chỉ"
-                                            onblur={(e) => this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')}
+                                            onBlur={(e) => this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')}
                                         />
                                     </div>
                                 </div>
@@ -369,7 +356,7 @@ class PersonalLayout extends PureComponent {
                                     placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
                                     className={cx('language-desc')}
                                     spellCheck={false}
-                                    onBlur={(e) => this.handleUpdateLanguagesToDatabase(e)}
+                                    onBlur={(e) => this.handleUpdateUserInformation(e, 'languages', 'Ngoại ngữ')}
                                 ></p>
                             </div>
                         </div>
@@ -383,7 +370,7 @@ class PersonalLayout extends PureComponent {
                                     return (
                                         <Product
                                             key={index}
-                                            side={this.props?.userInfo?.jobPosition}
+                                            jobTitle={this.props?.userInfo?.jobPosition}
                                             productData={product}
                                             // =================================================================
                                             index={index}

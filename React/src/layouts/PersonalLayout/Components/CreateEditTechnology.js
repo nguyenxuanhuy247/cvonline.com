@@ -64,6 +64,7 @@ class CreateEditTechnology extends PureComponent {
         };
 
         if (!isUpdate) {
+            // CREATE NEW TECHNOLOGY
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
                     await this.setState({ isLoading: true });
@@ -71,12 +72,7 @@ class CreateEditTechnology extends PureComponent {
                     await this.setState({ isLoading: false });
 
                     if (errorCode === 0) {
-                        this.props.onCloseCreateTechnology();
-
-                        // Fix bug
-                        if (this.props?.isSearch) {
-                            this.props?.onSearchLibrary();
-                        }
+                        this.props.onClose();
                     }
                 } else if (!this.state.name) {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của Source code`, 3000);
@@ -90,25 +86,25 @@ class CreateEditTechnology extends PureComponent {
                     await this.setState({ isLoading: false });
 
                     if (errorCode === 0) {
-                        this.props.onCloseCreateTechnology();
-
-                        // Fix bug
-                        if (this.props?.isSearch) {
-                            this.props?.onSearchLibrary();
-                        }
+                        this.props.onClose();
                     }
                 } else {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
                 }
             }
         } else {
+            // UPDATE TECHNOLOGY
             await this.setState({ isLoading: true });
             const errorCode = await this.props?.updateTechnology(data, index);
             await this.setState({ isLoading: false });
 
             if (errorCode === 0) {
-                this.props.onCloseCreateTechnology();
+                await this.props.onClose();
             }
+        }
+
+        if (this.props?.isSearch) {
+            await this.props?.onSearchLibrary();
         }
     };
 
@@ -215,7 +211,7 @@ class CreateEditTechnology extends PureComponent {
                 <div className={cx('actions')}>
                     <Button
                         className={cx('btn', 'cancel', { 'source-code-edit-btn': isedit })}
-                        onClick={this.props.onCloseCreateTechnology}
+                        onClick={this.props.onClose}
                     >
                         Hủy
                     </Button>
