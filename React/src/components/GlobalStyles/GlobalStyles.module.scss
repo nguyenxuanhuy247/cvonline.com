@@ -30,6 +30,7 @@
 
     // Height
     --header-height: 68px;
+    --side-bar-width: 104px;
 }
 
 html,
@@ -102,6 +103,11 @@ a {
     &:hover {
         @include solid-btn;
     }
+}
+
+@mixin main-layout-margin {
+    margin-top: var(--header-height);
+    margin-left: var(--side-bar-width);
 }
 
 @mixin signin-signup-container {

@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
 import { publicRoutes, authenticatedRoutes } from './routes/routes.js';
-
 class App extends Component {
     render() {
         return (
@@ -14,7 +13,15 @@ class App extends Component {
                 <Switch>
                     {authenticatedRoutes.map((route, index) => {
                         let Authenticated = route.Authenticated ? userIsAuthenticated : userIsNotAuthenticated;
-                        return <Route key={index} path={route.path} component={Authenticated(route.component)} />;
+
+                        let path = route.path;
+                        if (route.isURLParams) {
+                            path = `${route.path}:paramId`;
+                        }
+
+                        let Component = Authenticated(route.component);
+
+                        return <Route key={index} path={path} component={Component} />;
                     })}
 
                     {publicRoutes.map((route, index) => {

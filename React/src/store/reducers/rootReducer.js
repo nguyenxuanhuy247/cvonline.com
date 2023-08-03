@@ -9,7 +9,7 @@ import { persistReducer } from 'redux-persist';
 const userPersistConfig = {
     key: 'user',
     storage: storage,
-    whitelist: ['isSignIn', 'userInfo'],
+    whitelist: ['isSignIn', 'owner'],
 };
 
 const createRootReducer = (history) =>

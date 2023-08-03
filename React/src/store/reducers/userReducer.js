@@ -5,6 +5,7 @@ const initialState = {
         authLayout: false,
         CVLayout: false,
     },
+    owner: null,
     isSignIn: false,
     isSignUp: false,
     userInfo: null,
@@ -13,6 +14,7 @@ const initialState = {
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
+        // AUTH LAYOUT
         // USER CHANGE PASSWORD
         case actionNames.USER_CHANGE_PASSWORD_START:
             return {
@@ -59,8 +61,9 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, authLayout: false },
+                isSignUp: true,
                 isSignIn: true,
-                userInfo: action.payload,
+                owner: action.payload,
             };
         case actionNames.USER_SIGNIN_FAIL:
             return {
@@ -76,6 +79,7 @@ const userReducer = (state = initialState, action) => {
             };
 
         // =================================================================
+        // CV LAYOUT
         // READ USER INFORMATION
         case actionNames.READ_USER_INFORMATION_START:
             return {
@@ -92,6 +96,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
+                userInfo: action.payload,
             };
 
         // =================================================================

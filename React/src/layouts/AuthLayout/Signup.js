@@ -33,7 +33,7 @@ class Signup extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.isSignUp !== prevProps.isSignUp) {
-            this.id.current = setTimeout(() => this.setState({ delayRedirect: true }), 2000);
+            this.id.current = setTimeout(() => this.setState({ delayRedirect: true }), 1500);
         }
     }
 

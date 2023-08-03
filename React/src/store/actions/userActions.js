@@ -124,14 +124,23 @@ export const readUserInformation = (userId) => {
         dispatch(ReadUserInformation_Start());
         try {
             const res = await userService.readUserInformation(userId);
-            const { errorCode, data } = res ?? {};
 
-            dispatch(ReadUserInformation_Success(data));
+            const { errorCode, errorMessage, data } = res ?? {};
 
-            return errorCode;
+            if (errorCode === 0) {
+                dispatch(ReadUserInformation_Success(data));
+
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(ReadUserInformation_Failure(data));
+
+                return errorCode;
+            }
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
+            const { errorCode, errorMessage, data } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            dispatch(ReadUserInformation_Failure(data));
             console.log('An error in readUserInformation() - userActions.js: ', error);
 
             return errorCode;
@@ -148,8 +157,9 @@ export const ReadUserInformation_Success = (data) => ({
     payload: data,
 });
 
-export const ReadUserInformation_Failure = () => ({
+export const ReadUserInformation_Failure = (data) => ({
     type: actionNames.READ_USER_INFORMATION_FAILURE,
+    payload: data,
 });
 
 // UPDATE USER INFORMATION

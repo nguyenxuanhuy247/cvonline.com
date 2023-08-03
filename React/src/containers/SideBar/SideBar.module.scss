@@ -1,0 +1,49 @@
+@import '../../components/GlobalStyles/GlobalStyles.module.scss';
+
+.side-bar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    z-index: 9999;
+    padding: 12px;
+    row-gap: 12px;
+
+    .button {
+        padding: 8px;
+        height: 80px;
+        width: 80px;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        justify-content: center;
+        background-color: var(--button-bgc-green-02);
+        transition: 0.25s;
+
+        .icon {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        &:hover {
+            color: #fff;
+            background-color: var(--primary-color);
+
+            .icon,
+            .text {
+                color: #fff;
+            }
+        }
+    }
+}

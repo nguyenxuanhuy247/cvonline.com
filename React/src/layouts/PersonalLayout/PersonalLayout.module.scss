@@ -1,6 +1,6 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
-.body {
+.personal-layout {
     background-color: #f0f2f5;
 
     [contentEditable] {
@@ -25,11 +25,10 @@
     .cv-container {
         max-width: 1200px;
         margin: auto auto;
-        margin-top: var(--header-height);
         padding: 20px 0;
         display: flex;
 
-        .user-information {
+        .user-information-container {
             @include flex-max-width-30;
             padding: 20px;
             color: #fff;

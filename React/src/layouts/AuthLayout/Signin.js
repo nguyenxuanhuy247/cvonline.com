@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, Link } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import className from 'classnames/bind';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
@@ -21,10 +21,7 @@ class SignIn extends Component {
         super(props);
         this.state = {
             isShowPassword: false,
-            delayRedirect: false,
         };
-
-        this.id = React.createRef();
     }
 
     handleShowHidePassword = () => {
@@ -41,13 +38,6 @@ class SignIn extends Component {
         }
     };
 
-    componentDidUpdate(prevProps) {
-        if (this.props.isSignIn !== prevProps.isSignIn) {
-            console.log('IS sign in', this.props.isSignIn);
-            this.id.current = setTimeout(() => this.setState({ delayRedirect: true }), 2000);
-        }
-    }
-
     componentDidMount = () => {
         window.google?.accounts?.id?.initialize?.({
             client_id: '926424110135-dpsp6egfi7g128s401rparkaba2gtq1c.apps.googleusercontent.com',
@@ -60,10 +50,6 @@ class SignIn extends Component {
             type: 'standard',
         });
     };
-
-    componentWillUnmount() {
-        clearInterval(this.id.current);
-    }
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;

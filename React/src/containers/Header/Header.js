@@ -101,8 +101,8 @@ class Header extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         isSignIn: state.user.isSignIn,
-        fullName: state.user.userInfo?.fullName,
-        avatar: state.user.userInfo?.avatar,
+        fullName: state.user.owner?.fullName,
+        avatar: state.user.owner?.avatar,
         productList: state.user.productList,
     };
 };

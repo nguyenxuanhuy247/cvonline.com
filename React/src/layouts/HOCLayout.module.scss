@@ -1,0 +1,8 @@
+@import '../components/GlobalStyles/GlobalStyles.module.scss';
+
+.header-sidebar-layout {
+    .header-sidebar-section {
+        @include main-layout-margin;
+        background-color: #f0f2f5;
+    }
+}

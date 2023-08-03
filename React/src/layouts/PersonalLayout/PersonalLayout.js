@@ -6,9 +6,12 @@ import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
 import HeadlessTippy from '@tippyjs/react/headless';
+import { withRouter } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import Header from '~/containers/Header/Header.js';
+import SideBar from '~/containers/SideBar/SideBar';
 import Product from '~/layouts/PersonalLayout/Components/Product.js';
 
 import styles from './PersonalLayout.module.scss';
@@ -19,6 +22,7 @@ import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
 import Loading from '~/components/Modal/Loading.js';
+import HOCLayout from '../HOCLayout.js';
 
 const cx = classnames.bind(styles);
 
@@ -144,46 +148,44 @@ class PersonalLayout extends PureComponent {
 
     // =================================================================
     async componentDidMount() {
-        const { id: userId, isPassword, languages } = this.props?.userInfo ?? {};
+        const { paramId } = this.props?.match?.params ?? {};
+        const { languages } = this.props?.userInfo ?? {};
 
-        if (userId) {
-            // Get all data for CV Layout when sign in
-            await this.props.readUserInformation(userId);
-            await this.props.readProduct(userId);
-
-            if (!isPassword) {
-                Toast.TOP_CENTER_INFO('Vào mục Tài khoản để thiết lập mật khẩu', 3000);
-            }
-
+        if (paramId) {
+            // Get all data for CV Layout
+            const errorCode1 = await this.props.readUserInformation(paramId);
             // Set languages from database by JS
             const languagesElement = document.getElementById(`js-language-desc`);
             if (languagesElement) {
                 languagesElement.innerText = languages || '';
             }
 
-            // Press ENTER to change input field or submit
-            const container = document.querySelector(`.${cx('content')}`);
-            if (container) {
-                const inputArray = container.querySelectorAll(`[contentEditable]`);
-                Array.from(inputArray).forEach((input, index) => {
-                    input.onkeydown = (event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault();
-                            let nextEl = inputArray[index + 1];
-
-                            if (nextEl) {
-                                nextEl.focus();
-                            } else {
-                                nextEl = inputArray[0];
-                                nextEl.focus();
-                            }
-                        }
-                    };
-                });
+            if (errorCode1 === 0) {
+                await this.props.readProduct(paramId);
             }
         } else {
-            Toast.TOP_CENTER_WARN('Vui lòng đăng nhập lại');
-            await this.props.userSignOut();
+            <Redirect to="/" />;
+        }
+
+        // Press ENTER to change input field or submit
+        const container = document.querySelector(`.${cx('content')}`);
+        if (container) {
+            const inputArray = container.querySelectorAll(`[contentEditable]`);
+            Array.from(inputArray).forEach((input, index) => {
+                input.onkeydown = (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        let nextEl = inputArray[index + 1];
+
+                        if (nextEl) {
+                            nextEl.focus();
+                        } else {
+                            nextEl = inputArray[0];
+                            nextEl.focus();
+                        }
+                    }
+                };
+            });
         }
 
         // Set event for scroll to top button
@@ -220,10 +222,9 @@ class PersonalLayout extends PureComponent {
 
     render = () => {
         return (
-            <div className={cx('body')}>
-                <Header />
+            <div className={cx('personal-layout')}>
                 <div className={cx('cv-container')}>
-                    <div className={cx('user-information')}>
+                    <div className={cx('user-information-container')}>
                         <div className={cx('user-information-basic')}>
                             <div className={cx('avatar-wrapper')}>
                                 <div className={cx('border-outline')}>
@@ -437,4 +438,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PersonalLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(HOCLayout(PersonalLayout)));

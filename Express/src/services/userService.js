@@ -286,6 +286,7 @@ export const handleGetUserInformation = async (data) => {
             return {
                 errorCode: 32,
                 errorMessage: `[Không tìm thấy user ID] Tải thông tin người dùng thất bại`,
+                data: { id: 0 },
             };
         }
     } catch (error) {
