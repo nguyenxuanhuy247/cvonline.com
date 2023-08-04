@@ -2,16 +2,23 @@ import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 
-import Header from '~/containers/Header/Header.js';
-import SideBar from '~/containers/SideBar/SideBar';
 import styles from './HomeLayout.module.scss';
-import HOCLayout from '../HOCLayout.js';
+import Header from '~/containers/Header/Header';
+import SideBar from '~/containers/SideBar/SideBar';
 
 const cx = classnames.bind(styles);
 
 class HomeLayout extends PureComponent {
     render() {
-        return <div className={cx('home-layout')}>Nguyễn Xuân Huy</div>;
+
+        return (
+            <div className={cx('home-layout')}>
+                <Header />
+                <SideBar />
+
+                <div className={cx('home-section')}>Nguyễn Xuân Huy</div>
+            </div>
+        );
     }
 }
 
@@ -21,4 +28,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(HOCLayout(HomeLayout));
+export default connect(mapStateToProps, null)(HomeLayout);

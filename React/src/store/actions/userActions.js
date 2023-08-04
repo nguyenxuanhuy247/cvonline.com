@@ -121,26 +121,26 @@ export const userSignOut = () => {
 // READ USER INFORMATION
 export const readUserInformation = (userId) => {
     return async (dispatch) => {
-        dispatch(ReadUserInformation_Start());
+        dispatch(readUserInformation_Start());
         try {
             const res = await userService.readUserInformation(userId);
 
             const { errorCode, errorMessage, data } = res ?? {};
 
             if (errorCode === 0) {
-                dispatch(ReadUserInformation_Success(data));
+                dispatch(readUserInformation_Success(data));
 
                 return errorCode;
             } else {
                 Toast.TOP_CENTER_ERROR(errorMessage, 4000);
-                dispatch(ReadUserInformation_Failure(data));
+                dispatch(readUserInformation_Failure(data));
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage, data } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 5000);
-            dispatch(ReadUserInformation_Failure(data));
+            dispatch(readUserInformation_Failure(data));
             console.log('An error in readUserInformation() - userActions.js: ', error);
 
             return errorCode;
@@ -148,37 +148,62 @@ export const readUserInformation = (userId) => {
     };
 };
 
-export const ReadUserInformation_Start = () => ({
+export const readUserInformation_Start = () => ({
     type: actionNames.READ_USER_INFORMATION_START,
 });
 
-export const ReadUserInformation_Success = (data) => ({
+export const readUserInformation_Success = (data) => ({
     type: actionNames.READ_USER_INFORMATION_SUCCESS,
     payload: data,
 });
 
-export const ReadUserInformation_Failure = (data) => ({
+export const readUserInformation_Failure = (data) => ({
     type: actionNames.READ_USER_INFORMATION_FAILURE,
     payload: data,
 });
 
 // UPDATE USER INFORMATION
-export const updateUserInformation = (data) => {
-    return async () => {
+export const updateUserInformation = (userData) => {
+    return async (dispatch) => {
+        dispatch(updateUserInformation_Start());
         try {
-            let res = await userService.updateUserInformation(data);
-            const { errorCode } = res ?? {};
+            let res = await userService.updateUserInformation(userData);
+            const { errorCode, errorMessage, data } = res ?? {};
 
-            return errorCode;
+            if (errorCode === 0) {
+                dispatch(updateUserInformation_Success(data));
+
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(updateUserInformation_Failure());
+
+                return errorCode;
+            }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(updateUserInformation_Failure());
             console.log('An error in updateTechnology() - userActions.js: ', error);
 
             return errorCode;
         }
     };
 };
+
+export const updateUserInformation_Start = () => ({
+    type: actionNames.READ_USER_INFORMATION_START,
+});
+
+export const updateUserInformation_Success = (data) => ({
+    type: actionNames.READ_USER_INFORMATION_SUCCESS,
+    payload: data,
+});
+
+export const updateUserInformation_Failure = (data) => ({
+    type: actionNames.READ_USER_INFORMATION_FAILURE,
+    payload: data,
+});
 
 // =================================================================
 // CRUD PRODUCT

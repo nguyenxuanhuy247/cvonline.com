@@ -5,28 +5,18 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
-import { publicRoutes, authenticatedRoutes } from './routes/routes.js';
+import { path } from '~/utils';
+import { AuthLayout, PersonalLayout, HomeLayout } from '~/layouts';
 class App extends Component {
     render() {
         return (
             <div>
                 <Switch>
-                    {authenticatedRoutes.map((route, index) => {
-                        let Authenticated = route.Authenticated ? userIsAuthenticated : userIsNotAuthenticated;
-
-                        let path = route.path;
-                        if (route.isURLParams) {
-                            path = `${route.path}:paramId`;
-                        }
-
-                        let Component = Authenticated(route.component);
-
-                        return <Route key={index} path={path} component={Component} />;
-                    })}
-
-                    {publicRoutes.map((route, index) => {
-                        return <Route key={index} path={route.path} component={route.component} />;
-                    })}
+                    <Route exact path={path.HOME} component={userIsAuthenticated(HomeLayout)} />
+                    <Route path={path.SIGNIN} component={userIsNotAuthenticated(AuthLayout)} />
+                    <Route path={path.SIGNUP} component={userIsNotAuthenticated(AuthLayout)} />
+                    <Route path={path.FORGOTPASSWORD} component={userIsNotAuthenticated(AuthLayout)} />
+                    <Route path={`${path.HOME}:paramId`} component={userIsAuthenticated(PersonalLayout)} />
                 </Switch>
 
                 <ToastContainer

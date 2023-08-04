@@ -5,13 +5,9 @@ import { FaUserCircle, FaAddressBook, FaArrowUp, FaArrowDown } from 'react-icons
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
-import HeadlessTippy from '@tippyjs/react/headless';
-import { withRouter } from 'react-router';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
 
 import { Toast } from '~/components/Toast/Toast.js';
-import Header from '~/containers/Header/Header.js';
-import SideBar from '~/containers/SideBar/SideBar';
 import Product from '~/layouts/PersonalLayout/Components/Product.js';
 
 import styles from './PersonalLayout.module.scss';
@@ -22,7 +18,9 @@ import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
 import Loading from '~/components/Modal/Loading.js';
-import HOCLayout from '../HOCLayout.js';
+import Header from '~/containers/Header/Header';
+import SideBar from '~/containers/SideBar/SideBar';
+import NotFoundLayout from '~/layouts/NotFoundLayout/NotFoundLayout';
 
 const cx = classnames.bind(styles);
 
@@ -55,9 +53,13 @@ class PersonalLayout extends PureComponent {
 
             if (errorCode === 0) {
                 await this.props.readUserInformation(userId);
+
+                return 0;
             }
         } else {
             Toast.TOP_CENTER_WARN(`Ảnh này đang được sử dụng làm Avatar, hãy chọn ảnh khác`, 3000);
+
+            return 1;
         }
     };
 
@@ -147,25 +149,25 @@ class PersonalLayout extends PureComponent {
     };
 
     // =================================================================
-    async componentDidMount() {
+    fetchUserInformationAndProductList = async () => {
         const { paramId } = this.props?.match?.params ?? {};
         const { languages } = this.props?.userInfo ?? {};
 
-        if (paramId) {
-            // Get all data for CV Layout
-            const errorCode1 = await this.props.readUserInformation(paramId);
-            // Set languages from database by JS
-            const languagesElement = document.getElementById(`js-language-desc`);
-            if (languagesElement) {
-                languagesElement.innerText = languages || '';
-            }
+        const errorCode1 = await this.props.readUserInformation(paramId);
 
-            if (errorCode1 === 0) {
-                await this.props.readProduct(paramId);
-            }
-        } else {
-            <Redirect to="/" />;
+        // Set languages from database by JS
+        const languagesElement = document.getElementById(`js-language-desc`);
+        if (languagesElement) {
+            languagesElement.innerText = languages || '';
         }
+
+        if (errorCode1 === 0) {
+            await this.props.readProduct(paramId);
+        }
+    };
+
+    async componentDidMount() {
+        this.fetchUserInformationAndProductList();
 
         // Press ENTER to change input field or submit
         const container = document.querySelector(`.${cx('content')}`);
@@ -220,194 +222,241 @@ class PersonalLayout extends PureComponent {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.userInfo?.id !== prevProps.userInfo?.id) {
+            this.fetchUserInformationAndProductList();
+        }
+    }
+
     render = () => {
+        const { id: userID } = this.props?.userInfo ?? {};
+        const { id: ownerID } = this.props?.owner ?? {};
+
+        const isCanEdit = userID === ownerID;
+
         return (
             <div className={cx('personal-layout')}>
-                <div className={cx('cv-container')}>
-                    <div className={cx('user-information-container')}>
-                        <div className={cx('user-information-basic')}>
-                            <div className={cx('avatar-wrapper')}>
-                                <div className={cx('border-outline')}>
-                                    <HeadlessTippy
-                                        zIndex="10"
-                                        placement="bottom"
-                                        interactive
-                                        delay={[0, 300]}
-                                        offset={[0, -100]}
-                                        render={(attrs) => (
-                                            <div tabIndex="-1" {...attrs}>
-                                                <div
-                                                    className={cx('tooltip')}
-                                                    onClick={() => this.handleOpenChangeAvatarModal()}
-                                                >
-                                                    Sửa ảnh
+                <Header />
+                <SideBar />
+
+                {userID !== 0 ? (
+                    <div>
+                        <div className={cx('personal-section')}>
+                            <div className={cx('cv-container')}>
+                                <div className={cx('user-information-container')}>
+                                    <div className={cx('user-information-basic')}>
+                                        <div className={cx('avatar-wrapper')}>
+                                            <div className={cx('border-outline')}>
+                                                {isCanEdit && (
+                                                    <Button
+                                                        className={cx('change-avatar-button')}
+                                                        onClick={() => this.handleOpenChangeAvatarModal()}
+                                                    >
+                                                        Sửa ảnh
+                                                    </Button>
+                                                )}
+
+                                                <Image
+                                                    className={cx('avatar')}
+                                                    src={this.props.userInfo?.avatar || JpgImages.avatarPlaceholder}
+                                                    alt={`${this.props?.userInfo?.fullName}`}
+                                                    round
+                                                />
+
+                                                {this.state.isModalChangeAvatarOpen && (
+                                                    <ChangeImageModal
+                                                        round
+                                                        title="Thay đổi Avatar"
+                                                        src={this.props.userInfo?.avatar}
+                                                        onClose={() => this.handleCloseChangeAvatarModal()}
+                                                        onGetUrl={this.handleUpdateAvatarFromChangeImageModal}
+                                                    />
+                                                )}
+                                            </div>
+                                        </div>
+                                        <ContentEditableTag
+                                            isCanEdit={isCanEdit}
+                                            content={this.props?.userInfo?.fullName || ''}
+                                            className={cx('full-name', { contentEditable: isCanEdit })}
+                                            placeholder="Nguyễn Xuân Huy"
+                                            onBlur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
+                                        />
+                                        <select
+                                            disabled={!isCanEdit}
+                                            value={this.props?.userInfo?.jobPosition || ''}
+                                            className={cx('select-job-title')}
+                                            onChange={(e) =>
+                                                this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')
+                                            }
+                                        >
+                                            <option className={cx('option-job-title')} value="Fullstack developer">
+                                                Fullstack developer
+                                            </option>
+                                            <option className={cx('option-job-title')} value="Frontend developer">
+                                                Frontend developer
+                                            </option>
+                                            <option className={cx('option-job-title')} value="Backend developer">
+                                                Backend developer
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div className={cx('user-information-detail')}>
+                                        <div className={cx('candidate-info')}>
+                                            <p className={cx('text')}>Thông tin cá nhân</p>
+                                            <div className={cx('content')}>
+                                                <div className={cx('info')}>
+                                                    <span className={cx('icon')}>
+                                                        <BsFillCalendarDayFill />
+                                                    </span>
+                                                    <ContentEditableTag
+                                                        isCanEdit={isCanEdit}
+                                                        content={this.props?.userInfo?.dateOfBirth || ''}
+                                                        className={cx('info-text', { contentEditable: isCanEdit })}
+                                                        placeholder="Ngày tháng năm sinh"
+                                                        onBlur={(e) =>
+                                                            this.handleUpdateUserInformation(
+                                                                e,
+                                                                'dateOfBirth',
+                                                                'Ngày sinh',
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className={cx('info')}>
+                                                    <span className={cx('icon')}>
+                                                        <FaUserCircle />
+                                                    </span>
+                                                    <ContentEditableTag
+                                                        isCanEdit={isCanEdit}
+                                                        content={this.props?.userInfo?.gender || ''}
+                                                        className={cx('info-text', { contentEditable: isCanEdit })}
+                                                        placeholder="Giới tính"
+                                                        onBlur={(e) =>
+                                                            this.handleUpdateUserInformation(e, 'gender', 'Giới tính')
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className={cx('info')}>
+                                                    <span className={cx('icon')}>
+                                                        <BsFillTelephoneFill />
+                                                    </span>
+                                                    <ContentEditableTag
+                                                        isCanEdit={isCanEdit}
+                                                        content={this.props?.userInfo?.phoneNumber || ''}
+                                                        className={cx('info-text', { contentEditable: isCanEdit })}
+                                                        placeholder="Số điện thoại"
+                                                        onBlur={(e) =>
+                                                            this.handleUpdateUserInformation(
+                                                                e,
+                                                                'phoneNumber',
+                                                                'Số điện thoại',
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className={cx('info')}>
+                                                    <span className={cx('icon')}>
+                                                        <MdEmail />
+                                                    </span>
+                                                    <ContentEditableTag
+                                                        isCanEdit={isCanEdit}
+                                                        content={this.props?.userInfo?.email || ''}
+                                                        className={cx('info-text', {
+                                                            email: isCanEdit,
+                                                            contentEditable: isCanEdit,
+                                                        })}
+                                                        placeholder="Email"
+                                                    />
+                                                </div>
+                                                <div className={cx('info')}>
+                                                    <span className={cx('icon')}>
+                                                        <FaAddressBook />
+                                                    </span>
+                                                    <ContentEditableTag
+                                                        isCanEdit={isCanEdit}
+                                                        content={this.props?.userInfo?.address || ''}
+                                                        className={cx('info-text', { contentEditable: isCanEdit })}
+                                                        placeholder="Địa chỉ"
+                                                        onBlur={(e) =>
+                                                            this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')
+                                                        }
+                                                    />
                                                 </div>
                                             </div>
-                                        )}
-                                    >
-                                        <Image
-                                            className={cx('avatar')}
-                                            src={this.props.userInfo?.avatar || JpgImages.avatarPlaceholder}
-                                            alt={`${this.props?.userInfo?.fullName}`}
-                                            round
-                                        />
-                                    </HeadlessTippy>
+                                        </div>
+                                        <div className={cx('candidate-info')}>
+                                            <p className={cx('text')}>Trình độ ngoại ngữ</p>
+                                            <p
+                                                id={`js-language-desc`}
+                                                contentEditable={isCanEdit}
+                                                placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
+                                                className={cx('language-desc', { contentEditable: isCanEdit })}
+                                                spellCheck={false}
+                                                onBlur={(e) =>
+                                                    this.handleUpdateUserInformation(e, 'languages', 'Ngoại ngữ')
+                                                }
+                                            ></p>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                    {this.state.isModalChangeAvatarOpen && (
-                                        <ChangeImageModal
-                                            round
-                                            src={this.props.user?.avatar}
-                                            onClose={() => this.handleCloseChangeAvatarModal()}
-                                            onGetUrl={this.handleUpdateAvatarFromChangeImageModal}
-                                        />
+                                <div className={cx('product-list-container')}>
+                                    {this.props.productList && (
+                                        <div className={cx('product-list')}>
+                                            {this.props.productList?.map((product, index) => {
+                                                const totalPage = this.props.productList?.length;
+                                                return (
+                                                    <Product
+                                                        key={index}
+                                                        jobTitle={this.props?.userInfo?.jobPosition}
+                                                        productData={product}
+                                                        // =================================================================
+                                                        index={index}
+                                                        totalPage={totalPage}
+                                                        // =================================================================
+                                                        onCreateProduct={this.handleCreateProduct}
+                                                        onDeleteProduct={this.handleDeleteProduct}
+                                                        // =================================================================
+                                                        onMoveUpProduct={(order) =>
+                                                            this.handleMoveProduct(order, 'move up')
+                                                        }
+                                                        onMoveDownProduct={(order) =>
+                                                            this.handleMoveProduct(order, 'move down')
+                                                        }
+                                                    />
+                                                );
+                                            })}
+                                        </div>
                                     )}
-                                </div>
-                            </div>
-                            <ContentEditableTag
-                                content={this.props?.userInfo?.fullName || ''}
-                                className={cx('full-name')}
-                                placeholder="Nguyễn Xuân Huy"
-                                onBlur={(e) => this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')}
-                            />
-                            <select
-                                value={this.props?.userInfo?.jobPosition || ''}
-                                className={cx('select-job-title')}
-                                onChange={(e) => this.handleUpdateUserInformation(e, 'jobPosition', 'Vị trí ứng tuyển')}
-                            >
-                                <option className={cx('option-job-title')} value="Fullstack developer">
-                                    Fullstack developer
-                                </option>
-                                <option className={cx('option-job-title')} value="Frontend developer">
-                                    Frontend developer
-                                </option>
-                                <option className={cx('option-job-title')} value="Backend developer">
-                                    Backend developer
-                                </option>
-                            </select>
-                        </div>
-                        <div className={cx('user-information-detail')}>
-                            <div className={cx('candidate-info')}>
-                                <p className={cx('text')}>Thông tin cá nhân</p>
-                                <div className={cx('content')}>
-                                    <div className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <BsFillCalendarDayFill />
-                                        </span>
-                                        <ContentEditableTag
-                                            content={this.props?.userInfo?.dateOfBirth || ''}
-                                            className={cx('info-text')}
-                                            placeholder="Ngày tháng năm sinh"
-                                            onBlur={(e) =>
-                                                this.handleUpdateUserInformation(e, 'dateOfBirth', 'Ngày sinh')
-                                            }
-                                        />
-                                    </div>
-                                    <div className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <FaUserCircle />
-                                        </span>
-                                        <ContentEditableTag
-                                            content={this.props?.userInfo?.gender || ''}
-                                            className={cx('info-text')}
-                                            placeholder="Giới tính"
-                                            onBlur={(e) => this.handleUpdateUserInformation(e, 'gender', 'Giới tính')}
-                                        />
-                                    </div>
-                                    <div className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <BsFillTelephoneFill />
-                                        </span>
-                                        <ContentEditableTag
-                                            content={this.props?.userInfo?.phoneNumber || ''}
-                                            className={cx('info-text')}
-                                            placeholder="Số điện thoại"
-                                            onBlur={(e) =>
-                                                this.handleUpdateUserInformation(e, 'phoneNumber', 'Số điện thoại')
-                                            }
-                                        />
-                                    </div>
-                                    <div className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <MdEmail />
-                                        </span>
-                                        <ContentEditableTag
-                                            content={this.props?.userInfo?.email || ''}
-                                            className={cx('info-text', 'email')}
-                                            placeholder="Email"
-                                        />
-                                    </div>
-                                    <div className={cx('info')}>
-                                        <span className={cx('icon')}>
-                                            <FaAddressBook />
-                                        </span>
-                                        <ContentEditableTag
-                                            content={this.props?.userInfo?.address || ''}
-                                            className={cx('info-text')}
-                                            placeholder="Địa chỉ"
-                                            onBlur={(e) => this.handleUpdateUserInformation(e, 'address', 'Địa chỉ')}
-                                        />
+                                    <div className={cx('add-new-product-container')}>
+                                        <Button
+                                            className={cx('add-new-product-button')}
+                                            onClick={() => this.handleCreateProduct()}
+                                        >
+                                            <span className={cx('add-new-product-icon')}>
+                                                <IoIosAddCircle />
+                                            </span>
+                                            THÊM SẢN PHẨM
+                                        </Button>
                                     </div>
                                 </div>
-                            </div>
-                            <div className={cx('candidate-info')}>
-                                <p className={cx('text')}>Trình độ ngoại ngữ</p>
-                                <p
-                                    id={`js-language-desc`}
-                                    contentEditable
-                                    placeholder="Nhập chứng chỉ hoặc trình độ tương đương"
-                                    className={cx('language-desc')}
-                                    spellCheck={false}
-                                    onBlur={(e) => this.handleUpdateUserInformation(e, 'languages', 'Ngoại ngữ')}
-                                ></p>
+
+                                {this.props.isLoading && <Loading text="Đang tải..." />}
                             </div>
                         </div>
-                    </div>
 
-                    <div className={cx('product-list-container')}>
-                        {this.props.productList && (
-                            <div className={cx('product-list')}>
-                                {this.props.productList?.map((product, index) => {
-                                    const totalPage = this.props.productList?.length;
-                                    return (
-                                        <Product
-                                            key={index}
-                                            jobTitle={this.props?.userInfo?.jobPosition}
-                                            productData={product}
-                                            // =================================================================
-                                            index={index}
-                                            totalPage={totalPage}
-                                            // =================================================================
-                                            onCreateProduct={this.handleCreateProduct}
-                                            onDeleteProduct={this.handleDeleteProduct}
-                                            // =================================================================
-                                            onMoveUpProduct={(order) => this.handleMoveProduct(order, 'move up')}
-                                            onMoveDownProduct={(order) => this.handleMoveProduct(order, 'move down')}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        )}
-                        <div className={cx('add-new-product-container')}>
-                            <Button className={cx('add-new-product-button')} onClick={() => this.handleCreateProduct()}>
-                                <span className={cx('add-new-product-icon')}>
-                                    <IoIosAddCircle />
-                                </span>
-                                THÊM SẢN PHẨM
-                            </Button>
+                        <div className={cx('scroll-to-top-bottom')}>
+                            <span className={cx('go-to-button', 'go-top')} id="go-top-button">
+                                <FaArrowUp />
+                            </span>
+                            <span className={cx('go-to-button', 'go-bottom')} id="go-bottom-button">
+                                <FaArrowDown />
+                            </span>
                         </div>
                     </div>
-
-                    {this.props.isLoading && <Loading text="Đang tải..." />}
-                </div>
-
-                <div className={cx('scroll-to-top-bottom')}>
-                    <span className={cx('go-to-button', 'go-top')} id="go-top-button">
-                        <FaArrowUp />
-                    </span>
-                    <span className={cx('go-to-button', 'go-bottom')} id="go-bottom-button">
-                        <FaArrowDown />
-                    </span>
-                </div>
+                ) : (
+                    <NotFoundLayout />
+                )}
             </div>
         );
     };
@@ -415,6 +464,7 @@ class PersonalLayout extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
+        owner: state.user.owner,
         userInfo: state.user.userInfo,
         productList: state.user.productList,
         isLoading: state.user.isLoading.CVLayout,
@@ -438,4 +488,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(HOCLayout(PersonalLayout)));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(PersonalLayout));

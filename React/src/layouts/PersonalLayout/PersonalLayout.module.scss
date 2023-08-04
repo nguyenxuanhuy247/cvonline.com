@@ -3,7 +3,7 @@
 .personal-layout {
     background-color: #f0f2f5;
 
-    [contentEditable] {
+    .contentEditable {
         word-break: break-all;
         border: 1px solid transparent;
 
@@ -22,202 +22,211 @@
         }
     }
 
-    .cv-container {
-        max-width: 1200px;
-        margin: auto auto;
-        padding: 20px 0;
-        display: flex;
+    .personal-section {
+        @include main-layout-margin;
 
-        .user-information-container {
-            @include flex-max-width-30;
-            padding: 20px;
-            color: #fff;
-            background-color: #37474f;
-            height: auto;
+        .cv-container {
+            max-width: 1200px;
+            margin: auto auto;
+            padding: 20px 0;
+            display: flex;
 
-            .user-information-basic {
-                .avatar-wrapper {
-                    display: grid;
-                    place-items: center;
-                    margin: 20px 0;
+            .user-information-container {
+                @include flex-max-width-30;
+                padding: 20px;
+                color: #fff;
+                background-color: #37474f;
+                height: auto;
 
-                    .border-outline {
-                        border-radius: 50%;
-                        border: 8px solid var(--primary-color);
-                        outline: 12px solid rgba(73, 178, 83, 0.4);
+                .user-information-basic {
+                    .avatar-wrapper {
+                        display: grid;
+                        place-items: center;
+                        margin: 20px 0;
 
-                        .tooltip {
-                            padding: 8px 16px;
-                            border-radius: 4px;
-                            box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
-                            background-color: var(--primary-color);
-                            color: #fff;
+                        .border-outline {
+                            position: relative;
+                            border-radius: 50%;
+                            border: 8px solid var(--primary-color);
+                            outline: 12px solid rgba(73, 178, 83, 0.4);
+                            user-select: none;
+
+                            .change-avatar-button {
+                                display: none;
+                                position: absolute;
+                                z-index: 3;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                padding: 10px 16px;
+                                border-radius: 4px;
+                                font-size: 1.6rem;
+                                box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
+                                background-color: var(--primary-color);
+                                color: #fff;
+
+                                &:hover {
+                                    cursor: pointer;
+                                }
+                            }
+
+                            .avatar {
+                                width: 200px;
+                                height: 200px;
+                            }
 
                             &:hover {
-                                cursor: pointer;
-                            }
-                        }
-
-                        .avatar {
-                            width: 200px;
-                            height: 200px;
-                        }
-                    }
-                }
-
-                .full-name {
-                    margin-top: 24px;
-                    text-align: center;
-                    font-size: 2.5rem;
-                    line-height: 1.5;
-                    font-weight: 600;
-                    word-break: break-word;
-                }
-
-                .select-job-title {
-                    margin-bottom: 20px;
-                    width: 100%;
-                    font-weight: 400;
-                    background-color: transparent;
-                    padding: 4px;
-                    color: #fff;
-                    font-size: 2.2rem;
-                    text-align: center;
-                    border: 1px dashed transparent;
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                    appearance: none;
-
-                    &:hover {
-                        cursor: pointer;
-                        border: 1px dashed #999;
-                    }
-
-                    .option-job-title {
-                        display: block;
-                        background: var(--button-bgc-green-02);
-                        color: var(--primary-color);
-                    }
-                }
-            }
-
-            .user-information-detail {
-                .candidate-info {
-                    margin-top: 12px;
-                    padding: 24px 0;
-                    border-top: 1px solid #fff;
-
-                    .text {
-                        font-size: 1.8rem;
-                        font-weight: 600;
-                    }
-
-                    .content {
-                        margin-top: 12px;
-                        display: flex;
-                        flex-direction: column;
-                        row-gap: 8px;
-
-                        .info {
-                            display: flex;
-                            padding-left: 8px;
-
-                            .icon {
-                                height: 30px;
-                                width: 30px;
-                                border-radius: 50%;
-                                background-color: var(--primary-color);
-                                margin-right: 8px;
-                                padding: 4px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                flex-shrink: 0;
-                                color: #fff;
-                            }
-
-                            .info-text {
-                                width: 100%;
-                                font-size: 1.5rem;
-                                line-height: 1.6;
-                                font-weight: 300;
-                                word-break: break-word;
-
-                                &.email {
-                                    padding: 0.1em 0.4em;
-                                    cursor: not-allowed;
-                                    outline: none;
-                                    border: none;
+                                .change-avatar-button {
+                                    display: flex;
                                 }
                             }
                         }
                     }
 
-                    .language-desc {
-                        width: 100%;
-                        background-color: transparent;
-                        color: #fff;
-                        font-size: 1.5rem;
-                        line-height: 1.6;
-                        font-weight: 300;
-                        word-break: break-all;
-                        overflow: hidden;
-                        margin-top: 12px;
-                        overflow: hidden;
-                        padding: 4px 4px 4px 12px;
-                        resize: none;
-                        border: 1px solid transparent;
+                    .full-name {
+                        margin-top: 24px;
+                        text-align: center;
+                        font-size: 2.5rem;
+                        line-height: 1.5;
+                        font-weight: 600;
                         word-break: break-word;
+                    }
 
-                        &:empty:not(:focus):before {
-                            content: attr(placeholder);
-                            color: #999;
-                            font-style: italic;
-                            font-weight: 300;
+                    .select-job-title {
+                        margin-bottom: 20px;
+                        width: 100%;
+                        font-weight: 400;
+                        background-color: transparent;
+                        padding: 4px;
+                        color: #fff;
+                        font-size: 2.2rem;
+                        text-align: center;
+                        border: 1px dashed transparent;
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        appearance: none;
+
+                        &:hover {
+                            cursor: pointer;
+                            border: 1px dashed #999;
                         }
 
-                        &:focus,
-                        &:hover {
-                            cursor: text;
-                            outline: none;
-                            border: 1px dashed #999;
+                        .option-job-title {
+                            display: block;
+                            background: var(--button-bgc-green-02);
+                            color: var(--primary-color);
+                        }
+
+                        &[disabled] {
+                            opacity: 1;
+
+                            &:hover {
+                                cursor: default;
+                                border: 1px dashed transparent;
+                            }
+                        }
+                    }
+                }
+
+                .user-information-detail {
+                    .candidate-info {
+                        margin-top: 12px;
+                        padding: 24px 0;
+                        border-top: 1px solid #fff;
+
+                        .text {
+                            font-size: 1.8rem;
+                            font-weight: 600;
+                        }
+
+                        .content {
+                            margin-top: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            row-gap: 8px;
+
+                            .info {
+                                display: flex;
+                                padding-left: 8px;
+
+                                .icon {
+                                    height: 30px;
+                                    width: 30px;
+                                    border-radius: 50%;
+                                    background-color: var(--primary-color);
+                                    margin-right: 8px;
+                                    padding: 4px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    flex-shrink: 0;
+                                    color: #fff;
+                                }
+
+                                .info-text {
+                                    width: 100%;
+                                    font-size: 1.5rem;
+                                    line-height: 1.6;
+                                    font-weight: 300;
+                                    word-break: break-word;
+
+                                    &.email {
+                                        padding: 0.1em 0.4em;
+                                        cursor: default;
+                                        outline: none;
+                                        border: none;
+                                    }
+                                }
+                            }
+                        }
+
+                        .language-desc {
+                            width: 100%;
+                            background-color: transparent;
+                            color: #fff;
+                            font-size: 1.5rem;
+                            line-height: 1.6;
+                            font-weight: 300;
+                            word-break: break-all;
+                            margin-top: 12px;
+                            padding: 4px 4px 4px 12px;
                         }
                     }
                 }
             }
-        }
 
-        .product-list-container {
-            @include flex-max-width-70;
-            display: flex;
-            flex-direction: column;
-
-            .product-list {
+            .product-list-container {
+                @include flex-max-width-70;
                 display: flex;
                 flex-direction: column;
-                row-gap: 8px;
-                background-color: #f0f2f5;
-            }
 
-            .add-new-product-container {
-                flex: 1;
-                display: grid;
-                place-items: center;
-                padding: 12px;
-                background-color: var(--button-bgc-green-02);
+                .product-list {
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 8px;
+                    background-color: #f0f2f5;
+                }
 
-                .add-new-product-button {
-                    background-color: var(--primary-color);
-                    color: #fff;
-                    border-radius: 99px;
-                    font-size: 2rem;
-                    column-gap: 8px;
-                    cursor: pointer;
+                .add-new-product-container {
+                    flex: 1;
+                    display: grid;
+                    place-items: center;
+                    padding: 12px;
+                    background-color: var(--button-bgc-green-02);
 
-                    .add-new-product-icon {
-                        display: grid;
-                        place-items: center;
-                        font-size: 32px;
+                    .add-new-product-button {
+                        background-color: var(--primary-color);
+                        color: #fff;
+                        border-radius: 99px;
+                        font-size: 2rem;
+                        column-gap: 8px;
+                        cursor: pointer;
+
+                        .add-new-product-icon {
+                            display: grid;
+                            place-items: center;
+                            font-size: 32px;
+                        }
                     }
                 }
             }

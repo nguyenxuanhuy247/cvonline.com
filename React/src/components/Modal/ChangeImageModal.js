@@ -44,6 +44,7 @@ class ChangeImageModal extends PureComponent {
 
     handleFinishChangeImage = async () => {
         const { onGetUrl, onClose } = this.props;
+        console.log(onGetUrl);
 
         const errorCode = await onGetUrl(this.state.image);
         if (errorCode === 0) {
@@ -65,13 +66,13 @@ class ChangeImageModal extends PureComponent {
     };
 
     render() {
-        const { onClose, round } = this.props;
+        const { onClose, round, title = 'Thay đổi hình ảnh' } = this.props;
         const { isOpenCropImageModal } = this.state;
 
         return !isOpenCropImageModal ? (
             <Modal
                 round={round}
-                title="Thay đổi hình ảnh"
+                title={title}
                 onClose={() => onClose()}
                 onFinish={() => this.handleFinishChangeImage()}
             >
