@@ -3,6 +3,5 @@ export const path = {
     SIGNUP: '/signup',
     SIGNIN: '/signin',
     FORGOTPASSWORD: '/forgot-password',
-    NOTFOUND: '*',
     HOME: '/',
 };

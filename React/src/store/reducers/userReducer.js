@@ -1,4 +1,5 @@
 import actionNames from '../actions/actionNames';
+import _ from 'lodash';
 
 const initialState = {
     isLoading: {
@@ -8,6 +9,7 @@ const initialState = {
     owner: null,
     isSignIn: false,
     isSignUp: false,
+    prevUserID: undefined,
     userInfo: null,
     productList: undefined,
 };
@@ -87,9 +89,21 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, CVLayout: true },
             };
         case actionNames.READ_USER_INFORMATION_SUCCESS:
+            let prevUserID;
+            const oldUserInfo = state.userInfo;
+            const newUserInfo = action.payload;
+            const isTheSame = _.isEqual(oldUserInfo, newUserInfo);
+
+            if (oldUserInfo && !isTheSame) {
+                prevUserID = oldUserInfo.id;
+            } else {
+                prevUserID = state.prevUserID;
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
+                prevUserID: prevUserID,
                 userInfo: action.payload,
             };
         case actionNames.READ_USER_INFORMATION_FAILURE:

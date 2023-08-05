@@ -3,10 +3,11 @@ import className from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { ReactSortable } from 'react-sortablejs';
 
-import styles from './TechnologyList.module.scss';
 import Button from '~/components/Button/Button.js';
-import Technology from '~/layouts/PersonalLayout/Components/Technology.js';
-import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
+import Technology from '~/pages/CVPage/Components/Technology.js';
+import CreateEditTechnology from '~/pages/CVPage/Components/CreateEditTechnology.js';
+
+import styles from './TechnologyList.module.scss';
 
 const cx = className.bind(styles);
 

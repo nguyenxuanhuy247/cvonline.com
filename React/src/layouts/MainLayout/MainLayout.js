@@ -2,21 +2,20 @@ import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 
-import styles from './HomeLayout.module.scss';
+import styles from './MainLayout.module.scss';
 import Header from '~/containers/Header/Header';
 import SideBar from '~/containers/SideBar/SideBar';
 
 const cx = classnames.bind(styles);
 
-class HomeLayout extends PureComponent {
+class MainLayout extends PureComponent {
     render() {
-
         return (
-            <div className={cx('home-layout')}>
+            <div className={cx('main-layout')}>
                 <Header />
                 <SideBar />
 
-                <div className={cx('home-section')}>Nguyễn Xuân Huy</div>
+                <div className={cx('main-section')}>{this.props.children}</div>
             </div>
         );
     }
@@ -28,4 +27,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(HomeLayout);
+export default connect(mapStateToProps, null)(MainLayout);

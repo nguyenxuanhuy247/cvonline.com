@@ -38,7 +38,6 @@ export const checkReqSignIn = (req, res, next) => {
     }
 
     if (!isGoogle) {
-        console.log(222222, password);
         if (!password) {
             return res.status(400).json({
                 errorCode: 11,

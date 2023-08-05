@@ -1,6 +1,5 @@
 import { PureComponent } from 'react';
 import classnames from 'classnames/bind';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AiFillHome } from 'react-icons/ai';
 import { MdRemoveRedEye } from 'react-icons/md';
@@ -10,6 +9,7 @@ import { IoNewspaperSharp } from 'react-icons/io5';
 import styles from './SideBar.module.scss';
 import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
+import Button from '~/components/Button/Button.js';
 
 const cx = classnames.bind(styles);
 
@@ -26,21 +26,19 @@ class SideBar extends PureComponent {
         const { id: userID } = this.props?.userInfo ?? {};
 
         if (ownerID !== userID) {
-            console.log('prevUserID 1111111');
             const errorCode = await this.props.readUserInformation(ownerID);
 
             if (errorCode !== 0) {
-                console.log('LỖI Ở NUT CV CỦA TÔI', errorCode);
                 Toast.TOP_CENTER_ERROR('Vui lòng đăng nhập lại', 3000);
                 this.props.userSignOut();
             }
         }
     };
 
-    handleGoBackToPreviosCV = () => {
-        const prevUserID = this.state.prevUserID;
+    handleGoBackToPreviousCV = () => {
+        const prevUserID = this.props.prevUserID;
+
         if (prevUserID) {
-            console.log('prevUserID', prevUserID);
             this.props.readUserInformation(prevUserID);
         }
     };
@@ -54,21 +52,18 @@ class SideBar extends PureComponent {
     render = () => {
         const { pathname } = this.props?.location ?? {};
         const { id: ownerID } = this.props?.owner ?? {};
-
-        const prevUserID = this.state.prevUserID;
-
-        console.log('prevUserID 333333333333', !!prevUserID && prevUserID !== ownerID);
+        const prevUserID = this.props.prevUserID;
 
         return (
             <div className={cx('side-bar')}>
-                <Link to="/" className={cx('button', { hover: pathname === '/' })}>
+                <Button route="/" className={cx('button', { hover: pathname === '/' })}>
                     <span className={cx('icon')}>
                         <AiFillHome />
                     </span>
                     <span className={cx('text')}>Trang chủ</span>
-                </Link>
-                <Link
-                    to={`/${this.props.owner?.id}`}
+                </Button>
+                <Button
+                    route={`/${this.props.owner?.id}`}
                     className={cx('button', {
                         hover: pathname === `/${ownerID}`,
                     })}
@@ -78,19 +73,18 @@ class SideBar extends PureComponent {
                         <IoNewspaperSharp />
                     </span>
                     <span className={cx('text')}>CV của tôi</span>
-                </Link>
-                <Link
-                    to={`/${this.props.owner?.id}`}
-                    className={cx('button', {
-                        hover: prevUserID && prevUserID !== ownerID,
-                    })}
-                    onClick={() => this.handleGoBackToPreviosCV()}
+                </Button>
+                <Button
+                    disabled={!prevUserID}
+                    route={`/${prevUserID}`}
+                    className={cx('button')}
+                    onClick={() => this.handleGoBackToPreviousCV()}
                 >
                     <span className={cx('icon')}>
                         <MdRemoveRedEye />
                     </span>
                     <span className={cx('text')}>Vừa xem</span>
-                </Link>
+                </Button>
             </div>
         );
     };
@@ -99,6 +93,7 @@ class SideBar extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
+        prevUserID: state.user.prevUserID,
         userInfo: state.user.userInfo,
     };
 };

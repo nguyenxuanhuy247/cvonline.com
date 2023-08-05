@@ -4,19 +4,20 @@ import 'reset-css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { userIsAuthenticated, userIsNotAuthenticated } from '~/hoc/authentication.js';
+import { userIsAuthenticated, userIsNotAuthenticated } from '~/HOC/authentication.js';
 import { path } from '~/utils';
-import { AuthLayout, PersonalLayout, HomeLayout } from '~/layouts';
+import { AuthLayout } from '~/layouts';
+import { HomePage, CVPage } from '~/pages';
 class App extends Component {
     render() {
         return (
             <div>
                 <Switch>
-                    <Route exact path={path.HOME} component={userIsAuthenticated(HomeLayout)} />
+                    <Route exact path={path.HOME} component={userIsAuthenticated(HomePage)} />
                     <Route path={path.SIGNIN} component={userIsNotAuthenticated(AuthLayout)} />
                     <Route path={path.SIGNUP} component={userIsNotAuthenticated(AuthLayout)} />
                     <Route path={path.FORGOTPASSWORD} component={userIsNotAuthenticated(AuthLayout)} />
-                    <Route path={`${path.HOME}:paramId`} component={userIsAuthenticated(PersonalLayout)} />
+                    <Route path={`${path.HOME}:paramId`} component={userIsAuthenticated(CVPage)} />
                 </Switch>
 
                 <ToastContainer

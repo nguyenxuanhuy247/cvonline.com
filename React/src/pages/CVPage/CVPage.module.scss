@@ -1,6 +1,6 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
-.personal-layout {
+.cv-page {
     background-color: #f0f2f5;
 
     .contentEditable {
@@ -22,9 +22,7 @@
         }
     }
 
-    .personal-section {
-        @include main-layout-margin;
-
+    .cv-page-section {
         .cv-container {
             max-width: 1200px;
             margin: auto auto;
@@ -172,9 +170,9 @@
 
                                     &.email {
                                         padding: 0.1em 0.4em;
-                                        cursor: default;
                                         outline: none;
                                         border: none;
+                                        cursor: default;
                                     }
                                 }
                             }

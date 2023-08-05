@@ -7,15 +7,18 @@ import { FaEdit } from 'react-icons/fa';
 import { BsLink45Deg } from 'react-icons/bs';
 import HeadlessTippy from '@tippyjs/react/headless';
 
-import * as userActions from '~/store/actions';
 import Button from '~/components/Button/Button.js';
-import styles from './Technology.module.scss';
+import Loading from '~/components/Modal/Loading.js';
 import Image from '~/components/Image/Image.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import CreateEditTechnology from '~/layouts/PersonalLayout/Components/CreateEditTechnology.js';
-import Loading from '~/components/Modal/Loading.js';
+
+import CreateEditTechnology from '~/pages/CVPage/Components/CreateEditTechnology.js';
+
+import * as userActions from '~/store/actions';
+import styles from './Technology.module.scss';
 
 const cx = classnames.bind(styles);
+
 class Technology extends PureComponent {
     constructor(props) {
         super(props);

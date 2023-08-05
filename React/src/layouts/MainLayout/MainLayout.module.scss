@@ -1,7 +1,7 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
-.home-layout {
-    .home-section {
+.main-layout {
+    .main-section {
         @include main-layout-margin;
         background-color: #f0f2f5;
     }

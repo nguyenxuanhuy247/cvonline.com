@@ -1,7 +1,7 @@
 import { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 
-import styles from './NotFoundLayout.module.scss';
+import styles from './404Page.module.scss';
 
 const cx = classnames.bind(styles);
 

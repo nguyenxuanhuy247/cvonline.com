@@ -4,17 +4,19 @@ import classnames from 'classnames/bind';
 import Pagination from '@mui/material/Pagination';
 import { AiOutlineSortAscending, AiOutlineSortDescending, AiFillCloseCircle } from 'react-icons/ai';
 import _ from 'lodash';
-import { JpgImages } from '~/components/Image/Images.js';
 
-import * as userActions from '~/store/actions';
+import { JpgImages } from '~/components/Image/Images.js';
 import { Toast } from '~/components/Toast/Toast.js';
-import styles from './Product.module.scss';
-import ContentEditableTag from '~/layouts/PersonalLayout/Components/ContentEditableTag.js';
 import Image from '~/components/Image/Image.js';
-import TechnologyList from './TechnologyList.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
 import Button from '~/components/Button/Button.js';
-import EditProduct from '~/layouts/PersonalLayout/Components/EditProduct.js';
+
+import TechnologyList from '~/pages/CVPage/Components/TechnologyList.js';
+import ContentEditableTag from '~/pages/CVPage/Components/ContentEditableTag.js';
+import EditProduct from '~/pages/CVPage/Components/EditProduct.js';
+
+import * as userActions from '~/store/actions';
+import styles from './Product.module.scss';
 
 const cx = classnames.bind(styles);
 
