@@ -2,4 +2,135 @@
 
 .home-page {
     background-color: #f0f2f5;
+    padding: 16px;
+
+    .candidate {
+        display: flex;
+        align-items: center;
+        background-color: var(--button-bgc-green-02);
+        border-radius: 12px;
+        overflow: hidden;
+
+        .image-name-job-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            background-color: var(--bgc-user-infomation);
+            color: #fff;
+            width: 30%;
+
+            .image {
+                width: 200px;
+                height: 200px;
+            }
+
+            .full-name {
+                margin-top: 24px;
+                text-align: center;
+                font-size: 2.5rem;
+                line-height: 1.5;
+                font-weight: 600;
+                word-break: break-word;
+                outline: none;
+                cursor: default;
+
+                &.contentEditable {
+                    @include content-editable;
+                }
+            }
+
+            .job-title {
+                font-family: var(--roboto-font);
+                margin-bottom: 20px;
+                width: 100%;
+                font-weight: 400;
+                background-color: transparent;
+                padding: 4px;
+                font-size: 2.2rem;
+                text-align: center;
+                user-select: text;
+            }
+        }
+
+        .outcome {
+            padding: 16px;
+            align-self: flex-start;
+            flex: 1;
+
+            .project-technology {
+                .project {
+                    color: #212f3f;
+                    font-size: 1.6rem;
+                    font-weight: 600;
+                    line-height: 1.4;
+
+                    .number {
+                    }
+                }
+
+                .technology {
+                    display: flex;
+                    column-gap: 12px;
+
+                    .side {
+                        flex: 1;
+                        border: 1px dashed var(--primary-color);
+
+                        .title {
+                            font-family: var(--alexandria-font);
+                            display: block;
+                            font-size: 1.8rem;
+                            padding: 8px;
+                            text-align: center;
+                            font-weight: 600;
+                            color: #fff;
+                            border: 1px solid var(--primary-color);
+                            background-color: var(--primary-color);
+                        }
+
+                        .list {
+                            display: flex;
+                            flex-direction: column;
+                            row-gap: 8px;
+                            padding: 12px;
+
+                            .button {
+                                justify-content: flex-start;
+                                column-gap: 4px;
+                                font-size: 1.5rem;
+                                font-weight: 300;
+                                line-height: 1.6;
+                                background-color: transparent;
+                                padding: 4px 8px;
+                                border-radius: 4px;
+                                width: 100%;
+                                color: #000;
+                                border: 1px solid var(--primary-color);
+                                cursor: pointer;
+
+                                .image {
+                                    flex-shrink: 0;
+                                    width: 24px;
+                                    height: 24px;
+                                    border-radius: 50%;
+                                    object-fit: contain;
+                                    border: none;
+                                    border: 3px solid transparent;
+                                }
+
+                                .name {
+                                    @include line-clamp;
+
+                                    margin-left: 0px;
+                                    text-align: left;
+                                    word-break: break-all;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -34,6 +34,7 @@ class CreateEditTechnology extends PureComponent {
 
     handleGetImageUrlFromChangeImageModal = (url) => {
         this.setState({ image: url });
+        return 0;
     };
 
     handleCloseChangeImageModal = () => {
@@ -172,6 +173,7 @@ class CreateEditTechnology extends PureComponent {
                         >
                             <Image className={cx('image')} src={this.state.image} round />
                         </HeadlessTippy>
+
                         {this.state.isModalOpen && (
                             <ChangeImageModal
                                 round

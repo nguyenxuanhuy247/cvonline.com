@@ -15,6 +15,7 @@
 
     // Background color
     --bgc-white: #fff;
+    --bgc-user-infomation: #37474f;
 
     // Button background color
     --auth-bgc-grey: #f3f5f7;
@@ -153,6 +154,26 @@ a {
     font-size: 1.4rem;
     padding: 8px 12px;
     width: 100%;
+}
+
+@mixin content-editable {
+    word-break: break-all;
+    border: 1px solid transparent;
+
+    &:empty:before {
+        content: attr(placeholder);
+        color: #999;
+        font-style: italic;
+        font-weight: 300;
+        word-break: break-word;
+    }
+
+    &:focus,
+    &:hover {
+        cursor: text;
+        outline: none;
+        border: 1px dashed #999;
+    }
 }
 
 // =========================================================================

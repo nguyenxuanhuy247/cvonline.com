@@ -3,25 +3,6 @@
 .cv-page {
     background-color: #f0f2f5;
 
-    .contentEditable {
-        word-break: break-all;
-        border: 1px solid transparent;
-
-        &:empty:not(:focus):before {
-            content: attr(placeholder);
-            color: #999;
-            font-style: italic;
-            font-weight: 300;
-        }
-
-        &:focus,
-        &:hover {
-            cursor: text;
-            outline: none;
-            border: 1px dashed #999;
-        }
-    }
-
     .cv-page-section {
         .cv-container {
             max-width: 1200px;
@@ -33,7 +14,7 @@
                 @include flex-max-width-30;
                 padding: 20px;
                 color: #fff;
-                background-color: #37474f;
+                background-color: var(--bgc-user-infomation);
                 height: auto;
 
                 .user-information-basic {
@@ -88,9 +69,16 @@
                         line-height: 1.5;
                         font-weight: 600;
                         word-break: break-word;
+                        outline: none;
+                        cursor: default;
+
+                        &.contentEditable {
+                            @include content-editable;
+                        }
                     }
 
                     .select-job-title {
+                        font-family: var(--roboto-font);
                         margin-bottom: 20px;
                         width: 100%;
                         font-weight: 400;
@@ -103,6 +91,7 @@
                         -webkit-appearance: none;
                         -moz-appearance: none;
                         appearance: none;
+                        user-select: text;
 
                         &:hover {
                             cursor: pointer;
@@ -135,6 +124,7 @@
                         .text {
                             font-size: 1.8rem;
                             font-weight: 600;
+                            cursor: default;
                         }
 
                         .content {
@@ -167,13 +157,22 @@
                                     line-height: 1.6;
                                     font-weight: 300;
                                     word-break: break-word;
+                                    outline: none;
+                                    cursor: default;
 
-                                    &.email {
-                                        padding: 0.1em 0.4em;
-                                        outline: none;
-                                        border: none;
-                                        cursor: default;
+                                    &.contentEditable {
+                                        @include content-editable;
                                     }
+                                }
+
+                                .email {
+                                    width: 100%;
+                                    font-size: 1.5rem;
+                                    line-height: 1.6;
+                                    font-weight: 300;
+                                    word-break: break-word;
+                                    outline: none;
+                                    border: 1px solid transparent;
                                 }
                             }
                         }
@@ -188,6 +187,11 @@
                             word-break: break-all;
                             margin-top: 12px;
                             padding: 4px 4px 4px 12px;
+                            cursor: default;
+
+                            &.contentEditable {
+                                @include content-editable;
+                            }
                         }
                     }
                 }

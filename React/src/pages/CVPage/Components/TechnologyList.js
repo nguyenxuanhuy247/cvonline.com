@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import className from 'classnames/bind';
+import { connect } from 'react-redux';
+import classnames from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { ReactSortable } from 'react-sortablejs';
 
@@ -9,7 +10,7 @@ import CreateEditTechnology from '~/pages/CVPage/Components/CreateEditTechnology
 
 import styles from './TechnologyList.module.scss';
 
-const cx = className.bind(styles);
+const cx = classnames.bind(styles);
 
 class TechnologyList extends PureComponent {
     constructor(props) {
@@ -29,8 +30,8 @@ class TechnologyList extends PureComponent {
         autofocusInputElement.focus();
     };
 
-    handleCloseCreateTechnology = async () => {
-        await this.setState({ isCreateTechnology: false });
+    handleCloseCreateTechnology = () => {
+        this.setState({ isCreateTechnology: false });
     };
 
     // =================================================================
@@ -52,6 +53,10 @@ class TechnologyList extends PureComponent {
     render() {
         const { draggable, type, keyprop, side, productId, label, isSearch, onSearchLibrary } = this.props;
 
+        const { id: userID } = this.props?.userInfo ?? {};
+        const { id: ownerID } = this.props?.owner ?? {};
+
+        const isCanEdit = userID === ownerID;
         return (
             <div
                 className={cx('technology-list', {
@@ -101,37 +106,49 @@ class TechnologyList extends PureComponent {
                         );
                     })}
                 </ReactSortable>
-
-                {!this.state.isCreateTechnology ? (
-                    <Button
-                        className={cx('add-technology-button', {
-                            'sourcecode-list': type === 'SOURCECODE',
-                        })}
-                        onClick={() => this.handleShowCreateTechnology()}
-                    >
-                        <span className={cx('left-icon')}>
-                            <BsPlusCircleDotted />
-                        </span>
-                        <span className={cx('text')}>{`Thêm ${label}`}</span>
-                    </Button>
-                ) : (
-                    <CreateEditTechnology
-                        id={`${this.props.technologyListID}-create-container`}
-                        index={this.props.index}
-                        label={label}
-                        type={type}
-                        keyprop={keyprop}
-                        side={side}
-                        productId={productId}
-                        onClose={this.handleCloseCreateTechnology}
-                        // =================================================================
-                        isSearch={isSearch}
-                        onSearchLibrary={onSearchLibrary}
-                    />
-                )}
+                
+                {isCanEdit &&
+                    (!this.state.isCreateTechnology ? (
+                        <Button
+                            className={cx('add-technology-button', {
+                                'sourcecode-list': type === 'SOURCECODE',
+                            })}
+                            onClick={() => this.handleShowCreateTechnology()}
+                        >
+                            <span className={cx('left-icon')}>
+                                <BsPlusCircleDotted />
+                            </span>
+                            <span className={cx('text')}>{`Thêm ${label}`}</span>
+                        </Button>
+                    ) : (
+                        <CreateEditTechnology
+                            id={`${this.props.technologyListID}-create-container`}
+                            index={this.props.index}
+                            label={label}
+                            type={type}
+                            keyprop={keyprop}
+                            side={side}
+                            productId={productId}
+                            onClose={this.handleCloseCreateTechnology}
+                            // =================================================================
+                            isSearch={isSearch}
+                            onSearchLibrary={onSearchLibrary}
+                        />
+                    ))}
             </div>
         );
     }
 }
 
-export default TechnologyList;
+const mapStateToProps = (state) => {
+    return {
+        owner: state.user.owner,
+        userInfo: state.user.userInfo,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TechnologyList);

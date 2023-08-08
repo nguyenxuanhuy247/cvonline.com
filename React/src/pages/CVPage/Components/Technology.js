@@ -99,6 +99,10 @@ class Technology extends PureComponent {
     render() {
         const { label, type, productId, keyprop, href, id, side, src, name, version, isSearch, onSearchLibrary } =
             this.props;
+        const { id: userID } = this.props?.userInfo ?? {};
+        const { id: ownerID } = this.props?.owner ?? {};
+
+        const isCanEdit = userID === ownerID;
 
         const SIDE_TYPE_ID = side ? `${side}-${type}-${id}` : `${type}-${id}`;
 
@@ -155,27 +159,32 @@ class Technology extends PureComponent {
 
                     {version && <span className={cx('version')}>{version}</span>}
                 </Button>
-                <Button
-                    className={cx('technology-button', 'move-button', {
-                        'sourcecode-list': type === 'SOURCECODE',
-                    })}
-                >
-                    <BiMove />
-                </Button>
 
-                <Button
-                    className={cx('technology-button', 'edit-button')}
-                    onClick={() => this.handleShowEditTechnology(id)}
-                >
-                    <FaEdit />
-                </Button>
-                <Button
-                    className={cx('technology-button', 'delete-button')}
-                    onClick={() => this.handleDeleteTechnology(id, SIDE_TYPE_ID)}
-                >
-                    <MdDelete />
-                    {this.state.isLoading && <Loading inner small />}
-                </Button>
+                {isCanEdit && (
+                    <>
+                        <Button
+                            className={cx('technology-button', 'move-button', {
+                                'sourcecode-list': type === 'SOURCECODE',
+                            })}
+                        >
+                            <BiMove />
+                        </Button>
+
+                        <Button
+                            className={cx('technology-button', 'edit-button')}
+                            onClick={() => this.handleShowEditTechnology(id)}
+                        >
+                            <FaEdit />
+                        </Button>
+                        <Button
+                            className={cx('technology-button', 'delete-button')}
+                            onClick={() => this.handleDeleteTechnology(id, SIDE_TYPE_ID)}
+                        >
+                            <MdDelete />
+                            {this.state.isLoading && <Loading inner small />}
+                        </Button>
+                    </>
+                )}
             </div>
         ) : (
             <CreateEditTechnology
@@ -199,6 +208,7 @@ class Technology extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
+        owner: state.user.owner,
         userInfo: state.user.userInfo,
     };
 };

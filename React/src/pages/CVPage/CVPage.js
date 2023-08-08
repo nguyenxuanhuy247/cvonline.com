@@ -18,7 +18,7 @@ import { MainLayout } from '~/layouts';
 
 import Product from '~/pages/CVPage/Components/Product.js';
 import ContentEditableTag from '~/pages/CVPage/Components/ContentEditableTag.js';
-import NotFound_404Page from '~/pages/CVPage/Components/404Page.js';
+import NotFound404 from '~/pages/CVPage/Components/404Page.js';
 
 import * as userActions from '~/store/actions';
 import styles from './CVPage.module.scss';
@@ -262,7 +262,7 @@ class PersonalLayout extends PureComponent {
                                                         round
                                                     />
 
-                                                    {this.state.isModalChangeAvatarOpen && (
+                                                    {isCanEdit && this.state.isModalChangeAvatarOpen && (
                                                         <ChangeImageModal
                                                             round
                                                             title="Thay đổi Avatar"
@@ -368,10 +368,9 @@ class PersonalLayout extends PureComponent {
                                                             <MdEmail />
                                                         </span>
                                                         <ContentEditableTag
-                                                            isCanEdit={isCanEdit}
+                                                            isCanEdit={false}
                                                             content={this.props?.userInfo?.email || ''}
-                                                            className={cx('info-text', {
-                                                                email: isCanEdit,
+                                                            className={cx('email', {
                                                                 contentEditable: isCanEdit,
                                                             })}
                                                             placeholder="Email"
@@ -441,17 +440,20 @@ class PersonalLayout extends PureComponent {
                                                 })}
                                             </div>
                                         )}
-                                        <div className={cx('add-new-product-container')}>
-                                            <Button
-                                                className={cx('add-new-product-button')}
-                                                onClick={() => this.handleCreateProduct()}
-                                            >
-                                                <span className={cx('add-new-product-icon')}>
-                                                    <IoIosAddCircle />
-                                                </span>
-                                                THÊM SẢN PHẨM
-                                            </Button>
-                                        </div>
+                                        
+                                        {isCanEdit && (
+                                            <div className={cx('add-new-product-container')}>
+                                                <Button
+                                                    className={cx('add-new-product-button')}
+                                                    onClick={() => this.handleCreateProduct()}
+                                                >
+                                                    <span className={cx('add-new-product-icon')}>
+                                                        <IoIosAddCircle />
+                                                    </span>
+                                                    THÊM SẢN PHẨM
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {this.props.isLoading && <Loading text="Đang tải..." />}
@@ -468,7 +470,7 @@ class PersonalLayout extends PureComponent {
                             </div>
                         </div>
                     ) : (
-                        <NotFound_404Page />
+                        <NotFound404 />
                     )}
                 </div>
             </MainLayout>

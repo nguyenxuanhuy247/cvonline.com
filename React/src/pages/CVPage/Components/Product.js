@@ -318,6 +318,10 @@ class Product extends PureComponent {
         } = this.props?.productData ?? {};
 
         const { id: productID, productOrder, name: productName } = productInfo ?? {};
+        const { id: userID } = this.props?.userInfo ?? {};
+        const { id: ownerID } = this.props?.owner ?? {};
+
+        const isCanEdit = userID === ownerID;
 
         // =================================================================
         // PAGINATION
@@ -374,45 +378,55 @@ class Product extends PureComponent {
 
         return (
             <div className={cx('product-container')} id={`js-product-${productID}`}>
-                <EditProduct
-                    id={`js-edit-product-${productID}`}
-                    onMoveUpProduct={() => this.props.onMoveUpProduct(productOrder)}
-                    onMoveDownProduct={() => this.props.onMoveDownProduct(productOrder)}
-                    onCreateProduct={() => this.props.onCreateProduct()}
-                    onDeleteProduct={() => this.props.onDeleteProduct(productID, this.props.index)}
-                />
+                {isCanEdit && (
+                    <EditProduct
+                        id={`js-edit-product-${productID}`}
+                        onMoveUpProduct={() => this.props.onMoveUpProduct(productOrder)}
+                        onMoveDownProduct={() => this.props.onMoveDownProduct(productOrder)}
+                        onCreateProduct={() => this.props.onCreateProduct()}
+                        onDeleteProduct={() => this.props.onDeleteProduct(productID, this.props.index)}
+                    />
+                )}
 
-                <div className={cx('product')}>
+                <div className={cx('product', { 'margin-top-product': !isCanEdit })}>
                     <div className={cx('product-name-desc-image')} spellCheck="false">
                         <ContentEditableTag
                             id={`js-product-name-${productID}`}
                             content={productName}
-                            className={cx('product-name')}
-                            placeholder="Tên sản phẩm"
+                            isCanEdit={isCanEdit}
+                            className={cx('product-name', {
+                                contentEditable: isCanEdit,
+                            })}
+                            placeholder={isCanEdit ? 'Tên sản phẩm' : 'Sản phẩm chưa được đặt tên'}
                             onBlur={(e) => this.handleUpdateProductNameOrDesc(e, 'name')}
                             onKeyPress={(e) => this.handlePressEnterKeyBoard(e, productID)}
                         />
 
                         <p
                             id={`js-product-desc-${productID}`}
-                            contentEditable
-                            placeholder="Mô tả sản phẩm"
-                            className={cx('product-desc')}
+                            contentEditable={isCanEdit}
+                            placeholder={isCanEdit ? 'Mô tả sản phẩm' : 'Chưa có mô tả sản phẩm'}
+                            className={cx('product-desc', { contentEditable: isCanEdit })}
                             spellCheck={false}
                             onBlur={(e) => this.handleUpdateProductNameOrDesc(e, 'desc')}
                         ></p>
 
                         <div className={cx('product-image')}>
-                            <div className={cx('edit-image-button')} onClick={() => this.handleOpenChangeImageModal()}>
-                                Sửa ảnh
-                            </div>
+                            {isCanEdit && (
+                                <div
+                                    className={cx('edit-image-button')}
+                                    onClick={() => this.handleOpenChangeImageModal()}
+                                >
+                                    Sửa ảnh
+                                </div>
+                            )}
                             <Image
                                 src={productInfo?.image || JpgImages.productPlaceholder}
                                 className={cx('image')}
                                 alt="Ảnh sản phẩm"
                             />
 
-                            {this.state.isChangeImageModalOpen && (
+                            {isCanEdit && this.state.isChangeImageModalOpen && (
                                 <ChangeImageModal
                                     round={false}
                                     src={productInfo?.image}
@@ -752,7 +766,10 @@ class Product extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        owner: state.user.owner,
+        userInfo: state.user.userInfo,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {

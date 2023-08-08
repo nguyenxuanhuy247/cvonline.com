@@ -14,6 +14,10 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         padding: 40px 16px 0;
 
+        &.margin-top-product {
+            padding-top: 40px;
+        }
+
         .product-name-desc-image {
             .product-name {
                 font-family: var(--roboto-font);
@@ -21,11 +25,25 @@
                 line-height: 1.4;
                 font-weight: 600;
                 color: var(--text-color);
+                border: 1px solid transparent;
                 border-left: 4px solid var(--green-color-01);
+                outline: none;
+                cursor: default;
 
-                &:hover {
-                    border: 1px dashed var(--green-color-01);
-                    border-left: 4px solid var(--green-color-01);
+                &:empty:before {
+                    content: attr(placeholder);
+                    color: #999;
+                    font-style: italic;
+                    font-weight: 300;
+                    word-break: break-word;
+                }
+
+                &.contentEditable {
+                    &:hover {
+                        cursor: text;
+                        border: 1px dashed var(--green-color-01);
+                        border-left: 4px solid var(--green-color-01);
+                    }
                 }
             }
 
@@ -43,9 +61,21 @@
                 overflow: hidden;
                 border: 1px solid transparent;
                 word-break: break-word;
+                outline: none;
 
-                &:hover {
-                    border: 1px dashed #999;
+                &:empty:before {
+                    content: attr(placeholder);
+                    color: #999;
+                    font-style: italic;
+                    font-weight: 300;
+                    word-break: break-word;
+                }
+
+                &.contentEditable {
+                    &:hover {
+                        cursor: text;
+                        border: 1px dashed #999;
+                    }
                 }
             }
 
@@ -391,6 +421,10 @@
     .product-container {
         .product {
             padding: 12px 12px 0;
+
+            &.margin-top-product {
+                padding-top: 40px;
+            }
         }
     }
 }

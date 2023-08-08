@@ -4,9 +4,9 @@ import className from 'classnames/bind';
 import { Switch, Route } from 'react-router-dom';
 
 import styles from './AuthLayout.module.scss';
-import SignIn from './Signin.js';
-import SignUp from './Signup.js';
-import ForgotPassword from './ForgotPassword.js';
+import SignIn from '~/pages/SignInPage/Signin.js';
+import SignUp from '~/pages/SignUpPage/Signup.js';
+import ForgotPassword from '~/pages/ForgotPasswordPage/ForgotPassword.js';
 import { path } from '~/utils';
 import logoWithText from '~/assets/logo/logo-with-text.png';
 import Loading from '~/components/Modal/Loading.js';
