@@ -17,6 +17,13 @@ export const postChangePassword = (userData) => {
 };
 
 // =============================================================================
+// READ HOME LAYOUT
+
+export const readHomeLayout = () => {
+    return axios.get(`/api/get-home-layout`);
+};
+
+// =============================================================================
 // CRUD USER INFORMATION
 
 export const readUserInformation = (userId) => {

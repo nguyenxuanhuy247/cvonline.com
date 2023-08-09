@@ -46,6 +46,20 @@ export const handleUserSignIn = async (req, res) => {
 };
 
 // =================================================================
+// READ HOME LAYOUT
+export const handleGetHomeLayout = async (req, res) => {
+    const message = await userService.handleGetHomeLayout();
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
+// =================================================================
 // CRUD USER INFORMATION
 
 // READ USER INFORMATION

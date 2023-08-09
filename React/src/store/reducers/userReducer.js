@@ -5,10 +5,12 @@ const initialState = {
     isLoading: {
         authLayout: false,
         CVLayout: false,
+        homeLayout: false,
     },
-    owner: null,
     isSignIn: false,
     isSignUp: false,
+    owner: null,
+    allCVList: undefined,
     prevUserID: undefined,
     userInfo: null,
     productList: undefined,
@@ -78,6 +80,26 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSignIn: false,
+            };
+
+        // =================================================================
+        // HOME LAYOUT
+        // READ HOME LAYOUT
+        case actionNames.READ_HOME_LAYOUT_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, homeLayout: true },
+            };
+        case actionNames.READ_HOME_LAYOUT_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, homeLayout: false },
+                allCVList: action.payload,
+            };
+        case actionNames.READ_HOME_LAYOUT_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, homeLayout: false },
             };
 
         // =================================================================

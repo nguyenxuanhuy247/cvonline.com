@@ -19,6 +19,11 @@ const actionNames = Object.freeze({
     // USER SIGN OUT
     USER_SIGNOUT: 'USER_SIGNOUT',
 
+    // =================================================================
+    // HOME
+    ...actionMaker(`READ`, `HOME_LAYOUT`),
+
+    // =================================================================
     // USER INFORMATION
     ...actionMaker(`READ`, `USER_INFORMATION`),
     ...actionMaker(`UPDATE`, `USER_INFORMATION`),

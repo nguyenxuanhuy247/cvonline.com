@@ -116,6 +116,50 @@ export const userSignOut = () => {
 };
 
 // =================================================================
+// READ HOME LAYOUT
+export const readHomeLayout = () => {
+    return async (dispatch) => {
+        dispatch(readHomeLayout_Start());
+        try {
+            const res = await userService.readHomeLayout();
+
+            const { errorCode, errorMessage, data } = res ?? {};
+
+            if (errorCode === 0) {
+                dispatch(readHomeLayout_Success(data));
+
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(readHomeLayout_Failure(data));
+
+                return errorCode;
+            }
+        } catch (error) {
+            const { errorCode, errorMessage, data } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            dispatch(readHomeLayout_Failure(data));
+            console.log('An error in readHomeLayout() - userActions.js: ', error);
+
+            return errorCode;
+        }
+    };
+};
+
+export const readHomeLayout_Start = () => ({
+    type: actionNames.READ_HOME_LAYOUT_START,
+});
+
+export const readHomeLayout_Success = (data) => ({
+    type: actionNames.READ_HOME_LAYOUT_SUCCESS,
+    payload: data,
+});
+
+export const readHomeLayout_Failure = () => ({
+    type: actionNames.READ_HOME_LAYOUT_FAILURE,
+});
+
+// =================================================================
 // CRUD USER INFORMATION
 
 // READ USER INFORMATION

@@ -128,6 +128,7 @@ export const postUserSignUp = async (data) => {
                     fullName: fullName,
                     email: email,
                     password: hashPassword,
+                    jobPosition: 'Fullstack developer',
                 },
                 raw: true,
             });
@@ -251,6 +252,134 @@ export const postUserSignIn = async (data) => {
         return {
             errorCode: 31,
             errorMessage: `[Kết nối Database] Đăng nhập thất bại`,
+        };
+    }
+};
+
+// =================================================================
+// READ HOME LAYOUT
+export const handleGetHomeLayout = async () => {
+    try {
+        // const allUsers = await db.users.findAll({
+        //     attributes: ['id', 'avatar', 'fullName', 'jobPosition'],
+        //     order: [['id', 'ASC']],
+        //     raw: true,
+        // });
+
+        // if (allUsers) {
+        //     const newAllUsers = allUsers.map((user) => {
+        //         const avatar = user.avatar;
+        //         const binaryAvatar = avatar?.toString('binary');
+
+        //         const productDesc = await db.technologies.findOne({
+        //             where: { id: productID, key: 'PD' },
+        //             attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
+        //             raw: true,
+        //         });
+
+        //         return { userInfo: { ...user, avatar: binaryAvatar }, numberOfProduct: 3 };
+        //     });
+
+        //     return {
+        //         errorCode: 0,
+        //         errorMessage: `Tải thông tin người dùng thành công`,
+        //         data: newAllUsers,
+        //     };
+
+        let allCVList = [];
+        const userIDList = await db.users.findAll({
+            attributes: ['id'],
+            order: [['id', 'ASC']],
+            raw: true,
+        });
+
+        if (userIDList.length) {
+            const userIDArray = userIDList?.map((userID) => userID.id);
+            const userIDArrayWithNULL = userIDArray?.filter((userID) => userID !== null);
+            const uniqueUserIDArray = [...new Set(userIDArrayWithNULL)];
+
+            for (let userID of uniqueUserIDArray) {
+                const userCV = {
+                    userInfo: {},
+                    numberofProduct: undefined,
+                    FETechnologyList: [],
+                    BETechnologyList: [],
+                };
+
+                const userInfo = await db.users.findOne({
+                    where: { id: userID },
+                    attributes: ['id', 'avatar', 'fullName', 'jobPosition'],
+                    raw: true,
+                });
+
+                if (userInfo) {
+                    const avatar = userInfo.avatar;
+                    let binaryImage;
+                    if (avatar) {
+                        binaryImage = avatar.toString('binary');
+                    }
+
+                    const newUserInfo = { ...userInfo, avatar: binaryImage };
+                    userCV.userInfo = newUserInfo;
+                }
+
+                const productList = await db.technologies.findAll({
+                    where: { userId: userID, key: 'PD' },
+                    attributes: ['id'],
+                    raw: true,
+                });
+
+                if (productList.length) {
+                    userCV.numberofProduct = productList.length;
+                }
+
+                const FETechnologies = await db.technologies.findAll({
+                    where: { userId: userID, key: 'TE', side: 'FE' },
+                    attributes: ['id', 'image', 'name'],
+                    order: [['id', 'ASC']],
+                    raw: true,
+                });
+
+                const FETechnologyList = FETechnologies?.map((FETechnology) => {
+                    const binaryImage = FETechnology?.image?.toString('binary');
+                    return { ...FETechnology, image: binaryImage };
+                });
+
+                userCV.FETechnologyList = FETechnologyList;
+
+                const BETechnologies = await db.technologies.findAll({
+                    where: { userId: userID, key: 'TE', side: 'BE' },
+                    attributes: ['id', 'image', 'name'],
+                    order: [['id', 'ASC']],
+                    raw: true,
+                });
+
+                const BETechnologyList = BETechnologies?.map((BETechnology) => {
+                    const binaryImage = BETechnology?.image?.toString('binary');
+                    return { ...BETechnology, image: binaryImage };
+                });
+
+                userCV.BETechnologyList = BETechnologyList;
+
+                allCVList.push(userCV);
+            }
+
+            return {
+                errorCode: 0,
+                errorMessage: `Tải Danh sách CV thành công`,
+                data: allCVList,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy CV nào`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleGetHomeLayout() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Danh sách CV thất bại`,
         };
     }
 };

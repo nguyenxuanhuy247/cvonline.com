@@ -9,6 +9,8 @@ let initWebRoutes = (app) => {
     router.post('/api/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
     router.post('/api/change-password', userMiddleware.checkReqChangePassword, userController.handleChangePassword);
 
+    router.get('/api/get-home-layout', userController.handleGetHomeLayout);
+
     // CRUD USER INFOMATION
     router.get(
         '/api/get-user-information',

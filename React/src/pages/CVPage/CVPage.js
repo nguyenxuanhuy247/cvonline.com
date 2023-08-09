@@ -170,6 +170,9 @@ class PersonalLayout extends PureComponent {
     async componentDidMount() {
         this.fetchUserInformationAndProductList();
 
+        // Auto scroll to TOP when go to CV Layout
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         // Press ENTER to change input field or submit
         const container = document.querySelector(`.${cx('content')}`);
         if (container) {
@@ -191,7 +194,7 @@ class PersonalLayout extends PureComponent {
             });
         }
 
-        // Set event for scroll to top button
+        // Scroll to TOP or BOTTOM button
         const goToTopButton = document.getElementById('go-top-button');
         const goToBottomButton = document.getElementById('go-bottom-button');
 
@@ -413,34 +416,38 @@ class PersonalLayout extends PureComponent {
                                     </div>
 
                                     <div className={cx('product-list-container')}>
-                                        {this.props.productList && (
-                                            <div className={cx('product-list')}>
-                                                {this.props.productList?.map((product, index) => {
-                                                    const totalPage = this.props.productList?.length;
-                                                    return (
-                                                        <Product
-                                                            key={index}
-                                                            jobTitle={this.props?.userInfo?.jobPosition}
-                                                            productData={product}
-                                                            // =================================================================
-                                                            index={index}
-                                                            totalPage={totalPage}
-                                                            // =================================================================
-                                                            onCreateProduct={this.handleCreateProduct}
-                                                            onDeleteProduct={this.handleDeleteProduct}
-                                                            // =================================================================
-                                                            onMoveUpProduct={(order) =>
-                                                                this.handleMoveProduct(order, 'move up')
-                                                            }
-                                                            onMoveDownProduct={(order) =>
-                                                                this.handleMoveProduct(order, 'move down')
-                                                            }
-                                                        />
-                                                    );
-                                                })}
+                                        <div className={cx('product-list')}>
+                                            {this.props.productList?.map((product, index) => {
+                                                const totalPage = this.props.productList?.length;
+                                                return (
+                                                    <Product
+                                                        key={index}
+                                                        jobTitle={this.props?.userInfo?.jobPosition}
+                                                        productData={product}
+                                                        // =================================================================
+                                                        index={index}
+                                                        totalPage={totalPage}
+                                                        // =================================================================
+                                                        onCreateProduct={this.handleCreateProduct}
+                                                        onDeleteProduct={this.handleDeleteProduct}
+                                                        // =================================================================
+                                                        onMoveUpProduct={(order) =>
+                                                            this.handleMoveProduct(order, 'move up')
+                                                        }
+                                                        onMoveDownProduct={(order) =>
+                                                            this.handleMoveProduct(order, 'move down')
+                                                        }
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+
+                                        {!isCanEdit && this.props.productList?.length === 0 && (
+                                            <div className={cx('empty-product-list')}>
+                                                <Image src={JpgImages.emptyProductList} className={cx('image')} />
                                             </div>
                                         )}
-                                        
+
                                         {isCanEdit && (
                                             <div className={cx('add-new-product-container')}>
                                                 <Button

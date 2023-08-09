@@ -2,6 +2,7 @@
 
 .cv-page {
     background-color: #f0f2f5;
+    cursor: default;
 
     .cv-page-section {
         .cv-container {
@@ -70,7 +71,6 @@
                         font-weight: 600;
                         word-break: break-word;
                         outline: none;
-                        cursor: default;
 
                         &.contentEditable {
                             @include content-editable;
@@ -207,6 +207,19 @@
                     flex-direction: column;
                     row-gap: 8px;
                     background-color: #f0f2f5;
+                }
+
+                .empty-product-list {
+                    flex: 1;
+                    display: grid;
+                    place-items: center;
+                    padding: 12px;
+                    background: #fff;
+
+                    .image {
+                        width: 500px;
+                        height: 500px;
+                    }
                 }
 
                 .add-new-product-container {
