@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { userIsAuthenticated, userIsNotAuthenticated } from '~/HOC/authentication.js';
 import { path } from '~/utils';
 import { AuthLayout } from '~/layouts';
-import { HomePage, CVPage } from '~/pages';
+import { HomePage, CVPage, AccountPage } from '~/pages';
 class App extends Component {
     render() {
         return (
@@ -17,6 +17,10 @@ class App extends Component {
                     <Route path={path.SIGNIN} component={userIsNotAuthenticated(AuthLayout)} />
                     <Route path={path.SIGNUP} component={userIsNotAuthenticated(AuthLayout)} />
                     <Route path={path.FORGOTPASSWORD} component={userIsNotAuthenticated(AuthLayout)} />
+                    <Route path={path.ACCOUNT} component={userIsAuthenticated(AccountPage)} />
+                    <Route path={path.PERSONALINFO} component={userIsAuthenticated(AccountPage)} />
+                    <Route path={path.PASSWORDSETTING} component={userIsAuthenticated(AccountPage)} />
+                    <Route path={path.USERIDSETTING} component={userIsAuthenticated(AccountPage)} />
                     <Route path={`${path.HOME}:paramId`} component={userIsAuthenticated(CVPage)} />
                 </Switch>
 

@@ -39,11 +39,11 @@ class HomePage extends PureComponent {
                                     <div className={cx('outcome')}>
                                         <div className={cx('project-technology')}>
                                             <div className={cx('project-stats')}>
-                                                <span className={cx('text')}>Số lượng sản phẩm :</span>
                                                 <span className={cx('number')}>{numberofProduct || 0}</span>
+                                                <span className={cx('text')}>sản phẩm</span>
                                             </div>
                                             <div className={cx('technology-stats')}>
-                                                <div className={cx('text')}>Công nghệ sử dụng :</div>
+                                                <div className={cx('text')}>CÔNG NGHỆ SỬ DỤNG</div>
                                                 <div className={cx('listed')}>
                                                     <div className={cx('side')}>
                                                         <span className={cx('title')}>Front-end</span>
@@ -69,9 +69,11 @@ class HomePage extends PureComponent {
                                                             <div className={cx('empty-list')}>
                                                                 <Image
                                                                     src={JpgImages.emptyProductIcon}
-                                                                    className={cx('image')}
+                                                                    className={cx('empty-list-image')}
                                                                 />
-                                                                <span className={cx('text')}>Danh sách trống</span>
+                                                                <span className={cx('empty-list-text')}>
+                                                                    Danh sách trống
+                                                                </span>
                                                             </div>
                                                         )}
                                                     </div>
@@ -98,9 +100,11 @@ class HomePage extends PureComponent {
                                                                 <div className={cx('empty-list')}>
                                                                     <Image
                                                                         src={JpgImages.emptyProductIcon}
-                                                                        className={cx('image')}
+                                                                        className={cx('empty-list-image')}
                                                                     />
-                                                                    <span className={cx('text')}>Danh sách trống</span>
+                                                                    <span className={cx('empty-list-text')}>
+                                                                        Danh sách trống
+                                                                    </span>
                                                                 </div>
                                                             )}
                                                         </div>

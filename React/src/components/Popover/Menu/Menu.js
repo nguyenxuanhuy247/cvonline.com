@@ -106,6 +106,11 @@ class Menu extends Component {
                             this.state.menuList.length > 0 &&
                             this.state.menuList.map((item) => {
                                 const isChildren = !!item.children;
+                                let props = {};
+
+                                if (item.route) {
+                                    props.route = item.route;
+                                }
 
                                 return (
                                     <Button
@@ -129,10 +134,11 @@ class Menu extends Component {
                                                 await this.props.userSignOut();
                                             }
                                         }}
+                                        {...props}
                                     >
-                                        <i className={cx('left-icon')}>{item.leftIcon}</i>
+                                        {item.leftIcon && <i className={cx('left-icon')}>{item.leftIcon}</i>}
                                         <span className={cx('text')}>{item.title}</span>
-                                        <i className={cx('arrow-right')}>{item.rightIcon}</i>
+                                        {item.rightIcon && <i className={cx('arrow-right')}>{item.rightIcon}</i>}
                                     </Button>
                                 );
                             })

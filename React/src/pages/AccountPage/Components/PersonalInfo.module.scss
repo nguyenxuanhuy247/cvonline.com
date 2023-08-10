@@ -1,0 +1,64 @@
+.personal-info {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+    .title {
+        font-size: 2.2rem;
+        font-weight: 600;
+    }
+
+    .required {
+        font-size: 1.6rem;
+        font-weight: 300;
+
+        .symbol {
+            color: red;
+            font-weight: 400;
+        }
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 12px;
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            row-gap: 8px;
+
+            .form-label {
+                .symbol {
+                    color: red;
+                    font-weight: 400;
+                }
+            }
+
+            .form-input {
+                padding: 0 12px;
+                height: 40px;
+                background-color: #fff;
+                border: 1px solid #e9eaec;
+                border-radius: 6px;
+                font-size: 1.4rem;
+                line-height: 100%;
+                font-weight: 500;
+            }
+        }
+
+        .save-btn {
+            width: 100%;
+            align-self: flex-end;
+            margin-top: 24px;
+            background-color: #00b14f;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1.6rem;
+            line-height: 1.4;
+            font-weight: 600;
+            height: 42px;
+            cursor: pointer;
+        }
+    }
+}

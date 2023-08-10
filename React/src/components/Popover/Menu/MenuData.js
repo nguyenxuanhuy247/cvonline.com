@@ -9,7 +9,7 @@ export const MENU_AVATAR_DATA = [
         leftIcon: <FaUserTie />,
         title: 'Tài khoản',
         rightIcon: <BsArrowRight />,
-        to: '/feedback',
+        route: '/account',
         children: {
             title: 'Thiết lập mật khẩu',
             isSetPassword: true,
@@ -26,11 +26,11 @@ export const MENU_AVATAR_DATA = [
             data: [
                 {
                     id: 21,
-                    title: 'English',
+                    title: 'Tiếng Việt',
                 },
                 {
                     id: 22,
-                    title: 'Tiếng Việt',
+                    title: 'Tiếng Anh (đang cập nhật...)',
                 },
             ],
         },
