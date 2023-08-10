@@ -49,9 +49,9 @@ class HomePage extends PureComponent {
                                                         <span className={cx('title')}>Front-end</span>
                                                         {FETechnologyList?.length > 0 ? (
                                                             <div className={cx('list')}>
-                                                                {FETechnologyList?.map((technology) => {
+                                                                {FETechnologyList?.map((technology, index) => {
                                                                     return (
-                                                                        <div className={cx('technology')}>
+                                                                        <div key={index} className={cx('technology')}>
                                                                             {technology.image && (
                                                                                 <Image
                                                                                     src={technology?.image}
@@ -81,9 +81,9 @@ class HomePage extends PureComponent {
                                                         <span className={cx('title')}>Back-end</span>
                                                         <div className={cx('list')}>
                                                             {BETechnologyList?.length > 0 ? (
-                                                                BETechnologyList?.map((technology) => {
+                                                                BETechnologyList?.map((technology, index) => {
                                                                     return (
-                                                                        <div className={cx('technology')}>
+                                                                        <div key={index} className={cx('technology')}>
                                                                             {technology.image && (
                                                                                 <Image
                                                                                     src={technology?.image}

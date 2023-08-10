@@ -2,12 +2,10 @@ import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { BsFillEyeSlashFill, BsFillEyeFill } from 'react-icons/bs';
-import { Redirect, Route } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 import styles from './PasswordSetting.module.scss';
-import Button from '~/components/Button/Button.js';
 
 const cx = classnames.bind(styles);
 
@@ -54,22 +52,23 @@ class PasswordSetting extends PureComponent {
                 </p>
 
                 <Formik
-                    initialValues={{ currentPassword: '', newPassword: '', confirmedNewPassword: '' }}
+                    initialValues={{ currentPassword: '', newPassword: '', newPasswordConfirmation: '' }}
                     validationSchema={Yup.object().shape({
-                        fullName: Yup.string().required('Hãy nhập họ và tên của bạn'),
-                        email: Yup.string()
-                            .required('Hãy nhập địa chỉ email của bạn')
-                            .email('Hãy nhập đúng định dạng email'),
-                        password: Yup.string()
-                            .required('Hãy nhập mật khẩu của bạn')
-                            .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
-                            .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự'),
-                        confirmedPassword: Yup.string()
-                            .required('Hãy nhập mật khẩu xác nhận')
-                            .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận chưa đúng'),
+                        currentPassword: Yup.string()
+                            .required('Hãy nhập mật khẩu hiện tại của bạn')
+                            .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
+                            .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự'),
+                        newPassword: Yup.string()
+                            .required('Hãy nhập mật khẩu mới của bạn')
+                            .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
+                            .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự'),
+                        newPasswordConfirmation: Yup.string()
+                            .required('Hãy nhập lại mật khẩu mới để xác nhận')
+                            .oneOf([Yup.ref('newPassword'), null], 'Mật khẩu xác nhận chưa đúng'),
                     })}
                     onSubmit={(values, actions) => {
-                        this.props.userSignUp(values);
+                        console.log('value', values);
+                        console.log('actions', actions);
                     }}
                 >
                     {(props) => (
@@ -83,7 +82,7 @@ class PasswordSetting extends PureComponent {
                                         type={isShowCurrentPassword ? 'text' : 'password'}
                                         id="current-password"
                                         className={cx('input-form')}
-                                        name="password"
+                                        name="currentPassword"
                                         placeholder="Mật khẩu hiện tại"
                                         onChange={props.handleChange}
                                         onBlur={props.handleBlur}
@@ -108,7 +107,7 @@ class PasswordSetting extends PureComponent {
                                         type={isShowNewPassword ? 'text' : 'password'}
                                         id="password"
                                         className={cx('input-form')}
-                                        name="password"
+                                        name="newPassword"
                                         placeholder="Mật khẩu mới"
                                         onChange={props.handleChange}
                                         onBlur={props.handleBlur}
@@ -126,14 +125,14 @@ class PasswordSetting extends PureComponent {
 
                             <div className={cx('form-group')}>
                                 <div className={cx('input-form-password')}>
-                                    <label htmlFor="confirmedPassword" className={cx('label')}>
+                                    <label htmlFor="newPasswordConfirmation" className={cx('label')}>
                                         Nhập lại mật khẩu mới
                                     </label>
                                     <Field
                                         type={isShowNewPasswordConfirmation ? 'text' : 'password'}
-                                        id="confirmedPassword"
+                                        id="newPasswordConfirmation"
                                         className={cx('input-form')}
-                                        name="confirmedPassword"
+                                        name="newPasswordConfirmation"
                                         placeholder="Nhập lại mật khẩu mới"
                                         onChange={props.handleChange}
                                         onBlur={props.handleBlur}
