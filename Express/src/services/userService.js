@@ -260,32 +260,6 @@ export const postUserSignIn = async (data) => {
 // READ HOME LAYOUT
 export const handleGetHomeLayout = async () => {
     try {
-        // const allUsers = await db.users.findAll({
-        //     attributes: ['id', 'avatar', 'fullName', 'jobPosition'],
-        //     order: [['id', 'ASC']],
-        //     raw: true,
-        // });
-
-        // if (allUsers) {
-        //     const newAllUsers = allUsers.map((user) => {
-        //         const avatar = user.avatar;
-        //         const binaryAvatar = avatar?.toString('binary');
-
-        //         const productDesc = await db.technologies.findOne({
-        //             where: { id: productID, key: 'PD' },
-        //             attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
-        //             raw: true,
-        //         });
-
-        //         return { userInfo: { ...user, avatar: binaryAvatar }, numberOfProduct: 3 };
-        //     });
-
-        //     return {
-        //         errorCode: 0,
-        //         errorMessage: `Tải thông tin người dùng thành công`,
-        //         data: newAllUsers,
-        //     };
-
         let allCVList = [];
         const userIDList = await db.users.findAll({
             attributes: ['id'],
@@ -982,6 +956,59 @@ export const handleDeleteTechnology = async (data) => {
         return {
             errorCode: 31,
             errorMessage: `[Kết nối Database] Xóa ${label} thất bại`,
+        };
+    }
+};
+
+// =================================================================================================
+// CHANGE USER ID
+export const handleChangeUserID = async (data) => {
+    try {
+        const { currentID, newID } = data;
+
+        const user = await db.users.findOne({
+            where: { id: currentID },
+            attributes: ['id'],
+            raw: true,
+        });
+
+        if (user) {
+            await db.users.update({ id: newID }, { where: { id: currentID } });
+
+            const changedUser = await db.users.findOne({
+                where: { id: newID },
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                raw: true,
+            });
+
+            if (changedUser) {
+                const avatar = changedUser.avatar;
+                const binaryAvatar = avatar?.toString('binary');
+                const newUser = { ...changedUser, avatar: binaryAvatar, isPassword: !!changedUser.password };
+                delete newUser.password;
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Cập nhật ID người dùng thành công`,
+                    data: newUser,
+                };
+            } else {
+                return {
+                    errorCode: 33,
+                    errorMessage: `Không tìm thấy ID mới của người dùng`,
+                };
+            }
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy ID của người dùng`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleChangeUserID() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Cập nhật ID người dùng thất bại`,
         };
     }
 };

@@ -8,13 +8,16 @@ import * as Yup from 'yup';
 
 import { path } from '~/utils';
 import Button from '~/components/Button/Button.js';
+import * as userActions from '~/store/actions/userActions.js';
 
 const cx = className.bind(styles);
 
 class ForgotPassword extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            isResetSucceeded: false,
+        };
     }
 
     render() {
@@ -28,14 +31,23 @@ class ForgotPassword extends Component {
                                 .required('Hãy nhập địa chỉ email của bạn')
                                 .email('Hãy nhập đúng định dạng email'),
                         })}
-                        onSubmit={(values, actions) => {
-                            console.log(values, actions);
+                        onSubmit={async (values, actions) => {
+                            actions.resetForm();
+                            const errorCode = await this.props.userResetPassword(values);
+                            if (errorCode === 0) {
+                                this.setState({ isResetSucceeded: true });
+                            }
                         }}
                     >
                         {(props) => (
                             <Form className={cx('form-forgot-password')} onSubmit={props.handleSubmit}>
                                 <p className={cx('title')}>Quên mật khẩu</p>
-
+                                {this.state.isResetSucceeded && (
+                                    <p className={cx('success-message')}>
+                                        Hãy kiểm tra email của bạn. Sau đó nhấn vào link trong hộp thư để đổi lại mật
+                                        khẩu.
+                                    </p>
+                                )}
                                 <div className={cx('form-group')}>
                                     <label htmlFor="email" className={cx('form-label')}>
                                         Email
@@ -83,7 +95,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        userResetPassword: (data) => dispatch(userActions.userForgotPasswordStart(data)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ForgotPassword);

@@ -10,10 +10,6 @@ export const MENU_AVATAR_DATA = [
         title: 'Tài khoản',
         rightIcon: <BsArrowRight />,
         route: '/account',
-        children: {
-            title: 'Thiết lập mật khẩu',
-            isSetPassword: true,
-        },
     },
     {
         id: 12,

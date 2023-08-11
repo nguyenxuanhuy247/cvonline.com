@@ -7,6 +7,10 @@ import _ from 'lodash';
 
 import styles from './UserIDSetting.module.scss';
 import Button from '~/components/Button/Button.js';
+import * as appActions from '~/store/actions';
+import * as userActions from '~/store/actions/userActions.js';
+import Loading from '~/components/Modal/Loading.js';
+import { Toast } from '~/components/Toast/Toast.js';
 
 const cx = classnames.bind(styles);
 
@@ -14,19 +18,36 @@ class UserIDSetting extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            userID: '',
+            newID: '' || this.props?.owner?.id,
         };
     }
 
-    batchLog = () => {
-        return 1111;
+    handleInputNewUserID = (e) => {
+        const newUserID = e.target.value;
+
+        this.setState({ newID: newUserID });
+        if (newUserID) {
+            const debouncedVerify = _.debounce((newUserID) => {
+                this.props.verifyUserID(newUserID);
+            }, 500);
+
+            debouncedVerify(newUserID);
+        }
     };
 
     handleChangeUserID = (e) => {
-        this.setState({ userID: e.target.value });
-        const value11 = e.target.value;
-        const debouncedLog = _.debounce((value) => console.log(value), 1000);
-        debouncedLog(value11);
+        const { id: currentUserID } = this.props.owner ?? {};
+        e.preventDefault();
+        const data = {
+            currentID: this.props?.owner?.id,
+            newID: this.state.newID,
+        };
+
+        if (this.state.newID !== currentUserID) {
+            this.props.changeUserID(data);
+        } else {
+            Toast.TOP_CENTER_WARN('ID hiện tại đang được  sử dụng, vui lòng nhập ID khác', 4000);
+        }
     };
 
     render() {
@@ -44,21 +65,37 @@ class UserIDSetting extends PureComponent {
                             <input
                                 type="text"
                                 id="userID"
-                                value={this.state.userID || this.props?.owner?.id}
-                                onChange={(e) => this.handleChangeUserID(e)}
+                                value={this.state.newID}
+                                onChange={(e) => this.handleInputNewUserID(e)}
                                 className={cx('form-input')}
                                 placeholder="nguyenxuanhuy"
                             />
-                            <span className={cx('icon-wrapper')}>
-                                <BsFillCheckCircleFill className={cx('icon', 'verified')} />
-                                {/* <AiFillCloseCircle className={cx('icon', 'error')} /> */}
-                            </span>
+                            {this.state.newID && (
+                                <span className={cx('icon-wrapper')}>
+                                    {this.props.isVerified ? (
+                                        <BsFillCheckCircleFill className={cx('icon', 'verified')} />
+                                    ) : (
+                                        <AiFillCloseCircle className={cx('icon', 'error')} />
+                                    )}
+
+                                    {this.props.isLoading && <Loading inner small />}
+                                </span>
+                            )}
                         </div>
                     </div>
-                    <p className={cx('message', 'OK')}>ID người dùng khả dụng</p>
-                    <p className={cx('message', 'error')}>ID người dùng không khả dụng</p>
+                    {this.state.newID ? (
+                        this.props.isVerified ? (
+                            <p className={cx('message', 'OK')}>ID người dùng khả dụng</p>
+                        ) : (
+                            <p className={cx('message', 'error')}>ID người dùng không khả dụng</p>
+                        )
+                    ) : (
+                        <p className={cx('message', 'error')}>Vui lòng nhập ID người dùng</p>
+                    )}
 
-                    <Button className={cx('save-btn')}>Lưu</Button>
+                    <Button className={cx('save-btn')} onClick={(e) => this.handleChangeUserID(e)}>
+                        Lưu
+                    </Button>
                 </form>
             </div>
         );
@@ -68,11 +105,16 @@ class UserIDSetting extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
+        isLoading: state.app.isLoading.verifiedUserID,
+        isVerified: state.app.isUserIDVerified,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        verifyUserID: (userID) => dispatch(appActions.verifyUserID(userID)),
+        changeUserID: (userID) => dispatch(userActions.changeUserID(userID)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserIDSetting);

@@ -1,42 +1,6 @@
 import actionNames from './actionNames';
-import * as userService from '~/services';
+import * as userService from '~/services/userService.js';
 import { Toast } from '~/components/Toast/Toast.js';
-
-// CHANGE PASSWORD
-export const userChangePasswordStart = (userData) => {
-    return async (dispatch) => {
-        dispatch({
-            type: 'USER_CHANGE_PASSWORD_START',
-        });
-
-        try {
-            let res = await userService.postChangePassword(userData);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                dispatch(userChangePasswordSuccess());
-                return errorCode;
-            } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
-                dispatch(userChangePasswordFail());
-                return errorCode;
-            }
-        } catch (error) {
-            const { errorMessage, errorCode } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
-            dispatch(userChangePasswordFail());
-            console.log('An error in userChangePasswordStart() - userActions.js: ', error);
-            return errorCode;
-        }
-    };
-};
-
-export const userChangePasswordSuccess = () => ({
-    type: 'USER_CHANGE_PASSWORD_SUCCESS',
-});
-
-export const userChangePasswordFail = () => ({
-    type: 'USER_CHANGE_PASSWORD_FAIL',
-});
 
 // USER SIGN UP - CREATE USER INFORMATION
 export const userSignUpStart = (userData) => {
@@ -114,6 +78,38 @@ export const userSignOut = () => {
         type: actionNames.USER_SIGNOUT,
     };
 };
+
+// CHANGE PASSWORD
+export const userForgotPasswordStart = (data) => {
+    return async (dispatch) => {
+        try {
+            let res = await userService.postForgotPassword(data);
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                dispatch(userForgotPassword_Success());
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+                dispatch(userForgotPassword_Failure());
+                return errorCode;
+            }
+        } catch (error) {
+            const { errorMessage, errorCode } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            dispatch(userForgotPassword_Failure());
+            console.log('An error in userForgotPasswordStart() - userActions.js: ', error);
+            return errorCode;
+        }
+    };
+};
+
+export const userForgotPassword_Success = () => ({
+    type: actionNames.USER_FORGOT_PASSWORD_SUCCESS,
+});
+
+export const userForgotPassword_Failure = () => ({
+    type: actionNames.USER_FORGOT_PASSWORD_FAILURE,
+});
 
 // =================================================================
 // READ HOME LAYOUT
@@ -576,4 +572,36 @@ export const deleteTechnology_Success = (data) => ({
 
 export const deleteTechnology_Failure = () => ({
     type: actionNames.DELETE_TECHNOLOGY_FAILURE,
+});
+
+// =================================================================
+// CHANGE USER ID
+export const changeUserID = (data) => {
+    return async (dispatch) => {
+        try {
+            let res = await userService.changeUserID(data);
+            const { errorCode, errorMessage, data: DB_Data } = res ?? {};
+            if (errorCode === 0) {
+                Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
+                dispatch(changeUserID_Success(DB_Data));
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(changeUserID_Fail());
+            }
+        } catch (error) {
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(changeUserID_Fail());
+            console.log('An error in changeUserID() - userActions.js: ', error);
+        }
+    };
+};
+
+export const changeUserID_Success = (data) => ({
+    type: actionNames.CHANGE_ID_SUCCESS,
+    payload: data,
+});
+
+export const changeUserID_Fail = () => ({
+    type: actionNames.CHANGE_ID_FAILURE,
 });

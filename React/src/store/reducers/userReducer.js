@@ -279,6 +279,18 @@ const userReducer = (state = initialState, action) => {
                 ...state,
             };
 
+        // =================================================================
+        // CHANGE USER ID
+        case actionNames.CHANGE_ID_SUCCESS:
+            return {
+                ...state,
+                owner: action.payload,
+            };
+        case actionNames.CHANGE_ID_FAILURE:
+            return {
+                ...state,
+            };
+
         default:
             return state;
     }

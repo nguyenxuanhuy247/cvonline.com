@@ -1,13 +1,16 @@
 import express from 'express';
 import * as userMiddleware from '~/middleware';
+import * as appMiddleware from '~/middleware';
 import * as userController from '~/controllers';
+import * as appController from '~/controllers';
 
 let router = express.Router();
 
 let initWebRoutes = (app) => {
+    // AUTH
     router.post('/api/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.post('/api/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
-    router.post('/api/change-password', userMiddleware.checkReqChangePassword, userController.handleChangePassword);
+    router.post('/api/forgot-password', userMiddleware.checkReqForgotPassword, userController.handleForgotPassword);
 
     router.get('/api/get-home-layout', userController.handleGetHomeLayout);
 
@@ -38,6 +41,10 @@ let initWebRoutes = (app) => {
         userMiddleware.checkReqDeleteTechnology,
         userController.handleDeleteTechnology,
     );
+
+    // VERIFY USER ID
+    router.get('/api/verify-userID', appMiddleware.checkReqVerifyUserID, appController.handleVerifyUserID);
+    router.post('/api/change-userID', userMiddleware.checkReqChangeUserID, userController.handleChangeUserID);
 
     return app.use('/', router);
 };

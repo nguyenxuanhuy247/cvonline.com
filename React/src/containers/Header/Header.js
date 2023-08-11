@@ -88,7 +88,7 @@ class Header extends PureComponent {
                                     alt={this.props?.fullName}
                                     round
                                 />
-                                <span className={cx('fullname')}>{this.props?.fullName}</span>
+                                {this.props?.fullName && <span className={cx('fullname')}>{this.props?.fullName}</span>}
                             </Button>
                         </Menu>
                     </div>

@@ -12,8 +12,8 @@ export const postSignIn = (userData) => {
 };
 
 // HANDLE CHANGE PASSWORD
-export const postChangePassword = (userData) => {
-    return axios.post(`/api/change-password`, userData);
+export const postForgotPassword = (data) => {
+    return axios.post(`/api/forgot-password`, data);
 };
 
 // =============================================================================
@@ -57,7 +57,6 @@ export const moveProduct = (data) => {
     return axios.put(`/api/move-product`, data);
 };
 
-// =============================================================================
 // CRUD TECHNOLOGY
 
 export const createTechnology = (data) => {
@@ -74,4 +73,10 @@ export const deleteTechnology = (technologyData) => {
     return axios.delete(
         `/api/delete-technology?technologyId=${technologyId}&&type=${type}&&key=${key}&&side=${side}&&userId=${userId}&&productId=${productId}&&label=${label}`,
     );
+};
+
+// =============================================================================
+
+export const changeUserID = (data) => {
+    return axios.post(`/api/change-userID`, data);
 };

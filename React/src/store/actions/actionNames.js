@@ -14,7 +14,7 @@ const actionNames = Object.freeze({
     ...actionMaker(`USER`, `SIGNIN`),
 
     // USER CHANGE PASSWORD
-    ...actionMaker(`USER`, `CHANGE_PASSWORD`),
+    ...actionMaker(`USER`, `FORGOT_PASSWORD`),
 
     // USER SIGN OUT
     USER_SIGNOUT: 'USER_SIGNOUT',
@@ -39,6 +39,11 @@ const actionNames = Object.freeze({
     ...actionMaker(`CREATE`, `TECHNOLOGY`),
     ...actionMaker(`UPDATE`, `TECHNOLOGY`),
     ...actionMaker(`DELETE`, `TECHNOLOGY`),
+
+    // =================================================================
+
+    ...actionMaker(`VERIFY`, `ID`),
+    ...actionMaker(`CHANGE`, `ID`),
 });
 
 export default actionNames;

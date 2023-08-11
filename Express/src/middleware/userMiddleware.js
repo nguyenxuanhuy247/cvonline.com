@@ -49,21 +49,14 @@ export const checkReqSignIn = (req, res, next) => {
     next();
 };
 
-// CHECK CHANGE PASSWORD
-export const checkReqChangePassword = (req, res, next) => {
-    const { userId, password } = req.body;
+// CHECK FORGOT PASSWORD
+export const checkReqForgotPassword = (req, res, next) => {
+    const { email } = req.body;
 
-    if (!userId) {
+    if (!email) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập User ID để cập nhật Mật khẩu',
-        });
-    }
-
-    if (!password) {
-        return res.status(400).json({
-            errorCode: 11,
-            errorMessage: 'Vui lòng nhập Mật khẩu',
+            errorMessage: 'Nhập Email để đổi mật khẩu',
         });
     }
 
@@ -287,6 +280,27 @@ export const checkReqDeleteTechnology = (req, res, next) => {
         return res.status(400).json({
             errorCode: 12,
             errorMessage: `Nhập Product ID để xóa ${label}`,
+        });
+    }
+
+    next();
+};
+
+// CHANGE USER ID
+export const checkReqChangeUserID = (req, res, next) => {
+    const { currentID, newID } = req.body;
+
+    if (!currentID) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập ID hiện tại của người dùng',
+        });
+    }
+
+    if (!newID) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập ID mới của người dùng',
         });
     }
 

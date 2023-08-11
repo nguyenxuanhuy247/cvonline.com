@@ -3,6 +3,8 @@ import classnames from 'classnames/bind';
 import { connect } from 'react-redux';
 import { AiFillHome } from 'react-icons/ai';
 import { MdRemoveRedEye } from 'react-icons/md';
+import { BsFillEnvelopeAtFill } from 'react-icons/bs';
+import { FaShare } from 'react-icons/fa';
 import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import { IoNewspaperSharp } from 'react-icons/io5';
 
@@ -84,6 +86,18 @@ class SideBar extends PureComponent {
                         <MdRemoveRedEye />
                     </span>
                     <span className={cx('text')}>Vừa xem</span>
+                </Button>
+                <Button className={cx('button')}>
+                    <span className={cx('icon')}>
+                        <BsFillEnvelopeAtFill />
+                    </span>
+                    <span className={cx('text')}>Gửi CV</span>
+                </Button>
+                <Button className={cx('button')}>
+                    <span className={cx('icon')}>
+                        <FaShare />
+                    </span>
+                    <span className={cx('text')}>Chia sẻ</span>
                 </Button>
             </div>
         );
