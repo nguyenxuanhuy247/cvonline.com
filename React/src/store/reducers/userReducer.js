@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 const initialState = {
     isLoading: {
+        forgotPassword: false,
         authLayout: false,
         CVLayout: false,
         homeLayout: false,
@@ -19,22 +20,21 @@ const initialState = {
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         // AUTH LAYOUT
-        // USER CHANGE PASSWORD
-        case actionNames.USER_CHANGE_PASSWORD_START:
+        // USER RESET PASSWORD
+        case actionNames.USER_FORGOT_PASSWORD_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, authLayout: true },
+                isLoading: { ...state.isLoading, forgotPassword: true },
             };
-        case actionNames.USER_CHANGE_PASSWORD_SUCCESS:
+        case actionNames.USER_FORGOT_PASSWORD_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, authLayout: false },
-                user: { ...state.user, isPasword: true },
+                isLoading: { ...state.isLoading, forgotPassword: false },
             };
-        case actionNames.USER_CHANGE_PASSWORD_FAIL:
+        case actionNames.USER_FORGOT_PASSWORD_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, authLayout: false },
+                isLoading: { ...state.isLoading, forgotPassword: false },
             };
 
         // USER SIGN UP
@@ -49,7 +49,7 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, authLayout: false },
                 isSignUp: true,
             };
-        case actionNames.USER_SIGNUP_FAIL:
+        case actionNames.USER_SIGNUP_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, authLayout: false },
@@ -69,7 +69,7 @@ const userReducer = (state = initialState, action) => {
                 isSignIn: true,
                 owner: action.payload,
             };
-        case actionNames.USER_SIGNIN_FAIL:
+        case actionNames.USER_SIGNIN_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, authLayout: false },

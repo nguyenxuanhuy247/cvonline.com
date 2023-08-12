@@ -62,7 +62,7 @@ class SignIn extends Component {
                         validationSchema={Yup.object().shape({
                             email: Yup.string()
                                 .required('Hãy nhập địa chỉ email của bạn')
-                                .email('Hãy nhập đúng định dạng email'),
+                                .email('Định dạng email không đúng'),
                             password: Yup.string()
                                 .required('Hãy nhập mật khẩu của bạn')
                                 .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
@@ -89,7 +89,7 @@ class SignIn extends Component {
                                             id="email"
                                             className={cx('input-form')}
                                             name="email"
-                                            placeholder="VD: nguyenxuanhuy@gmail.com"
+                                            placeholder="Email"
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
                                             value={props.values.email}
@@ -113,14 +113,14 @@ class SignIn extends Component {
                                             id="password"
                                             className={cx('input-form')}
                                             name="password"
-                                            placeholder="VD: Abc123456@"
+                                            placeholder="Mật khẩu"
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
                                             value={props.values.password}
                                         />
                                         <div className={cx('toggle-show-password')}>
                                             <Eye
-                                                className={cx('eye')}
+                                                className={cx('eye', { 'green-eye': this.state.isShowPassword })}
                                                 onClick={() => this.handleShowHidePassword(true)}
                                             />
                                         </div>

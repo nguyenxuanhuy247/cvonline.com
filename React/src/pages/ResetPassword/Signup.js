@@ -61,7 +61,7 @@ class Signup extends Component {
                                 fullName: Yup.string().required('Hãy nhập họ và tên của bạn'),
                                 email: Yup.string()
                                     .required('Hãy nhập địa chỉ email của bạn')
-                                    .email('Hãy nhập đúng định dạng email'),
+                                    .email('Định dạng email không đúng'),
                                 password: Yup.string()
                                     .required('Hãy nhập mật khẩu của bạn')
                                     .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')

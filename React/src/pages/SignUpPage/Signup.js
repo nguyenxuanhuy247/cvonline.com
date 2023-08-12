@@ -82,16 +82,18 @@ class Signup extends Component {
                                         <label htmlFor="fullName" className={cx('label')}>
                                             Họ và tên
                                         </label>
-                                        <Field
-                                            type="text"
-                                            id="fullName"
-                                            className={cx('input-form')}
-                                            name="fullName"
-                                            placeholder="VD: Nguyễn Xuân Huy"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.fullName}
-                                        />
+                                        <div className={cx('input-form-container')}>
+                                            <Field
+                                                type="text"
+                                                id="fullName"
+                                                className={cx('input-form')}
+                                                name="fullName"
+                                                placeholder="Nhập họ và tên"
+                                                onChange={props.handleChange}
+                                                onBlur={props.handleBlur}
+                                                value={props.values.fullName}
+                                            />
+                                        </div>
                                         <ErrorMessage component="p" name="fullName">
                                             {(msg) => <div className={cx('error-message')}>{msg}</div>}
                                         </ErrorMessage>
@@ -101,16 +103,18 @@ class Signup extends Component {
                                         <label htmlFor="email" className={cx('label')}>
                                             Email
                                         </label>
-                                        <Field
-                                            type="email"
-                                            id="email"
-                                            className={cx('input-form')}
-                                            name="email"
-                                            placeholder="VD: nguyenxuanhuy@gmail.com"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.email}
-                                        />
+                                        <div className={cx('input-form-container')}>
+                                            <Field
+                                                type="email"
+                                                id="email"
+                                                className={cx('input-form')}
+                                                name="email"
+                                                placeholder="Nhập email"
+                                                onChange={props.handleChange}
+                                                onBlur={props.handleBlur}
+                                                value={props.values.email}
+                                            />
+                                        </div>
                                         <ErrorMessage component="p" name="email">
                                             {(msg) => <div className={cx('error-message')}>{msg}</div>}
                                         </ErrorMessage>
@@ -120,20 +124,20 @@ class Signup extends Component {
                                         <label htmlFor="password" className={cx('label')}>
                                             Mật khẩu
                                         </label>
-                                        <div className={cx('input-form-password')}>
+                                        <div className={cx('input-form-container')}>
                                             <Field
                                                 type={isShowPassword ? 'text' : 'password'}
                                                 id="password"
                                                 className={cx('input-form')}
                                                 name="password"
-                                                placeholder="VD: Abc123456@"
+                                                placeholder="Nhập mật khẩu"
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.password}
                                             />
                                             <div className={cx('toggle-show-password')}>
                                                 <Eye1
-                                                    className={cx('eye')}
+                                                    className={cx('eye', { 'green-eye': isShowPassword })}
                                                     onClick={() => this.handleShowHidePassword(true)}
                                                 />
                                             </div>
@@ -147,20 +151,20 @@ class Signup extends Component {
                                         <label htmlFor="confirmedPassword" className={cx('label')}>
                                             Nhập lại mật khẩu
                                         </label>
-                                        <div className={cx('input-form-password')}>
+                                        <div className={cx('input-form-container')}>
                                             <Field
                                                 type={isShowConfirmationPassword ? 'text' : 'password'}
                                                 id="confirmedPassword"
                                                 className={cx('input-form')}
                                                 name="confirmedPassword"
-                                                placeholder="VD: Abc123456@"
+                                                placeholder="Nhập lại mật khẩu"
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.confirmedPassword}
                                             />
                                             <div className={cx('toggle-show-password')}>
                                                 <Eye2
-                                                    className={cx('eye')}
+                                                    className={cx('eye', { 'green-eye': isShowConfirmationPassword })}
                                                     onClick={() => this.handleShowHidePassword()}
                                                 />
                                             </div>

@@ -45,6 +45,7 @@ let initWebRoutes = (app) => {
     // VERIFY USER ID
     router.get('/api/verify-userID', appMiddleware.checkReqVerifyUserID, appController.handleVerifyUserID);
     router.post('/api/change-userID', userMiddleware.checkReqChangeUserID, userController.handleChangeUserID);
+    router.get('/api/verify-user-email', appMiddleware.checkReqVerifyUserEmail, appController.handleVerifyUserEmail);
 
     return app.use('/', router);
 };

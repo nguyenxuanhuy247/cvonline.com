@@ -20,6 +20,10 @@
     --bgc-white: #fff;
     --bgc-user-infomation: #37474f;
 
+    // Border color
+    --auth-error-input-border-color-red: #ff453a;
+    --auth-hover-input-border-color-green: #49b253;
+
     // Button background color
     --auth-bgc-grey: #f3f5f7;
     --main-bgc-grey: #f0f0f0;
@@ -153,10 +157,19 @@ a {
     text-align: center;
 }
 
-@mixin error-message-form {
+@mixin auth-form-error-message {
     margin-top: 4px;
-    background-color: rgba(255, 69, 58, 0.05);
     color: #ff453a;
+    background-color: rgba(255, 69, 58, 0.05);
+    font-size: 1.4rem;
+    padding: 8px 12px;
+    width: 100%;
+}
+
+@mixin auth-form-success-message {
+    margin-top: 4px;
+    color: #00b14f;
+    background: rgba(0, 177, 79, 0.05);
     font-size: 1.4rem;
     padding: 8px 12px;
     width: 100%;

@@ -44,6 +44,7 @@ const actionNames = Object.freeze({
 
     ...actionMaker(`VERIFY`, `ID`),
     ...actionMaker(`CHANGE`, `ID`),
+    ...actionMaker(`VERIFY`, `EMAIL`),
 });
 
 export default actionNames;

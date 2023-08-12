@@ -34,7 +34,7 @@ export const userSignUp_Success = () => ({
 });
 
 export const userSignUp_Fail = () => ({
-    type: actionNames.USER_SIGNUP_FAIL,
+    type: actionNames.USER_SIGNUP_FAILURE,
 });
 
 // USER SIGN IN
@@ -69,7 +69,7 @@ export const userSignIn_Success = (user) => ({
 });
 
 export const userSignIn_Fail = () => ({
-    type: actionNames.USER_SIGNIN_FAIL,
+    type: actionNames.USER_SIGNIN_FAILURE,
 });
 
 // USER SIGN OUT
@@ -82,6 +82,7 @@ export const userSignOut = () => {
 // CHANGE PASSWORD
 export const userForgotPasswordStart = (data) => {
     return async (dispatch) => {
+        userForgotPassword_Start();
         try {
             let res = await userService.postForgotPassword(data);
             const { errorCode, errorMessage } = res ?? {};
@@ -102,6 +103,10 @@ export const userForgotPasswordStart = (data) => {
         }
     };
 };
+
+export const userForgotPassword_Start = () => ({
+    type: actionNames.USER_FORGOT_PASSWORD_START,
+});
 
 export const userForgotPassword_Success = () => ({
     type: actionNames.USER_FORGOT_PASSWORD_SUCCESS,

@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import className from 'classnames/bind';
-import styles from './ForgotPassword.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { BsFillCheckCircleFill } from 'react-icons/bs';
+import { AiFillCloseCircle } from 'react-icons/ai';
 import * as Yup from 'yup';
+import _ from 'lodash';
 
+import styles from './ForgotPassword.module.scss';
 import { path } from '~/utils';
 import Button from '~/components/Button/Button.js';
 import * as userActions from '~/store/actions/userActions.js';
+import * as appActions from '~/store/actions/appActions.js';
+import Loading from '~/components/Modal/Loading.js';
 
 const cx = className.bind(styles);
 
@@ -17,8 +22,26 @@ class ForgotPassword extends Component {
         super(props);
         this.state = {
             isResetSucceeded: false,
+            isVerified: false,
+            userEmail: '',
         };
     }
+
+    handleVerifyUserEmail = (e) => {
+        const userEmail = e.target.value;
+
+        if (userEmail) {
+            const debouncedVerify = _.debounce(async (email) => {
+                await this.props.verifyUserEmail(email);
+
+                this.setState({ userEmail: userEmail, isResetSucceeded: false });
+            }, 800);
+
+            debouncedVerify(userEmail);
+        } else {
+            this.setState({ userEmail: '', isResetSucceeded: false });
+        }
+    };
 
     render() {
         return (
@@ -29,13 +52,16 @@ class ForgotPassword extends Component {
                         validationSchema={Yup.object().shape({
                             email: Yup.string()
                                 .required('Hãy nhập địa chỉ email của bạn')
-                                .email('Hãy nhập đúng định dạng email'),
+                                .email('Định dạng email không đúng'),
                         })}
                         onSubmit={async (values, actions) => {
-                            actions.resetForm();
-                            const errorCode = await this.props.userResetPassword(values);
+                            console.log(values);
+                            const errorCode = await this.props.userForgotPassword(values);
                             if (errorCode === 0) {
-                                this.setState({ isResetSucceeded: true });
+                                actions.resetForm();
+                                this.setState({ isResetSucceeded: true, userEmail: '' });
+                            } else {
+                                this.setState({ isResetSucceeded: false });
                             }
                         }}
                     >
@@ -52,24 +78,47 @@ class ForgotPassword extends Component {
                                     <label htmlFor="email" className={cx('form-label')}>
                                         Email
                                     </label>
-                                    <Field
-                                        type="email"
-                                        id="email"
-                                        className={cx('input-form')}
-                                        name="email"
-                                        placeholder="Nhập email để lấy lại mật khẩu"
-                                        spellCheck={false}
-                                        onChange={props.handleChange}
-                                        onBlur={props.handleBlur}
-                                        value={props.values.email}
-                                    />
-                                    <ErrorMessage component="p" name="email">
-                                        {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                    </ErrorMessage>
+                                    <div className={cx('input-form-container')}>
+                                        <Field
+                                            type="email"
+                                            id="email"
+                                            className={cx('input-form')}
+                                            name="email"
+                                            placeholder="Nhập email để lấy lại mật khẩu"
+                                            spellCheck={false}
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.email}
+                                            onInput={(e) => this.handleVerifyUserEmail(e)}
+                                        />
+                                        {this.state.userEmail ? (
+                                            <span className={cx('icon-wrapper')}>
+                                                {this.props.isVerified ? (
+                                                    <BsFillCheckCircleFill className={cx('icon', 'verified')} />
+                                                ) : (
+                                                    <AiFillCloseCircle className={cx('icon', 'error')} />
+                                                )}
+
+                                                {this.props.isLoading_verifyEmail && <Loading inner verify />}
+                                            </span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </div>
+
+                                    {this.state.userEmail ? (
+                                        this.props.isVerified ? (
+                                            <p className={cx('message', 'OK')}>Email người dùng khả dụng</p>
+                                        ) : (
+                                            <p className={cx('message', 'error')}>Email chưa được đăng ký</p>
+                                        )
+                                    ) : (
+                                        <></>
+                                    )}
                                 </div>
 
                                 <button type="submit" className={cx('submit-btn')}>
-                                    Tạo lại mật khẩu
+                                    {this.props.isLoading_resetPassword ? `Tạo lại mật khẩu` : <Loading inner verify />}
                                 </button>
                             </Form>
                         )}
@@ -91,12 +140,17 @@ class ForgotPassword extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        isLoading_resetPassword: state.user.isLoading.resetPassword,
+        isLoading_verifyEmail: state.app.isLoading.verifiedUserEmail,
+        isVerified: state.app.isUserEmailVerified,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        userResetPassword: (data) => dispatch(userActions.userForgotPasswordStart(data)),
+        verifyUserEmail: (userEmail) => dispatch(appActions.verifyUserEmail(userEmail)),
+        userForgotPassword: (data) => dispatch(userActions.userForgotPasswordStart(data)),
     };
 };
 

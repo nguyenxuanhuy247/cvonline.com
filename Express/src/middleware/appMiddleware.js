@@ -11,3 +11,16 @@ export const checkReqVerifyUserID = (req, res, next) => {
 
     next();
 };
+// VERIFY USER EMAIL
+export const checkReqVerifyUserEmail = (req, res, next) => {
+    const { userEmail } = req.query;
+
+    if (!userEmail) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập Email của người dùng',
+        });
+    }
+
+    next();
+};

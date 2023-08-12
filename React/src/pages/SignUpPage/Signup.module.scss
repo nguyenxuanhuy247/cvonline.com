@@ -35,10 +35,6 @@
                 border-radius: 4px;
                 outline: none;
                 font-size: 1.4rem;
-
-                &:hover {
-                    border-color: #1dbfaf;
-                }
             }
 
             .toggle-show-password {
@@ -50,19 +46,35 @@
                 .eye {
                     font-size: 30px;
                     padding: 4px;
+                    color: #777;
                     cursor: pointer;
-                    color: #444;
+
+                    &.green-eye {
+                        color: var(--primary-color);
+                    }
+                }
+            }
+
+            &:hover {
+                .input-form {
+                    border-color: var(--auth-hover-input-border-color-red);
                 }
             }
 
             .error-message {
-                @include error-message-form;
+                @include auth-form-error-message;
             }
 
             &:nth-child(4),
             &:nth-child(5) {
                 .input-form {
                     padding-right: 42px;
+                }
+            }
+
+            &:has(div.error-message) {
+                .input-form {
+                    border-color: var(--auth-error-input-border-color-red);
                 }
             }
         }

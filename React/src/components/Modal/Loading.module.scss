@@ -61,6 +61,25 @@
             translate: -2px -2px;
         }
     }
+
+    &.verify-spinner {
+        width: 20px;
+        height: 20px;
+        background-color: rgba(255, 255, 255, 0.6);
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 3px solid;
+            border-color: var(--primary-color) transparent var(--primary-color) var(--primary-color);
+            border-radius: 50%;
+            animation: spinner 0.5s infinite;
+            width: 20px;
+            height: 20px;
+            translate: -2px -2px;
+        }
+    }
 }
 
 @keyframes spinner {
