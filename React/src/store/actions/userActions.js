@@ -82,7 +82,7 @@ export const userSignOut = () => {
 // CHANGE PASSWORD
 export const userForgotPasswordStart = (data) => {
     return async (dispatch) => {
-        userForgotPassword_Start();
+        dispatch(userForgotPassword_Start());
         try {
             let res = await userService.postForgotPassword(data);
             const { errorCode, errorMessage } = res ?? {};
@@ -583,6 +583,7 @@ export const deleteTechnology_Failure = () => ({
 // CHANGE USER ID
 export const changeUserID = (data) => {
     return async (dispatch) => {
+        dispatch(changeUserID_Start());
         try {
             let res = await userService.changeUserID(data);
             const { errorCode, errorMessage, data: DB_Data } = res ?? {};
@@ -601,6 +602,10 @@ export const changeUserID = (data) => {
         }
     };
 };
+
+export const changeUserID_Start = () => ({
+    type: actionNames.CHANGE_ID_START,
+});
 
 export const changeUserID_Success = (data) => ({
     type: actionNames.CHANGE_ID_SUCCESS,

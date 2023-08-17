@@ -7,6 +7,7 @@ import styles from './AuthLayout.module.scss';
 import SignIn from '~/pages/SignInPage/Signin.js';
 import SignUp from '~/pages/SignUpPage/Signup.js';
 import ForgotPassword from '~/pages/ForgotPasswordPage/ForgotPassword.js';
+import ResetPassword from '~/pages/ResetPassword/ResetPassword.js';
 import { path } from '~/utils';
 import logoWithText from '~/assets/logo/logo-with-text.png';
 import Loading from '~/components/Modal/Loading.js';
@@ -23,6 +24,7 @@ class Auth extends PureComponent {
                         <Route path={path.SIGNIN} component={SignIn} />
                         <Route path={path.SIGNUP} component={SignUp} />
                         <Route path={path.FORGOTPASSWORD} component={ForgotPassword} />
+                        <Route path={path.RESETPASSWORD} component={ResetPassword} />
                     </Switch>
                 </div>
                 {this.props.isLoading && <Loading text="Đang xác thực..." />}

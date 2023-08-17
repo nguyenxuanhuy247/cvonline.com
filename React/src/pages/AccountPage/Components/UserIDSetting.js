@@ -18,7 +18,7 @@ class UserIDSetting extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            newID: '' || this.props?.owner?.id,
+            newID: '',
         };
     }
 
@@ -50,7 +50,12 @@ class UserIDSetting extends PureComponent {
         }
     };
 
+    componentDidMount() {
+        this.setState({ newID: this.props?.owner?.id });
+    }
+
     render() {
+        console.log(this.props.isLoading_changeUserID);
         return (
             <div className={cx('user-id-setting')}>
                 <span className={cx('title')}>Cài đặt ID người dùng</span>
@@ -69,22 +74,23 @@ class UserIDSetting extends PureComponent {
                                 onChange={(e) => this.handleInputNewUserID(e)}
                                 className={cx('form-input')}
                                 placeholder="nguyenxuanhuy"
+                                spellCheck={false}
                             />
                             {this.state.newID && (
                                 <span className={cx('icon-wrapper')}>
-                                    {this.props.isVerified ? (
+                                    {this.props.isUserIDVerified ? (
                                         <BsFillCheckCircleFill className={cx('icon', 'verified')} />
                                     ) : (
                                         <AiFillCloseCircle className={cx('icon', 'error')} />
                                     )}
 
-                                    {this.props.isLoading && <Loading inner small />}
+                                    {this.props.isLoading_verifyUserID && <Loading inner small />}
                                 </span>
                             )}
                         </div>
                     </div>
                     {this.state.newID ? (
-                        this.props.isVerified ? (
+                        this.props.isUserIDVerified ? (
                             <p className={cx('message', 'OK')}>ID người dùng khả dụng</p>
                         ) : (
                             <p className={cx('message', 'error')}>ID người dùng không khả dụng</p>
@@ -93,8 +99,14 @@ class UserIDSetting extends PureComponent {
                         <p className={cx('message', 'error')}>Vui lòng nhập ID người dùng</p>
                     )}
 
-                    <Button className={cx('save-btn')} onClick={(e) => this.handleChangeUserID(e)}>
-                        Lưu
+                    <Button
+                        className={cx('save-btn')}
+                        onClick={(e) => this.handleChangeUserID(e)}
+                        disabled={
+                            this.props.isLoading_verifyUserID || !this.props.isUserIDVerified || !this.state.newID
+                        }
+                    >
+                        {this.props.isLoading_changeUserID ? <Loading inner auth /> : `Lưu`}
                     </Button>
                 </form>
             </div>
@@ -105,8 +117,9 @@ class UserIDSetting extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
-        isLoading: state.app.isLoading.verifiedUserID,
-        isVerified: state.app.isUserIDVerified,
+        isLoading_verifyUserID: state.app.isLoading.verifiedUserID,
+        isUserIDVerified: state.app.isUserIDVerified,
+        isLoading_changeUserID: state.user.isLoading.changeUserID,
     };
 };
 

@@ -84,10 +84,8 @@
                         }
                     }
                 }
-            }
 
-            &:hover {
-                .input-form-container {
+                &:hover {
                     border-color: var(--auth-hover-input-border-color-green);
 
                     .label {

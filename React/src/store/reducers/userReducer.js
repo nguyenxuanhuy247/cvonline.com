@@ -7,6 +7,7 @@ const initialState = {
         authLayout: false,
         CVLayout: false,
         homeLayout: false,
+        changeUserID: false,
     },
     isSignIn: false,
     isSignUp: false,
@@ -20,7 +21,7 @@ const initialState = {
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         // AUTH LAYOUT
-        // USER RESET PASSWORD
+        // USER FORGOT PASSWORD
         case actionNames.USER_FORGOT_PASSWORD_START:
             return {
                 ...state,
@@ -281,13 +282,21 @@ const userReducer = (state = initialState, action) => {
 
         // =================================================================
         // CHANGE USER ID
+        case actionNames.CHANGE_ID_START:
+            return {
+                isLoading: { ...state.isLoading, changeUserID: true },
+                ...state,
+            };
+
         case actionNames.CHANGE_ID_SUCCESS:
             return {
                 ...state,
+                isLoading: { ...state.isLoading, changeUserID: false },
                 owner: action.payload,
             };
         case actionNames.CHANGE_ID_FAILURE:
             return {
+                isLoading: { ...state.isLoading, changeUserID: false },
                 ...state,
             };
 

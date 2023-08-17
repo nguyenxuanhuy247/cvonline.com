@@ -28,19 +28,21 @@ export const handleSendEmailResetPassword = async (data) => {
             const info = await transporter.sendMail({
                 from: '"cvonline.com" <no-reply@cvonline.com.vn>',
                 to: receiverEmail,
-                subject: 'Reset mật khẩu', // Subject line
-                text: 'Hello world?', // plain text body
-                html: `<h3>Bạn vừa gửi yêu cầu đặt lại mật khẩu?</h3>
-                <p>Click vào link sau để đặt lại mật khẩu: <a>https://www.topcv.vn/reset-password/8b4644f92d8516937a4435fd407e6744356ebe4030ea4059ec1a52ae800ec399</a></p>
-                
+                subject: 'Reset mật khẩu',
+                text: 'Reset mật khẩu',
+                html: `<div style="font-size:16px;color:#500050">
+                <h3>Bạn vừa gửi yêu cầu đặt lại mật khẩu?</h3>
+                <p>Click vào link sau để đặt lại mật khẩu: <a href='http://localhost:2407/forgot-password' style="color:#00b14f;text-decoration:underline">https://www.topcv.vn/reset-password/8b4644f92d8516937a4435fd407e6744356ebe4030ea4059ec1a52ae800ec399</a></p>
+              
                 <p>Nếu không phải bạn đã gửi yêu cầu đặt lại mật khẩu, xin hãy bỏ qua email này.</p>
-                <p>Nếu có bất kì thắc mắc nào, vui lòng liên hệ hotro@cvonline.com.vn để nhận được hỗ trợ.</p>
-                
+                <p>Nếu có bất kì thắc mắc nào, vui lòng liên hệ <a href="mailto:nguyenxuanhuy.yukai@example.com" style="color:#00b14f;text-decoration:underline;" target="_blank">hotro@cvonline.com</a> để nhận được hỗ trợ.</p>
+              
                 <p>Cảm ơn bạn đã sử dụng dịch vụ.</p>
-                
-                <p>cvonline.com</p>
-                
-                <p>-- Đây là email tự động. Xin bạn vui lòng không gửi phản hồi vào hộp thư này --</p>`,
+              
+                <p>CVonline</p>
+              
+                <p style="font-size:14px;font-style:italic;text-align:center;display:block;color:#888">-- Đây là email tự động. Xin bạn vui lòng không gửi phản hồi vào hộp thư này --</p>
+              </div>`,
             });
 
             return {

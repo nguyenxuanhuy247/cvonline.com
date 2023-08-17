@@ -101,13 +101,17 @@ a {
 
 @mixin solid-btn {
     @include btn;
+
+    height: 40px;
     color: var(--button-bgc-white);
     background-color: var(--primary-color);
+    user-select: none;
 }
 
 @mixin regular-btn {
     @include btn;
 
+    height: 40px;
     color: var(--primary-color);
     background-color: var(--button-bgc-white);
 

@@ -2,6 +2,9 @@
     font-family: var(--alexandria-font);
     display: flex;
     min-height: calc(100vh - var(--header-height));
+    width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
 
     .left-col {
         padding: 20px 16px;

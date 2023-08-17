@@ -6,14 +6,14 @@ import { Redirect, Route } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-import styles from './Signup.module.scss';
+import styles from './ResetPassword.module.scss';
 import * as userActions from '~/store/actions/userActions.js';
 import { path } from '~/utils';
 import Button from '~/components/Button/Button.js';
 
 const cx = className.bind(styles);
 
-class Signup extends Component {
+class ResetPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -37,6 +37,13 @@ class Signup extends Component {
         }
     }
 
+    handleFocusOnInputPassword = () => {
+        const rulePassword = document.getElementById('reset-password-rule-password');
+        if (rulePassword) {
+            rulePassword.style.display = 'none';
+        }
+    };
+
     componentWillUnmount() {
         clearInterval(this.id.current);
     }
@@ -50,11 +57,11 @@ class Signup extends Component {
         const { delayRedirect } = this.state;
 
         return (
-            <Route exact path={path.SIGNUP}>
+            <Route exact path={path.RESETPASSWORD}>
                 {delayRedirect ? (
                     <Redirect to={path.SIGNIN} />
                 ) : (
-                    <div className={cx('signup-container')}>
+                    <div className={cx('reset-password-container')}>
                         <Formik
                             initialValues={{ fullName: '', email: '', password: '', confirmedPassword: '' }}
                             validationSchema={Yup.object().shape({
@@ -75,61 +82,24 @@ class Signup extends Component {
                             }}
                         >
                             {(props) => (
-                                <Form className={cx('form-signup')} onSubmit={props.handleSubmit}>
-                                    <p className={cx('title')}>Chào mừng bạn đến với cvonline.com</p>
-
-                                    <div className={cx('form-group')}>
-                                        <label htmlFor="fullName" className={cx('label')}>
-                                            Họ và tên
-                                        </label>
-                                        <Field
-                                            type="text"
-                                            id="fullName"
-                                            className={cx('input-form')}
-                                            name="fullName"
-                                            placeholder="VD: Nguyễn Xuân Huy"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.fullName}
-                                        />
-                                        <ErrorMessage component="p" name="fullName">
-                                            {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                        </ErrorMessage>
-                                    </div>
-
-                                    <div className={cx('form-group')}>
-                                        <label htmlFor="email" className={cx('label')}>
-                                            Email
-                                        </label>
-                                        <Field
-                                            type="email"
-                                            id="email"
-                                            className={cx('input-form')}
-                                            name="email"
-                                            placeholder="VD: nguyenxuanhuy@gmail.com"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.email}
-                                        />
-                                        <ErrorMessage component="p" name="email">
-                                            {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                        </ErrorMessage>
-                                    </div>
+                                <Form className={cx('form-reset-password')} onSubmit={props.handleSubmit}>
+                                    <p className={cx('title')}>Tạo lại mật khẩu của bạn</p>
 
                                     <div className={cx('form-group')}>
                                         <label htmlFor="password" className={cx('label')}>
-                                            Mật khẩu
+                                            Mật khẩu mới
                                         </label>
-                                        <div className={cx('input-form-password')}>
+                                        <div className={cx('input-form-container')}>
                                             <Field
                                                 type={isShowPassword ? 'text' : 'password'}
                                                 id="password"
                                                 className={cx('input-form')}
                                                 name="password"
-                                                placeholder="VD: Abc123456@"
+                                                placeholder="Nhập mật khẩu mới"
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.password}
+                                                onFocusout={() => this.handleFocusOnInputPassword()}
                                             />
                                             <div className={cx('toggle-show-password')}>
                                                 <Eye1
@@ -138,6 +108,10 @@ class Signup extends Component {
                                                 />
                                             </div>
                                         </div>
+                                        <ul className={cx('rule-password')} id="reset-password-rule-password">
+                                            <li>Mật khẩu từ 6 đến 25 ký tự</li>
+                                            <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
+                                        </ul>
                                         <ErrorMessage component="p" name="password">
                                             {(msg) => <div className={cx('error-message')}>{msg}</div>}
                                         </ErrorMessage>
@@ -145,15 +119,15 @@ class Signup extends Component {
 
                                     <div className={cx('form-group')}>
                                         <label htmlFor="confirmedPassword" className={cx('label')}>
-                                            Nhập lại mật khẩu
+                                            Xác nhận mật khẩu
                                         </label>
-                                        <div className={cx('input-form-password')}>
+                                        <div className={cx('input-form-container')}>
                                             <Field
                                                 type={isShowConfirmationPassword ? 'text' : 'password'}
                                                 id="confirmedPassword"
                                                 className={cx('input-form')}
                                                 name="confirmedPassword"
-                                                placeholder="VD: Abc123456@"
+                                                placeholder="Nhập lại mật khẩu"
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.confirmedPassword}
@@ -202,4 +176,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);

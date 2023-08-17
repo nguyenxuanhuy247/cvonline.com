@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import className from 'classnames/bind';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import * as Yup from 'yup';
@@ -35,7 +35,7 @@ class ForgotPassword extends Component {
                 await this.props.verifyUserEmail(email);
 
                 this.setState({ userEmail: userEmail, isResetSucceeded: false });
-            }, 800);
+            }, 1000);
 
             debouncedVerify(userEmail);
         } else {
@@ -117,9 +117,13 @@ class ForgotPassword extends Component {
                                     )}
                                 </div>
 
-                                <button type="submit" className={cx('submit-btn')}>
-                                    {this.props.isLoading_resetPassword ? `Tạo lại mật khẩu` : <Loading inner verify />}
-                                </button>
+                                <Button
+                                    type="submit"
+                                    className={cx('submit-btn')}
+                                    disabled={!this.props.isVerified || !this.state.userEmail}
+                                >
+                                    {this.props.isLoading_forgotPassword ? <Loading inner auth /> : `Tạo lại mật khẩu`}
+                                </Button>
                             </Form>
                         )}
                     </Formik>
@@ -141,7 +145,7 @@ class ForgotPassword extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        isLoading_resetPassword: state.user.isLoading.resetPassword,
+        isLoading_forgotPassword: state.user.isLoading.forgotPassword,
         isLoading_verifyEmail: state.app.isLoading.verifiedUserEmail,
         isVerified: state.app.isUserEmailVerified,
     };

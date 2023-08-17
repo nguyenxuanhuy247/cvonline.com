@@ -12,52 +12,54 @@
         }
 
         .form-group {
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
+            row-gap: 4px;
 
             .label {
-                margin-top: 20px;
+                font-size: 1.5rem;
                 font-weight: 600;
-                line-height: 1.5rem;
-                font-size: 1.4;
+                line-height: 1.4;
             }
 
-            .input-form-password {
+            .input-form-container {
                 position: relative;
-            }
 
-            .input-form {
-                width: 100%;
-                margin-top: 8px;
-                height: 40px;
-                padding: 8px 12px;
-                border: 1px solid #b3b3b3;
-                border-radius: 4px;
-                outline: none;
-                font-size: 1.4rem;
-            }
+                .input-form {
+                    width: 100%;
+                    height: 40px;
+                    padding: 8px 12px;
+                    border: 1px solid #b3b3b3;
+                    border-radius: 4px;
+                    outline: none;
+                    font-size: 1.4rem;
+                }
 
-            .toggle-show-password {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translate(0, -30%);
+                .toggle-show-password {
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translate(0, -50%);
+                    display: grid;
+                    place-items: center;
 
-                .eye {
-                    font-size: 30px;
-                    padding: 4px;
-                    color: #777;
-                    cursor: pointer;
+                    .eye {
+                        font-size: 30px;
+                        padding: 4px;
+                        color: #777;
+                        cursor: pointer;
 
-                    &.green-eye {
-                        color: var(--primary-color);
+                        &.green-eye {
+                            color: var(--primary-color);
+                        }
                     }
                 }
-            }
 
-            &:hover {
-                .input-form {
-                    border-color: var(--auth-hover-input-border-color-red);
+                &:hover {
+                    .input-form {
+                        border-color: var(--auth-hover-input-border-color-green);
+                    }
                 }
             }
 

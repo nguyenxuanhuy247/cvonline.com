@@ -80,6 +80,20 @@
             translate: -2px -2px;
         }
     }
+
+    &.auth-spinner {
+        width: 20px;
+        height: 20px;
+        background-color: transparent;
+
+        &::before {
+            border: 3px solid;
+            border-color: #fff transparent;
+            width: 20px;
+            height: 20px;
+            translate: -2px -2px;
+        }
+    }
 }
 
 @keyframes spinner {

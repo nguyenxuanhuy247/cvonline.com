@@ -92,6 +92,7 @@ class Signup extends Component {
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.fullName}
+                                                spellCheck={false}
                                             />
                                         </div>
                                         <ErrorMessage component="p" name="fullName">
@@ -113,6 +114,7 @@ class Signup extends Component {
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.email}
+                                                spellCheck={false}
                                             />
                                         </div>
                                         <ErrorMessage component="p" name="email">
@@ -134,6 +136,7 @@ class Signup extends Component {
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.password}
+                                                spellCheck={false}
                                             />
                                             <div className={cx('toggle-show-password')}>
                                                 <Eye1
@@ -161,6 +164,7 @@ class Signup extends Component {
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.confirmedPassword}
+                                                spellCheck={false}
                                             />
                                             <div className={cx('toggle-show-password')}>
                                                 <Eye2

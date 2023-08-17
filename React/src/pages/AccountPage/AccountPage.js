@@ -1,5 +1,4 @@
 import { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import { Switch, Route, Link } from 'react-router-dom';
 import classnames from 'classnames/bind';
 import { FaUser, FaUsersCog } from 'react-icons/fa';
@@ -7,11 +6,6 @@ import { MdVerifiedUser } from 'react-icons/md';
 
 import styles from './AccountPage.module.scss';
 import { MainLayout } from '~/layouts';
-import Image from '~/components/Image/Image.js';
-import * as userActions from '~/store/actions';
-import Loading from '~/components/Modal/Loading.js';
-import { JpgImages } from '~/components/Image/Images';
-import Button from '~/components/Button/Button.js';
 import PersonalInfo from '~/pages/AccountPage/Components/PersonalInfo.js';
 import PasswordSetting from '~/pages/AccountPage/Components/PasswordSetting.js';
 import UserIDSetting from '~/pages/AccountPage/Components/UserIDSetting.js';
@@ -48,19 +42,10 @@ class AccountPage extends PureComponent {
                             <Route path={path.USERIDSETTING} component={UserIDSetting} />
                         </Switch>
                     </div>
-                    {/* {this.props.isLoading && <Loading text="Đang tải..." />} */}
                 </div>
             </MainLayout>
         );
     }
 }
 
-const mapStateToProps = (state) => {
-    return {};
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AccountPage);
+export default AccountPage;
