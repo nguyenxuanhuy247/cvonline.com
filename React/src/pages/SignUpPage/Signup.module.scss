@@ -67,6 +67,18 @@
                 @include auth-form-error-message;
             }
 
+            .rule-password {
+                margin-left: 8px;
+                color: #4d5965;
+                font-size: 12px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 16px;
+                margin-top: 10px;
+                padding-left: 1rem;
+                list-style-type: disc;
+            }
+
             &:nth-child(4),
             &:nth-child(5) {
                 .input-form {

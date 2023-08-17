@@ -145,9 +145,14 @@ class Signup extends Component {
                                                 />
                                             </div>
                                         </div>
-                                        <ErrorMessage component="p" name="password">
-                                            {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                        </ErrorMessage>
+                                        {props.errors.password && props.touched.password ? (
+                                            <div className={cx('error-message')}>{props.errors.password}</div>
+                                        ) : (
+                                            <ul className={cx('rule-password')}>
+                                                <li>Mật khẩu từ 6 đến 25 ký tự</li>
+                                                <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
+                                            </ul>
+                                        )}
                                     </div>
 
                                     <div className={cx('form-group')}>

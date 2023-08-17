@@ -71,8 +71,8 @@ class ResetPassword extends Component {
                                     .email('Định dạng email không đúng'),
                                 password: Yup.string()
                                     .required('Hãy nhập mật khẩu của bạn')
-                                    .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
-                                    .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự'),
+                                    .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
+                                    .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự'),
                                 confirmedPassword: Yup.string()
                                     .required('Hãy nhập mật khẩu xác nhận')
                                     .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận chưa đúng'),
@@ -108,13 +108,14 @@ class ResetPassword extends Component {
                                                 />
                                             </div>
                                         </div>
-                                        <ul className={cx('rule-password')} id="reset-password-rule-password">
-                                            <li>Mật khẩu từ 6 đến 25 ký tự</li>
-                                            <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
-                                        </ul>
-                                        <ErrorMessage component="p" name="password">
-                                            {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                        </ErrorMessage>
+                                        {props.errors.password && props.touched.password ? (
+                                            <div className={cx('error-message')}>{props.errors.password}</div>
+                                        ) : (
+                                            <ul className={cx('rule-password')} id="reset-password-rule-password">
+                                                <li>Mật khẩu từ 6 đến 25 ký tự</li>
+                                                <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
+                                            </ul>
+                                        )}
                                     </div>
 
                                     <div className={cx('form-group')}>
