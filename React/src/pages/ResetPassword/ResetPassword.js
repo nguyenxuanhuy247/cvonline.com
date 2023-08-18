@@ -37,13 +37,6 @@ class ResetPassword extends Component {
         }
     }
 
-    handleFocusOnInputPassword = () => {
-        const rulePassword = document.getElementById('reset-password-rule-password');
-        if (rulePassword) {
-            rulePassword.style.display = 'none';
-        }
-    };
-
     componentWillUnmount() {
         clearInterval(this.id.current);
     }
@@ -99,23 +92,24 @@ class ResetPassword extends Component {
                                                 onChange={props.handleChange}
                                                 onBlur={props.handleBlur}
                                                 value={props.values.password}
-                                                onFocusout={() => this.handleFocusOnInputPassword()}
                                             />
                                             <div className={cx('toggle-show-password')}>
                                                 <Eye1
-                                                    className={cx('eye')}
+                                                    className={cx('eye', { 'green-eye': isShowPassword })}
                                                     onClick={() => this.handleShowHidePassword(true)}
                                                 />
                                             </div>
                                         </div>
-                                        {props.errors.password && props.touched.password ? (
-                                            <div className={cx('error-message')}>{props.errors.password}</div>
-                                        ) : (
-                                            <ul className={cx('rule-password')} id="reset-password-rule-password">
-                                                <li>Mật khẩu từ 6 đến 25 ký tự</li>
-                                                <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
-                                            </ul>
-                                        )}
+                                        <div className={cx('message-container')}>
+                                            {props.errors.password && props.touched.password ? (
+                                                <div className={cx('error-message')}>{props.errors.password}</div>
+                                            ) : (
+                                                <ul className={cx('rule-password')}>
+                                                    <li>Mật khẩu từ 6 đến 25 ký tự</li>
+                                                    <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
+                                                </ul>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className={cx('form-group')}>
@@ -135,14 +129,16 @@ class ResetPassword extends Component {
                                             />
                                             <div className={cx('toggle-show-password')}>
                                                 <Eye2
-                                                    className={cx('eye')}
+                                                    className={cx('eye', { 'green-eye': isShowConfirmationPassword })}
                                                     onClick={() => this.handleShowHidePassword()}
                                                 />
                                             </div>
                                         </div>
-                                        <ErrorMessage component="p" name="confirmedPassword">
-                                            {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                        </ErrorMessage>
+                                        <div className={cx('message-container')}>
+                                            <ErrorMessage component="p" name="confirmedPassword">
+                                                {(msg) => <div className={cx('error-message')}>{msg}</div>}
+                                            </ErrorMessage>
+                                        </div>
                                     </div>
 
                                     <button type="submit" className={cx('submit-btn')}>

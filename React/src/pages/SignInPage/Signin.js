@@ -76,11 +76,26 @@ class SignIn extends Component {
                             <Form className={cx('form-signin')}>
                                 <p className={cx('title')}>Chào mừng bạn đến với cvonline.com</p>
 
+                                <div className={cx('message-container')}>
+                                    {props.errors.email && props.touched.email ? (
+                                        <div className={cx('error-message')}>{props.errors.email}</div>
+                                    ) : (
+                                        props.errors.password &&
+                                        props.touched.password && (
+                                            <div className={cx('error-message')}>{props.errors.password}</div>
+                                        )
+                                    )}
+                                </div>
+
                                 <div className={cx('form-group')}>
                                     <label htmlFor="email" className={cx('form-label')}>
                                         Email
                                     </label>
-                                    <div className={cx('input-form-container')}>
+                                    <div
+                                        className={cx('input-form-container', {
+                                            'error-red-border': props.errors.email && props.touched.email,
+                                        })}
+                                    >
                                         <label htmlFor="email" className={cx('label')}>
                                             <MdEmail className={cx('form-icon')} />
                                         </label>
@@ -95,16 +110,17 @@ class SignIn extends Component {
                                             value={props.values.email}
                                         />
                                     </div>
-                                    <ErrorMessage component="p" name="email">
-                                        {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                    </ErrorMessage>
                                 </div>
 
                                 <div className={cx('form-group')}>
                                     <label htmlFor="password" className={cx('form-label')}>
                                         Mật khẩu
                                     </label>
-                                    <div className={cx('input-form-container')}>
+                                    <div
+                                        className={cx('input-form-container', {
+                                            'error-red-border': props.errors.password && props.touched.password,
+                                        })}
+                                    >
                                         <label htmlFor="password" className={cx('label')}>
                                             <RiLockPasswordFill className={cx('form-icon')} />
                                         </label>
@@ -125,9 +141,6 @@ class SignIn extends Component {
                                             />
                                         </div>
                                     </div>
-                                    <ErrorMessage component="p" name="password">
-                                        {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                    </ErrorMessage>
                                 </div>
                                 <Link to={path.FORGOTPASSWORD} className={cx('forgot-password')}>
                                     Quên mật khẩu?

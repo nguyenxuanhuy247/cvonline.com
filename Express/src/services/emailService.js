@@ -1,6 +1,7 @@
 import db from '~/models';
 require('dotenv').config();
 const nodemailer = require('nodemailer');
+var jwt = require('jsonwebtoken');
 
 // RESET PASSWORD
 export const handleSendEmailResetPassword = async (data) => {

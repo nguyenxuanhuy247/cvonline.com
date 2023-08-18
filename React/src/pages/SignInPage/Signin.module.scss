@@ -9,6 +9,17 @@
 
         .title {
             @include auth-title;
+            margin-bottom: 8px;
+        }
+
+        .message-container {
+            margin: 4px 0;
+            text-align: center;
+            height: 40px;
+
+            .error-message {
+                @include auth-form-error-message;
+            }
         }
 
         .form-group {
@@ -53,7 +64,7 @@
                     outline: none;
                     border: none;
                     background-color: transparent;
-                    padding: 0 16px 0 8px;
+                    padding: 0 8px;
                     flex: 1;
                     height: 100%;
                     font-size: 1.4rem;
@@ -92,20 +103,8 @@
                         border-color: var(--auth-hover-input-border-color-green);
                     }
                 }
-            }
 
-            .error-message {
-                @include auth-form-error-message;
-            }
-
-            &:nth-child(3) {
-                .input-form {
-                    padding-right: 42px;
-                }
-            }
-
-            &:has(div.error-message) {
-                .input-form-container {
+                &.error-red-border {
                     border-color: var(--auth-error-input-border-color-red);
 
                     .label {
@@ -113,7 +112,27 @@
                     }
                 }
             }
+
+            &:nth-child(3) {
+                margin-top: 0;
+            }
+
+            &:nth-child(4) {
+                .input-form {
+                    padding-right: 46px;
+                }
+            }
         }
+
+        // &:has(div.error-message) {
+        //     .input-form-container {
+        //         border-color: var(--auth-error-input-border-color-red);
+
+        //         .label {
+        //             border-color: var(--auth-error-input-border-color-red);
+        //         }
+        //     }
+        // }
 
         .forgot-password {
             padding: 4px 8px;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import className from 'classnames/bind';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import * as Yup from 'yup';
@@ -28,9 +28,12 @@ class ForgotPassword extends Component {
     }
 
     handleVerifyUserEmail = (e) => {
+        const FEErrorMessageEl = document.getElementById('forgot-password-error-message-FE');
         const userEmail = e.target.value;
+        e.target.blur();
+        e.target.focus();
 
-        if (userEmail) {
+        if (userEmail && !FEErrorMessageEl) {
             const debouncedVerify = _.debounce(async (email) => {
                 await this.props.verifyUserEmail(email);
 
@@ -44,6 +47,8 @@ class ForgotPassword extends Component {
     };
 
     render() {
+        const FEErrorMessageEl = document.getElementById('forgot-password-error-message-FE');
+
         return (
             <Route path={path.FORGOTPASSWORD}>
                 <div className={cx('forgot-password-container')}>
@@ -66,14 +71,48 @@ class ForgotPassword extends Component {
                         }}
                     >
                         {(props) => (
-                            <Form className={cx('form-forgot-password')} onSubmit={props.handleSubmit}>
+                            <Form
+                                className={cx('form-forgot-password')}
+                                onSubmit={props.handleSubmit}
+                                onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
+                            >
                                 <p className={cx('title')}>Quên mật khẩu</p>
-                                {this.state.isResetSucceeded && (
-                                    <p className={cx('success-message')}>
-                                        Hãy kiểm tra email của bạn. Sau đó nhấn vào link trong hộp thư để đổi lại mật
-                                        khẩu.
-                                    </p>
-                                )}
+
+                                <div className={cx('message-container')}>
+                                    {this.state.isResetSucceeded ? (
+                                        <p className={cx('success-message')}>
+                                            Hãy kiểm tra email của bạn. Sau đó nhấn vào link trong hộp thư để đổi lại
+                                            mật khẩu.
+                                        </p>
+                                    ) : (
+                                        <>
+                                            {!this.props.isLoading_verifyEmail &&
+                                                this.state.userEmail &&
+                                                (this.props.isVerified ? (
+                                                    <p className={cx('message', 'OK', 'hide')}>
+                                                        Email người dùng khả dụng
+                                                    </p>
+                                                ) : (
+                                                    <p className={cx('message', 'error', 'hide')}>
+                                                        Email chưa được đăng ký
+                                                    </p>
+                                                ))}
+
+                                            {!this.props.isLoading_verifyEmail && (
+                                                <ErrorMessage name="email">
+                                                    {(msg) => (
+                                                        <div
+                                                            id="forgot-password-error-message-FE"
+                                                            className={cx('message', 'error', 'yup')}
+                                                        >
+                                                            {msg}
+                                                        </div>
+                                                    )}
+                                                </ErrorMessage>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                                 <div className={cx('form-group')}>
                                     <label htmlFor="email" className={cx('form-label')}>
                                         Email
@@ -91,7 +130,8 @@ class ForgotPassword extends Component {
                                             value={props.values.email}
                                             onInput={(e) => this.handleVerifyUserEmail(e)}
                                         />
-                                        {this.state.userEmail ? (
+
+                                        {this.state.userEmail && !FEErrorMessageEl && (
                                             <span className={cx('icon-wrapper')}>
                                                 {this.props.isVerified ? (
                                                     <BsFillCheckCircleFill className={cx('icon', 'verified')} />
@@ -101,20 +141,29 @@ class ForgotPassword extends Component {
 
                                                 {this.props.isLoading_verifyEmail && <Loading inner verify />}
                                             </span>
-                                        ) : (
-                                            <></>
                                         )}
                                     </div>
 
-                                    {this.state.userEmail ? (
-                                        this.props.isVerified ? (
-                                            <p className={cx('message', 'OK')}>Email người dùng khả dụng</p>
+                                    {/* {!this.props.isLoading_verifyEmail &&
+                                        this.state.userEmail &&
+                                        (this.props.isVerified ? (
+                                            <p className={cx('message', 'OK', 'hide')}>Email người dùng khả dụng</p>
                                         ) : (
-                                            <p className={cx('message', 'error')}>Email chưa được đăng ký</p>
-                                        )
-                                    ) : (
-                                        <></>
-                                    )}
+                                            <p className={cx('message', 'error', 'hide')}>Email chưa được đăng ký</p>
+                                        ))}
+
+                                    {!this.props.isLoading_verifyEmail && (
+                                        <ErrorMessage name="email">
+                                            {(msg) => (
+                                                <div
+                                                    id="forgot-password-error-message-FE"
+                                                    className={cx('message', 'error', 'yup')}
+                                                >
+                                                    {msg}
+                                                </div>
+                                            )}
+                                        </ErrorMessage>
+                                    )} */}
                                 </div>
 
                                 <Button
