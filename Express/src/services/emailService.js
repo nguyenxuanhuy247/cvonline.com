@@ -1,7 +1,7 @@
 import db from '~/models';
 require('dotenv').config();
 const nodemailer = require('nodemailer');
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 // RESET PASSWORD
 export const handleSendEmailResetPassword = async (data) => {
@@ -10,11 +10,17 @@ export const handleSendEmailResetPassword = async (data) => {
 
         const user = await db.users.findOne({
             where: { email: receiverEmail },
-            attributes: ['email'],
+            attributes: ['id', 'email', 'password'],
             raw: true,
         });
 
         if (user) {
+            const JWT_SECRET = 'reset password';
+            const secret = JWT_SECRET + user.password;
+            const payload = { id: user.id, email: user.email };
+            var token = jwt.sign(payload, secret, { expiresIn: '1h' });
+            const link = `${process.env.EXPRESS_URL}/reset-password/${user.id}/${token}`;
+
             const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
@@ -26,14 +32,14 @@ export const handleSendEmailResetPassword = async (data) => {
             });
 
             // send mail with defined transport object
-            const info = await transporter.sendMail({
+            await transporter.sendMail({
                 from: '"cvonline.com" <no-reply@cvonline.com.vn>',
                 to: receiverEmail,
                 subject: 'Reset mật khẩu',
                 text: 'Reset mật khẩu',
                 html: `<div style="font-size:16px;color:#500050">
                 <h3>Bạn vừa gửi yêu cầu đặt lại mật khẩu?</h3>
-                <p>Click vào link sau để đặt lại mật khẩu: <a href='http://localhost:2407/forgot-password' style="color:#00b14f;text-decoration:underline">https://www.topcv.vn/reset-password/8b4644f92d8516937a4435fd407e6744356ebe4030ea4059ec1a52ae800ec399</a></p>
+                <p>Click vào link sau để đặt lại mật khẩu: <a href=${link} style="color:#00b14f;text-decoration:underline">${link}</a></p>
               
                 <p>Nếu không phải bạn đã gửi yêu cầu đặt lại mật khẩu, xin hãy bỏ qua email này.</p>
                 <p>Nếu có bất kì thắc mắc nào, vui lòng liên hệ <a href="mailto:nguyenxuanhuy.yukai@example.com" style="color:#00b14f;text-decoration:underline;" target="_blank">hotro@cvonline.com</a> để nhận được hỗ trợ.</p>
@@ -64,5 +70,3 @@ export const handleSendEmailResetPassword = async (data) => {
         };
     }
 };
-
-// main().catch(console.error);

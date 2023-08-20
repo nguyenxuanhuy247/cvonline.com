@@ -1,5 +1,6 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
+const jwt = require('jsonwebtoken');
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -108,6 +109,75 @@ export const postChangePassword = async (data) => {
         return {
             errorCode: 31,
             errorMessage: `[Kết nối Database] Đăng nhập thất bại`,
+        };
+    }
+};
+
+// HANDLE RESET PASSWORD
+export const handleGetResetPassword = async (id, token) => {
+    try {
+        const user = await db.users.findOne({
+            where: { id: id },
+            attributes: ['id', 'email', 'password'],
+            raw: true,
+        });
+
+        if (user) {
+            const JWT_SECRET = 'reset password';
+            const secret = JWT_SECRET + user.password;
+            const isVerified = jwt.verify(token, secret);
+
+            if (isVerified) {
+                return {
+                    errorCode: 0,
+                    data: isVerified,
+                };
+            }
+        }
+
+        return {
+            errorCode: 31,
+        };
+    } catch (error) {
+        console.log('An error in handleGetResetPassword() in userService.js : ', error);
+
+        return {
+            errorCode: 31,
+        };
+    }
+};
+
+export const handlePostResetPassword = async (id, password) => {
+    try {
+        const user = await db.users.findOne({
+            where: { id: id },
+            attributes: ['password'],
+            raw: false,
+        });
+
+        if (user) {
+            const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
+
+            if (errorCode === 0) {
+                user.password = hashPassword;
+                user.save();
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Đăng ký tài khoản thành công`,
+                    data: 111111,
+                };
+            }
+        }
+
+        return {
+            errorCode: 31,
+        };
+    } catch (error) {
+        console.log('An error in handleGetResetPassword() in userService.js : ', error);
+
+        return {
+            errorCode: 31,
         };
     }
 };

@@ -56,13 +56,26 @@ export const checkReqForgotPassword = (req, res, next) => {
     if (!email) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập Email để đổi mật khẩu',
+            errorMessage: 'Nhập email để lấy lại mật khẩu',
         });
     }
 
     next();
 };
 
+// CHECK RESET PASSWORD
+export const checkReqGetResetPassword = (req, res, next) => {
+    const { id, token } = req.params;
+
+    if (!email) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Nhập email để lấy lại mật khẩu',
+        });
+    }
+
+    next();
+};
 // =================================================================
 // CHECK CRUD USER INFORMATION
 

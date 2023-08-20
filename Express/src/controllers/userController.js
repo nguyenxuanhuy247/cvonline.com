@@ -16,6 +16,36 @@ export const handleForgotPassword = async (req, res) => {
     }
 };
 
+// HANDLE USER RESET PASSWORD
+export const handleGetResetPassword = async (req, res) => {
+    const { id, token } = req.params;
+    if (id && token) {
+        let message = await userService.handleGetResetPassword(id, token);
+
+        if (message.errorCode === 0) {
+            return res.render('reset-password', { errorCode: 1 });
+        }
+    }
+
+    return res.redirect('http://localhost:2407/forgot-password');
+};
+
+export const handlePostResetPassword = async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    console.log('Reset Password', id, password);
+
+    if (id && password) {
+        let message = await userService.handlePostResetPassword(id, password);
+        if (message.errorCode === 0) {
+            return res.render('reset-password', { errorCode: message.errorCode });
+        }
+    }
+
+    return res.send('Not found');
+};
+
 // HANDLE USER SIGNUP
 export const handleUserSignUp = async (req, res) => {
     const data = req.body;
