@@ -17,7 +17,6 @@ class App extends Component {
                     <Route path={path.SIGNIN} component={userIsNotAuthenticated(AuthLayout)} />
                     <Route path={path.SIGNUP} component={userIsNotAuthenticated(AuthLayout)} />
                     <Route path={path.FORGOTPASSWORD} component={userIsNotAuthenticated(AuthLayout)} />
-                    <Route path={path.RESETPASSWORD} component={userIsNotAuthenticated(AuthLayout)} />
                     <Route path={path.ACCOUNT} component={userIsAuthenticated(AccountPage)} />
                     <Route path={path.PERSONALINFO} component={userIsAuthenticated(AccountPage)} />
                     <Route path={path.PASSWORDSETTING} component={userIsAuthenticated(AccountPage)} />

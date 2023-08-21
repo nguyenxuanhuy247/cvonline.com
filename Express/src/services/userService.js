@@ -151,7 +151,7 @@ export const handlePostResetPassword = async (id, password) => {
     try {
         const user = await db.users.findOne({
             where: { id: id },
-            attributes: ['password'],
+            attributes: ['id', 'password'],
             raw: false,
         });
 
@@ -160,12 +160,10 @@ export const handlePostResetPassword = async (id, password) => {
 
             if (errorCode === 0) {
                 user.password = hashPassword;
-                user.save();
+                await user.save();
 
                 return {
                     errorCode: 0,
-                    errorMessage: `Đăng ký tài khoản thành công`,
-                    data: 111111,
                 };
             }
         }
@@ -174,7 +172,7 @@ export const handlePostResetPassword = async (id, password) => {
             errorCode: 31,
         };
     } catch (error) {
-        console.log('An error in handleGetResetPassword() in userService.js : ', error);
+        console.log('An error in handlePostResetPassword() in userService.js : ', error);
 
         return {
             errorCode: 31,
@@ -336,6 +334,8 @@ export const handleGetHomeLayout = async () => {
             order: [['id', 'ASC']],
             raw: true,
         });
+
+        console.log('aaaaaa', userIDList);
 
         if (userIDList.length) {
             const userIDArray = userIDList?.map((userID) => userID.id);

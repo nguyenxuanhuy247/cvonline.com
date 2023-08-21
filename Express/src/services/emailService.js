@@ -18,7 +18,7 @@ export const handleSendEmailResetPassword = async (data) => {
             const JWT_SECRET = 'reset password';
             const secret = JWT_SECRET + user.password;
             const payload = { id: user.id, email: user.email };
-            var token = jwt.sign(payload, secret, { expiresIn: '1h' });
+            var token = jwt.sign(payload, secret, { expiresIn: '10h' });
             const link = `${process.env.EXPRESS_URL}/reset-password/${user.id}/${token}`;
 
             const transporter = nodemailer.createTransport({
@@ -35,8 +35,8 @@ export const handleSendEmailResetPassword = async (data) => {
             await transporter.sendMail({
                 from: '"cvonline.com" <no-reply@cvonline.com.vn>',
                 to: receiverEmail,
-                subject: 'Reset mật khẩu',
-                text: 'Reset mật khẩu',
+                subject: 'Đặt lại mật khẩu',
+                text: 'Đặt lại mật khẩu',
                 html: `<div style="font-size:16px;color:#500050">
                 <h3>Bạn vừa gửi yêu cầu đặt lại mật khẩu?</h3>
                 <p>Click vào link sau để đặt lại mật khẩu: <a href=${link} style="color:#00b14f;text-decoration:underline">${link}</a></p>

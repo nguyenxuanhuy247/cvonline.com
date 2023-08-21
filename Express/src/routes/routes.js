@@ -3,6 +3,7 @@ import * as userMiddleware from '~/middleware';
 import * as appMiddleware from '~/middleware';
 import * as userController from '~/controllers';
 import * as appController from '~/controllers';
+const Yup = require('yup');
 
 let router = express.Router();
 

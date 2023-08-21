@@ -1,5 +1,6 @@
 import * as userService from '~/services/userService.js';
 import * as emailService from '~/services/emailService.js';
+const yup = require('yup');
 
 // HANDLE USER CHANGE PASSWORD
 export const handleForgotPassword = async (req, res) => {
@@ -23,27 +24,63 @@ export const handleGetResetPassword = async (req, res) => {
         let message = await userService.handleGetResetPassword(id, token);
 
         if (message.errorCode === 0) {
-            return res.render('reset-password', { errorCode: 1 });
+            return res.render('reset-password', {
+                errorCode: 1,
+                errorMessage: '',
+                values: { password: '', confirmedPassword: '' },
+            });
         }
     }
 
-    return res.redirect('http://localhost:2407/forgot-password');
+    return res.render('reset-password-redirect.ejs', {
+        message: 'Liên kết đã hết hiệu lực, vui lòng nhập lại Email',
+        redirectSiteName: 'Quên mật khẩu',
+        redirectSite: 'http://localhost:2407/forgot-password',
+    });
 };
 
 export const handlePostResetPassword = async (req, res) => {
-    const { id } = req.params;
-    const { password } = req.body;
+    const { id, token } = req.params;
 
-    console.log('Reset Password', id, password);
+    if ((id, token)) {
+        const schema = yup.object().shape({
+            password: yup
+                .string()
+                .required('Hãy nhập Mật khẩu mới')
+                .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
+                .max(25, 'Mật khẩu chỉ được độ dài tối đa 25 ký tự'),
+            confirmedPassword: yup
+                .string()
+                .required('Hãy nhập Xác nhận mật khẩu mới')
+                .oneOf([yup.ref('password'), null], 'Xác nhận mật khẩu không trùng khớp với mật khẩu'),
+        });
 
-    if (id && password) {
-        let message = await userService.handlePostResetPassword(id, password);
-        if (message.errorCode === 0) {
-            return res.render('reset-password', { errorCode: message.errorCode });
+        try {
+            const submittedData = await schema.validate(req.body);
+            const password = submittedData.password;
+
+            const message = await userService.handlePostResetPassword(id, password);
+            if (message.errorCode === 0) {
+                return res.render('reset-password.ejs', {
+                    errorCode: message.errorCode,
+                    errorMessage: '',
+                    values: { password: '', confirmedPassword: '' },
+                });
+            }
+        } catch (error) {
+            return res.render('reset-password.ejs', {
+                errorCode: 1,
+                errorMessage: error.message,
+                values: error.value,
+            });
         }
+    } else {
+        return res.render('reset-password-redirect.ejs', {
+            message: 'Liên kết đã hết hiệu lực, vui lòng nhập lại Email',
+            redirectSiteName: 'Quên mật khẩu',
+            redirectSite: 'http://localhost:2407/forgot-password',
+        });
     }
-
-    return res.send('Not found');
 };
 
 // HANDLE USER SIGNUP

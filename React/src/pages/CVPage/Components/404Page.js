@@ -11,7 +11,7 @@ class NotFoundLayout extends PureComponent {
             <div className={cx('not-found-section')}>
                 <div className={cx('not-found-container')}>
                     <span className={cx('number')}>404</span>
-                    <span className={cx('text')}>Không tìm thấy CV phù hợp</span>
+                    <span className={cx('text')}>{this.props.text || 'Không tìm thấy CV phù hợp'}</span>
                 </div>
             </div>
         );

@@ -5,7 +5,7 @@ import className from 'classnames/bind';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import jwt_decode from 'jwt-decode';
 
