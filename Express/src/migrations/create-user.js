@@ -30,6 +30,9 @@ module.exports = {
             password: {
                 type: Sequelize.STRING,
             },
+            gmailPassword: {
+                type: Sequelize.STRING,
+            },
             address: {
                 type: Sequelize.STRING,
             },

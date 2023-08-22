@@ -136,6 +136,24 @@ const userReducer = (state = initialState, action) => {
                 userInfo: action.payload,
             };
 
+        // UPDATE USER INFORMATION
+        case actionNames.UPDATE_USER_INFORMATION_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: true },
+            };
+        case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                owner: action.payload,
+            };
+        case actionNames.UPDATE_USER_INFORMATION_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                owner: action.payload,
+            };
         // =================================================================
         // CREATE PRODUCT
         case actionNames.CREATE_PRODUCT_START:

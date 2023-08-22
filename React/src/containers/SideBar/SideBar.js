@@ -11,6 +11,8 @@ import styles from './SideBar.module.scss';
 import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
 import Button from '~/components/Button/Button.js';
+import GetGoogleAppPasswordModal from '~/components/Modal/GetGoogleAppPasswordModal.js';
+import { path } from '~/utils/constants.js';
 
 const cx = classnames.bind(styles);
 
@@ -19,6 +21,7 @@ class SideBar extends PureComponent {
         super(props);
         this.state = {
             prevUserID: undefined,
+            isOpenModal: false,
         };
     }
 
@@ -42,6 +45,20 @@ class SideBar extends PureComponent {
         if (prevUserID) {
             this.props.readUserInformation(prevUserID);
         }
+    };
+
+    handleClickSendCVViaEmailButton = () => {
+        const { isGmailPassword } = this.props.owner ?? {};
+
+        if (isGmailPassword) {
+            window.location.href = `http://localhost:2407/send-cv-via-email`;
+        } else {
+            this.setState({ isOpenModal: true });
+        }
+    };
+
+    handleCloseModal = () => {
+        this.setState({ isOpenModal: false });
     };
 
     componentDidUpdate(prevProps) {
@@ -86,12 +103,13 @@ class SideBar extends PureComponent {
                     </span>
                     <span className={cx('text')}>Vừa xem</span>
                 </Button>
-                <Button className={cx('button')}>
+                <Button className={cx('button')} onClick={() => this.handleClickSendCVViaEmailButton()}>
                     <span className={cx('icon')}>
                         <BsFillEnvelopeAtFill />
                     </span>
                     <span className={cx('text')}>Gửi CV</span>
                 </Button>
+                <GetGoogleAppPasswordModal isOpen={this.state.isOpenModal} onClose={() => this.handleCloseModal()} />
             </div>
         );
     };

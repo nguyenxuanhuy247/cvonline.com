@@ -96,6 +96,7 @@ export const checkReqGetUserInformation = (req, res, next) => {
 // UPDATE USER INFORMATION
 export const checkReqUpdateUserInformation = (req, res, next) => {
     const { userId, label } = req.body;
+    console.log('update', req.body);
 
     if (!userId) {
         return res.status(400).json({

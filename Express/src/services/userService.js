@@ -246,7 +246,7 @@ export const postUserSignIn = async (data) => {
             // Get user's data again prevent someone from deleting/changing data
             let user = await db.users.findOne({
                 where: { email: email },
-                attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
+                attributes: ['id', 'avatar', 'fullName', 'email', 'password', 'gmailPassword'],
                 raw: true,
             });
 
@@ -256,7 +256,12 @@ export const postUserSignIn = async (data) => {
                 // Convert avatar to Base64
                 const avatar = user.avatar;
                 const binaryAvatar = avatar?.toString('binary');
-                newUser = { ...user, avatar: binaryAvatar };
+                newUser = {
+                    ...user,
+                    avatar: binaryAvatar,
+                    isPassword: !!password,
+                    isGmailPassword: !!user.gmailPassword,
+                };
 
                 if (!isGoogle) {
                     if (user.password) {
@@ -334,8 +339,6 @@ export const handleGetHomeLayout = async () => {
             order: [['id', 'ASC']],
             raw: true,
         });
-
-        console.log('aaaaaa', userIDList);
 
         if (userIDList.length) {
             const userIDArray = userIDList?.map((userID) => userID.id);
@@ -447,7 +450,12 @@ export const handleGetUserInformation = async (data) => {
             const password = user.password;
 
             const binaryAvatar = avatar?.toString('binary');
-            const newUser = { ...user, avatar: binaryAvatar, isPassword: !!password };
+            const newUser = {
+                ...user,
+                avatar: binaryAvatar,
+                isPassword: !!password,
+                gmailPassword: !!user.gmailPassword,
+            };
             delete newUser.password;
 
             return {
@@ -481,6 +489,7 @@ export const handleUpdateUserInformation = async (data) => {
             raw: false,
         });
 
+        console.log('aaaaaaaaa', user);
         const keyArray = Object.keys(await db.users.rawAttributes);
 
         if (user) {
@@ -531,53 +540,42 @@ export const handleCreateProduct = async (data) => {
             raw: true,
         });
 
-        if (productIDs) {
-            const productIDArr = productIDs?.map((productID) => productID.productOrder);
-            const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
-            let maxOrder = Math.max(...productIDArrWithNULL);
-
-            if (maxOrder !== 0) {
-                const { id, name, desc, image } = await db.technologies.create({
-                    type: 'PRODUCTDESC',
-                    key: 'PD',
-                    userId: userId,
-                    productOrder: maxOrder + 1,
-                });
-
-                let binaryImage;
-                if (image) {
-                    binaryImage = image.toString('binary');
-                }
-
-                const newProduct = {
-                    order: undefined,
-                    productInfo: { id, name, desc, image: binaryImage },
-                    sourceCodeList: [],
-                    FETechnologyList: [],
-                    BETechnologyList: [],
-                    FELibraryList: [],
-                    numberofFELibrary: 0,
-                    BELibraryList: [],
-                    numberofBELibrary: 0,
-                };
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Tạo sản phẩm mới thành công`,
-                    data: newProduct,
-                };
-            } else {
-                return {
-                    errorCode: 33,
-                    errorMessage: `Không tìm thấy danh sách sản phẩm đã tạo`,
-                };
-            }
-        } else {
-            return {
-                errorCode: 32,
-                errorMessage: `Không tìm thấy danh sách sản phẩm đã tạo`,
-            };
+        const productIDArr = productIDs?.map((productID) => productID.productOrder);
+        const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+        let maxOrder = 0;
+        if (productIDArrWithNULL?.length > 0) {
+            maxOrder = Math.max(...productIDArrWithNULL);
         }
+
+        const { id, name, desc, image } = await db.technologies.create({
+            type: 'PRODUCTDESC',
+            key: 'PD',
+            userId: userId,
+            productOrder: maxOrder + 1,
+        });
+
+        let binaryImage;
+        if (image) {
+            binaryImage = image.toString('binary');
+        }
+
+        const newProduct = {
+            order: undefined,
+            productInfo: { id, name, desc, image: binaryImage },
+            sourceCodeList: [],
+            FETechnologyList: [],
+            BETechnologyList: [],
+            FELibraryList: [],
+            numberofFELibrary: 0,
+            BELibraryList: [],
+            numberofBELibrary: 0,
+        };
+
+        return {
+            errorCode: 0,
+            errorMessage: `Tạo sản phẩm mới thành công`,
+            data: newProduct,
+        };
     } catch (error) {
         console.log('An error in handleCreateProduct() in userService.js : ', error);
         return {

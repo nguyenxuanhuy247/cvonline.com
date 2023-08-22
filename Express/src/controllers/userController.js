@@ -169,9 +169,7 @@ export const handleCreateProduct = async (req, res) => {
     const message = await userService.handleCreateProduct(data);
     if (message.errorCode === 0) {
         return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32 || message.errorCode === 33) {
+    } else if (message.errorCode === 32) {
         res.status(404).json(message);
     }
 };

@@ -150,7 +150,7 @@ class PersonalLayout extends PureComponent {
     };
 
     // =================================================================
-    fetchUserInformationAndProductList = async () => {
+    fetchUserInformationAndProductList = async (isReadProduct) => {
         const { paramId } = this.props?.match?.params ?? {};
         const { languages } = this.props?.userInfo ?? {};
 
@@ -162,13 +162,13 @@ class PersonalLayout extends PureComponent {
             languagesElement.innerText = languages || '';
         }
 
-        if (errorCode1 === 0) {
+        if (errorCode1 === 0 && isReadProduct) {
             await this.props.readProduct(paramId);
         }
     };
 
     async componentDidMount() {
-        this.fetchUserInformationAndProductList();
+        this.fetchUserInformationAndProductList(true);
 
         // Auto scroll to TOP when go to CV Layout
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -226,9 +226,12 @@ class PersonalLayout extends PureComponent {
         }
     }
 
-    componentDidUpdate(prevProps) {
-        if (this.props.userInfo?.id !== prevProps.userInfo?.id) {
-            this.fetchUserInformationAndProductList();
+    componentDidUpdate() {
+        // Set languages from database by JS
+        const { languages } = this.props?.userInfo ?? {};
+        const languagesElement = document.getElementById(`js-language-desc`);
+        if (languagesElement) {
+            languagesElement.innerText = languages || '';
         }
     }
 

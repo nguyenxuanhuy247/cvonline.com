@@ -211,6 +211,7 @@ export const readUserInformation_Failure = (data) => ({
 export const updateUserInformation = (userData) => {
     return async (dispatch) => {
         dispatch(updateUserInformation_Start());
+        console.log('aaaaaaaaaaaaaaaaaaaaa', userData);
         try {
             let res = await userService.updateUserInformation(userData);
             const { errorCode, errorMessage, data } = res ?? {};
@@ -237,16 +238,16 @@ export const updateUserInformation = (userData) => {
 };
 
 export const updateUserInformation_Start = () => ({
-    type: actionNames.READ_USER_INFORMATION_START,
+    type: actionNames.UPDATE_USER_INFORMATION_START,
 });
 
 export const updateUserInformation_Success = (data) => ({
-    type: actionNames.READ_USER_INFORMATION_SUCCESS,
+    type: actionNames.UPDATE_USER_INFORMATION_SUCCESS,
     payload: data,
 });
 
 export const updateUserInformation_Failure = (data) => ({
-    type: actionNames.READ_USER_INFORMATION_FAILURE,
+    type: actionNames.UPDATE_USER_INFORMATION_FAILURE,
     payload: data,
 });
 

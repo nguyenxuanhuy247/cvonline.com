@@ -3,6 +3,7 @@ export const path = {
     SIGNIN: '/signin',
     FORGOTPASSWORD: '/forgot-password',
     HOME: '/',
+    SENDCVVIAEMAIL: '/send-cv-via-email',
     ACCOUNT: '/account',
     PERSONALINFO: '/settings/personal-infomation',
     PASSWORDSETTING: '/settings/password-setting',
