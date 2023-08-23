@@ -1,6 +1,7 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .search-bar {
+    font-family: var(--roboto-font);
     display: flex;
     align-items: center;
     flex: 1;
@@ -13,7 +14,15 @@
         color: #666;
     }
 
+    .magnify {
+        display: grid;
+        place-items: center;
+        font-size: 30px;
+        padding: 4px 8px;
+    }
+
     .search-input {
+        padding-left: 4px;
         min-width: 0;
         max-width: 100%;
         color: #000;
@@ -22,21 +31,12 @@
         flex: 1;
         height: 100%;
         border-radius: 99px 0 0 99px;
-        padding-left: 16px;
         cursor: text;
     }
 
-    .keyboard {
-        font-size: 20px;
-        padding: 0 8px;
-        height: 100%;
-        background-color: #fff;
-        cursor: pointer;
-    }
-
     .clear {
-        font-size: 20px;
-        padding: 0 8px;
+        font-size: 16px;
+        padding: 0 12px;
         height: 100%;
         border-radius: 50%;
         background-color: #fff;
@@ -52,14 +52,6 @@
             background-color: #ebebeb;
         }
     }
-
-    .magnify {
-        font-size: 20px;
-        border-radius: 0 99px 99px 0;
-        height: 100%;
-        border-left: 1px solid #ccc;
-        cursor: pointer;
-    }
 }
 
 .search-result-tooltip {
@@ -74,23 +66,49 @@
     background-color: #fff;
 
     .search-result-container {
-        .short-search-result {
-            margin-top: 12px;
+        .search-display {
             display: flex;
-            border: 1px dashed var(--primary-color);
-            padding: 8px;
-            column-gap: 12px;
+            align-items: center;
+            color: var(--desc-color);
+
+            .magnify {
+                font-size: 28px;
+                padding: 4px;
+            }
+
+            .text {
+                font-family: var(--roboto-font);
+                font-size: 1.4rem;
+            }
+        }
+
+        .short-search-result {
+            width: 100%;
+            background-color: #fff;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            border: 1px solid transparent;
+            padding: 6px;
+            column-gap: 8px;
             cursor: pointer;
 
             &:hover {
-                border-style: solid;
+                border-color: var(--primary-color);
             }
 
-            &:first-child {
-                margin-top: 0;
+            &:nth-child(2) {
+                margin-top: 8px;
             }
 
-            .product-name-desc {
+            .product-image {
+                width: 100px;
+                height: 48px;
+                object-fit: contain;
+            }
+
+            .result-desc {
+                font-size: 1.4rem;
                 flex: 1;
                 column-gap: 8px;
 
@@ -99,32 +117,26 @@
 
                     font-size: 1.6rem;
                     line-height: 1.5;
-                    font-weight: 600;
+                    font-weight: 500;
                     color: var(--green-color-01);
                     word-break: break-all;
                 }
 
-                .product-desc {
-                    --line-clamp: 4;
-                    @extend .product-name;
+                .author {
+                    display: flex;
+                    align-items: center;
 
-                    padding: 4px 4px 0 0;
-                    background-color: transparent;
-                    color: #222;
-                    font-size: 1.4rem;
-                    line-height: 1.4;
-                    font-weight: 300;
-                    word-break: break-all;
-                    overflow: hidden;
-                    border: 1px solid transparent;
-                    word-break: break-word;
+                    .name {
+                    }
+
+                    .separate {
+                        padding: 0 8px;
+                    }
+
+                    .job-title {
+                        font-weight: 300;
+                    }
                 }
-            }
-
-            .product-image {
-                flex-basis: 30%;
-                height: 108px;
-                object-fit: contain;
             }
         }
     }

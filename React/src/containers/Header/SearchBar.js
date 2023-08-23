@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-import { BsKeyboard } from 'react-icons/bs';
-import { FiSearch } from 'react-icons/fi';
+import { RxMagnifyingGlass } from 'react-icons/rx';
 import { GrClose } from 'react-icons/gr';
 import DefaultTippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
@@ -11,6 +10,7 @@ import * as userActions from '~/store/actions';
 import styles from './SearchBar.module.scss';
 import Button from '~/components/Button/Button.js';
 import Image from '~/components/Image/Image.js';
+import { JpgImages } from '~/components/Image/Images.js';
 
 const cx = classnames.bind(styles);
 
@@ -96,7 +96,8 @@ class SearchBar extends PureComponent {
 
         return (
             <HeadlessTippy
-                visible={this.state.visible}
+                visible={this.state.visible && this.state.searchValue}
+                // visible="true"
                 onClickOutside={() => this.handleHideTooltip()}
                 zIndex="10"
                 placement="bottom"
@@ -107,6 +108,14 @@ class SearchBar extends PureComponent {
                     <div tabIndex="-1" {...attrs}>
                         <div className={cx('search-result-tooltip')}>
                             <div className={cx('search-result-container')} id="js-container-search-result">
+                                <div className={cx('search-display')}>
+                                    <RxMagnifyingGlass className={cx('magnify')} />
+                                    <p className={cx('text')}>
+                                        <span>Kết quả cho</span>
+                                        <span>{` '${this.state.searchValue}'`}</span>
+                                    </p>
+                                </div>
+
                                 {productInfoList?.map((product, index) => {
                                     const productDescResult = document.getElementById(
                                         `js-search-result-desc-${product.id}`,
@@ -117,25 +126,39 @@ class SearchBar extends PureComponent {
                                     }
 
                                     return (
-                                        <div
+                                        <Button
                                             key={index}
                                             className={cx('short-search-result')}
                                             id={`js-short-search-result-${product.id}`}
                                         >
-                                            <div className={cx('product-name-desc')}>
+                                            <Image
+                                                src={product.image || JpgImages.productPlaceholder}
+                                                className={cx('product-image')}
+                                            />
+                                            <div className={cx('result-desc')}>
                                                 <p
                                                     className={cx('product-name')}
                                                     id={`js-search-result-name-${product.id}`}
                                                 >
                                                     {product.name}
                                                 </p>
-                                                <p
-                                                    className={cx('product-desc')}
-                                                    id={`js-search-result-desc-${product.id}`}
-                                                ></p>
+                                                <div className={cx('author')}>
+                                                    <p
+                                                        className={cx('name')}
+                                                        id={`js-search-result-name-${product.id}`}
+                                                    >
+                                                        Nguyễn Xuân Huy
+                                                    </p>
+                                                    <span className={cx('separate')}>|</span>
+                                                    <p
+                                                        className={cx('job-title')}
+                                                        id={`js-search-result-name-${product.id}`}
+                                                    >
+                                                        Front-end developer
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <Image src={product.image} className={cx('product-image')} />
-                                        </div>
+                                        </Button>
                                     );
                                 })}
                             </div>
@@ -145,6 +168,9 @@ class SearchBar extends PureComponent {
                 )}
             >
                 <div className={cx('search-bar', className)}>
+                    <span className={cx('magnify')}>
+                        <RxMagnifyingGlass />
+                    </span>
                     <input
                         className={cx('search-input')}
                         value={this.state.searchValue}
@@ -153,13 +179,6 @@ class SearchBar extends PureComponent {
                         onChange={(e) => this.handleInputValue(e)}
                         onFocus={(e) => this.handleInputValue(e)}
                     />
-
-                    <DefaultTippy content="Bàn phím ảo" arrow="">
-                        <Button className={cx('keyboard')}>
-                            <BsKeyboard />
-                        </Button>
-                    </DefaultTippy>
-
                     <DefaultTippy content="Xóa" arrow="">
                         <Button
                             className={cx('clear', 'hide')}
@@ -167,12 +186,6 @@ class SearchBar extends PureComponent {
                             id="js-clear-input-value-button"
                         >
                             <GrClose />
-                        </Button>
-                    </DefaultTippy>
-
-                    <DefaultTippy content="Tìm kiếm" arrow="">
-                        <Button className={cx('magnify')}>
-                            <FiSearch />
                         </Button>
                     </DefaultTippy>
                 </div>

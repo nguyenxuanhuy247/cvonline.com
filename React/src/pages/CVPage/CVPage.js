@@ -226,13 +226,17 @@ class PersonalLayout extends PureComponent {
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         // Set languages from database by JS
         const { languages } = this.props?.userInfo ?? {};
         const languagesElement = document.getElementById(`js-language-desc`);
         if (languagesElement) {
             languagesElement.innerText = languages || '';
         }
+
+        // if (this.props.historyUserIDList !== prevProps.historyUserIDList) {
+        //     this.fetchUserInformationAndProductList(true);
+        // }
     }
 
     render = () => {
@@ -493,6 +497,7 @@ const mapStateToProps = (state) => {
         owner: state.user.owner,
         userInfo: state.user.userInfo,
         productList: state.user.productList,
+        historyUserIDList: state.user.historyUserIDList,
         isLoading: state.user.isLoading.CVLayout,
     };
 };

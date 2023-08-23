@@ -1,6 +1,7 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -330,6 +331,37 @@ export const postUserSignIn = async (data) => {
 };
 
 // =================================================================
+
+// UPDATE USER INFORMATION
+export const handlePostSearch = async (data) => {
+    const { type, searchValue } = data;
+
+    try {
+        const technologies = await db.technologies.findAll({
+            where: {
+                type: type,
+                name: {
+                    [Op.substring]: searchValue,
+                },
+            },
+            attributes: ['name'],
+            includes: [{ model: db.User }],
+        });
+
+        return {
+            errorCode: 0,
+            errorMessage: `Cập nhật thành công`,
+            data: technologies,
+        };
+    } catch (error) {
+        console.log('An error in handleUpdateUserInformation() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Cập nhật  thất bại`,
+        };
+    }
+};
+
 // READ HOME LAYOUT
 export const handleGetHomeLayout = async () => {
     try {
@@ -489,7 +521,6 @@ export const handleUpdateUserInformation = async (data) => {
             raw: false,
         });
 
-        console.log('aaaaaaaaa', user);
         const keyArray = Object.keys(await db.users.rawAttributes);
 
         if (user) {

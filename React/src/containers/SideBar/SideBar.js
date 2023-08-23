@@ -39,12 +39,8 @@ class SideBar extends PureComponent {
         }
     };
 
-    handleGoBackToPreviousCV = () => {
-        const prevUserID = this.props.prevUserID;
-
-        if (prevUserID) {
-            this.props.readUserInformation(prevUserID);
-        }
+    handleGoBackToPreviousCV = (prevUserID) => {
+        this.props.updateHistoryUserIDList(prevUserID);
     };
 
     handleClickSendCVViaEmailButton = () => {
@@ -70,7 +66,8 @@ class SideBar extends PureComponent {
     render = () => {
         const { pathname } = this.props?.location ?? {};
         const { id: ownerID } = this.props?.owner ?? {};
-        const prevUserID = this.props.prevUserID;
+        const historyUserIDList = this.props?.historyUserIDList;
+        const prevUserID = historyUserIDList[historyUserIDList.length - 1];
 
         return (
             <div className={cx('side-bar')}>
@@ -96,7 +93,7 @@ class SideBar extends PureComponent {
                     disabled={!prevUserID}
                     route={`/${prevUserID}`}
                     className={cx('button')}
-                    onClick={() => this.handleGoBackToPreviousCV()}
+                    onClick={() => this.handleGoBackToPreviousCV(prevUserID)}
                 >
                     <span className={cx('icon')}>
                         <MdRemoveRedEye />
@@ -118,7 +115,7 @@ class SideBar extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
-        prevUserID: state.user.prevUserID,
+        historyUserIDList: state.user.historyUserIDList,
         userInfo: state.user.userInfo,
     };
 };
@@ -126,6 +123,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         readUserInformation: (userId) => dispatch(userActions.readUserInformation(userId)),
+        updateHistoryUserIDList: (userID) => dispatch({ type: 'UPDATE_HISTORY_USER_ID', payload: userID }),
         userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };

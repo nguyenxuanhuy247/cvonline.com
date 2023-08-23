@@ -13,7 +13,7 @@ const initialState = {
     isSignUp: false,
     owner: null,
     allCVList: undefined,
-    prevUserID: undefined,
+    historyUserIDList: [],
     userInfo: null,
     productList: undefined,
 };
@@ -112,21 +112,18 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, CVLayout: true },
             };
         case actionNames.READ_USER_INFORMATION_SUCCESS:
-            let prevUserID;
-            const oldUserInfo = state.userInfo;
+            const historyUserIDList = [...state.historyUserIDList];
             const newUserInfo = action.payload;
-            const isTheSame = _.isEqual(oldUserInfo, newUserInfo);
-
-            if (oldUserInfo && !isTheSame) {
-                prevUserID = oldUserInfo.id;
-            } else {
-                prevUserID = state.prevUserID;
+            const newUserID = newUserInfo.id;
+            const isInclude = historyUserIDList.includes(newUserID);
+            if (!isInclude) {
+                historyUserIDList.push(newUserID);
             }
 
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                prevUserID: prevUserID,
+                historyUserIDList: historyUserIDList,
                 userInfo: action.payload,
             };
         case actionNames.READ_USER_INFORMATION_FAILURE:
@@ -134,6 +131,15 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
                 userInfo: action.payload,
+            };
+
+        case 'UPDATE_HISTORY_USER_ID':
+            const copy_historyUserIDList = [...state.historyUserIDList];
+            copy_historyUserIDList.pop();
+
+            return {
+                ...state,
+                historyUserIDList: copy_historyUserIDList,
             };
 
         // UPDATE USER INFORMATION
