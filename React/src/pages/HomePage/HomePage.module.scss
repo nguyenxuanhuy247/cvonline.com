@@ -1,181 +1,184 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .home-page {
-    display: flex;
-    flex-direction: column;
-    row-gap: 16px;
     background-color: #f0f2f5;
-    padding: 16px;
     min-height: calc(100vh - var(--header-height));
 
-    .candidate {
+    .home-page-container {
+        padding: 16px;
         display: flex;
-        background-color: var(--button-bgc-green-02);
-        border-radius: 8px;
-        overflow: hidden;
-        background-color: #fff;
+        flex-direction: column;
+        row-gap: 16px;
 
-        .avatar-name-job-title {
+        .candidate {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            row-gap: 4px;
-            padding: 24px 16px;
-            background-color: var(--bgc-user-infomation);
-            color: #fff;
-            width: 30%;
+            background-color: var(--button-bgc-green-02);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
 
-            .avatar {
-                width: 200px;
-                height: 200px;
-                border: 4px solid var(--primary-color);
-            }
+            .avatar-name-job-title {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                row-gap: 4px;
+                padding: 24px 16px;
+                background-color: var(--bgc-user-infomation);
+                color: #fff;
+                width: 30%;
 
-            .full-name {
-                --line-clamp: 2;
-                @include line-clamp;
-
-                margin-top: 12px;
-                font-size: 2.2rem;
-                font-weight: 600;
-                line-height: 1.4;
-                text-align: center;
-                word-break: break-word;
-
-                &.contentEditable {
-                    @include content-editable;
+                .avatar {
+                    width: 200px;
+                    height: 200px;
+                    border: 4px solid var(--primary-color);
                 }
-            }
 
-            .job-title {
-                width: 100%;
-                background-color: transparent;
-                font-size: 2rem;
-                text-align: center;
-            }
-        }
+                .full-name {
+                    --line-clamp: 2;
+                    @include line-clamp;
 
-        .outcome {
-            padding: 16px;
-            align-self: flex-start;
-            flex: 1;
+                    margin-top: 12px;
+                    font-size: 2.2rem;
+                    font-weight: 600;
+                    line-height: 1.4;
+                    text-align: center;
+                    word-break: break-word;
 
-            .project-technology {
-                .project-stats {
-                    display: flex;
-                    align-items: flex-end;
-                    column-gap: 8px;
-                    color: var(--text-color-01);
-
-                    .text {
-                        font-size: 1.8rem;
-                        font-weight: 600;
-                        line-height: 1.4;
-                    }
-
-                    .number {
-                        font-size: 3.2rem;
-                        font-weight: 600;
-                        line-height: 1.1;
-                        color: red;
+                    &.contentEditable {
+                        @include content-editable;
                     }
                 }
 
-                .technology-stats {
-                    margin-top: 8px;
+                .job-title {
+                    width: 100%;
+                    background-color: transparent;
+                    font-size: 2rem;
+                    text-align: center;
+                }
+            }
 
-                    .text {
-                        padding: 8px 8px 4px;
-                        text-align: center;
-                        background-color: var(--bgc-user-infomation);
-                        color: #fff;
-                        font-size: 1.8rem;
-                        font-weight: 600;
-                        line-height: 1.4;
-                    }
+            .outcome {
+                padding: 16px;
+                align-self: flex-start;
+                flex: 1;
 
-                    .listed {
-                        margin-top: 12px;
+                .project-technology {
+                    .project-stats {
                         display: flex;
-                        column-gap: 12px;
+                        align-items: flex-end;
+                        column-gap: 8px;
+                        color: var(--text-color-01);
 
-                        .side {
-                            flex: 1;
+                        .text {
+                            font-size: 1.8rem;
+                            font-weight: 600;
+                            line-height: 1.4;
+                        }
+
+                        .number {
+                            font-size: 3.2rem;
+                            font-weight: 600;
+                            line-height: 1.1;
+                            color: red;
+                        }
+                    }
+
+                    .technology-stats {
+                        margin-top: 8px;
+
+                        .text {
+                            padding: 8px 8px 4px;
+                            text-align: center;
+                            background-color: var(--bgc-user-infomation);
+                            color: #fff;
+                            font-size: 1.8rem;
+                            font-weight: 600;
+                            line-height: 1.4;
+                        }
+
+                        .listed {
+                            margin-top: 12px;
                             display: flex;
-                            flex-direction: column;
-                            row-gap: 12px;
-                            border: 1px solid var(--primary-color);
-                            padding: 12px;
+                            column-gap: 12px;
 
-                            .title {
-                                width: 100%;
-                                max-width: 100%;
-                                margin: 0 auto;
-                                font-family: var(--alexandria-font);
-                                display: block;
-                                font-size: 1.8rem;
-                                padding: 4px 8px;
-                                text-align: center;
-                                font-weight: 600;
-                                color: #fff;
+                            .side {
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+                                row-gap: 12px;
                                 border: 1px solid var(--primary-color);
-                                background-color: var(--primary-color);
-                            }
+                                padding: 12px;
 
-                            .list {
-                                display: flex;
-                                flex-direction: column;
-                                row-gap: 8px;
-
-                                .technology {
-                                    display: flex;
-                                    align-items: center;
-                                    column-gap: 4px;
-                                    justify-content: flex-start;
-                                    column-gap: 4px;
-                                    font-size: 1.5rem;
-                                    font-weight: 500;
-                                    line-height: 1.6;
-                                    background-color: transparent;
-                                    padding: 4px 8px;
-                                    border-radius: 4px;
+                                .title {
                                     width: 100%;
-                                    color: #000;
+                                    max-width: 100%;
+                                    margin: 0 auto;
+                                    font-family: var(--alexandria-font);
+                                    display: block;
+                                    font-size: 1.8rem;
+                                    padding: 4px 8px;
+                                    text-align: center;
+                                    font-weight: 600;
+                                    color: #fff;
                                     border: 1px solid var(--primary-color);
-
-                                    .image {
-                                        flex-shrink: 0;
-                                        width: 24px;
-                                        height: 24px;
-                                        border-radius: 50%;
-                                        object-fit: contain;
-                                        border: none;
-                                        border: 3px solid transparent;
-                                    }
-
-                                    .name {
-                                        @include line-clamp;
-
-                                        margin-left: 0px;
-                                        text-align: left;
-                                        word-break: break-all;
-                                    }
-                                }
-                            }
-
-                            .empty-list {
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-
-                                .empty-list-image {
-                                    width: 160px;
-                                    height: 160px;
+                                    background-color: var(--primary-color);
                                 }
 
-                                .empty-list-text {
-                                    font-weight: 500;
-                                    color: var(--text-color-01);
+                                .list {
+                                    display: flex;
+                                    flex-direction: column;
+                                    row-gap: 8px;
+
+                                    .technology {
+                                        display: flex;
+                                        align-items: center;
+                                        column-gap: 4px;
+                                        justify-content: flex-start;
+                                        column-gap: 4px;
+                                        font-size: 1.5rem;
+                                        font-weight: 500;
+                                        line-height: 1.6;
+                                        background-color: transparent;
+                                        padding: 4px 8px;
+                                        border-radius: 4px;
+                                        width: 100%;
+                                        color: #000;
+                                        border: 1px solid var(--primary-color);
+
+                                        .image {
+                                            flex-shrink: 0;
+                                            width: 24px;
+                                            height: 24px;
+                                            border-radius: 50%;
+                                            object-fit: contain;
+                                            border: none;
+                                            border: 3px solid transparent;
+                                        }
+
+                                        .name {
+                                            @include line-clamp;
+
+                                            margin-left: 0px;
+                                            text-align: left;
+                                            word-break: break-all;
+                                        }
+                                    }
+                                }
+
+                                .empty-list {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+
+                                    .empty-list-image {
+                                        width: 160px;
+                                        height: 160px;
+                                    }
+
+                                    .empty-list-text {
+                                        font-weight: 500;
+                                        color: var(--text-color-01);
+                                    }
                                 }
                             }
                         }

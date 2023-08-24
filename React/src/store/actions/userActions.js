@@ -90,13 +90,13 @@ export const userForgotPasswordStart = (data) => {
                 dispatch(userForgotPassword_Success());
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
                 dispatch(userForgotPassword_Failure());
                 return errorCode;
             }
         } catch (error) {
             const { errorMessage, errorCode } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(userForgotPassword_Failure());
             console.log('An error in userForgotPasswordStart() - userActions.js: ', error);
             return errorCode;
@@ -117,6 +117,43 @@ export const userForgotPassword_Failure = () => ({
 });
 
 // =================================================================
+// SEARCH VALUE
+export const readSearch = (searchValue) => {
+    return async (dispatch) => {
+        dispatch(readSearch_Start());
+        try {
+            const res = await userService.readSearch(searchValue);
+            const { errorCode, data } = res ?? {};
+
+            if (errorCode === 0) {
+                dispatch(readSearch_Success(data));
+            } else {
+                dispatch(readSearch_Failure(data));
+            }
+        } catch (error) {
+            const { errorCode, errorMessage, data } = error.response?.data ?? {};
+            if (errorCode === 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            }
+            dispatch(readSearch_Failure(data));
+            console.log('An error in readSearch() - userActions.js: ', error);
+        }
+    };
+};
+
+export const readSearch_Start = () => ({
+    type: actionNames.READ_SEARCH_START,
+});
+
+export const readSearch_Success = (data) => ({
+    type: actionNames.READ_SEARCH_SUCCESS,
+    payload: data,
+});
+
+export const readSearch_Failure = () => ({
+    type: actionNames.READ_SEARCH_FAILURE,
+});
+
 // READ HOME LAYOUT
 export const readHomeLayout = () => {
     return async (dispatch) => {
@@ -138,7 +175,7 @@ export const readHomeLayout = () => {
             }
         } catch (error) {
             const { errorCode, errorMessage, data } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
             dispatch(readHomeLayout_Failure(data));
             console.log('An error in readHomeLayout() - userActions.js: ', error);
 
@@ -177,15 +214,15 @@ export const readUserInformation = (userId) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
-                dispatch(readUserInformation_Failure(data));
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+                dispatch(readUserInformation_Failure());
 
                 return errorCode;
             }
         } catch (error) {
-            const { errorCode, errorMessage, data } = error.response?.data ?? {};
+            const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 5000);
-            dispatch(readUserInformation_Failure(data));
+            dispatch(readUserInformation_Failure());
             console.log('An error in readUserInformation() - userActions.js: ', error);
 
             return errorCode;
@@ -245,9 +282,8 @@ export const updateUserInformation_Success = (data) => ({
     payload: data,
 });
 
-export const updateUserInformation_Failure = (data) => ({
+export const updateUserInformation_Failure = () => ({
     type: actionNames.UPDATE_USER_INFORMATION_FAILURE,
-    payload: data,
 });
 
 // =================================================================

@@ -1,5 +1,4 @@
 import actionNames from '../actions/actionNames';
-import _ from 'lodash';
 
 const initialState = {
     isLoading: {
@@ -8,6 +7,7 @@ const initialState = {
         CVLayout: false,
         homeLayout: false,
         changeUserID: false,
+        search: false,
     },
     isSignIn: false,
     isSignUp: false,
@@ -16,6 +16,7 @@ const initialState = {
     historyUserIDList: [],
     userInfo: null,
     productList: undefined,
+    searchResultList: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -84,6 +85,30 @@ const userReducer = (state = initialState, action) => {
             };
 
         // =================================================================
+        // SEARCH VALUE
+        case actionNames.READ_SEARCH_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, search: true },
+            };
+        case actionNames.READ_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, search: false },
+                searchResultList: action.payload,
+            };
+        case actionNames.READ_SEARCH_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, search: false },
+                searchResultList: [],
+            };
+        case 'CLEAR_SEARCH_RESULT':
+            return {
+                ...state,
+                searchResultList: [],
+            };
+
         // HOME LAYOUT
         // READ HOME LAYOUT
         case actionNames.READ_HOME_LAYOUT_START:
@@ -123,14 +148,14 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                historyUserIDList: historyUserIDList,
                 userInfo: action.payload,
+                historyUserIDList: historyUserIDList,
             };
         case actionNames.READ_USER_INFORMATION_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                userInfo: action.payload,
+                userInfo: { id: 0 },
             };
 
         case 'UPDATE_HISTORY_USER_ID':
@@ -153,12 +178,12 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
                 owner: action.payload,
+                userInfo: action.payload,
             };
         case actionNames.UPDATE_USER_INFORMATION_FAILURE:
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                owner: action.payload,
             };
         // =================================================================
         // CREATE PRODUCT

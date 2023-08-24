@@ -55,6 +55,57 @@ const hashUserPassword = async (password) => {
     }
 };
 
+// Get user information
+const getUserInfo = async (isEmail, input) => {
+    try {
+        let whereQuery;
+        if (isEmail) {
+            whereQuery = { email: input };
+        } else {
+            whereQuery = { id: input };
+        }
+
+        const user = await db.users.findOne({
+            where: whereQuery,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            raw: true,
+        });
+
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', user);
+        if (user) {
+            const avatar = user.avatar;
+            const binaryAvatar = avatar?.toString('binary');
+            const newUser = {
+                ...user,
+                avatar: binaryAvatar,
+                isPassword: !!user.password,
+                isGmailPassword: !!user.gmailPassword,
+            };
+
+            delete newUser.password;
+            delete newUser.gmailPassword;
+
+            return {
+                errorCode: 0,
+                errorMessage: `Tải thông tin người dùng thành công`,
+                data: newUser,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy người dùng. Tải thông tin người dùng thất bại`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in getUserInfo() in userService.js : ', error);
+
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Tải thông tin người dùng thất bại`,
+        };
+    }
+};
+
 // Update password
 export const postChangePassword = async (data) => {
     try {
@@ -245,38 +296,30 @@ export const postUserSignIn = async (data) => {
 
         if (errorCode === 0) {
             // Get user's data again prevent someone from deleting/changing data
-            let user = await db.users.findOne({
+            const user = await db.users.findOne({
                 where: { email: email },
-                attributes: ['id', 'avatar', 'fullName', 'email', 'password', 'gmailPassword'],
+                attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
                 raw: true,
             });
 
             if (user) {
-                let newUser;
-
-                // Convert avatar to Base64
-                const avatar = user.avatar;
-                const binaryAvatar = avatar?.toString('binary');
-                newUser = {
-                    ...user,
-                    avatar: binaryAvatar,
-                    isPassword: !!password,
-                    isGmailPassword: !!user.gmailPassword,
-                };
-
                 if (!isGoogle) {
                     if (user.password) {
                         let isPasswordMatch = await bcrypt.compareSync(password, user.password);
 
                         if (isPasswordMatch) {
-                            newUser.isPassword = !!user.password;
+                            const message = await getUserInfo(true, email);
+                            const { errorCode, data } = message;
 
-                            delete newUser.password;
-                            return {
-                                errorCode: 0,
-                                errorMessage: `Đăng nhập với Email thành công`,
-                                data: newUser,
-                            };
+                            if (errorCode === 0) {
+                                return {
+                                    errorCode: 0,
+                                    errorMessage: `Đăng nhập với Email thành công`,
+                                    data: data,
+                                };
+                            } else {
+                                return message;
+                            }
                         } else {
                             return {
                                 errorCode: 34,
@@ -285,19 +328,23 @@ export const postUserSignIn = async (data) => {
                         }
                     } else {
                         return {
-                            errorCode: 33,
-                            errorMessage: `Đăng nhập bằng Google để thiết lập mật khẩu`,
+                            errorCode: 32,
+                            errorMessage: `Chưa thiết lập mật khẩu`,
                         };
                     }
                 } else {
-                    newUser.isPassword = !!user.password;
-                    delete newUser.password;
+                    const message = await getUserInfo(true, email);
+                    const { errorCode, data } = message;
 
-                    return {
-                        errorCode: 0,
-                        errorMessage: `Đăng nhập với tài khoản Google thành công`,
-                        data: newUser,
-                    };
+                    if (errorCode === 0) {
+                        return {
+                            errorCode: 0,
+                            errorMessage: `Đăng nhập với tài khoản Google thành công`,
+                            data: data,
+                        };
+                    } else {
+                        return message;
+                    }
                 }
             } else {
                 return {
@@ -305,20 +352,34 @@ export const postUserSignIn = async (data) => {
                     errorMessage: `Email không tồn tại trong hệ thống`,
                 };
             }
-        } else if (errorCode === 32) {
+        } else if (errorCode === 32 && isGoogle) {
             await db.users.create({
                 email: email,
                 fullName: fullName,
+                jobPosition: 'Fullstack developer',
             });
 
-            return {
-                errorCode: 0,
-                errorMessage: `Đăng ký tài khoản với Google thành công`,
-            };
+            const message = await getUserInfo(true, email);
+            const { errorCode, data } = message;
+
+            if (errorCode === 0) {
+                return {
+                    errorCode: 0,
+                    errorMessage: `Đăng ký tài khoản với Google thành công`,
+                    data: data,
+                };
+            } else {
+                return message;
+            }
         } else if (errorCode === 31) {
             return {
                 errorCode: 31,
                 errorMessage: errorMessage,
+            };
+        } else {
+            return {
+                errorCode: 34,
+                errorMessage: `Bạn chưa đăng ký tài khoản`,
             };
         }
     } catch (error) {
@@ -333,31 +394,45 @@ export const postUserSignIn = async (data) => {
 // =================================================================
 
 // UPDATE USER INFORMATION
-export const handlePostSearch = async (data) => {
-    const { type, searchValue } = data;
+export const handleGetSearch = async (data) => {
+    const { searchValue } = data;
 
     try {
         const technologies = await db.technologies.findAll({
             where: {
-                type: type,
+                type: 'PRODUCTDESC',
                 name: {
                     [Op.substring]: searchValue,
                 },
             },
-            attributes: ['name'],
-            includes: [{ model: db.User }],
+            attributes: ['id', 'name', 'image'],
+            include: [{ model: db.users, attributes: ['id', 'fullName', 'jobPosition'] }],
+            raw: true,
+            nest: true,
         });
 
-        return {
-            errorCode: 0,
-            errorMessage: `Cập nhật thành công`,
-            data: technologies,
-        };
+        if (technologies.length > 0) {
+            const newSearchResult = technologies.map((library) => {
+                const binaryImage = library?.image?.toString('binary');
+                return { ...library, image: binaryImage };
+            });
+
+            return {
+                errorCode: 0,
+                errorMessage: `Tìm kiếm sản phẩm thành công`,
+                data: newSearchResult,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Không tìm thấy sản phẩm nào`,
+            };
+        }
     } catch (error) {
-        console.log('An error in handleUpdateUserInformation() in userService.js : ', error);
+        console.log('An error in handleGetSearch() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Cập nhật  thất bại`,
+            errorMessage: `[Kết nối Database] Tìm kiếm sản phẩm thất bại`,
         };
     }
 };
@@ -470,38 +545,9 @@ export const handleGetHomeLayout = async () => {
 export const handleGetUserInformation = async (data) => {
     try {
         const { userId } = data;
+        const message = await getUserInfo(false, userId);
 
-        let user = await db.users.findOne({
-            where: { id: userId },
-            attributes: { exclude: ['createdAt', 'updatedAt'] },
-            raw: true,
-        });
-
-        if (user) {
-            const avatar = user.avatar;
-            const password = user.password;
-
-            const binaryAvatar = avatar?.toString('binary');
-            const newUser = {
-                ...user,
-                avatar: binaryAvatar,
-                isPassword: !!password,
-                gmailPassword: !!user.gmailPassword,
-            };
-            delete newUser.password;
-
-            return {
-                errorCode: 0,
-                errorMessage: `Tải thông tin người dùng thành công`,
-                data: newUser,
-            };
-        } else {
-            return {
-                errorCode: 32,
-                errorMessage: `[Không tìm thấy user ID] Tải thông tin người dùng thất bại`,
-                data: { id: 0 },
-            };
-        }
+        return message;
     } catch (error) {
         console.log('An error in handleGetUserInformation() in userService.js : ', error);
         return {
@@ -513,9 +559,10 @@ export const handleGetUserInformation = async (data) => {
 
 // UPDATE USER INFORMATION
 export const handleUpdateUserInformation = async (data) => {
-    const { userId, label } = data;
-
     try {
+        const { userId, label } = data;
+        const newData = { ...data };
+        
         const user = await db.users.findOne({
             where: { id: userId },
             raw: false,
@@ -524,7 +571,6 @@ export const handleUpdateUserInformation = async (data) => {
         const keyArray = Object.keys(await db.users.rawAttributes);
 
         if (user) {
-            const newData = { ...data };
             delete newData.userId;
 
             for (let prop in newData) {
@@ -535,17 +581,24 @@ export const handleUpdateUserInformation = async (data) => {
                     }
                 }
             }
-
             await user.save();
 
-            return {
-                errorCode: 0,
-                errorMessage: `Cập nhật ${label} thành công`,
-            };
+            const message = await getUserInfo(false, userId);
+            const { errorCode, data } = message;
+
+            if (errorCode === 0) {
+                return {
+                    errorCode: 0,
+                    errorMessage: `Cập nhật ${label} thành công`,
+                    data: data,
+                };
+            } else {
+                return message;
+            }
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `[Không tìm thấy user ID] Cập nhật ${label} thất bại`,
+                errorMessage: `Người dùng không tồn tại. Cập nhật ${label} thất bại`,
             };
         }
     } catch (error) {

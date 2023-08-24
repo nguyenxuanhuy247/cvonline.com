@@ -94,6 +94,23 @@
             translate: -2px -2px;
         }
     }
+
+    &.search-spinner {
+        width: 16px;
+        height: 16px;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid;
+            border-color: var(--desc-color) transparent var(--desc-color) var(--desc-color);
+            border-radius: 50%;
+            animation: spinner 0.5s infinite;
+            width: 12px;
+            height: 12px;
+        }
+    }
 }
 
 @keyframes spinner {

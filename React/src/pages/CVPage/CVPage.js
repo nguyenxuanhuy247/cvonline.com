@@ -53,8 +53,6 @@ class PersonalLayout extends PureComponent {
             const errorCode = await this.props.updateUserInformation(data);
 
             if (errorCode === 0) {
-                await this.props.readUserInformation(userId);
-
                 return 0;
             }
         } else {
@@ -78,11 +76,7 @@ class PersonalLayout extends PureComponent {
 
         if (value !== this.props?.userInfo?.[name]) {
             const data = { userId: userId, [name]: value, label: label };
-            const errorCode = await this.props.updateUserInformation(data);
-
-            if (errorCode === 0) {
-                await this.props.readUserInformation(userId);
-            }
+            await this.props.updateUserInformation(data);
         }
     };
 
@@ -234,9 +228,9 @@ class PersonalLayout extends PureComponent {
             languagesElement.innerText = languages || '';
         }
 
-        // if (this.props.historyUserIDList !== prevProps.historyUserIDList) {
-        //     this.fetchUserInformationAndProductList(true);
-        // }
+        if (this.props?.match?.params.paramId !== prevProps?.match?.params.paramId) {
+            this.fetchUserInformationAndProductList(true);
+        }
     }
 
     render = () => {
@@ -484,7 +478,7 @@ class PersonalLayout extends PureComponent {
                             </div>
                         </div>
                     ) : (
-                        <NotFound404 />
+                        this.props?.userInfo !== null && <NotFound404 />
                     )}
                 </div>
             </MainLayout>

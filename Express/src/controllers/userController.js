@@ -115,9 +115,9 @@ export const handleUserSignIn = async (req, res) => {
 
 // =================================================================
 // READ HOME LAYOUT
-export const handlePostSearch = async (req, res) => {
-    const data = req.body;
-    const message = await userService.handlePostSearch(data);
+export const handleGetSearch = async (req, res) => {
+    const data = req.query;
+    const message = await userService.handleGetSearch(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);

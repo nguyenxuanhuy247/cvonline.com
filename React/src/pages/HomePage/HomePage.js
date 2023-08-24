@@ -19,91 +19,60 @@ class HomePage extends PureComponent {
     }
 
     render() {
+        const length = this.props.allCVList?.length;
+
         return (
             <MainLayout>
                 <div className={cx('home-page')}>
-                    {this.props.allCVList?.length > 0 ? (
-                        this.props.allCVList?.map((userCV) => {
-                            const { userInfo, numberofProduct, FETechnologyList, BETechnologyList } = userCV;
-                            return (
-                                <Link to={`/${userInfo.id}`}>
-                                    <div className={cx('candidate')}>
-                                        <div className={cx('avatar-name-job-title')}>
-                                            <Image
-                                                src={userInfo.avatar}
-                                                className={cx('avatar')}
-                                                alt={userInfo.fullName}
-                                                round
-                                            />
-                                            <span className={cx('full-name')}>{userInfo.fullName}</span>
-                                            <span className={cx('job-title')}>{userInfo.jobPosition}</span>
-                                        </div>
-                                        <div className={cx('outcome')}>
-                                            <div className={cx('project-technology')}>
-                                                <div className={cx('project-stats')}>
-                                                    <span className={cx('number')}>{numberofProduct || 0}</span>
-                                                    <span className={cx('text')}>sản phẩm</span>
-                                                </div>
-                                                <div className={cx('technology-stats')}>
-                                                    <div className={cx('text')}>CÔNG NGHỆ SỬ DỤNG</div>
-                                                    <div className={cx('listed')}>
-                                                        <div className={cx('side')}>
-                                                            <span className={cx('title')}>Front-end</span>
-                                                            {FETechnologyList?.length > 0 ? (
-                                                                <div className={cx('list')}>
-                                                                    {FETechnologyList?.map((technology, index) => {
-                                                                        return (
-                                                                            <div
-                                                                                key={index}
-                                                                                className={cx('technology')}
-                                                                            >
-                                                                                {technology.image && (
-                                                                                    <Image
-                                                                                        src={technology?.image}
-                                                                                        className={cx('image')}
-                                                                                    />
-                                                                                )}
-                                                                                <span className={cx('name')}>
-                                                                                    {technology?.name}
-                                                                                </span>
-                                                                            </div>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            ) : (
-                                                                <div className={cx('empty-list')}>
-                                                                    <Image
-                                                                        src={JpgImages.emptyProductIcon}
-                                                                        className={cx('empty-list-image')}
-                                                                    />
-                                                                    <span className={cx('empty-list-text')}>
-                                                                        Danh sách trống
-                                                                    </span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className={cx('side')}>
-                                                            <span className={cx('title')}>Back-end</span>
-                                                            <div className={cx('list')}>
-                                                                {BETechnologyList?.length > 0 ? (
-                                                                    BETechnologyList?.map((technology, index) => {
-                                                                        return (
-                                                                            <div
-                                                                                key={index}
-                                                                                className={cx('technology')}
-                                                                            >
-                                                                                {technology.image && (
-                                                                                    <Image
-                                                                                        src={technology?.image}
-                                                                                        className={cx('image')}
-                                                                                    />
-                                                                                )}
-                                                                                <span className={cx('name')}>
-                                                                                    {technology?.name}
-                                                                                </span>
-                                                                            </div>
-                                                                        );
-                                                                    })
+                    {length > 0 && (
+                        <div className={cx('home-page-container')}>
+                            {this.props.allCVList?.map((userCV) => {
+                                const { userInfo, numberofProduct, FETechnologyList, BETechnologyList } = userCV;
+                                return (
+                                    <Link to={`/${userInfo.id}`}>
+                                        <div className={cx('candidate')}>
+                                            <div className={cx('avatar-name-job-title')}>
+                                                <Image
+                                                    src={userInfo.avatar}
+                                                    className={cx('avatar')}
+                                                    alt={userInfo.fullName}
+                                                    round
+                                                />
+                                                <span className={cx('full-name')}>{userInfo.fullName}</span>
+                                                <span className={cx('job-title')}>{userInfo.jobPosition}</span>
+                                            </div>
+                                            <div className={cx('outcome')}>
+                                                <div className={cx('project-technology')}>
+                                                    <div className={cx('project-stats')}>
+                                                        <span className={cx('number')}>{numberofProduct || 0}</span>
+                                                        <span className={cx('text')}>sản phẩm</span>
+                                                    </div>
+                                                    <div className={cx('technology-stats')}>
+                                                        <div className={cx('text')}>CÔNG NGHỆ SỬ DỤNG</div>
+                                                        <div className={cx('listed')}>
+                                                            <div className={cx('side')}>
+                                                                <span className={cx('title')}>Front-end</span>
+                                                                {FETechnologyList?.length > 0 ? (
+                                                                    <div className={cx('list')}>
+                                                                        {FETechnologyList?.map((technology, index) => {
+                                                                            return (
+                                                                                <div
+                                                                                    key={index}
+                                                                                    className={cx('technology')}
+                                                                                >
+                                                                                    {technology.image && (
+                                                                                        <Image
+                                                                                            src={technology?.image}
+                                                                                            className={cx('image')}
+                                                                                        />
+                                                                                    )}
+                                                                                    <span className={cx('name')}>
+                                                                                        {technology?.name}
+                                                                                    </span>
+                                                                                </div>
+                                                                            );
+                                                                        })}
+                                                                    </div>
                                                                 ) : (
                                                                     <div className={cx('empty-list')}>
                                                                         <Image
@@ -116,16 +85,53 @@ class HomePage extends PureComponent {
                                                                     </div>
                                                                 )}
                                                             </div>
+                                                            <div className={cx('side')}>
+                                                                <span className={cx('title')}>Back-end</span>
+                                                                <div className={cx('list')}>
+                                                                    {BETechnologyList?.length > 0 ? (
+                                                                        BETechnologyList?.map((technology, index) => {
+                                                                            return (
+                                                                                <div
+                                                                                    key={index}
+                                                                                    className={cx('technology')}
+                                                                                >
+                                                                                    {technology.image && (
+                                                                                        <Image
+                                                                                            src={technology?.image}
+                                                                                            className={cx('image')}
+                                                                                        />
+                                                                                    )}
+                                                                                    <span className={cx('name')}>
+                                                                                        {technology?.name}
+                                                                                    </span>
+                                                                                </div>
+                                                                            );
+                                                                        })
+                                                                    ) : (
+                                                                        <div className={cx('empty-list')}>
+                                                                            <Image
+                                                                                src={JpgImages.emptyProductIcon}
+                                                                                className={cx('empty-list-image')}
+                                                                            />
+                                                                            <span className={cx('empty-list-text')}>
+                                                                                Danh sách trống
+                                                                            </span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            );
-                        })
-                    ) : (
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {length <= 0 && this.props.allCVList !== undefined && (
                         <NotFound404 text="Không tìm thấy danh sách" />
                     )}
 
@@ -150,3 +156,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+// : this.props.allCVList !== undefined && <NotFound404 text="Không tìm thấy danh sách" />
+// {this.props.isLoading && <Loading text="Đang tải..." />}

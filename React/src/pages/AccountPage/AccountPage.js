@@ -15,21 +15,32 @@ const cx = classnames.bind(styles);
 
 class AccountPage extends PureComponent {
     render() {
+        const { paramId } = this.props?.match?.params ?? {};
+
         return (
             <MainLayout>
                 <div className={cx('account-page')}>
                     <div className={cx('left-col')}>
                         <span className={cx('title')}>Cài đặt</span>
                         <div className={cx('item-list')}>
-                            <Link to={path.PERSONALINFO} className={cx('item')}>
+                            <Link
+                                to={path.PERSONALINFO}
+                                className={cx('item', { hover: paramId === 'personal-infomation' })}
+                            >
                                 <FaUser className={cx('icon')} />
                                 <span className={cx('text')}>Thông tin tài khoản</span>
                             </Link>
-                            <Link to={path.PASSWORDSETTING} className={cx('item')}>
+                            <Link
+                                to={path.PASSWORDSETTING}
+                                className={cx('item', { hover: paramId === 'password-setting' })}
+                            >
                                 <MdVerifiedUser className={cx('icon')} />
                                 <span className={cx('text')}>Cài đặt mật khẩu</span>
                             </Link>
-                            <Link to={path.USERIDSETTING} className={cx('item')}>
+                            <Link
+                                to={path.USERIDSETTING}
+                                className={cx('item', { hover: paramId === 'user-id-setting' })}
+                            >
                                 <FaUsersCog className={cx('icon')} />
                                 <span className={cx('text')}>Cài đặt ID người dùng</span>
                             </Link>

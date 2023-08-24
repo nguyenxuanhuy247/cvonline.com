@@ -3,12 +3,10 @@ import className from 'classnames/bind';
 import { connect } from 'react-redux';
 import TippyHeadless from '@tippyjs/react/headless';
 import { BiArrowBack } from 'react-icons/bi';
-import { FaEyeSlash, FaEye } from 'react-icons/fa';
 
 import * as userActions from '~/store/actions/userActions.js';
 import styles from './Menu.module.scss';
 import Button from '~/components/Button/Button';
-import { Toast } from '~/components/Toast/Toast.js';
 
 const cx = className.bind(styles);
 
@@ -21,10 +19,6 @@ class Menu extends Component {
             subMenuHeaderTitle: '',
         };
     }
-
-    static defaultProps = {
-        data: [],
-    };
 
     handleShowSubMenu = (subTitle, data) => {
         this.setState({

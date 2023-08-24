@@ -19,6 +19,12 @@ export const postForgotPassword = (data) => {
 // =============================================================================
 // READ HOME LAYOUT
 
+export const readSearch = (searchValue) => {
+    return axios.get(`/api/search?searchValue=${searchValue}`);
+};
+
+// READ HOME LAYOUT
+
 export const readHomeLayout = () => {
     return axios.get(`/api/get-home-layout`);
 };

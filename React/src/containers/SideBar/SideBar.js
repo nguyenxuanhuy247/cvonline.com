@@ -12,7 +12,6 @@ import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
 import Button from '~/components/Button/Button.js';
 import GetGoogleAppPasswordModal from '~/components/Modal/GetGoogleAppPasswordModal.js';
-import { path } from '~/utils/constants.js';
 
 const cx = classnames.bind(styles);
 

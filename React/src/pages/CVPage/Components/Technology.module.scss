@@ -82,6 +82,7 @@
         }
 
         .name-link {
+            min-width: 30%;
             flex: 1;
             display: flex;
             column-gap: 4px;
@@ -104,8 +105,11 @@
 
         .version {
             @include line-clamp;
-
-            max-width: 40%;
+            
+            word-break: break-all;
+            text-align: right;
+            // max-width: 40%;
+            min-width: 20%;
             margin-left: auto;
         }
 

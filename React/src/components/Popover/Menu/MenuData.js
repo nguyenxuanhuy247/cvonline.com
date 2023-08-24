@@ -9,7 +9,7 @@ export const MENU_AVATAR_DATA = [
         leftIcon: <FaUserTie />,
         title: 'Tài khoản',
         rightIcon: <BsArrowRight />,
-        route: '/account',
+        route: '/settings/personal-infomation',
     },
     {
         id: 12,

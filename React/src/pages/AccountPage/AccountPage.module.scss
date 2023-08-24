@@ -44,7 +44,7 @@
                     line-height: 1.4;
                 }
 
-                &:hover {
+                &.hover {
                     background-color: #fff;
                 }
             }
@@ -52,7 +52,7 @@
     }
 
     .right-col {
-        flex: 1;
+        flex: 1 1;
         padding: 20px;
     }
 }

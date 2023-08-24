@@ -63,19 +63,22 @@ export const checkReqForgotPassword = (req, res, next) => {
     next();
 };
 
-// CHECK RESET PASSWORD
-export const checkReqGetResetPassword = (req, res, next) => {
-    const { id, token } = req.params;
+// =================================================================
 
-    if (!email) {
+// CHECK SEARCH
+export const checkReqGetSearch = (req, res, next) => {
+    const { searchValue } = req.query;
+
+    if (!searchValue) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập email để lấy lại mật khẩu',
+            errorMessage: 'Nhập từ khóa tìm kiếm',
         });
     }
 
     next();
 };
+
 // =================================================================
 // CHECK CRUD USER INFORMATION
 
@@ -96,8 +99,7 @@ export const checkReqGetUserInformation = (req, res, next) => {
 // UPDATE USER INFORMATION
 export const checkReqUpdateUserInformation = (req, res, next) => {
     const { userId, label } = req.body;
-    console.log('update', req.body);
-
+    
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,

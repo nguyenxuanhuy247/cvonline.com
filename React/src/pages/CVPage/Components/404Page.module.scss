@@ -1,7 +1,6 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .not-found-section {
-    @include main-layout-margin;
     background-color: #f0f2f5;
     height: calc(100vh - var(--header-height));
     display: grid;

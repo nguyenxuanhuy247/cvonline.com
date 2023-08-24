@@ -13,7 +13,6 @@
     & * {
         color: #666;
     }
-
     .magnify {
         display: grid;
         place-items: center;
@@ -71,9 +70,17 @@
             align-items: center;
             color: var(--desc-color);
 
-            .magnify {
-                font-size: 28px;
-                padding: 4px;
+            .icon-container {
+                position: relative;
+                width: 30px;
+                height: 30px;
+                display: grid;
+                place-items: center;
+
+                .magnify {
+                    font-size: 28px;
+                    padding: 4px;
+                }
             }
 
             .text {
@@ -126,9 +133,6 @@
                     display: flex;
                     align-items: center;
 
-                    .name {
-                    }
-
                     .separate {
                         padding: 0 8px;
                     }
@@ -151,14 +155,6 @@
 .search-result-tooltip {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
-}
-
-.not-found-result {
-    text-align: center;
-
-    &.hide {
-        display: none;
-    }
 }
 
 // Tablet + Mobile
