@@ -11,6 +11,7 @@ export const checkReqVerifyUserID = (req, res, next) => {
 
     next();
 };
+
 // VERIFY USER EMAIL
 export const checkReqVerifyUserEmail = (req, res, next) => {
     const { userEmail } = req.query;
@@ -24,3 +25,4 @@ export const checkReqVerifyUserEmail = (req, res, next) => {
 
     next();
 };
+

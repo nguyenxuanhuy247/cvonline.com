@@ -48,7 +48,7 @@ class CreateEditTechnology extends PureComponent {
 
     handleCreateOrUpdateTechnology = async (isUpdate) => {
         const { id: userId } = this.props?.userInfo ?? {};
-        const { index } = this.props ?? {};
+        const { index: productIndex } = this.props ?? {};
 
         const data = {
             id: this.state.id,
@@ -69,7 +69,7 @@ class CreateEditTechnology extends PureComponent {
             if (this.props?.type === 'SOURCECODE') {
                 if (this.state.name && this.state.link) {
                     await this.setState({ isLoading: true });
-                    const errorCode = await this.props.createTechnology(data, index);
+                    const errorCode = await this.props.createTechnology(data, productIndex);
                     await this.setState({ isLoading: false });
 
                     if (errorCode === 0) {
@@ -83,7 +83,7 @@ class CreateEditTechnology extends PureComponent {
             } else {
                 if (this.state.name) {
                     await this.setState({ isLoading: true });
-                    const errorCode = await this.props.createTechnology(data, index);
+                    const errorCode = await this.props.createTechnology(data, productIndex);
                     await this.setState({ isLoading: false });
 
                     if (errorCode === 0) {
@@ -96,7 +96,7 @@ class CreateEditTechnology extends PureComponent {
         } else {
             // UPDATE TECHNOLOGY
             await this.setState({ isLoading: true });
-            const errorCode = await this.props?.updateTechnology(data, index);
+            const errorCode = await this.props?.updateTechnology(data, productIndex);
             await this.setState({ isLoading: false });
 
             if (errorCode === 0) {
@@ -237,8 +237,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createTechnology: (data, index) => dispatch(userActions.createTechnology(data, index)),
-        updateTechnology: (data, index) => dispatch(userActions.updateTechnology(data, index)),
+        createTechnology: (data, productIndex) => dispatch(userActions.createTechnology(data, productIndex)),
+        updateTechnology: (data, productIndex) => dispatch(userActions.updateTechnology(data, productIndex)),
     };
 };
 

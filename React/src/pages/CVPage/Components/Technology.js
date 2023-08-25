@@ -57,15 +57,13 @@ class Technology extends PureComponent {
         });
     };
 
-    handleCloseEditTechnology = async (SIDE_TYPE_ID) => {
+    handleCloseEditTechnology = async () => {
         await this.setState({ isEdit: false });
-
-        const buttonContainer = document.getElementById(`js-container-button-${SIDE_TYPE_ID}`);
-        console.log('handleCloseEditTechnology ', buttonContainer);
     };
 
     handleDeleteTechnology = async (technologyId, SIDE_TYPE_ID) => {
         const { id: userId } = this.props?.userInfo ?? {};
+        const { index: productIndex } = this.props ?? {};
 
         const buttonContainer = document.getElementById(`js-container-button-${SIDE_TYPE_ID}`);
         if (buttonContainer) {
@@ -82,7 +80,7 @@ class Technology extends PureComponent {
             await this.setState({ isLoading: true });
             buttonContainer.classList.add(cx('hover-button'));
 
-            await this.props.deleteTechnology(data, this.props.index);
+            await this.props.deleteTechnology(data, productIndex);
 
             await this.setState({ isLoading: false });
             buttonContainer.classList.remove(cx('hover-button'));
@@ -96,6 +94,7 @@ class Technology extends PureComponent {
             this.setState({ isEdit: false });
         }
     }
+
     render() {
         const { label, type, productId, keyprop, href, id, side, src, name, version, isSearch, onSearchLibrary } =
             this.props;
@@ -135,14 +134,25 @@ class Technology extends PureComponent {
                     )}
 
                     <div className={cx('name-link')}>
-                        {name && (
-                            <span className={cx('name')} id={`js-name-button-${SIDE_TYPE_ID}`}>
-                                {name}
-                            </span>
-                        )}
+                        <HeadlessTippy
+                            placement="top"
+                            arrow="true"
+                            render={(attrs) => (
+                                <div tabIndex="-1" {...attrs}>
+                                    {name && <div className={cx('tooltip-name')}>{name}</div>}
+                                </div>
+                            )}
+                        >
+                            {name && (
+                                <span className={cx('name')} id={`js-name-button-${SIDE_TYPE_ID}`}>
+                                    {name}
+                                </span>
+                            )}
+                        </HeadlessTippy>
+
                         <HeadlessTippy
                             placement="bottom"
-                            offset={[0, 4]}
+                            offset={[0, 10]}
                             render={(attrs) => (
                                 <div tabIndex="-1" {...attrs}>
                                     {href && <div className={cx('library-href')}>{href}</div>}
@@ -156,8 +166,16 @@ class Technology extends PureComponent {
                             )}
                         </HeadlessTippy>
                     </div>
-
-                    {version && <span className={cx('version')}>{version}</span>}
+                    <HeadlessTippy
+                        placement="top"
+                        render={(attrs) => (
+                            <div tabIndex="-1" {...attrs}>
+                                {version && <div className={cx('tooltip-version')}>{version}</div>}
+                            </div>
+                        )}
+                    >
+                        {version && <span className={cx('version')}>{version}</span>}
+                    </HeadlessTippy>
                 </Button>
 
                 {isCanEdit && (
@@ -197,7 +215,7 @@ class Technology extends PureComponent {
                 side={side}
                 keyprop={keyprop}
                 productId={productId}
-                onClose={() => this.handleCloseEditTechnology(SIDE_TYPE_ID)}
+                onClose={() => this.handleCloseEditTechnology()}
                 // =================================================================
                 isSearch={isSearch}
                 onSearchLibrary={onSearchLibrary}
@@ -215,7 +233,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        deleteTechnology: (technologyData, index) => dispatch(userActions.deleteTechnology(technologyData, index)),
+        deleteTechnology: (technologyData, productIndex) =>
+            dispatch(userActions.deleteTechnology(technologyData, productIndex)),
     };
 };
 

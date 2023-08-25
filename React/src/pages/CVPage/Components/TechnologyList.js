@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { BsPlusCircleDotted } from 'react-icons/bs';
 import { ReactSortable } from 'react-sortablejs';
+import _ from 'lodash';
 
 import Button from '~/components/Button/Button.js';
 import Technology from '~/pages/CVPage/Components/Technology.js';
 import CreateEditTechnology from '~/pages/CVPage/Components/CreateEditTechnology.js';
+import * as userActions from '~/store/actions';
 
 import styles from './TechnologyList.module.scss';
 
@@ -36,8 +38,43 @@ class TechnologyList extends PureComponent {
 
     // =================================================================
 
-    handleSortList = (newState) => {
-        this.setState({ list: newState });
+    handleSetListAndSaveToDatabase = async (newState) => {
+        const { index: productIndex } = this.props ?? {};
+        const { id: userId } = this.props?.userInfo ?? {};
+
+        if (newState) {
+            await this.setState({ list: newState });
+        }
+
+        const isEqual = _.isEqual(this.state.list, newState);
+
+        if (!isEqual && newState.length > 0) {
+            const oldData = newState;
+            const newData = this.state.list;
+
+            const updateData = oldData.map((oldTechnology, index) => {
+                return {
+                    technologyID: newData[index].id,
+                    technologyOrder: oldTechnology.technologyOrder,
+                };
+            });
+
+            const getData = {
+                type: this.props?.type,
+                label: `Sắp xếp danh sách ${this.props?.label}`,
+                userId: userId,
+                productId: this.props?.productId,
+                key: this.props?.keyprop,
+                side: this.props?.side,
+            };
+
+            const data = {
+                updateData: updateData,
+                getData: getData,
+            };
+
+            this.props.dragAndDropTechology(data, productIndex);
+        }
     };
 
     componentDidMount() {
@@ -57,6 +94,7 @@ class TechnologyList extends PureComponent {
         const { id: ownerID } = this.props?.owner ?? {};
 
         const isCanEdit = userID === ownerID;
+
         return (
             <div
                 className={cx('technology-list', {
@@ -64,8 +102,9 @@ class TechnologyList extends PureComponent {
                 })}
             >
                 <ReactSortable
+                    disabled={!isCanEdit}
                     list={this.state.list}
-                    setList={(newState) => this.handleSortList(newState)}
+                    setList={(newState) => this.handleSetListAndSaveToDatabase(newState)}
                     id={this.props.technologyListID}
                     className={cx('technology-list-inner', {
                         'sourcecode-list': type === 'SOURCECODE',
@@ -106,7 +145,7 @@ class TechnologyList extends PureComponent {
                         );
                     })}
                 </ReactSortable>
-                
+
                 {isCanEdit &&
                     (!this.state.isCreateTechnology ? (
                         <Button
@@ -144,11 +183,14 @@ const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
         userInfo: state.user.userInfo,
+        productList: state.user.productList,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        dragAndDropTechology: (data, productIndex) => dispatch(userActions.dragAndDropTechology(data, productIndex)),
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TechnologyList);

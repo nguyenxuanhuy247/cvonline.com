@@ -153,7 +153,7 @@ class Product extends PureComponent {
         }
     };
 
-    handleSearchLibrary = async (side, productID, technologyListID) => {
+    handleSearchLibrary = async (side, productID) => {
         const { FELibraryList, BELibraryList } = this.props?.productData ?? {};
 
         const isSearch = side === 'FE' ? 'FE_isSearch' : 'BE_isSearch';
@@ -168,7 +168,6 @@ class Product extends PureComponent {
 
         if (value) {
             await this.setState({ [isSearch]: true, [searchInputValue]: value });
-
             // Loop through all library button in list
             _.forEach(libraryList, function (library) {
                 const libraryName = document.getElementById(`js-name-button-${side}-LIBRARY-${library.id}`);
@@ -183,8 +182,8 @@ class Product extends PureComponent {
 
                         // Set background-color: yellow for button matches search value input
                         const regex = new RegExp(value, 'gi');
-                        const name = libraryName.innerHTML.replace(/(<mark}>|<\/mark>)/gim);
-                        const newName = name.replace(regex, `<mark>$&</mark>`);
+                        const name = libraryName.innerHTML.replace(/(<span}>|<\/span>)/gim);
+                        const newName = name.replace(regex, `<span>$&</span>`);
 
                         // Only set background-color: yellow for result matches search value input
                         if (name !== newName) {
@@ -638,13 +637,7 @@ class Product extends PureComponent {
                                                 placeholder="Tìm kiếm thư viện"
                                                 className={cx('library-filter-search')}
                                                 spellCheck="false"
-                                                onInput={() =>
-                                                    this.handleSearchLibrary(
-                                                        'BE',
-                                                        productID,
-                                                        `js-library-list-BE-${productID}`,
-                                                    )
-                                                }
+                                                onInput={() => this.handleSearchLibrary('BE', productID)}
                                             />
                                             <span
                                                 className={cx('library-filter-clear', {
@@ -713,9 +706,7 @@ class Product extends PureComponent {
                                         // Search - Sort
                                         isSearch={this.state.BE_isSearch}
                                         isSortBy={this.state.BE_sortBy}
-                                        onSearchLibrary={() =>
-                                            this.handleSearchLibrary('BE', productID, `js-library-list-BE-${productID}`)
-                                        }
+                                        onSearchLibrary={() => this.handleSearchLibrary('BE', productID)}
                                     />
 
                                     {!this.state.BE_isSearch && this.state.BE_isPagination && (

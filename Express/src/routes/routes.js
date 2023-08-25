@@ -15,8 +15,8 @@ let initWebRoutes = (app) => {
     router.get('/reset-password/:id/:token', userController.handleGetResetPassword);
     router.post('/reset-password/:id/:token', userController.handlePostResetPassword);
 
+    // OTHERS
     router.get('/api/search', userMiddleware.checkReqGetSearch, userController.handleGetSearch);
-
     router.get('/api/get-home-layout', userController.handleGetHomeLayout);
 
     // CRUD USER INFOMATION
@@ -41,6 +41,12 @@ let initWebRoutes = (app) => {
     // CRUD TECHNOLOGY
     router.post('/api/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
     router.put('/api/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
+
+    router.put(
+        '/api/drag-drop-technology',
+        userMiddleware.checkReqUpdateMultipleTechnologies,
+        userController.handleUpdateMultipleTechnologies,
+    );
     router.delete(
         '/api/delete-technology',
         userMiddleware.checkReqDeleteTechnology,
@@ -51,6 +57,9 @@ let initWebRoutes = (app) => {
     router.get('/api/verify-userID', appMiddleware.checkReqVerifyUserID, appController.handleVerifyUserID);
     router.post('/api/change-userID', userMiddleware.checkReqChangeUserID, userController.handleChangeUserID);
     router.get('/api/verify-user-email', appMiddleware.checkReqVerifyUserEmail, appController.handleVerifyUserEmail);
+
+    // SEND CV VIA EMAL
+    router.post('/api/send-cv-via-email', userMiddleware.checkReqSendCVViaEmail, userController.handleSendCVViaEmail);
 
     return app.use('/', router);
 };

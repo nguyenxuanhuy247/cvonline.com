@@ -42,6 +42,9 @@ module.exports = {
             productOrder: {
                 type: Sequelize.INTEGER,
             },
+            technologyOrder: {
+                type: Sequelize.INTEGER,
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,

@@ -10,13 +10,12 @@ import { persistReducer } from 'redux-persist';
 const userPersistConfig = {
     key: 'user',
     storage: storage,
-    whitelist: ['isSignIn', 'owner', 'prevUserID'],
+    whitelist: ['isSignIn', 'owner', 'CVHistory'],
 };
 
 const appPersistConfig = {
     key: 'app',
     storage: storage,
-    // whitelist: ['isSignIn', 'owner', 'prevUserID'],
 };
 
 const createRootReducer = (history) =>

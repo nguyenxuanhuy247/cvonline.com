@@ -13,7 +13,7 @@ const initialState = {
     isSignUp: false,
     owner: null,
     allCVList: undefined,
-    historyUserIDList: [],
+    CVHistory: [],
     userInfo: null,
     productList: undefined,
     searchResultList: [],
@@ -137,19 +137,19 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, CVLayout: true },
             };
         case actionNames.READ_USER_INFORMATION_SUCCESS:
-            const historyUserIDList = [...state.historyUserIDList];
-            const newUserInfo = action.payload;
-            const newUserID = newUserInfo.id;
-            const isInclude = historyUserIDList.includes(newUserID);
-            if (!isInclude) {
-                historyUserIDList.push(newUserID);
-            }
+            const userIDList = [...state.CVHistory];
+            const userInfoData = action.payload;
+            const userID = userInfoData.id;
+            const lastUserIDInList = userIDList[userIDList.length - 1];
 
+            if (userID !== state.owner.id && userID !== lastUserIDInList) {
+                userIDList.push(userID);
+            }
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
                 userInfo: action.payload,
-                historyUserIDList: historyUserIDList,
+                CVHistory: userIDList,
             };
         case actionNames.READ_USER_INFORMATION_FAILURE:
             return {
@@ -158,13 +158,13 @@ const userReducer = (state = initialState, action) => {
                 userInfo: { id: 0 },
             };
 
-        case 'UPDATE_HISTORY_USER_ID':
-            const copy_historyUserIDList = [...state.historyUserIDList];
-            copy_historyUserIDList.pop();
+        case 'UPDATE_CV_HISTORY':
+            const copy_CVHistory = [...state.CVHistory];
+            copy_CVHistory.shift();
 
             return {
                 ...state,
-                historyUserIDList: copy_historyUserIDList,
+                CVHistory: copy_CVHistory,
             };
 
         // UPDATE USER INFORMATION
@@ -309,7 +309,8 @@ const userReducer = (state = initialState, action) => {
         case actionNames.CREATE_TECHNOLOGY_SUCCESS:
         case actionNames.UPDATE_TECHNOLOGY_SUCCESS:
         case actionNames.DELETE_TECHNOLOGY_SUCCESS:
-            const { index: productIndex, data: dataFromDB } = action.payload;
+        case actionNames.DRAG_DROP_TECHNOLOGY_SUCCESS:
+            const { productIndex, dataFromDB } = action.payload;
 
             const selectedProduct = state.productList[productIndex];
             const newProduct = { ...selectedProduct, ...dataFromDB };
@@ -325,6 +326,7 @@ const userReducer = (state = initialState, action) => {
         case actionNames.CREATE_TECHNOLOGY_FAILURE:
         case actionNames.UPDATE_TECHNOLOGY_FAILURE:
         case actionNames.DELETE_TECHNOLOGY_FAILURE:
+        case actionNames.DRAG_DROP_TECHNOLOGY_FAILURE:
             return {
                 ...state,
             };

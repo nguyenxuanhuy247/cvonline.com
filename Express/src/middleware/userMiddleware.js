@@ -99,7 +99,7 @@ export const checkReqGetUserInformation = (req, res, next) => {
 // UPDATE USER INFORMATION
 export const checkReqUpdateUserInformation = (req, res, next) => {
     const { userId, label } = req.body;
-    
+
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
@@ -274,28 +274,31 @@ export const checkReqUpdateTechnology = (req, res, next) => {
     next();
 };
 
+// DRAG AND DROP TECHNOLOGY
+export const checkReqUpdateMultipleTechnologies = (req, res, next) => {
+    const { updateData } = req.body;
+
+    const isArray = Array.isArray(updateData);
+    const length = updateData.length > 0;
+
+    if (!isArray && !length) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: `Không thể sắp xếp lại danh sách`,
+        });
+    }
+
+    next();
+};
+
 // DELETE TECHNOLOGY
 export const checkReqDeleteTechnology = (req, res, next) => {
-    const { technologyId, userId, productId, label } = req.query;
+    const { technologyId, label } = req.query;
 
     if (!technologyId) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: `Nhập Technology ID để xóa ${label}`,
-        });
-    }
-
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 11,
-            errorMessage: `Nhập User ID để xóa ${label}`,
-        });
-    }
-
-    if (!productId) {
-        return res.status(400).json({
-            errorCode: 12,
-            errorMessage: `Nhập Product ID để xóa ${label}`,
         });
     }
 
@@ -317,6 +320,20 @@ export const checkReqChangeUserID = (req, res, next) => {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập ID mới của người dùng',
+        });
+    }
+
+    next();
+};
+
+// SEND CV VIA EMAIL
+export const checkReqSendCVViaEmail = (req, res, next) => {
+    const { employerEmail } = req.body;
+
+    if (!employerEmail) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập Email của nhà tuyển dụng',
         });
     }
 

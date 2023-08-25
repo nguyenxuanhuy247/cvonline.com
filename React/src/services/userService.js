@@ -73,6 +73,11 @@ export const updateTechnology = (data) => {
     return axios.put('/api/put-technology', data);
 };
 
+
+export const dragAndDropTechology = (data) => {
+    return axios.put('/api/drag-drop-technology', data);
+};
+
 export const deleteTechnology = (technologyData) => {
     const { technologyId, type, key, side, userId, productId, label } = technologyData;
 

@@ -184,8 +184,8 @@ export const handleCreateProduct = async (req, res) => {
     const message = await userService.handleCreateProduct(data);
     if (message.errorCode === 0) {
         return res.status(200).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(404).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
     }
 };
 
@@ -198,7 +198,7 @@ export const handleGetProduct = async (req, res) => {
         return res.status(200).json(message);
     } else if (message.errorCode === 31) {
         res.status(503).json(message);
-    } else if (message.errorCode === 32 || message.errorCode === 33 || message.errorCode === 34) {
+    } else if (message.errorCode === 32) {
         res.status(404).json(message);
     }
 };
@@ -279,6 +279,20 @@ export const handleUpdateTechnology = async (req, res) => {
     }
 };
 
+export const handleUpdateMultipleTechnologies = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.handleUpdateMultipleTechnologies(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (req, res) => {
     const data = req.query;
@@ -309,5 +323,21 @@ export const handleChangeUserID = async (req, res) => {
         res.status(503).json(message);
     } else if (message.errorCode === 32) {
         res.status(409).json(message);
+    }
+};
+
+// =================================================================
+// SEND CV VIA EMAIL
+export const handleSendCVViaEmail = async (req, res) => {
+    const data = req.body;
+
+    let message = await emailService.handleSendCVViaEmail(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
     }
 };

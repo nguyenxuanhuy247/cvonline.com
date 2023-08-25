@@ -42,6 +42,8 @@ const actionNames = Object.freeze({
     ...actionMaker(`UPDATE`, `TECHNOLOGY`),
     ...actionMaker(`DELETE`, `TECHNOLOGY`),
 
+    ...actionMaker(`DRAG_DROP`, `TECHNOLOGY`),
+
     // =================================================================
 
     ...actionMaker(`VERIFY`, `ID`),

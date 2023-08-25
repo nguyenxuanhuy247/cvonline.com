@@ -1,16 +1,13 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .library-href {
-    background-color: #333;
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 1.3rem;
-    max-width: 340px;
-    @include line-clamp;
-    overflow: hidden;
-    word-break: break-all;
-    line-height: 1.6;
+    @include tooltip-text-line-clamp;
+}
+
+.tooltip-name,
+.tooltip-version {
+    --line-clamp: 3;
+    @include tooltip-text-line-clamp;
 }
 
 .button-container {
@@ -105,10 +102,10 @@
 
         .version {
             @include line-clamp;
-            
+
             word-break: break-all;
             text-align: right;
-            // max-width: 40%;
+            max-width: 40%;
             min-width: 20%;
             margin-left: auto;
         }

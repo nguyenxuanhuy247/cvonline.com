@@ -562,7 +562,7 @@ export const handleUpdateUserInformation = async (data) => {
     try {
         const { userId, label } = data;
         const newData = { ...data };
-        
+
         const user = await db.users.findOne({
             where: { id: userId },
             raw: false,
@@ -674,156 +674,143 @@ export const handleGetProduct = async (data) => {
     try {
         const { userId } = data;
 
-        const user = await db.users.findOne({
-            where: { id: userId },
-            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        const productIDs = await db.technologies.findAll({
+            where: { userId: userId, key: 'PD' },
+            attributes: ['id'],
+            order: [['productOrder', 'ASC']],
             raw: true,
         });
 
-        if (user) {
-            const productIDs = await db.technologies.findAll({
-                where: { userId: userId, key: 'PD' },
-                attributes: ['id'],
-                order: [['productOrder', 'ASC']],
-                raw: true,
-            });
+        const productIDArr = productIDs?.map((productID) => productID.id);
+        const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+        const uniqueProductIDArr = [...new Set(productIDArrWithNULL)];
 
-            const productIDArr = productIDs?.map((productID) => productID.id);
-            const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
-            const uniqueProductIDArr = [...new Set(productIDArrWithNULL)];
+        if (uniqueProductIDArr.length > 0) {
+            let productListData = [];
+            for (let productID of uniqueProductIDArr) {
+                const product = {
+                    productInfo: {},
+                    sourceCodeList: [],
+                    FETechnologyList: [],
+                    BETechnologyList: [],
+                    FELibraryList: [],
+                    numberofFELibrary: undefined,
+                    BELibraryList: [],
+                    numberofBELibrary: undefined,
+                };
 
-            if (uniqueProductIDArr.length > 0) {
-                let productListData = [];
-                for (let productID of uniqueProductIDArr) {
-                    const product = {
-                        productInfo: {},
-                        sourceCodeList: [],
-                        FETechnologyList: [],
-                        BETechnologyList: [],
-                        FELibraryList: [],
-                        numberofFELibrary: undefined,
-                        BELibraryList: [],
-                        numberofBELibrary: undefined,
-                    };
+                const productDesc = await db.technologies.findOne({
+                    where: { id: productID, key: 'PD' },
+                    attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
+                    raw: true,
+                });
 
-                    const productDesc = await db.technologies.findOne({
-                        where: { id: productID, key: 'PD' },
-                        attributes: ['id', 'name', 'desc', 'image', 'productOrder'],
-                        raw: true,
-                    });
-
-                    if (productDesc) {
-                        const productImage = productDesc.image;
-                        let binaryImage;
-                        if (productImage) {
-                            binaryImage = productImage.toString('binary');
-                        }
-
-                        const newProductDesc = { ...productDesc, image: binaryImage };
-
-                        product.productInfo = newProductDesc;
+                if (productDesc) {
+                    const productImage = productDesc.image;
+                    let binaryImage;
+                    if (productImage) {
+                        binaryImage = productImage.toString('binary');
                     }
 
-                    const sourceCodes = await db.technologies.findAll({
-                        where: { userId: userId, productId: productID, key: 'SC' },
-                        attributes: ['id', 'image', 'name', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
+                    const newProductDesc = { ...productDesc, image: binaryImage };
 
-                    if (sourceCodes) {
-                        const sourceCodeList = sourceCodes.map((sourceCode) => {
-                            const binaryImage = sourceCode?.image?.toString('binary');
-                            return { ...sourceCode, image: binaryImage };
-                        });
-
-                        product.sourceCodeList = sourceCodeList;
-                    }
-
-                    const FETechnologies = await db.technologies.findAll({
-                        where: { userId: userId, productId: productID, key: 'TE', side: 'FE' },
-                        attributes: ['id', 'image', 'name', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (FETechnologies) {
-                        const FETechnologyList = FETechnologies.map((FETechnology) => {
-                            const binaryImage = FETechnology?.image?.toString('binary');
-                            return { ...FETechnology, image: binaryImage };
-                        });
-
-                        product.FETechnologyList = FETechnologyList;
-                    }
-
-                    const BETechnologies = await db.technologies.findAll({
-                        where: { userId: userId, productId: productID, key: 'TE', side: 'BE' },
-                        attributes: ['id', 'image', 'name', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (BETechnologies) {
-                        const BETechnologyList = BETechnologies.map((BETechnology) => {
-                            const binaryImage = BETechnology?.image?.toString('binary');
-                            return { ...BETechnology, image: binaryImage };
-                        });
-
-                        product.BETechnologyList = BETechnologyList;
-                    }
-
-                    const FELibraries = await db.technologies.findAndCountAll({
-                        where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
-                        attributes: ['id', 'image', 'name', 'version', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (FELibraries.rows.length > 0) {
-                        const FELibraryList = FELibraries.rows.map((library) => {
-                            const binaryImage = library?.image?.toString('binary');
-                            return { ...library, image: binaryImage };
-                        });
-
-                        product.FELibraryList = FELibraryList;
-                    }
-                    product.numberofFELibrary = FELibraries.count;
-
-                    const BELibraries = await db.technologies.findAndCountAll({
-                        where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
-                        attributes: ['id', 'image', 'name', 'version', 'link'],
-                        order: [['id', 'ASC']],
-                        raw: true,
-                    });
-
-                    if (BELibraries.rows.length > 0) {
-                        const FELibraryList = BELibraries.rows.map((library) => {
-                            const binaryImage = library?.image?.toString('binary');
-                            return { ...library, image: binaryImage };
-                        });
-
-                        product.BELibraryList = FELibraryList;
-                    }
-                    product.numberofBELibrary = BELibraries.count;
-
-                    productListData.push(product);
+                    product.productInfo = newProductDesc;
                 }
 
-                return {
-                    errorCode: 0,
-                    errorMessage: `Tải danh sách sản phẩm thành công`,
-                    data: productListData,
-                };
-            } else {
-                return {
-                    errorCode: 33,
-                    errorMessage: `Không tìm thấy danh sách sản phẩm`,
-                };
+                const sourceCodes = await db.technologies.findAll({
+                    where: { userId: userId, productId: productID, key: 'SC' },
+                    attributes: ['id', 'image', 'name', 'link', 'technologyOrder'],
+                    order: [['technologyOrder', 'ASC']],
+                    raw: true,
+                });
+
+                if (sourceCodes) {
+                    const sourceCodeList = sourceCodes.map((sourceCode) => {
+                        const binaryImage = sourceCode?.image?.toString('binary');
+                        return { ...sourceCode, image: binaryImage };
+                    });
+
+                    product.sourceCodeList = sourceCodeList;
+                }
+
+                const FETechnologies = await db.technologies.findAll({
+                    where: { userId: userId, productId: productID, key: 'TE', side: 'FE' },
+                    attributes: ['id', 'image', 'name', 'link', 'technologyOrder'],
+                    order: [['technologyOrder', 'ASC']],
+                    raw: true,
+                });
+
+                if (FETechnologies) {
+                    const FETechnologyList = FETechnologies.map((FETechnology) => {
+                        const binaryImage = FETechnology?.image?.toString('binary');
+                        return { ...FETechnology, image: binaryImage };
+                    });
+
+                    product.FETechnologyList = FETechnologyList;
+                }
+
+                const BETechnologies = await db.technologies.findAll({
+                    where: { userId: userId, productId: productID, key: 'TE', side: 'BE' },
+                    attributes: ['id', 'image', 'name', 'link', 'technologyOrder'],
+                    order: [['technologyOrder', 'ASC']],
+                    raw: true,
+                });
+
+                if (BETechnologies) {
+                    const BETechnologyList = BETechnologies.map((BETechnology) => {
+                        const binaryImage = BETechnology?.image?.toString('binary');
+                        return { ...BETechnology, image: binaryImage };
+                    });
+
+                    product.BETechnologyList = BETechnologyList;
+                }
+
+                const FELibraries = await db.technologies.findAndCountAll({
+                    where: { userId: userId, productId: productID, key: 'LI', side: 'FE' },
+                    attributes: ['id', 'image', 'name', 'version', 'link', 'technologyOrder'],
+                    order: [['technologyOrder', 'ASC']],
+                    raw: true,
+                });
+
+                if (FELibraries.rows.length > 0) {
+                    const FELibraryList = FELibraries.rows.map((library) => {
+                        const binaryImage = library?.image?.toString('binary');
+                        return { ...library, image: binaryImage };
+                    });
+
+                    product.FELibraryList = FELibraryList;
+                }
+                product.numberofFELibrary = FELibraries.count;
+
+                const BELibraries = await db.technologies.findAndCountAll({
+                    where: { userId: userId, productId: productID, key: 'LI', side: 'BE' },
+                    attributes: ['id', 'image', 'name', 'version', 'link', 'technologyOrder'],
+                    order: [['technologyOrder', 'ASC']],
+                    raw: true,
+                });
+
+                if (BELibraries.rows.length > 0) {
+                    const FELibraryList = BELibraries.rows.map((library) => {
+                        const binaryImage = library?.image?.toString('binary');
+                        return { ...library, image: binaryImage };
+                    });
+
+                    product.BELibraryList = FELibraryList;
+                }
+                product.numberofBELibrary = BELibraries.count;
+
+                productListData.push(product);
             }
+
+            return {
+                errorCode: 0,
+                errorMessage: `Tải danh sách sản phẩm thành công`,
+                data: productListData,
+            };
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy ID người dùng để tải danh sách sản phẩm`,
+                errorMessage: `Không tìm thấy danh sách sản phẩm`,
             };
         }
     } catch (error) {
@@ -953,54 +940,62 @@ export const handleMoveProduct = async (data) => {
 // CRUD TECHNOLOGY
 
 const handleFindAllTechnologyList = async (data, CRUD) => {
-    console.log('DATA', data);
-    const { key, type, side, name, userId, productId, label } = data ?? {};
+    const { type, label, userId, productId, key, side } = data ?? {};
 
-    let findAllQuery;
-    if (type === 'SOURCECODE') {
-        findAllQuery = { key: key, userId: userId, productId: productId };
-    } else {
-        findAllQuery = { side: side, key: key, userId: userId, productId: productId };
-    }
-
-    const { rows, count } = await db.technologies.findAndCountAll({
-        where: findAllQuery,
-        attributes: ['id', 'image', 'name', 'version', 'link'],
-        order: [['id', 'ASC']],
-        raw: true,
-    });
-
-    if (rows.length > 0) {
-        let dataSentToClient = {};
-
-        const technologyList = rows.map((library) => {
-            const binaryImage = library?.image?.toString('binary');
-            return { ...library, image: binaryImage };
-        });
-
+    try {
+        let findAllQuery;
         if (type === 'SOURCECODE') {
-            dataSentToClient.sourceCodeList = technologyList;
-        } else if (type === 'TECHNOLOGY' && side === 'FE') {
-            dataSentToClient.FETechnologyList = technologyList;
-        } else if (type === 'TECHNOLOGY' && side === 'BE') {
-            dataSentToClient.BETechnologyList = technologyList;
-        } else if (type === 'LIBRARY' && side === 'FE') {
-            dataSentToClient.FELibraryList = technologyList;
-            dataSentToClient.numberofFELibrary = count;
-        } else if (type === 'LIBRARY' && side === 'BE') {
-            dataSentToClient.BELibraryList = technologyList;
-            dataSentToClient.numberofBELibrary = count;
+            findAllQuery = { userId: userId, productId: productId, key: key };
+        } else {
+            findAllQuery = { userId: userId, productId: productId, key: key, side: side };
         }
 
+        const { rows, count } = await db.technologies.findAndCountAll({
+            where: findAllQuery,
+            attributes: ['id', 'image', 'name', 'version', 'link', 'technologyOrder'],
+            order: [['technologyOrder', 'ASC']],
+            raw: true,
+        });
+
+        if (rows.length > 0) {
+            let dataSentToClient = {};
+
+            const technologyList = rows.map((library) => {
+                const binaryImage = library?.image?.toString('binary');
+                return { ...library, image: binaryImage };
+            });
+
+            if (type === 'SOURCECODE') {
+                dataSentToClient.sourceCodeList = technologyList;
+            } else if (type === 'TECHNOLOGY' && side === 'FE') {
+                dataSentToClient.FETechnologyList = technologyList;
+            } else if (type === 'TECHNOLOGY' && side === 'BE') {
+                dataSentToClient.BETechnologyList = technologyList;
+            } else if (type === 'LIBRARY' && side === 'FE') {
+                dataSentToClient.FELibraryList = technologyList;
+                dataSentToClient.numberofFELibrary = count;
+            } else if (type === 'LIBRARY' && side === 'BE') {
+                dataSentToClient.BELibraryList = technologyList;
+                dataSentToClient.numberofBELibrary = count;
+            }
+
+            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA', dataSentToClient);
+            return {
+                errorCode: 0,
+                errorMessage: `${CRUD} ${label} thành công`,
+                data: dataSentToClient,
+            };
+        } else {
+            return {
+                errorCode: 33,
+                errorMessage: `Không tìm thấy danh sách ${label}`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in handleFindAllTechnologyList() in userService.js : ', error);
         return {
-            errorCode: 0,
-            errorMessage: `${CRUD} ${label} thành công`,
-            data: dataSentToClient,
-        };
-    } else {
-        return {
-            errorCode: 33,
-            errorMessage: `Không tìm thấy danh sách ${label}`,
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Tải danh sách khi ${CRUD} ${label} thất bại`,
         };
     }
 };
@@ -1012,9 +1007,9 @@ export const handleCreateTechnology = async (data) => {
     try {
         let whereQuery;
         if (type === 'SOURCECODE') {
-            whereQuery = { name: name, userId: userId, productId: productId };
+            whereQuery = { userId: userId, productId: productId, key: key, name: name };
         } else {
-            whereQuery = { side: side, name: name, userId: userId, productId: productId };
+            whereQuery = { userId: userId, productId: productId, key: key, side: side, name: name };
         }
 
         const technology = await db.technologies.findOne({
@@ -1023,12 +1018,31 @@ export const handleCreateTechnology = async (data) => {
             raw: true,
         });
 
-        if (!technology || technology.name !== name) {
-            const queryData = { ...data };
-            delete queryData?.label;
-            await db.technologies.create({ ...queryData });
+        if (!technology) {
+            delete whereQuery.name;
 
-            const message = handleFindAllTechnologyList(data, 'Tạo');
+            const technologyIDs = await db.technologies.findAll({
+                where: whereQuery,
+                attributes: ['technologyOrder'],
+                order: [['technologyOrder', 'ASC']],
+                raw: true,
+            });
+
+            const technologyIDArr = technologyIDs?.map((technologyID) => technologyID.technologyOrder);
+            const technologyIDArrWithNULL = technologyIDArr?.filter((technologyID) => technologyID !== null);
+            const uniquetechnologyIDArr = [...new Set(technologyIDArrWithNULL)];
+
+            let maxOrder = 0;
+            if (uniquetechnologyIDArr?.length > 0) {
+                maxOrder = Math.max(...uniquetechnologyIDArr);
+            }
+
+            const queryCreateTechnology = { ...data, technologyOrder: maxOrder + 1 };
+            delete queryCreateTechnology.label;
+
+            await db.technologies.create(queryCreateTechnology);
+
+            const message = await handleFindAllTechnologyList(data, 'Tạo');
 
             return message;
         } else {
@@ -1051,18 +1065,18 @@ export const handleUpdateTechnology = async (data) => {
     const { id, image, name, version, link, label } = data ?? {};
 
     try {
-        const result = await db.technologies.findOne({
+        const technology = await db.technologies.findOne({
             where: { id: id },
             raw: false,
         });
 
-        if (result) {
-            result.image = image;
-            result.name = name;
-            result.version = version;
-            result.link = link;
+        if (technology) {
+            technology.image = image;
+            technology.name = name;
+            technology.version = version;
+            technology.link = link;
 
-            await result.save();
+            await technology.save();
 
             const message = await handleFindAllTechnologyList(data, 'Cập nhật');
 
@@ -1082,9 +1096,41 @@ export const handleUpdateTechnology = async (data) => {
     }
 };
 
+export const handleUpdateMultipleTechnologies = async (data) => {
+    const { updateData, getData } = data;
+    const { label } = getData;
+
+    try {
+        for (let index in updateData) {
+            const technology = updateData[index];
+
+            await db.technologies.update(
+                {
+                    technologyOrder: technology.technologyOrder,
+                },
+                {
+                    where: {
+                        id: technology.technologyID,
+                    },
+                },
+            );
+        }
+
+        const message = await handleFindAllTechnologyList(getData, '');
+
+        return message;
+    } catch (error) {
+        console.log('An error in handleUpdateTechnology() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `[Kết nối Database] Sắp xếp danh sách ${label} thất bại`,
+        };
+    }
+};
+
 // DELETE TECHNOLOGY
 export const handleDeleteTechnology = async (data) => {
-    const { key, type, side, technologyId, userId, productId, label } = data ?? {};
+    const { technologyId, label } = data ?? {};
 
     try {
         const isExisted = await db.technologies.findOne({

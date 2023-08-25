@@ -502,14 +502,14 @@ export const moveProduct_Failure = () => ({
 // CRUD TECHNOLOGY
 
 // CREATE TECHNOLOGY
-export const createTechnology = (technologyData, index) => {
+export const createTechnology = (technologyData, productIndex) => {
     return async (dispatch) => {
         try {
             let res = await userService.createTechnology(technologyData);
-            const { errorCode, errorMessage, data } = res ?? {};
+            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
 
             if (errorCode === 0) {
-                const reduxData = { data, index };
+                const reduxData = { dataFromDB, productIndex };
                 dispatch(createTechnology_Success(reduxData));
 
                 return errorCode;
@@ -540,14 +540,14 @@ export const createTechnology_Failure = () => ({
 });
 
 // UPDATE TECHNOLOGY
-export const updateTechnology = (technologyData, index) => {
+export const updateTechnology = (technologyData, productIndex) => {
     return async (dispatch) => {
         try {
             let res = await userService.updateTechnology(technologyData);
-            const { errorCode, errorMessage, data } = res ?? {};
+            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
 
             if (errorCode === 0) {
-                const reduxData = { data, index };
+                const reduxData = { dataFromDB, productIndex };
                 dispatch(updateTechnology_Success(reduxData));
 
                 return errorCode;
@@ -577,15 +577,47 @@ export const updateTechnology_Failure = () => ({
     type: actionNames.UPDATE_TECHNOLOGY_FAILURE,
 });
 
+// DRAG AND DROP TECHNOLOGY
+export const dragAndDropTechology = (technologyData, productIndex) => {
+    return async (dispatch) => {
+        try {
+            let res = await userService.dragAndDropTechology(technologyData);
+            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
+
+            if (errorCode === 0) {
+                const reduxData = { dataFromDB, productIndex };
+                dispatch(dragAndDropTechology_Success(reduxData));
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(dragAndDropTechology_Failure());
+            }
+        } catch (error) {
+            const { errorMessage } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            dispatch(dragAndDropTechology_Failure());
+            console.log('An error in dragAndDropTechology() - userActions.js: ', error);
+        }
+    };
+};
+
+export const dragAndDropTechology_Success = (data) => ({
+    type: actionNames.DRAG_DROP_TECHNOLOGY_SUCCESS,
+    payload: data,
+});
+
+export const dragAndDropTechology_Failure = () => ({
+    type: actionNames.DRAG_DROP_TECHNOLOGY_FAILURE,
+});
+
 // DELETE TECHNOLOGY
-export const deleteTechnology = (technologyData, index) => {
+export const deleteTechnology = (technologyData, productIndex) => {
     return async (dispatch) => {
         try {
             let res = await userService.deleteTechnology(technologyData);
-            const { errorCode, errorMessage, data } = res ?? {};
+            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
 
             if (errorCode === 0) {
-                const reduxData = { data, index };
+                const reduxData = { dataFromDB, productIndex };
                 dispatch(deleteTechnology_Success(reduxData));
 
                 return errorCode;
@@ -631,7 +663,7 @@ export const changeUserID = (data) => {
                 dispatch(changeUserID_Fail());
             }
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
+            const { errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage, 4000);
             dispatch(changeUserID_Fail());
             console.log('An error in changeUserID() - userActions.js: ', error);

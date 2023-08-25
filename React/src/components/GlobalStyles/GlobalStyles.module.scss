@@ -147,6 +147,20 @@ a {
     overflow: hidden;
 }
 
+@mixin tooltip-text-line-clamp {
+    @include line-clamp;
+
+    background-color: #333;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 1.3rem;
+    max-width: 340px;
+    overflow: hidden;
+    word-break: break-all;
+    line-height: 1.6;
+}
+
 @mixin auth-logo {
     display: block;
     width: 280px;

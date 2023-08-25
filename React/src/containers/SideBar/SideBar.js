@@ -38,10 +38,6 @@ class SideBar extends PureComponent {
         }
     };
 
-    handleGoBackToPreviousCV = (prevUserID) => {
-        this.props.updateHistoryUserIDList(prevUserID);
-    };
-
     handleClickSendCVViaEmailButton = () => {
         const { isGmailPassword } = this.props.owner ?? {};
 
@@ -65,8 +61,8 @@ class SideBar extends PureComponent {
     render = () => {
         const { pathname } = this.props?.location ?? {};
         const { id: ownerID } = this.props?.owner ?? {};
-        const historyUserIDList = this.props?.historyUserIDList;
-        const prevUserID = historyUserIDList[historyUserIDList.length - 1];
+        const CVHistory = this.props?.CVHistory;
+        const firstUserIDInList = CVHistory[0];
 
         return (
             <div className={cx('side-bar')}>
@@ -89,10 +85,10 @@ class SideBar extends PureComponent {
                     <span className={cx('text')}>CV của tôi</span>
                 </Button>
                 <Button
-                    disabled={!prevUserID}
-                    route={`/${prevUserID}`}
+                    disabled={!firstUserIDInList}
+                    route={`/${firstUserIDInList}`}
                     className={cx('button')}
-                    onClick={() => this.handleGoBackToPreviousCV(prevUserID)}
+                    onClick={() => this.props.updateCVHistory()}
                 >
                     <span className={cx('icon')}>
                         <MdRemoveRedEye />
@@ -114,7 +110,7 @@ class SideBar extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
-        historyUserIDList: state.user.historyUserIDList,
+        CVHistory: state.user.CVHistory,
         userInfo: state.user.userInfo,
     };
 };
@@ -122,7 +118,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         readUserInformation: (userId) => dispatch(userActions.readUserInformation(userId)),
-        updateHistoryUserIDList: (userID) => dispatch({ type: 'UPDATE_HISTORY_USER_ID', payload: userID }),
+        updateCVHistory: () => dispatch({ type: 'UPDATE_CV_HISTORY' }),
         userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };
