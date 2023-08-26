@@ -1,116 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="font-size: 62.5%">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Lấy lại mật khẩu - cvonline.com</title>
-        <link rel="stylesheet" href="/css/reset.css" />
-        <link rel="stylesheet" href="/css/reset-password.css" />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-            integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Static Template</title>
     </head>
-    <body>
-        <div class="auth-container">
-            <div class="inner">
-                <img src="/img/logo-with-text.png" alt="cvonline.com" class="logo" />
-
-                <div class="reset-password-container">
-                    <form class="form-reset-password" method="POST">
-                        <p class="title">Tạo lại mật khẩu của bạn</p>
-
-                        <p class="<%= errorMessage ? 'message error' : 'message' %>"><%= errorMessage%></p>
-
-                        <div class="form-group">
-                            <label htmlFor="password" class="label"> Mật khẩu mới </label>
-                            <div class="input-container">
-                                <div class="left-icon-container"><i class="fa-solid fa-user-shield"></i></div>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    class="input"
-                                    name="password"
-                                    value="<%= values.password%>"
-                                    placeholder="Nhập mật khẩu mới"
-                                />
-                                <div class="toggle-show-password">
-                                    <i class="fa-solid fa-eye green-eye"></i>
-                                    <i class="fa-solid fa-eye-slash grey-eye"></i>
-                                </div>
-                            </div>
-                            <div class="message-container">
-                                <ul class="rule-password">
-                                    <li>Mật khẩu từ 6 đến 25 ký tự</li>
-                                    <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label htmlFor="confirmedPassword" class="label"> Xác nhận mật khẩu mới</label>
-                            <div class="input-container">
-                                <div class="left-icon-container"><i class="fa-solid fa-user-shield"></i></div>
-                                <input
-                                    type="password"
-                                    id="confirmedPassword"
-                                    class="input"
-                                    name="confirmedPassword"
-                                    value="<%= values.confirmedPassword%>"
-                                    placeholder="Nhập lại mật khẩu"
-                                />
-                                <div class="toggle-show-password">
-                                    <i class="fa-solid fa-eye green-eye"></i>
-                                    <i class="fa-solid fa-eye-slash grey-eye"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="submit-btn">Tạo lại mật khẩu</button>
-                    </form>
-
-                    <div class="switch-to-signin-signup">
-                        <a href="http://localhost:2407/signin" class="btn">Đăng nhập</a>
-
-                        <a href="http://localhost:2407/signup" class="btn">Đăng ký</a>
+    <body style="font-size: 1.6rem; box-sizing: border-box; margin: 0; padding: 0">
+        <div style="padding: 20px">
+            <p style="text-align: center; font-size: 2rem; font-weight: 600">THƯ ỨNG TUYỂN</p>
+            <div style="display: flex">
+                <div style="display: flex; display: flex; flex-direction: column">
+                    <div
+                        style="width: 40px; height: 40px; border-radius: 50%; background-image: url('<%= avatar%>')"
+                        alt="Image"
+                    ></div>
+                    <img
+                        src="JSON.stringify(<%= avatar%>)"
+                        style="width: 40px; height: 40px; border-radius: 50%"
+                        alt="Image"
+                    />
+                    <span><%= fullName%></span>
+                    <span><%= avatar%></span>
+                    <span>Front-end developer</span>
+                </div>
+                <div>
+                    <p>Thông tin liên hệ</p>
+                    <div>
+                        <p>Số điện thoại / Zalo :</p>
+                        <p>0356 118 188</p>
                     </div>
+                    <div>
+                        <p>Email :</p>
+                        <p>nguyenxuanhuy24071993@gmail.com</p>
+                    </div>
+                    <span>Front-end developer</span>
                 </div>
             </div>
+            <div>
+                <p>Kính gửi: Bộ phận nhân sự Công ty TNHH ABCC</p>
+                <p>Đồng kính gửi: Trưởng phòng Công nghệ, Ban giám đốc công ty</p>
+                <p>Hà Nội, Ngày 26 tháng 08 năm 2023</p>
+            </div>
+            <div>
+                <p>
+                    Thông qua …, tôi được biết Quý Công ty đang cần tuyển vị trí [Tên vị trí công việc]. Tôi mong muốn
+                    được thử sức mình trong môi trường làm việc hết sức năng động của Quý Công ty. Với trình độ và kinh
+                    nghiệm hiện có, tôi tự tin có thể đảm nhiệm tốt vai trò này tại công ty [Tên công ty].
+                </p>
+
+                <p>Tôi xin gửi Quý Công ty sản phẩm cá nhân, mong công ty xem xét và đánh giá</p>
+
+                <div style="text-align: center">
+                    <a>Trang CV của tôi</a>
+                </div>
+
+                <p>
+                    Tôi mong nhận được đánh giá của Quý công ty về sản phẩm của tôi. Nếu thiếu kiến thức và công nghệ
+                    nào, mong công ty phản hồi để tôi có thể hoàn thiện hơn sản phẩm của mình.
+                </p>
+                <p>Trân trọng. Xin cảm ơn!</p>
+
+                <p>-- Thư này được gửi bởi cvonline.com - sản phẩm cá nhân của Nguyễn Xuân Huy --</p>
+            </div>
         </div>
-
-        <script>
-            // Redirect to Sign In Page when change password successfully
-            const errorCode = '<%- JSON.stringify(errorCode)%>';
-            if (JSON.parse(errorCode) === 0) {
-                const isRedirect = confirm('Đổi mật khẩu thành công. Bạn có muốn đăng nhập ngay?');
-                if (isRedirect) {
-                    window.location.href = 'http://localhost:2407/signin';
-                }
-            }
-
-            // Show and Hide Password
-            const showPasswordButton = document.querySelectorAll('.toggle-show-password');
-            if (showPasswordButton.length > 0) {
-                showPasswordButton.forEach((button) => {
-                    button.onclick = function () {
-                        const isShow = this.classList.contains('show');
-                        const inputEl = this.parentElement.querySelector('.input');
-
-                        if (inputEl) {
-                            if (isShow) {
-                                this.classList.remove('show');
-                                inputEl.type = 'password';
-                            } else {
-                                this.classList.add('show');
-                                inputEl.type = 'text';
-                            }
-                        }
-                    };
-                });
-            }
-        </script>
     </body>
 </html>

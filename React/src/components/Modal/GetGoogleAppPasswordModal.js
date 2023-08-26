@@ -65,6 +65,10 @@ class GetGoogleAppPasswordModal extends PureComponent {
                                 <MdClose />
                             </span>
                         </div>
+                        <div className={cx('warning')}>
+                            Nhập mật khẩu Google App Password để cvonline.com có thể
+                            gửi email bằng Gmail của bạn đến nhà tuyển dụng, mà vẫn đảm bảo về an toàn và bảo mật
+                        </div>
 
                         <div className={cx('modal-body')}>
                             <div className={cx('guide-container')}>

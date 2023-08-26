@@ -87,11 +87,14 @@ export const handleSendCVViaEmail = async (data) => {
 
         const user = await db.users.findOne({
             where: { email: from },
-            attributes: ['fullName', 'email', 'gmailPassword'],
+            attributes: ['fullName', 'avatar', 'jobPosition', 'email', 'gmailPassword'],
             raw: true,
         });
 
         if (user && user.gmailPassword) {
+            const avatar = user.avatar;
+            const binaryAvatar = avatar?.toString('binary');
+
             const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
@@ -102,23 +105,80 @@ export const handleSendCVViaEmail = async (data) => {
                 },
             });
 
-            const css = await readFile('./src/public/css/reset-password.css', 'utf8');
+            console.log('AAAAAAAAAAA', user);
+            console.log('BBBBBBBBBBB', binaryAvatar);
+
             const html = await ejs.renderFile('./src/views/cv-email.ejs', {
-                errorCode: 1,
-                errorMessage: '',
-                values: { password: '', confirmedPassword: '' },
-                css: css,
+                fullName: user.fullName,
+                avatar: binaryAvatar,
             });
 
-            const app = express();
-            app.use(express.static('./src/public/css'));
             // send mail with defined transport object
             await transporter.sendMail({
                 from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
                 to: employerEmail,
                 subject: subject,
                 text: subject,
-                html: html,
+                attachments: [{ path: binaryAvatar, cid: 'avatar' }],
+                html: `<body style="font-size: 1.6rem; box-sizing: border-box; margin: 0; padding: 0">
+                <div style="padding: 20px">
+                    <p style="text-align: center; font-size: 2rem; font-weight: 600">THƯ ỨNG TUYỂN</p>
+                    <div style="display: flex">
+                        <div style="display: flex; display: flex; flex-direction: column">
+                            <div
+                                style="width: 40px; height: 40px; border-radius: 50%; background-image: url('<%= avatar%>')"
+                                alt="Image"
+                            ></div>
+                            <img
+                                src="cid:avatar"
+                                style="width: 40px; height: 40px; border-radius: 50%"
+                                alt="Image"
+                            />
+                            <span>${user.fullName}</span>
+                            <span>${user.jobPosition}</span>
+                        </div>
+                        <div>
+                            <p>Thông tin liên hệ</p>
+                            <div>
+                                <p>Số điện thoại / Zalo :</p>
+                                <p>0356 118 188</p>
+                            </div>
+                            <div>
+                                <p>Email :</p>
+                                <p>nguyenxuanhuy24071993@gmail.com</p>
+                            </div>
+                            <span>Front-end developer</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <p>Kính gửi: Bộ phận nhân sự Công ty TNHH ABCC</p>
+                        <p>Đồng kính gửi: Trưởng phòng Công nghệ, Ban giám đốc công ty</p>
+                        <p>Hà Nội, Ngày 26 tháng 08 năm 2023</p>
+                    </div>
+                    <div>
+                        <p>
+                            Thông qua …, tôi được biết Quý Công ty đang cần tuyển vị trí [Tên vị trí công việc]. Tôi mong muốn
+                            được thử sức mình trong môi trường làm việc hết sức năng động của Quý Công ty. Với trình độ và kinh
+                            nghiệm hiện có, tôi tự tin có thể đảm nhiệm tốt vai trò này tại công ty [Tên công ty].
+                        </p>
+        
+                        <p>Tôi xin gửi Quý Công ty sản phẩm cá nhân, mong công ty xem xét và đánh giá</p>
+        
+                        <div style="text-align: center">
+                            <a>Trang CV của tôi</a>
+                        </div>
+        
+                        <p>
+                            Tôi mong nhận được đánh giá của Quý công ty về sản phẩm của tôi. Nếu thiếu kiến thức và công nghệ
+                            nào, mong công ty phản hồi để tôi có thể hoàn thiện hơn sản phẩm của mình.
+                        </p>
+                        <p>Trân trọng. Xin cảm ơn!</p>
+        
+                        <p>-- Thư này được gửi bởi cvonline.com - sản phẩm cá nhân của Nguyễn Xuân Huy --</p>
+                    </div>
+                </div>
+            </body>`,
             });
 
             return {
