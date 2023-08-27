@@ -12,6 +12,7 @@ import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
 import Button from '~/components/Button/Button.js';
 import GetGoogleAppPasswordModal from '~/components/Modal/GetGoogleAppPasswordModal.js';
+import SendCVViaEmailModal from '~/components/Modal/SendCVViaEmailModal.js';
 
 const cx = classnames.bind(styles);
 
@@ -20,7 +21,8 @@ class SideBar extends PureComponent {
         super(props);
         this.state = {
             prevUserID: undefined,
-            isOpenModal: false,
+            isGetGoogleAppPasswordModal: false,
+            isSendCVViaEmailModal: false,
         };
     }
 
@@ -42,14 +44,17 @@ class SideBar extends PureComponent {
         const { isGmailPassword } = this.props.owner ?? {};
 
         if (isGmailPassword) {
-            window.location.href = `http://localhost:2407/send-cv-via-email`;
+            this.setState({ isSendCVViaEmailModal: true });
         } else {
-            this.setState({ isOpenModal: true });
+            this.setState({ isGetGoogleAppPasswordModal: true });
         }
     };
 
     handleCloseModal = () => {
-        this.setState({ isOpenModal: false });
+        this.setState({
+            isGetGoogleAppPasswordModal: false,
+            isSendCVViaEmailModal: false,
+        });
     };
 
     componentDidUpdate(prevProps) {
@@ -101,7 +106,15 @@ class SideBar extends PureComponent {
                     </span>
                     <span className={cx('text')}>Gửi CV</span>
                 </Button>
-                <GetGoogleAppPasswordModal isOpen={this.state.isOpenModal} onClose={() => this.handleCloseModal()} />
+
+                <GetGoogleAppPasswordModal
+                    isOpen={this.state.isGetGoogleAppPasswordModal}
+                    onClose={() => this.handleCloseModal()}
+                />
+                <SendCVViaEmailModal
+                    isOpen={this.state.isSendCVViaEmailModal}
+                    onClose={() => this.handleCloseModal()}
+                />
             </div>
         );
     };

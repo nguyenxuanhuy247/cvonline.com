@@ -26,10 +26,10 @@ class HomePage extends PureComponent {
                 <div className={cx('home-page')}>
                     {length > 0 && (
                         <div className={cx('home-page-container')}>
-                            {this.props.allCVList?.map((userCV) => {
+                            {this.props.allCVList?.map((userCV, index) => {
                                 const { userInfo, numberofProduct, FETechnologyList, BETechnologyList } = userCV;
                                 return (
-                                    <Link to={`/${userInfo.id}`}>
+                                    <Link to={`/${userInfo.id}`} key={index}>
                                         <div className={cx('candidate')}>
                                             <div className={cx('avatar-name-job-title')}>
                                                 <Image
