@@ -12,7 +12,7 @@ import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
 import Button from '~/components/Button/Button.js';
 import GetGoogleAppPasswordModal from '~/components/Modal/GetGoogleAppPasswordModal.js';
-import SendCVViaEmailModal from '~/components/Modal/SendCVViaEmailModal.js';
+import SendCVByEmailModal from '~/components/Modal/SendCVByEmailModal.js';
 
 const cx = classnames.bind(styles);
 
@@ -111,10 +111,7 @@ class SideBar extends PureComponent {
                     isOpen={this.state.isGetGoogleAppPasswordModal}
                     onClose={() => this.handleCloseModal()}
                 />
-                <SendCVViaEmailModal
-                    isOpen={this.state.isSendCVViaEmailModal}
-                    onClose={() => this.handleCloseModal()}
-                />
+                <SendCVByEmailModal isOpen={this.state.isSendCVViaEmailModal} onClose={() => this.handleCloseModal()} />
             </div>
         );
     };

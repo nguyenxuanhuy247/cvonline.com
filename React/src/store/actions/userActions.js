@@ -52,7 +52,7 @@ export const userSignInStart = (userData) => {
             }
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             dispatch(userSignIn_Fail());
             console.log('An error in userSignInStart() - userActions.js: ', error);
         }
@@ -133,7 +133,7 @@ export const readSearch = (searchValue) => {
         } catch (error) {
             const { errorCode, errorMessage, data } = error.response?.data ?? {};
             if (errorCode === 31) {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             }
             dispatch(readSearch_Failure(data));
             console.log('An error in readSearch() - userActions.js: ', error);
@@ -175,7 +175,7 @@ export const readHomeLayout = () => {
             }
         } catch (error) {
             const { errorCode, errorMessage, data } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(readHomeLayout_Failure(data));
             console.log('An error in readHomeLayout() - userActions.js: ', error);
 
@@ -221,7 +221,7 @@ export const readUserInformation = (userId) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
             dispatch(readUserInformation_Failure());
             console.log('An error in readUserInformation() - userActions.js: ', error);
 
@@ -264,7 +264,7 @@ export const updateUserInformation = (userData) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(updateUserInformation_Failure());
             console.log('An error in updateTechnology() - userActions.js: ', error);
 
@@ -309,7 +309,7 @@ export const createProduct = (userId) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(createProduct_Failure());
             console.log('An error in createProduct() - userActions.js: ', error);
 
@@ -351,7 +351,7 @@ export const readProduct = (userId) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(readProduct_Failure());
             console.log('An error in readProduct() - userActions.js: ', error);
 
@@ -393,7 +393,7 @@ export const updateProduct = (productData, index, updatedItem) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(updateProduct_Failure());
             console.log('An error in updateProduct() - userActions.js: ', error);
 
@@ -434,7 +434,7 @@ export const deleteProduct = (productId, index) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(deleteProduct_Failure());
             console.log('An error in deleteProduct() - userActions.js: ', error);
 
@@ -476,7 +476,7 @@ export const moveProduct = (productData, index) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(moveProduct_Failure());
             console.log('An error in moveProduct() - userActions.js: ', error);
 
@@ -521,7 +521,7 @@ export const createTechnology = (technologyData, productIndex) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
             dispatch(createTechnology_Failure());
             console.log('An error in createTechnology() - userActions.js: ', error);
 
@@ -559,7 +559,7 @@ export const updateTechnology = (technologyData, productIndex) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
             dispatch(updateTechnology_Failure());
             console.log('An error in updateTechnology() - userActions.js: ', error);
 
@@ -593,7 +593,7 @@ export const dragAndDropTechology = (technologyData, productIndex) => {
             }
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(dragAndDropTechology_Failure());
             console.log('An error in dragAndDropTechology() - userActions.js: ', error);
         }
@@ -629,7 +629,7 @@ export const deleteTechnology = (technologyData, productIndex) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
             dispatch(deleteTechnology_Failure());
             console.log('An error in deleteTechnology() - userActions.js: ', error);
 
@@ -664,7 +664,7 @@ export const changeUserID = (data) => {
             }
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(changeUserID_Fail());
             console.log('An error in changeUserID() - userActions.js: ', error);
         }
@@ -683,3 +683,27 @@ export const changeUserID_Success = (data) => ({
 export const changeUserID_Fail = () => ({
     type: actionNames.CHANGE_ID_FAILURE,
 });
+
+// =================================================================
+// SEND CV BY EMAIL
+export const SendCVByEmail = (data) => {
+    return async (dispatch) => {
+        dispatch(changeUserID_Start());
+        try {
+            let res = await userService.SendCVByEmail(data);
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                Toast.TOP_CENTER_SUCCESS(errorMessage, 4000);
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                return errorCode;
+            }
+        } catch (error) {
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            console.log('An error in SendCVByEmail() - userActions.js: ', error);
+            return errorCode;
+        }
+    };
+};

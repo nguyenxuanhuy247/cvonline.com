@@ -59,7 +59,7 @@ let initWebRoutes = (app) => {
     router.get('/api/verify-user-email', appMiddleware.checkReqVerifyUserEmail, appController.handleVerifyUserEmail);
 
     // SEND CV VIA EMAL
-    router.post('/api/send-cv-via-email', userMiddleware.checkReqSendCVViaEmail, userController.handleSendCVViaEmail);
+    router.post('/api/send-cv-by-email', userMiddleware.checkReqSendCVByEmail, userController.handleSendCVByEmail);
 
     return app.use('/', router);
 };

@@ -81,13 +81,11 @@ export const handleSendEmailResetPassword = async (data) => {
 
 // =========================================================================
 // SEND CV VIA EMAIL
-export const handleSendCVViaEmail = async (data) => {
+export const handleSendCVByEmail = async (data) => {
     try {
-        const { from, employerEmail, subject } = data;
-
         const user = await db.users.findOne({
-            where: { email: from },
-            attributes: ['fullName', 'avatar', 'jobPosition', 'email', 'gmailPassword'],
+            where: { email: data.from },
+            attributes: ['id', 'fullName', 'phoneNumber', 'avatar', 'jobPosition', 'email', 'gmailPassword'],
             raw: true,
         });
 
@@ -105,94 +103,264 @@ export const handleSendCVViaEmail = async (data) => {
                 },
             });
 
-            console.log('AAAAAAAAAAA', user);
-            console.log('BBBBBBBBBBB', binaryAvatar);
-
-            const html = await ejs.renderFile('./src/views/cv-email.ejs', {
-                fullName: user.fullName,
-                avatar: binaryAvatar,
-            });
-
             // send mail with defined transport object
             await transporter.sendMail({
                 from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
-                to: employerEmail,
-                subject: subject,
-                text: subject,
+                to: data.to,
+                subject: data.subject,
+                text: data.subject,
                 attachments: [{ path: binaryAvatar, cid: 'avatar' }],
-                html: `<body style="font-size: 16px; box-sizing: border-box; margin: 0; padding: 0;">
-                <div style="padding: 20px;">
-                  <p style="text-align: center; font-size: 24px; font-weight: 600;">
-                    THƯ ỨNG TUYỂN
-                  </p>
-                  <div style="display: flex;">
-                    <div
-                      style="display: flex; flex-direction: column; align-items: center;"
-                    >
-                      <img
-                        src="https://vinfastotominhdao.vn/wp-content/uploads/VinFast-VF3-mau-xanh-do-1110x644.jpg"
-                        style="width: 40px; height: 40px; border-radius: 50%;"
-                        alt="Image"
-                      />
-                      <span>Nguyễn Xuân Huy</span>
-                      <span>Fullstack developer</span>
-                    </div>
-                    <div>
-                      <p>Thông tin liên hệ</p>
-                      <div>
-                        <p>Số điện thoại / Zalo :</p>
-                        <p>0356 118 188</p>
+                html: `<div style="background-color: #f3f3f3; padding: 50px 0; ">
+                <table style="width: 700px; margin: 0 auto; background-color: #fff; padding: 20px 46px; font-size: 15px;">
+                <tbody style="color: #496c92;">
+                  <tr>
+                    <td>
+                      <p
+                        style="
+                          font-size: 24px;
+                          font-weight: 600;
+                          text-align: center;
+                          text-transform: uppercase;
+                        "
+                      >
+                        THƯ ỨNG TUYỂN VỊ TRÍ ${user.jobPosition}
+                      </p>
+                    </td>
+                  </tr>
+          
+                  <tr>
+                    <td>
+                      <table
+                        style="
+                          width: 100%;
+                          padding: 20px;
+                          background: #f4e8f8;
+                          border-radius: 20px;
+                        "
+                      >
+                        <tbody>
+                          <tr>
+                            <td style="width: 220px;">
+                              <img
+                                src="cid:avatar"
+                                alt="${user.fullName}"
+                                style="
+                                  width: 200px;
+                                  height: 200px;
+                                  border-radius: 50%;
+                                  object-fit: cover;
+                                "
+                              />
+                            </td>
+                            <td style="margin-left: 20px;">
+                              <p
+                                style="
+                                  margin: 0;    
+                                  font-size: 22px;
+                                  font-weight: 700;
+                                  line-height: 1.4;
+                                  text-transform: uppercase;
+                                  color: #ff881d;
+                                "
+                              >
+                                ${user.fullName}
+                              </p>
+                              <p
+                                style="
+                                  margin: 8px 0;
+                                  font-size: 20px;
+                                  line-height: 1.4;
+                                  font-weight: 700;
+                                  color: #496c92;
+                                "
+                              >
+                                ${user.jobPosition}
+                              </p>
+                              <p
+                                style="
+                                  margin: 12px 0;
+                                  padding: 5px 10px;
+                                  font-size: 18px;
+                                  font-weight: 700;
+                                  line-height: 1.4;
+                                  color: #ff881d;
+                                  background-color: #faf6c6;
+                                  border-radius: 12px;
+                                "
+                              >
+                                Thông tin liên hệ
+                              </p>
+          
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style="
+                                        margin-top: 4px;
+                                        margin-left: 16px;
+                                        color: #496c92;
+                                        display: flex;
+                                        column-gap: 8px;
+                                      "
+                                    >
+                                      <span style="min-width: 100px; font-weight: 600;"
+                                        >Số điện thoại</span
+                                      >
+                                      <span>:</span>
+                                      <span>${user.phoneNumber}</span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td
+                                      style="
+                                        margin-top: 4px;
+                                        margin-left: 20px;
+                                        color: #496c92;
+                                        display: flex;
+                                        column-gap: 8px;
+                                      "
+                                    >
+                                      <span style="min-width: 100px; font-weight: 600;"
+                                        >Email</span
+                                      >
+                                      <span>:</span>
+                                      <span style="word-break: break-all;">${user.email}</span>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+          
+                  <tr>
+                    <td>
+                      <table
+                        style="margin-top: 20px; margin-left: 20px; font-weight: 700;"
+                      >
+                        <tbody>
+                          <tr>
+                            <td>
+                              <p style="margin: 0;">
+                                Kính gửi : Trưởng phòng nhân sự công ty ABC
+                              </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p style="margin: 0;">
+                                Đồng kính gửi : Bộ phận nhân sự, Trưởng phòng Công nghệ,
+                                Ban giám đốc Quý công ty
+                              </p>
+                            </td>
+                          </tr>
+          
+                          <tr>
+                            <td>
+                              <p style="margin: 0;">
+                                Hà Nội, ngày ${String(new Date().getDate())} tháng
+                                ${String(new Date().getMonth() + 1)} năm ${String(new Date().getFullYear())}
+                              </p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p style="margin: 8px;">
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>Thông qua
+                        ${data.source}, tôi được biết Quý Công ty đang cần tuyển vị trí
+                        ${data.jobTitle}. Sau khi tìm hiểu yêu cầu công việc, tôi nhận
+                        thấy mình có đủ năng lực để đảm nhận vị trí công việc này. Với
+                        trình độ của mình, tôi mong muốn được đóng góp vào sự phát triển
+                        của Quý công ty.
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p style="margin: 8px;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tôi xin gửi Quý Công ty bản CV mô tả
+                        chi tiết kinh nghiệm và những sản phẩm tôi đã làm được. Tôi rất
+                        mong công ty xem xét và đánh giá.
+                        <strong style="font-weight: 600; color: red;">
+                          (Xin vui lòng ấn vào nút bên dưới)</strong
+                        >
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="text-align: center; margin: 16px;">
+                        <a
+                          style="
+                            text-decoration: none;
+                            min-width: 100px;
+                            padding: 10px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            border: none;
+                            color: #fff;
+                            background-color: #49b253;
+                            border-radius: 4px;
+                            cursor: pointer;
+                          "
+                          href="${process.env.REACT_URL}/user.id"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Trang CV của tôi
+                        </a>
                       </div>
-                      <div>
-                        <p>Email :</p>
-                        <p>nguyenxuanhuy24071993@gmail.com</p>
-                      </div>
-                      <span>Front-end developer</span>
-                    </div>
-                  </div>
-            
-                  <div>
-                    <p>Kính gửi: Bộ phận nhân sự Công ty TNHH ABCC</p>
-                    <p>Đồng kính gửi: Trưởng phòng Công nghệ, Ban giám đốc công ty</p>
-                    <p>Hà Nội, Ngày 26 tháng 08 năm 2023</p>
-                  </div>
-                  <div>
-                    <p>
-                      Thông qua …, tôi được biết Quý Công ty đang cần tuyển vị trí [Tên vị
-                      trí công việc]. Tôi mong muốn được thử sức mình trong môi trường làm
-                      việc hết sức năng động của Quý Công ty. Với trình độ và kinh nghiệm
-                      hiện có, tôi tự tin có thể đảm nhiệm tốt vai trò này tại công ty [Tên
-                      công ty].
-                    </p>
-            
-                    <p>
-                      Tôi xin gửi Quý Công ty sản phẩm cá nhân, mong công ty xem xét và đánh
-                      giá
-                    </p>
-            
-                    <div style="text-align: center;">
-                      <a>Trang CV của tôi</a>
-                    </div>
-            
-                    <p>
-                      Tôi mong nhận được đánh giá của Quý công ty về sản phẩm của tôi. Nếu
-                      thiếu kiến thức và công nghệ nào, mong công ty phản hồi để tôi có thể
-                      hoàn thiện hơn sản phẩm của mình.
-                    </p>
-                    <p>Trân trọng. Xin cảm ơn!</p>
-            
-                    <p>
-                      -- Thư này được gửi bởi cvonline.com - sản phẩm cá nhân của Nguyễn
-                      Xuân Huy --
-                    </p>
-                  </div>
-                </div>
-              </body>`,
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p style="margin: 8px;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trang CV Online này là sản phẩm cá
+                        nhân của tôi. Tôi rất mong nhận được những đánh giá chân thực và
+                        thiếu xót về sản phẩm này từ của Quý công ty để tôi có thể hoàn
+                        thiện sản phẩm hơn.
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p style="margin: 8px;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Xin trân trọng cảm ơn.
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p
+                        style="
+                          margin-top: 8px;
+                          font-size: 14px;
+                          text-align: center;
+                          color: #555;
+                        "
+                      >
+                        *** Email được gửi bởi cvonline.com - sản phẩm của Nguyễn Xuân Huy
+                        ***
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </div>
+                
+                `,
             });
 
             return {
                 errorCode: 0,
-                errorMessage: `Email ứng tuyển đã được gửi tới nhà tuyển dụng`,
+                errorMessage: `CV của bạn đã được gửi tới nhà tuyển dụng`,
             };
         } else {
             return {
@@ -201,10 +369,10 @@ export const handleSendCVViaEmail = async (data) => {
             };
         }
     } catch (error) {
-        console.log('An error in handleSendCVViaEmail() in emailService.js : ', error);
+        console.log('An error in handleSendCVByEmail() in emailService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Không gửi được CV qua email`,
+            errorMessage: `[Kết nối Database] CV của bạn không thể gửi tới nhà tuyển dụng`,
         };
     }
 };

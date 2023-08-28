@@ -327,13 +327,27 @@ export const checkReqChangeUserID = (req, res, next) => {
 };
 
 // SEND CV VIA EMAIL
-export const checkReqSendCVViaEmail = (req, res, next) => {
-    const { employerEmail } = req.body;
+export const checkReqSendCVByEmail = (req, res, next) => {
+    const { from, to, subject } = req.body;
 
-    if (!employerEmail) {
+    if (!to) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Vui lòng nhập Email của nhà tuyển dụng',
+        });
+    }
+
+    if (!subject) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: 'Vui lòng nhập tiêu đề của email gửi nhà tuyển dụng',
+        });
+    }
+
+    if (!from) {
+        return res.status(400).json({
+            errorCode: 12,
+            errorMessage: 'Vui lòng nhập Email của bạn',
         });
     }
 

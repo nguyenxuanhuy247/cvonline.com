@@ -328,10 +328,10 @@ export const handleChangeUserID = async (req, res) => {
 
 // =================================================================
 // SEND CV VIA EMAIL
-export const handleSendCVViaEmail = async (req, res) => {
+export const handleSendCVByEmail = async (req, res) => {
     const data = req.body;
 
-    let message = await emailService.handleSendCVViaEmail(data);
+    let message = await emailService.handleSendCVByEmail(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);

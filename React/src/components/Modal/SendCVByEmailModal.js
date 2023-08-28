@@ -3,17 +3,19 @@ import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { MdClose } from 'react-icons/md';
 
-import styles from './SendCVViaEmailModal.module.scss';
+import styles from './SendCVByEmailModal.module.scss';
 import Button from '~/components/Button/Button.js';
 import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
 
 const cx = classnames.bind(styles);
 
-class SendCVViaEmailModal extends PureComponent {
+class SendCVByEmailModal extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            to: '',
+            subject: '',
             companyName: '',
             source: '',
             jobTitle: '',
@@ -21,12 +23,19 @@ class SendCVViaEmailModal extends PureComponent {
     }
 
     handleInputInfo = (e, name) => {
-        const value = e.target.value?.trim();
+        const value = e.target.value?.trimStart();
         this.setState({ [name]: value });
     };
 
-    handleSendInfoAndCVViaEmail = () => {
-        console.log('aaaaaaaaaaaa', this.state);
+    handleSendInfoAndCVByEmail = () => {
+        if (!this.state.to) {
+            Toast.TOP_CENTER_WARN('Nhập email nhà tuyển dụng', 3000);
+        } else if (!this.state.subject) {
+            Toast.TOP_CENTER_WARN('Nhập tiêu đề email gửi nhà tuyển dụng', 3000);
+        } else {
+            const data = { ...this.state, from: this.props.owner?.email };
+            this.props.SendCVByEmail(data);
+        }
     };
 
     render() {
@@ -44,6 +53,29 @@ class SendCVViaEmailModal extends PureComponent {
                         </div>
 
                         <div className={cx('modal-body')}>
+                            <div className={cx('email-header')}>
+                                <div className={cx('email-info-group')}>
+                                    <label className={cx('label')}>Người nhận</label>
+                                    <input
+                                        className={cx('input')}
+                                        value={this.state.to}
+                                        placeholder="Email nhà tuyển dụng"
+                                        spellCheck={false}
+                                        onInput={(e) => this.handleInputInfo(e, 'to')}
+                                    />
+                                </div>
+                                <div className={cx('email-info-group')}>
+                                    <label className={cx('label')}>Tiêu đề</label>
+                                    <input
+                                        className={cx('input')}
+                                        value={this.state.subject}
+                                        placeholder="Tiêu đề gửi nhà tuyển dụng"
+                                        spellCheck={false}
+                                        onInput={(e) => this.handleInputInfo(e, 'subject')}
+                                    />
+                                </div>
+                            </div>
+
                             <div className={cx('cover-letter')}>
                                 <p className={cx('title')}>THƯ ỨNG TUYỂN VỊ TRÍ {this.props.owner.jobPosition}</p>
 
@@ -86,25 +118,27 @@ class SendCVViaEmailModal extends PureComponent {
                                         </p>
                                         <p>
                                             Hà Nội, ngày {String(new Date().getDate())} tháng{' '}
-                                            {String(new Date().getMonth())} năm {String(new Date().getFullYear())}
+                                            {String(new Date().getMonth() + 1)} năm {String(new Date().getFullYear())}
                                         </p>
                                     </div>
 
                                     <div className={cx('letter-body')}>
                                         <p className={cx('paragraph')}>
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thông qua
-                                            <input
-                                                value={this.state.source}
-                                                className={cx('input-info', 'letter')}
-                                                placeholder="Nguồn tin tuyển dụng"
-                                                spellCheck={false}
-                                                onInput={(e) => this.handleInputInfo(e, 'source')}
-                                            />
+                                            <u>
+                                                <input
+                                                    value={this.state.source}
+                                                    className={cx('input-info', 'letter')}
+                                                    placeholder="nguồn tin tuyển dụng"
+                                                    spellCheck={false}
+                                                    onInput={(e) => this.handleInputInfo(e, 'source')}
+                                                />
+                                            </u>
                                             , tôi được biết Quý Công ty đang cần tuyển vị trí
                                             <input
                                                 value={this.state.jobTitle}
                                                 className={cx('input-info', 'letter')}
-                                                placeholder="Vị trí ứng tuyển"
+                                                placeholder="vị trí ứng tuyển"
                                                 spellCheck={false}
                                                 onInput={(e) => this.handleInputInfo(e, 'jobTitle')}
                                             />
@@ -116,12 +150,17 @@ class SendCVViaEmailModal extends PureComponent {
                                         <p className={cx('paragraph')}>
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tôi xin gửi Quý Công ty bản CV mô tả chi tiết
                                             kinh nghiệm và những sản phẩm tôi đã làm được. Tôi rất mong công ty xem xét
-                                            và đánh giá.{' '}
-                                            <strong className={cx('cta')}>(Vui lòng click vào nút bên dưới)</strong>
+                                            và đánh giá.
+                                            <strong className={cx('cta')}> (Xin vui lòng ấn vào nút bên dưới)</strong>
                                         </p>
 
                                         <div className={cx('button-container')}>
-                                            <a className={cx('button')} href="#!">
+                                            <a
+                                                className={cx('button')}
+                                                href={`${process.env.REACT_APP_FRONTEND_URL}${this.props.owner.id}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
                                                 Trang CV của tôi
                                             </a>
                                         </div>
@@ -134,7 +173,7 @@ class SendCVViaEmailModal extends PureComponent {
                                         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Xin trân trọng cảm ơn.</p>
 
                                         <p className={cx('note')}>
-                                            --- Thư này được gửi bởi cvonline.com là sản phẩm của Nguyễn Xuân Huy ---
+                                            *** Email được gửi bởi cvonline.com - sản phẩm của Nguyễn Xuân Huy ***
                                         </p>
                                     </div>
                                 </div>
@@ -145,7 +184,7 @@ class SendCVViaEmailModal extends PureComponent {
                             <Button className={cx('btn', 'cancel')} onClick={onClose}>
                                 Hủy
                             </Button>
-                            <Button className={cx('btn', 'finish')} onClick={() => this.handleSendInfoAndCVViaEmail()}>
+                            <Button className={cx('btn', 'finish')} onClick={() => this.handleSendInfoAndCVByEmail()}>
                                 Gửi CV
                             </Button>
                         </div>
@@ -165,8 +204,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateUserInformation: (data) => dispatch(userActions.updateUserInformation(data)),
+        SendCVByEmail: (data) => dispatch(userActions.SendCVByEmail(data)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendCVViaEmailModal);
+export default connect(mapStateToProps, mapDispatchToProps)(SendCVByEmailModal);

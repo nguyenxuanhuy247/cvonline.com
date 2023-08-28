@@ -73,7 +73,6 @@ export const updateTechnology = (data) => {
     return axios.put('/api/put-technology', data);
 };
 
-
 export const dragAndDropTechology = (data) => {
     return axios.put('/api/drag-drop-technology', data);
 };
@@ -90,4 +89,11 @@ export const deleteTechnology = (technologyData) => {
 
 export const changeUserID = (data) => {
     return axios.post(`/api/change-userID`, data);
+};
+
+// =============================================================================
+
+// HANDLE CHANGE PASSWORD
+export const SendCVByEmail = (data) => {
+    return axios.post(`/api/send-cv-by-email`, data);
 };

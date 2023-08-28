@@ -143,27 +143,6 @@ class ForgotPassword extends Component {
                                             </span>
                                         )}
                                     </div>
-
-                                    {/* {!this.props.isLoading_verifyEmail &&
-                                        this.state.userEmail &&
-                                        (this.props.isVerified ? (
-                                            <p className={cx('message', 'OK', 'hide')}>Email người dùng khả dụng</p>
-                                        ) : (
-                                            <p className={cx('message', 'error', 'hide')}>Email chưa được đăng ký</p>
-                                        ))}
-
-                                    {!this.props.isLoading_verifyEmail && (
-                                        <ErrorMessage name="email">
-                                            {(msg) => (
-                                                <div
-                                                    id="forgot-password-error-message-FE"
-                                                    className={cx('message', 'error', 'yup')}
-                                                >
-                                                    {msg}
-                                                </div>
-                                            )}
-                                        </ErrorMessage>
-                                    )} */}
                                 </div>
 
                                 <Button
