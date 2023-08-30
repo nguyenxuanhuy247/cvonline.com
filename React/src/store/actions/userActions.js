@@ -658,15 +658,21 @@ export const changeUserID = (data) => {
             if (errorCode === 0) {
                 Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
                 dispatch(changeUserID_Success(DB_Data));
+
+                return errorCode;
             } else {
                 Toast.TOP_CENTER_ERROR(errorMessage, 4000);
                 dispatch(changeUserID_Fail());
+
+                return errorCode;
             }
         } catch (error) {
-            const { errorMessage } = error.response?.data ?? {};
+            const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
             dispatch(changeUserID_Fail());
             console.log('An error in changeUserID() - userActions.js: ', error);
+
+            return errorCode;
         }
     };
 };
@@ -693,15 +699,15 @@ export const SendCVByEmail = (data) => {
             let res = await userService.SendCVByEmail(data);
             const { errorCode, errorMessage } = res ?? {};
             if (errorCode === 0) {
-                Toast.TOP_CENTER_SUCCESS(errorMessage, 4000);
+                Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             console.log('An error in SendCVByEmail() - userActions.js: ', error);
             return errorCode;
         }

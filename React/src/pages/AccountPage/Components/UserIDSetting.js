@@ -11,6 +11,7 @@ import * as appActions from '~/store/actions';
 import * as userActions from '~/store/actions/userActions.js';
 import Loading from '~/components/Modal/Loading.js';
 import { Toast } from '~/components/Toast/Toast.js';
+import { dispatch } from '~/config/redux';
 
 const cx = classnames.bind(styles);
 
@@ -18,36 +19,64 @@ class UserIDSetting extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            showIconAndText: false,
+            showText: false,
             newID: '',
         };
+        this.debouncedVerifyUserID = _.debounce(this.VerifyUserID, 1000);
     }
 
     handleInputNewUserID = (e) => {
         const newUserID = e.target.value;
 
-        this.setState({ newID: newUserID });
         if (newUserID) {
-            const debouncedVerify = _.debounce((newUserID) => {
-                this.props.verifyUserID(newUserID);
-            }, 500);
-
-            debouncedVerify(newUserID);
+            this.setState({ newID: newUserID, showIconAndText: true });
+        } else {
+            this.setState({ newID: newUserID, showIconAndText: false, showText: false });
         }
     };
 
-    handleChangeUserID = (e) => {
-        const { id: currentUserID } = this.props.owner ?? {};
+    VerifyUserID = async (e) => {
+        const { id: ownerID } = this.props.owner ?? {};
+        const newUserID = e.target.value;
+
+        if (newUserID && newUserID !== ownerID) {
+            await this.setState({ showText: false });
+            await this.props.verifyUserID(newUserID);
+            await this.setState({ showText: true });
+        } else if (newUserID === ownerID) {
+            dispatch({ type: 'VERIFY_ID_SUCCESS' });
+            await this.setState({ showText: true });
+        }
+    };
+
+    handleChangeUserID = async (e) => {
         e.preventDefault();
+        const { id: currentUserID } = this.props.owner ?? {};
         const data = {
             currentID: this.props?.owner?.id,
             newID: this.state.newID,
         };
 
         if (this.state.newID !== currentUserID) {
-            this.props.changeUserID(data);
+            const errorCode = await this.props.changeUserID(data);
+
+            if (errorCode === 0) {
+                this.setState({ showIconAndText: false, showText: false });
+            }
         } else {
-            Toast.TOP_CENTER_WARN('ID hiện tại đang được  sử dụng, vui lòng nhập ID khác', 4000);
+            Toast.TOP_CENTER_WARN('ID hiện tại đang được sử dụng, vui lòng nhập ID khác', 3000);
         }
+    };
+
+    preventLoadFormWhenPressEnter = (e) => {
+        if (e.keyCode === 13 && e.target.nodeName === 'INPUT') {
+            e.preventDefault();
+        }
+    };
+
+    handleClearIDInput = () => {
+        this.setState({ newID: '' });
     };
 
     componentDidMount() {
@@ -55,7 +84,9 @@ class UserIDSetting extends PureComponent {
     }
 
     render() {
-        console.log(this.props.isLoading_changeUserID);
+        const isFilled = !!this.state.newID;
+        const isDisabled = !isFilled || !this.props.isUserIDVerified;
+
         return (
             <div className={cx('user-id-setting')}>
                 <span className={cx('title')}>Cài đặt ID người dùng</span>
@@ -71,40 +102,48 @@ class UserIDSetting extends PureComponent {
                                 type="text"
                                 id="userID"
                                 value={this.state.newID}
-                                onChange={(e) => this.handleInputNewUserID(e)}
                                 className={cx('form-input')}
-                                placeholder="nguyenxuanhuy"
                                 spellCheck={false}
+                                onChange={(e) => this.handleInputNewUserID(e)}
+                                onKeyDown={(e) => this.preventLoadFormWhenPressEnter(e)}
+                                onInput={this.debouncedVerifyUserID}
                             />
-                            {this.state.newID && (
+
+                            {this.state.showIconAndText && this.state.newID && (
                                 <span className={cx('icon-wrapper')}>
                                     {this.props.isUserIDVerified ? (
                                         <BsFillCheckCircleFill className={cx('icon', 'verified')} />
                                     ) : (
-                                        <AiFillCloseCircle className={cx('icon', 'error')} />
+                                        <AiFillCloseCircle
+                                            className={cx('icon', 'error')}
+                                            onClick={() => this.handleClearIDInput()}
+                                        />
                                     )}
 
-                                    {this.props.isLoading_verifyUserID && <Loading inner small />}
+                                    {this.props.isLoading_verifyUserID && <Loading inner verify />}
                                 </span>
                             )}
                         </div>
                     </div>
-                    {this.state.newID ? (
-                        this.props.isUserIDVerified ? (
-                            <p className={cx('message', 'OK')}>ID người dùng khả dụng</p>
-                        ) : (
-                            <p className={cx('message', 'error')}>ID người dùng không khả dụng</p>
-                        )
-                    ) : (
-                        <p className={cx('message', 'error')}>Vui lòng nhập ID người dùng</p>
-                    )}
+
+                    <div className={cx('message-container')}>
+                        {this.state.showIconAndText &&
+                            this.state.showText &&
+                            (this.state.newID ? (
+                                this.props.isUserIDVerified ? (
+                                    <p className={cx('message', 'OK')}>ID người dùng khả dụng</p>
+                                ) : (
+                                    <p className={cx('message', 'error')}>ID người dùng không khả dụng</p>
+                                )
+                            ) : (
+                                <p className={cx('message', 'error')}>Vui lòng nhập ID người dùng</p>
+                            ))}
+                    </div>
 
                     <Button
+                        disabled={isDisabled}
                         className={cx('save-btn')}
                         onClick={(e) => this.handleChangeUserID(e)}
-                        disabled={
-                            this.props.isLoading_verifyUserID || !this.props.isUserIDVerified || !this.state.newID
-                        }
                     >
                         {this.props.isLoading_changeUserID ? <Loading inner auth /> : `Lưu`}
                     </Button>

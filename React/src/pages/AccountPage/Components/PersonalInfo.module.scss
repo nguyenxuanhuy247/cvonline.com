@@ -3,7 +3,7 @@
 .personal-info {
     display: flex;
     flex-direction: column;
-    row-gap: 10px;
+    row-gap: 12px;
     padding: 20px;
     border-radius: 16px;
     background-color: #fff;
@@ -12,47 +12,66 @@
         font-size: 2.2rem;
         font-weight: 600;
     }
+    .error-message-container {
+        height: 40px;
 
-    .required {
-        font-size: 1.6rem;
-        font-weight: 300;
-
-        .symbol {
-            color: red;
-            font-weight: 400;
+        .error-message {
+            margin-left: 100px;
+            @include auth-form-error-message;
+            width: initial;
+            text-align: center;
         }
     }
 
     .form {
         display: flex;
         flex-direction: column;
-        row-gap: 12px;
+        row-gap: 16px;
 
         .form-group {
+            position: relative;
             display: flex;
-            flex-direction: column;
-            row-gap: 8px;
+            align-items: center;
 
             .form-label {
-                .symbol {
-                    color: red;
-                    font-weight: 400;
+                min-width: 100px;
+                font-weight: 600;
+            }
+
+            .form-input-container {
+                flex: 1;
+
+                .form-input {
+                    width: 100%;
+                    padding: 0 44px 0 12px;
+                    height: 40px;
+                    background-color: #fff;
+                    border: 1px solid #e9eaec;
+                    border-radius: 6px;
+                    font-size: 1.4rem;
+                    line-height: 100%;
+                    font-weight: 500;
+
+                    &.email {
+                        background-color: rgba(238, 238, 238, 0.6);
+                    }
                 }
-            }
 
-            .form-input {
-                padding: 0 12px;
-                height: 40px;
-                background-color: #fff;
-                border: 1px solid #e9eaec;
-                border-radius: 6px;
-                font-size: 1.4rem;
-                line-height: 100%;
-                font-weight: 500;
-            }
+                .icon-wrapper {
+                    padding: 8px;
+                    position: absolute;
+                    top: 50%;
+                    right: 4px;
+                    transform: translate(0, -50%);
+                    display: grid;
+                    place-items: center;
+                    cursor: pointer;
 
-            .error-message {
-                @include auth-form-error-message;
+                    .icon-clear {
+                        font-size: 20px;
+                        color: #aaa;
+                    }
+                }
             }
         }
 
@@ -69,6 +88,7 @@
             line-height: 1.4;
             font-weight: 600;
             height: 42px;
+            user-select: none;
             cursor: pointer;
         }
     }

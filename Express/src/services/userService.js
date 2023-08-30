@@ -71,7 +71,6 @@ const getUserInfo = async (isEmail, input) => {
             raw: true,
         });
 
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', user);
         if (user) {
             const avatar = user.avatar;
             const binaryAvatar = avatar?.toString('binary');
@@ -559,28 +558,39 @@ export const handleGetUserInformation = async (data) => {
 
 // UPDATE USER INFORMATION
 export const handleUpdateUserInformation = async (data) => {
+    const { userId, label } = data;
+
     try {
-        const { userId, label } = data;
         const newData = { ...data };
 
         const user = await db.users.findOne({
             where: { id: userId },
             raw: false,
         });
-
         const keyArray = Object.keys(await db.users.rawAttributes);
 
         if (user) {
             delete newData.userId;
 
-            for (let prop in newData) {
-                if (newData[prop] !== undefined) {
-                    const isInArray = keyArray.includes(prop);
-                    if (isInArray) {
-                        user[prop] = newData[prop];
+            if (!newData.password) {
+                for (let prop in newData) {
+                    if (newData[prop] !== undefined) {
+                        const isInArray = keyArray.includes(prop);
+                        if (isInArray) {
+                            user[prop] = newData[prop];
+                        }
                     }
                 }
+            } else {
+                const { errorCode, errorMessage, hashPassword } = await hashUserPassword(newData.password);
+
+                if (errorCode === 0) {
+                    user.password = hashPassword;
+                } else {
+                    return { errorCode, errorMessage };
+                }
             }
+
             await user.save();
 
             const message = await getUserInfo(false, userId);
@@ -979,7 +989,6 @@ const handleFindAllTechnologyList = async (data, CRUD) => {
                 dataSentToClient.numberofBELibrary = count;
             }
 
-            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA', dataSentToClient);
             return {
                 errorCode: 0,
                 errorMessage: `${CRUD} ${label} thành công`,
@@ -1172,6 +1181,7 @@ export const handleChangeUserID = async (data) => {
 
         if (user) {
             await db.users.update({ id: newID }, { where: { id: currentID } });
+            await db.technologies.update({ userId: newID }, { where: { userId: currentID } });
 
             const changedUser = await db.users.findOne({
                 where: { id: newID },

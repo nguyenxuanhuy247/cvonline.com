@@ -7,6 +7,8 @@ import styles from './SendCVByEmailModal.module.scss';
 import Button from '~/components/Button/Button.js';
 import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
+import Loading from '~/components/Modal/Loading.js';
+import logoWithText from '~/assets/logo/logo-with-text.png';
 
 const cx = classnames.bind(styles);
 
@@ -14,6 +16,7 @@ class SendCVByEmailModal extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
             to: '',
             subject: '',
             companyName: '',
@@ -27,14 +30,29 @@ class SendCVByEmailModal extends PureComponent {
         this.setState({ [name]: value });
     };
 
-    handleSendInfoAndCVByEmail = () => {
+    handleSendInfoAndCVByEmail = async () => {
         if (!this.state.to) {
             Toast.TOP_CENTER_WARN('Nhập email nhà tuyển dụng', 3000);
         } else if (!this.state.subject) {
             Toast.TOP_CENTER_WARN('Nhập tiêu đề email gửi nhà tuyển dụng', 3000);
+        } else if (!this.state.companyName) {
+            Toast.TOP_CENTER_WARN('Nhập tên công ty', 3000);
+        } else if (!this.state.source) {
+            Toast.TOP_CENTER_WARN('Nhập nguồn biết tin tuyển dụng', 3000);
+        } else if (!this.state.jobTitle) {
+            Toast.TOP_CENTER_WARN('Nhập vị trí ứng tuyển', 3000);
         } else {
             const data = { ...this.state, from: this.props.owner?.email };
-            this.props.SendCVByEmail(data);
+
+            await this.setState({ isLoading: true });
+            const errorCode = await this.props.SendCVByEmail(data);
+            console.log('Error: ', errorCode);
+            console.log('typeof errorCode 1111: ', typeof errorCode);
+            console.log('typeof errorCode 2222: ', typeof errorCode === 'number');
+
+            if (typeof errorCode === 'number') {
+                await this.setState({ isLoading: false });
+            }
         }
     };
 
@@ -76,105 +94,132 @@ class SendCVByEmailModal extends PureComponent {
                                 </div>
                             </div>
 
-                            <div className={cx('cover-letter')}>
-                                <p className={cx('title')}>THƯ ỨNG TUYỂN VỊ TRÍ {this.props.owner.jobPosition}</p>
+                            <div className={cx('background')}>
+                                <img src={logoWithText} alt="cvonline.com" className={cx('logo')} />
 
-                                <div className={cx('candidate-info')}>
-                                    <div className={cx('basic-info')}>
-                                        <img src={this.props.owner.avatar} alt="ac" className={cx('candidate-image')} />
-                                        <div className={cx('candidate-desc')}>
-                                            <span className={cx('candidate-name')}>{this.props.owner.fullName}</span>
-                                            <span className={cx('candidate-job')}>{this.props.owner.jobPosition}</span>
-                                            <p className={cx('contact-info-title')}>Thông tin liên hệ</p>
-                                            <p className={cx('contact-group')}>
-                                                <span className={cx('label')}>Số điện thoại</span>
-                                                <span>:</span>
-                                                <span className={cx('contact')}>{this.props.owner.phoneNumber}</span>
-                                            </p>
-                                            <p className={cx('contact-group')}>
-                                                <span className={cx('label')}>Email</span>
-                                                <span>:</span>
-                                                <span className={cx('contact')}>{this.props.owner.email}</span>
-                                            </p>
+                                <div className={cx('cover-letter')}>
+                                    <p className={cx('title')}>THƯ ỨNG TUYỂN VỊ TRÍ {this.props.owner.jobPosition}</p>
+
+                                    <div className={cx('candidate-info')}>
+                                        <div className={cx('basic-info')}>
+                                            <img
+                                                src={this.props.owner.avatar}
+                                                alt="ac"
+                                                className={cx('candidate-image')}
+                                            />
+                                            <div className={cx('candidate-desc')}>
+                                                <span className={cx('candidate-name')}>
+                                                    {this.props.owner.fullName}
+                                                </span>
+                                                <span className={cx('candidate-job')}>
+                                                    {this.props.owner.jobPosition}
+                                                </span>
+                                                <p className={cx('contact-info-title')}>Thông tin liên hệ</p>
+                                                <p className={cx('contact-group')}>
+                                                    <span className={cx('label')}>Số điện thoại</span>
+                                                    <span>:</span>
+                                                    <span className={cx('contact')}>
+                                                        {this.props.owner.phoneNumber || 'Không có'}
+                                                    </span>
+                                                </p>
+                                                <p className={cx('contact-group')}>
+                                                    <span className={cx('label')}>Email</span>
+                                                    <span>:</span>
+                                                    <span className={cx('contact')}>
+                                                        {this.props.owner.email || 'Không có'}
+                                                    </span>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className={cx('letter')}>
-                                    <div className={cx('letter-header')}>
-                                        <p className={cx('line')}>
-                                            <span>Kính gửi : Trưởng phòng nhân sự</span>
-                                            <input
-                                                value={this.state.companyName}
-                                                className={cx('input-info', 'company-name')}
-                                                placeholder="Tên công ty"
-                                                spellCheck={false}
-                                                onInput={(e) => this.handleInputInfo(e, 'companyName')}
-                                            />
-                                        </p>
-                                        <p>
-                                            Đồng kính gửi : Bộ phận nhân sự, Trưởng phòng Công nghệ, Ban giám đốc Quý
-                                            công ty
-                                        </p>
-                                        <p>
-                                            Hà Nội, ngày {String(new Date().getDate())} tháng{' '}
-                                            {String(new Date().getMonth() + 1)} năm {String(new Date().getFullYear())}
-                                        </p>
-                                    </div>
-
-                                    <div className={cx('letter-body')}>
-                                        <p className={cx('paragraph')}>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thông qua
-                                            <u>
+                                    <div className={cx('letter')}>
+                                        <div className={cx('letter-header')}>
+                                            <p className={cx('line')}>
+                                                <span>Kính gửi : Trưởng phòng nhân sự</span>
                                                 <input
-                                                    value={this.state.source}
-                                                    className={cx('input-info', 'letter')}
-                                                    placeholder="nguồn tin tuyển dụng"
+                                                    value={this.state.companyName}
+                                                    className={cx('input-info', 'company-name')}
+                                                    placeholder="Điền tên công ty"
                                                     spellCheck={false}
-                                                    onInput={(e) => this.handleInputInfo(e, 'source')}
+                                                    onInput={(e) => this.handleInputInfo(e, 'companyName')}
                                                 />
-                                            </u>
-                                            , tôi được biết Quý Công ty đang cần tuyển vị trí
-                                            <input
-                                                value={this.state.jobTitle}
-                                                className={cx('input-info', 'letter')}
-                                                placeholder="vị trí ứng tuyển"
-                                                spellCheck={false}
-                                                onInput={(e) => this.handleInputInfo(e, 'jobTitle')}
-                                            />
-                                            . Sau khi tìm hiểu yêu cầu công việc, tôi nhận thấy mình có đủ năng lực để
-                                            đảm nhận vị trí công việc này. Với trình độ của mình, tôi mong muốn được
-                                            đóng góp vào sự phát triển của Quý công ty.
-                                        </p>
-
-                                        <p className={cx('paragraph')}>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tôi xin gửi Quý Công ty bản CV mô tả chi tiết
-                                            kinh nghiệm và những sản phẩm tôi đã làm được. Tôi rất mong công ty xem xét
-                                            và đánh giá.
-                                            <strong className={cx('cta')}> (Xin vui lòng ấn vào nút bên dưới)</strong>
-                                        </p>
-
-                                        <div className={cx('button-container')}>
-                                            <a
-                                                className={cx('button')}
-                                                href={`${process.env.REACT_APP_FRONTEND_URL}${this.props.owner.id}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                            >
-                                                Trang CV của tôi
-                                            </a>
+                                                .
+                                            </p>
+                                            <p>
+                                                Đồng kính gửi : Bộ phận nhân sự, Trưởng phòng Công nghệ, Ban giám đốc
+                                                Quý công ty.
+                                            </p>
+                                            <p>
+                                                Hà Nội, ngày {String(new Date().getDate())} tháng{' '}
+                                                {String(new Date().getMonth() + 1)} năm{' '}
+                                                {String(new Date().getFullYear())}.
+                                            </p>
                                         </div>
 
-                                        <p className={cx('paragraph')}>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trang CV Online này là sản phẩm cá nhân của
-                                            tôi. Tôi rất mong nhận được những đánh giá chân thực và thiếu xót về sản
-                                            phẩm này từ của Quý công ty để tôi có thể hoàn thiện sản phẩm hơn.
-                                        </p>
-                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Xin trân trọng cảm ơn.</p>
+                                        <div className={cx('letter-body')}>
+                                            <p className={cx('paragraph')}>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thông qua
+                                                <u>
+                                                    <input
+                                                        value={this.state.source}
+                                                        className={cx('input-info', 'letter')}
+                                                        placeholder="Điền nguồn tin tuyển dụng"
+                                                        spellCheck={false}
+                                                        onInput={(e) => this.handleInputInfo(e, 'source')}
+                                                    />
+                                                </u>
+                                                , tôi được biết Quý Công ty đang cần tuyển vị trí
+                                                <input
+                                                    value={this.state.jobTitle}
+                                                    className={cx('input-info', 'letter')}
+                                                    placeholder="Điền vị trí ứng tuyển"
+                                                    spellCheck={false}
+                                                    onInput={(e) => this.handleInputInfo(e, 'jobTitle')}
+                                                />
+                                                . Sau khi tìm hiểu yêu cầu công việc, tôi nhận thấy mình có đủ năng lực
+                                                để đảm nhận vị trí công việc này. Với trình độ của mình, tôi mong muốn
+                                                được đóng góp vào sự phát triển của Quý công ty.
+                                            </p>
 
-                                        <p className={cx('note')}>
-                                            *** Email được gửi bởi cvonline.com - sản phẩm của Nguyễn Xuân Huy ***
-                                        </p>
+                                            <p className={cx('paragraph')}>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tôi xin gửi Quý Công ty bản CV mô tả chi
+                                                tiết kinh nghiệm và những sản phẩm tôi đã làm được. Tôi rất mong công ty
+                                                xem xét và đánh giá.
+                                            </p>
+
+                                            <div className={cx('button-container')}>
+                                                <a
+                                                    className={cx('button')}
+                                                    href={`${process.env.REACT_APP_FRONTEND_URL}${this.props.owner.id}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    Trang CV của tôi
+                                                </a>
+                                            </div>
+
+                                            <p className={cx('paragraph')}>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trang CV
+                                                online này là sản phẩm cá nhân của tôi. Tôi rất mong nhận được những
+                                                đánh giá khách quan về sản phẩm của mình. Mong Quý công ty giúp tôi chỉ
+                                                ra những thiếu xót để tôi có thể hoàn thiện sản phẩm hơn.
+                                            </p>
+                                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Xin trân trọng cảm ơn.</p>
+
+                                            <p className={cx('note')}>
+                                                *** Email được gửi bởi{' '}
+                                                <a
+                                                    className={cx('link')}
+                                                    href={`${process.env.REACT_APP_FRONTEND_URL}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    cvonline.com
+                                                </a>{' '}
+                                                - sản phẩm của Nguyễn Xuân Huy ***
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +230,7 @@ class SendCVByEmailModal extends PureComponent {
                                 Hủy
                             </Button>
                             <Button className={cx('btn', 'finish')} onClick={() => this.handleSendInfoAndCVByEmail()}>
-                                Gửi CV
+                                {!this.state.isLoading ? 'Gửi CV' : <Loading inner auth />}
                             </Button>
                         </div>
                     </div>

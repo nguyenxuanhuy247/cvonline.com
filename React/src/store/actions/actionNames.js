@@ -46,9 +46,10 @@ const actionNames = Object.freeze({
 
     // =================================================================
 
+    ...actionMaker(`VERIFY`, `EMAIL`),
     ...actionMaker(`VERIFY`, `ID`),
     ...actionMaker(`CHANGE`, `ID`),
-    ...actionMaker(`VERIFY`, `EMAIL`),
+    ...actionMaker(`VERIFY`, `CURRENT_PASSWORD`),
 
     // =================================================================
 });

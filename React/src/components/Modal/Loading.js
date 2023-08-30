@@ -13,7 +13,8 @@ class Loading extends PureComponent {
                     className={cx(
                         'loading',
                         { 'small-spinner': small },
-                        { 'verify-spinner': verify, 'auth-spinner': auth },
+                        { 'verify-spinner': verify },
+                        { 'auth-spinner': auth },
                         { 'search-spinner': search },
                     )}
                     data-text={text}

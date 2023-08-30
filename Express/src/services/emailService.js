@@ -109,16 +109,31 @@ export const handleSendCVByEmail = async (data) => {
                 to: data.to,
                 subject: data.subject,
                 text: data.subject,
-                attachments: [{ path: binaryAvatar, cid: 'avatar' }],
-                html: `<div style="background-color: #f3f3f3; padding: 50px 0; ">
-                <table style="width: 700px; margin: 0 auto; background-color: #fff; padding: 20px 46px; font-size: 15px;">
-                <tbody style="color: #496c92;">
+                attachments: [
+                    { path: binaryAvatar, cid: 'avatar' },
+                    { path: './src/public/img/cv-ung-vien.png', cid: 'logo' },
+                ],
+                html: `<div style="background-color: #f3f3f3; padding: 24px 0 80px; ">
+                <a href="${process.env.REACT_URL}" target="_blank" rel="noreferrer" style="text-decoration: none;">
+                  <img src="cid:logo" alt="${user.fullName}"
+                    style="  
+                      display: block;
+                      width: 400px;
+                      max-width: 100%;
+                      margin: 0 auto 24px;
+                    "
+                  />
+                </a>
+                <table style="width: 740px; margin: 0 auto; background-color: #fff; padding: 20px 46px; font-size: 15px;">
+                <tbody style="color: #444;">
                   <tr>
                     <td>
                       <p
-                        style="
+                        style=" 
+                          margin-bottom: 16px;   
+                          color: #000;
                           font-size: 24px;
-                          font-weight: 600;
+                          font-weight: 700;
                           text-align: center;
                           text-transform: uppercase;
                         "
@@ -132,21 +147,21 @@ export const handleSendCVByEmail = async (data) => {
                     <td>
                       <table
                         style="
-                          width: 100%;
-                          padding: 20px;
+                          width: 100%;    
+                          padding: 16px 24px;
                           background: #f4e8f8;
-                          border-radius: 20px;
+                          border-radius: 16px;
                         "
                       >
                         <tbody>
                           <tr>
-                            <td style="width: 220px;">
+                            <td style="width: 200px; display: flex; padding: 0;">
                               <img
                                 src="cid:avatar"
                                 alt="${user.fullName}"
-                                style="
-                                  width: 200px;
-                                  height: 200px;
+                                style="    
+                                  width: 180px;
+                                  height: 180px;
                                   border-radius: 50%;
                                   object-fit: cover;
                                 "
@@ -166,8 +181,8 @@ export const handleSendCVByEmail = async (data) => {
                                 ${user.fullName}
                               </p>
                               <p
-                                style="
-                                  margin: 8px 0;
+                                style="    
+                                  margin: 4px 0 8px;
                                   font-size: 20px;
                                   line-height: 1.4;
                                   font-weight: 700;
@@ -177,15 +192,16 @@ export const handleSendCVByEmail = async (data) => {
                                 ${user.jobPosition}
                               </p>
                               <p
-                                style="
-                                  margin: 12px 0;
-                                  padding: 5px 10px;
+                                style="    
+                                  width: fit-content;
+                                  margin: 12px 0 4px;
+                                  padding: 4px 16px;
                                   font-size: 18px;
                                   font-weight: 700;
                                   line-height: 1.4;
                                   color: #ff881d;
                                   background-color: #faf6c6;
-                                  border-radius: 12px;
+                                  border-radius: 30px;
                                 "
                               >
                                 Thông tin liên hệ
@@ -207,14 +223,14 @@ export const handleSendCVByEmail = async (data) => {
                                         >Số điện thoại</span
                                       >
                                       <span>:</span>
-                                      <span>${user.phoneNumber}</span>
+                                      <span>${user.phoneNumber || 'Không có'}</span>
                                     </td>
                                   </tr>
                                   <tr>
                                     <td
                                       style="
                                         margin-top: 4px;
-                                        margin-left: 20px;
+                                        margin-left: 16px;
                                         color: #496c92;
                                         display: flex;
                                         column-gap: 8px;
@@ -224,7 +240,9 @@ export const handleSendCVByEmail = async (data) => {
                                         >Email</span
                                       >
                                       <span>:</span>
-                                      <span style="word-break: break-all;">${user.email}</span>
+                                      <span style="text-decoration: none; word-break: break-all;">${
+                                          user.email || 'Không có'
+                                      }</span>
                                     </td>
                                   </tr>
                                 </tbody>
@@ -239,13 +257,13 @@ export const handleSendCVByEmail = async (data) => {
                   <tr>
                     <td>
                       <table
-                        style="margin-top: 20px; margin-left: 20px; font-weight: 700;"
+                        style="margin-top: 20px; font-weight: 700;"
                       >
                         <tbody>
                           <tr>
                             <td>
                               <p style="margin: 0;">
-                                Kính gửi : Trưởng phòng nhân sự công ty ABC
+                                Kính gửi : Trưởng phòng nhân sự ${data.companyName}.
                               </p>
                             </td>
                           </tr>
@@ -253,7 +271,7 @@ export const handleSendCVByEmail = async (data) => {
                             <td>
                               <p style="margin: 0;">
                                 Đồng kính gửi : Bộ phận nhân sự, Trưởng phòng Công nghệ,
-                                Ban giám đốc Quý công ty
+                                Ban giám đốc Quý công ty.
                               </p>
                             </td>
                           </tr>
@@ -262,7 +280,7 @@ export const handleSendCVByEmail = async (data) => {
                             <td>
                               <p style="margin: 0;">
                                 Hà Nội, ngày ${String(new Date().getDate())} tháng
-                                ${String(new Date().getMonth() + 1)} năm ${String(new Date().getFullYear())}
+                                ${String(new Date().getMonth() + 1)} năm ${String(new Date().getFullYear())}.
                               </p>
                             </td>
                           </tr>
@@ -272,9 +290,9 @@ export const handleSendCVByEmail = async (data) => {
                   </tr>
                   <tr>
                     <td>
-                      <p style="margin: 8px;">
+                      <p style="margin: 8px 0;">
                         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>Thông qua
-                        ${data.source}, tôi được biết Quý Công ty đang cần tuyển vị trí
+                        ${data.source}, tôi được biết Quý công ty đang cần tuyển vị trí
                         ${data.jobTitle}. Sau khi tìm hiểu yêu cầu công việc, tôi nhận
                         thấy mình có đủ năng lực để đảm nhận vị trí công việc này. Với
                         trình độ của mình, tôi mong muốn được đóng góp vào sự phát triển
@@ -284,13 +302,10 @@ export const handleSendCVByEmail = async (data) => {
                   </tr>
                   <tr>
                     <td>
-                      <p style="margin: 8px;">
+                      <p style="margin: 8px 0;">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tôi xin gửi Quý Công ty bản CV mô tả
                         chi tiết kinh nghiệm và những sản phẩm tôi đã làm được. Tôi rất
                         mong công ty xem xét và đánh giá.
-                        <strong style="font-weight: 600; color: red;">
-                          (Xin vui lòng ấn vào nút bên dưới)</strong
-                        >
                       </p>
                     </td>
                   </tr>
@@ -310,7 +325,7 @@ export const handleSendCVByEmail = async (data) => {
                             border-radius: 4px;
                             cursor: pointer;
                           "
-                          href="${process.env.REACT_URL}/user.id"
+                          href="${process.env.REACT_URL}/${user.id}"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -321,17 +336,16 @@ export const handleSendCVByEmail = async (data) => {
                   </tr>
                   <tr>
                     <td>
-                      <p style="margin: 8px;">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trang CV Online này là sản phẩm cá
-                        nhân của tôi. Tôi rất mong nhận được những đánh giá chân thực và
-                        thiếu xót về sản phẩm này từ của Quý công ty để tôi có thể hoàn
-                        thiện sản phẩm hơn.
+                      <p style="margin: 8px 0;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trang CV online này là sản phẩm cá
+                        nhân của tôi. Tôi rất mong nhận được những đánh giá khách quan về sản phẩm của mình. 
+                        Mong Quý công ty giúp tôi chỉ ra những thiếu xót để tôi có thể hoàn thiện sản phẩm hơn.
                       </p>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <p style="margin: 8px;">
+                      <p style="margin: 8px 0;">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Xin trân trọng cảm ơn.
                       </p>
                     </td>
@@ -340,13 +354,14 @@ export const handleSendCVByEmail = async (data) => {
                     <td>
                       <p
                         style="
-                          margin-top: 8px;
+                          margin-top: 40px;
                           font-size: 14px;
                           text-align: center;
-                          color: #555;
+                          color: #888;
                         "
                       >
-                        *** Email được gửi bởi cvonline.com - sản phẩm của Nguyễn Xuân Huy
+                        *** Email được gửi bởi <a href="${process.env.REACT_URL}" target="_blank"
+                        rel="noreferrer" style="text-decoration: none;">cvonline.com</a> - sản phẩm của Nguyễn Xuân Huy
                         ***
                       </p>
                     </td>

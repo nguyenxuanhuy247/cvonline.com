@@ -25,22 +25,23 @@ class ForgotPassword extends Component {
             isVerified: false,
             userEmail: '',
         };
+        this.debouncedVerifyEmail = _.debounce(this.handleVerifyUserEmail, 1000);
     }
+
+    validateEmail = (email) => {
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+        return regex.test(email);
+    };
 
     handleVerifyUserEmail = (e) => {
         const FEErrorMessageEl = document.getElementById('forgot-password-error-message-FE');
+
         const userEmail = e.target.value;
-        e.target.blur();
-        e.target.focus();
+        const isEmail = this.validateEmail(userEmail);
 
-        if (userEmail && !FEErrorMessageEl) {
-            const debouncedVerify = _.debounce(async (email) => {
-                await this.props.verifyUserEmail(email);
-
-                this.setState({ userEmail: userEmail, isResetSucceeded: false });
-            }, 1000);
-
-            debouncedVerify(userEmail);
+        if (isEmail && !FEErrorMessageEl) {
+            this.props.verifyUserEmail(userEmail);
+            this.setState({ userEmail: userEmail, isResetSucceeded: false });
         } else {
             this.setState({ userEmail: '', isResetSucceeded: false });
         }
@@ -128,7 +129,7 @@ class ForgotPassword extends Component {
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
                                             value={props.values.email}
-                                            onInput={(e) => this.handleVerifyUserEmail(e)}
+                                            onInput={this.debouncedVerifyEmail}
                                         />
 
                                         {this.state.userEmail && !FEErrorMessageEl && (

@@ -53,10 +53,15 @@ let initWebRoutes = (app) => {
         userController.handleDeleteTechnology,
     );
 
-    // VERIFY USER ID
+    // VERIFY
+    router.get('/api/verify-user-email', appMiddleware.checkReqVerifyUserEmail, appController.handleVerifyUserEmail);
     router.get('/api/verify-userID', appMiddleware.checkReqVerifyUserID, appController.handleVerifyUserID);
     router.post('/api/change-userID', userMiddleware.checkReqChangeUserID, userController.handleChangeUserID);
-    router.get('/api/verify-user-email', appMiddleware.checkReqVerifyUserEmail, appController.handleVerifyUserEmail);
+    router.post(
+        '/api/verify-current-password',
+        appMiddleware.checkReqVerifyCurrentPassword,
+        appController.handleVerifyCurrentPassword,
+    );
 
     // SEND CV VIA EMAL
     router.post('/api/send-cv-by-email', userMiddleware.checkReqSendCVByEmail, userController.handleSendCVByEmail);
