@@ -1,3 +1,22 @@
+// CHECK USER LOGIN
+export const checkUserLogin = (req, res, next) => {
+    const cookies = req.cookies;
+
+    if (cookies && cookies.jwt) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập Họ và tên',
+        });
+    } else {
+        return res.status(401).json({
+            errorCode: 10,
+            errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập.',
+        });
+    }
+
+    next();
+};
+
 // CHECK SIGNUP INFO
 export const checkReqSignUp = (req, res, next) => {
     const { fullName, email, password } = req.body;

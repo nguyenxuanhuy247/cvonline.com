@@ -105,6 +105,7 @@ export const handleUserSignIn = async (req, res) => {
     const message = await userService.postUserSignIn(data);
 
     if (message.errorCode === 0) {
+        res.cookie('jwt', message.token, { httpOnly: true });
         return res.status(200).json(message);
     } else if (message.errorCode === 31) {
         res.status(503).json(message);

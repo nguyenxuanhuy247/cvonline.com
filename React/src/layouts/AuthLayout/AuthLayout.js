@@ -15,10 +15,19 @@ const cx = className.bind(styles);
 
 class Auth extends PureComponent {
     render() {
+        const { history } = this.props;
+        const { state } = this.props.location;
+
+        if (this.props.isSignIn) {
+            history.push(state?.from || '/');
+        }
+
         return (
             <div className={cx('auth-container')}>
                 <div className={cx('inner')}>
-                    <img src={logoWithText} alt="cvonline.com" className={cx('form-logo')} />
+                    <a href="/">
+                        <img src={logoWithText} alt="cvonline.com" className={cx('form-logo')} />
+                    </a>
                     <Switch>
                         <Route path={path.SIGNIN} component={SignIn} />
                         <Route path={path.SIGNUP} component={SignUp} />
@@ -33,6 +42,7 @@ class Auth extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
+        isSignIn: state.user.isSignIn,
         isLoading: state.user.isLoading.authLayout,
     };
 };

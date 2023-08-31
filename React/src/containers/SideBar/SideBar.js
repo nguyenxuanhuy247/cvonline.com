@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import { connect } from 'react-redux';
 import { AiFillHome } from 'react-icons/ai';
@@ -24,29 +24,47 @@ class SideBar extends PureComponent {
             isGetGoogleAppPasswordModal: false,
             isSendCVViaEmailModal: false,
         };
+
+        this.id = React.createRef();
     }
 
     handleGoBackToMyCVPage = async () => {
         const { id: ownerID } = this.props?.owner ?? {};
         const { id: userID } = this.props?.userInfo ?? {};
+        const isSignIn = this.props.isSignIn;
 
-        if (ownerID !== userID) {
-            const errorCode = await this.props.readUserInformation(ownerID);
+        if (isSignIn) {
+            if (ownerID !== userID) {
+                const errorCode = await this.props.readUserInformation(ownerID);
 
-            if (errorCode !== 0) {
-                Toast.TOP_CENTER_ERROR('Vui lòng đăng nhập lại', 3000);
-                this.props.userSignOut();
+                if (errorCode !== 0) {
+                    Toast.TOP_CENTER_ERROR('Vui lòng đăng nhập lại', 3000);
+                    this.props.userSignOut();
+                }
             }
+        } else {
+            Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để tạo CV của bạn', 2000);
+            this.id.current = setTimeout(() => {
+                window.location.replace('http://localhost:2407/signin');
+            }, 2000);
         }
     };
 
     handleClickSendCVViaEmailButton = () => {
         const { isGmailPassword } = this.props.owner ?? {};
+        const isSignIn = this.props.isSignIn;
 
-        if (isGmailPassword) {
-            this.setState({ isSendCVViaEmailModal: true });
+        if (isSignIn) {
+            if (isGmailPassword) {
+                this.setState({ isSendCVViaEmailModal: true });
+            } else {
+                this.setState({ isGetGoogleAppPasswordModal: true });
+            }
         } else {
-            this.setState({ isGetGoogleAppPasswordModal: true });
+            Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để gửi CV bằng email', 2000);
+            this.id.current = setTimeout(() => {
+                window.location.replace('http://localhost:2407/signin');
+            }, 2000);
         }
     };
 
@@ -61,6 +79,10 @@ class SideBar extends PureComponent {
         if (this.props.userInfo?.id !== prevProps.userInfo?.id) {
             this.setState({ prevUserID: prevProps.userInfo?.id });
         }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.id.current);
     }
 
     render = () => {
@@ -78,7 +100,7 @@ class SideBar extends PureComponent {
                     <span className={cx('text')}>Trang chủ</span>
                 </Button>
                 <Button
-                    route={`/${this.props.owner?.id}`}
+                    route={this.props.isSignIn && `/${this.props.owner?.id}`}
                     className={cx('button', {
                         hover: pathname === `/${ownerID}`,
                     })}
@@ -119,6 +141,7 @@ class SideBar extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
+        isSignIn: state.user.isSignIn,
         owner: state.user.owner,
         CVHistory: state.user.CVHistory,
         userInfo: state.user.userInfo,

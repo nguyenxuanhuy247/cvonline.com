@@ -14,6 +14,7 @@ import * as userActions from '~/store/actions';
 import Loading from '~/components/Modal/Loading.js';
 import { Toast } from '~/components/Toast/Toast.js';
 import Button from '~/components/Button/Button.js';
+import AccountPage from '~/pages/AccountPage/AccountPage.js';
 
 const cx = classnames.bind(styles);
 
@@ -77,149 +78,159 @@ class PasswordSetting extends PureComponent {
         const Eye3 = isShowNewPasswordConfirmation ? BsFillEyeFill : BsFillEyeSlashFill;
 
         return (
-            <div className={cx('password-setting')}>
-                <span className={cx('title')}>Cài đặt mật khẩu</span>
+            <AccountPage>
+                <div className={cx('password-setting')}>
+                    <span className={cx('title')}>Cài đặt mật khẩu</span>
 
-                <ul className={cx('rule-password')}>
-                    <li>Mật khẩu từ 6 đến 25 ký tự</li>
-                    <li>Bao gồm chữ hoa, chữ thường, chữ số và kí tự đặc biệt</li>
-                </ul>
+                    <ul className={cx('rule-password')}>
+                        <li>Mật khẩu từ 6 đến 25 ký tự</li>
+                        <li>Bao gồm chữ hoa, chữ thường, chữ số và kí tự đặc biệt</li>
+                    </ul>
 
-                <Formik
-                    initialValues={{ currentPassword: '', newPassword: '', newPasswordConfirmation: '' }}
-                    validationSchema={Yup.object().shape({
-                        currentPassword: Yup.string().required('Hãy nhập mật khẩu hiện tại của bạn'),
-                        newPassword: Yup.string()
-                            .required('Hãy nhập mật khẩu mới của bạn')
-                            .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
-                            .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự'),
-                        newPasswordConfirmation: Yup.string()
-                            .required('Hãy nhập lại mật khẩu mới để xác nhận')
-                            .oneOf([Yup.ref('newPassword'), null], 'Mật khẩu xác nhận chưa đúng'),
-                    })}
-                    onSubmit={async (values, actions) => {
-                        const { id: userId } = this.props.owner ?? {};
-                        if (this.state.isCurrentPasswordVerified) {
-                            const data = { userId: userId, password: values.newPassword, label: 'Mật khẩu mới' };
-                            delete data.currentPassword;
+                    <Formik
+                        initialValues={{ currentPassword: '', newPassword: '', newPasswordConfirmation: '' }}
+                        validationSchema={Yup.object().shape({
+                            currentPassword: Yup.string().required('Hãy nhập mật khẩu hiện tại của bạn'),
+                            newPassword: Yup.string()
+                                .required('Hãy nhập mật khẩu mới của bạn')
+                                .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
+                                .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự'),
+                            newPasswordConfirmation: Yup.string()
+                                .required('Hãy nhập lại mật khẩu mới để xác nhận')
+                                .oneOf([Yup.ref('newPassword'), null], 'Mật khẩu xác nhận chưa đúng'),
+                        })}
+                        onSubmit={async (values, actions) => {
+                            const { id: userId } = this.props.owner ?? {};
+                            if (this.state.isCurrentPasswordVerified) {
+                                const data = {
+                                    userId: userId,
+                                    password: values.newPassword,
+                                    label: 'Mật khẩu mới',
+                                };
+                                delete data.currentPassword;
 
-                            const errorCode = await this.props.updateUserInformation(data);
-                            if (errorCode === 0) {
-                                Toast.TOP_CENTER_SUCCESS('Cập nhật mật khẩu mới thành công', 3000);
-                                actions.resetForm();
-                                this.setState({ startVerify: false, currentPassword: '' });
-                            }
-                        }
-                    }}
-                >
-                    {(props) => (
-                        <Form className={cx('change-password-form')} onSubmit={props.handleSubmit}>
-                            <div className={cx('form-group')}>
-                                <div className={cx('input-form-password')}>
-                                    <label htmlFor="current-password" className={cx('label')}>
-                                        Mật khẩu hiện tại
-                                    </label>
-                                    <Field
-                                        type={isShowCurrentPassword ? 'text' : 'password'}
-                                        id="current-password"
-                                        className={cx('input-form', {
-                                            verify: this.state.startVerify && this.state.currentPassword,
-                                        })}
-                                        name="currentPassword"
-                                        onChange={props.handleChange}
-                                        onBlur={props.handleBlur}
-                                        value={props.values.currentPassword}
-                                        onInput={this.debouncedVerifyCurrentPassword}
-                                    />
-
-                                    {this.state.startVerify && this.state.currentPassword && (
-                                        <span className={cx('icon-wrapper')}>
-                                            {this.props.isCurrentPasswordVerified ? (
-                                                <BsFillCheckCircleFill className={cx('icon', 'verified')} />
-                                            ) : (
-                                                <AiFillCloseCircle className={cx('icon', 'error')} />
-                                            )}
-
-                                            {this.props.isLoading_verifyCurrentPassword && <Loading inner verify />}
-                                        </span>
-                                    )}
-
-                                    <Eye1
-                                        className={cx('toggle-show-password', { 'green-eye': isShowCurrentPassword })}
-                                        onClick={() => this.handleShowHidePassword('current')}
-                                    />
-                                </div>
-
-                                {this.state.currentPassword && !this.props.isCurrentPasswordVerified && (
-                                    <div className={cx('error-message')}>Mật khẩu không chính xác</div>
-                                )}
-                            </div>
-
-                            <div className={cx('form-group')}>
-                                <div className={cx('input-form-password')}>
-                                    <label htmlFor="password" className={cx('label')}>
-                                        Mật khẩu mới
-                                    </label>
-                                    <Field
-                                        type={isShowNewPassword ? 'text' : 'password'}
-                                        id="password"
-                                        className={cx('input-form')}
-                                        name="newPassword"
-                                        onChange={props.handleChange}
-                                        onBlur={props.handleBlur}
-                                        value={props.values.newPassword}
-                                    />
-                                    <Eye2
-                                        className={cx('toggle-show-password', { 'green-eye': isShowNewPassword })}
-                                        onClick={() => this.handleShowHidePassword('new')}
-                                    />
-                                </div>
-                                <ErrorMessage name="newPassword">
-                                    {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                </ErrorMessage>
-                            </div>
-
-                            <div className={cx('form-group')}>
-                                <div className={cx('input-form-password')}>
-                                    <label htmlFor="newPasswordConfirmation" className={cx('label')}>
-                                        Xác nhận mật khẩu mới
-                                    </label>
-                                    <Field
-                                        type={isShowNewPasswordConfirmation ? 'text' : 'password'}
-                                        id="newPasswordConfirmation"
-                                        className={cx('input-form')}
-                                        name="newPasswordConfirmation"
-                                        onChange={props.handleChange}
-                                        onBlur={props.handleBlur}
-                                        value={props.values.newPasswordConfirmation}
-                                    />
-                                    <Eye3
-                                        className={cx('toggle-show-password', {
-                                            'green-eye': isShowNewPasswordConfirmation,
-                                        })}
-                                        onClick={() => this.handleShowHidePassword('confirm')}
-                                    />
-                                </div>
-                                <ErrorMessage name="newPasswordConfirmation">
-                                    {(msg) => <div className={cx('error-message')}>{msg}</div>}
-                                </ErrorMessage>
-                            </div>
-
-                            <Button
-                                disabled={
-                                    !props.values.currentPassword ||
-                                    !props.values.newPassword ||
-                                    !props.values.newPasswordConfirmation
+                                const errorCode = await this.props.updateUserInformation(data);
+                                if (errorCode === 0) {
+                                    Toast.TOP_CENTER_SUCCESS('Cập nhật mật khẩu mới thành công', 3000);
+                                    actions.resetForm();
+                                    this.setState({ startVerify: false, currentPassword: '' });
                                 }
-                                type="submit"
-                                className={cx('save-btn')}
-                            >
-                                Đổi mật khẩu
-                            </Button>
-                        </Form>
-                    )}
-                </Formik>
-            </div>
+                            }
+                        }}
+                    >
+                        {(props) => (
+                            <Form className={cx('change-password-form')} onSubmit={props.handleSubmit}>
+                                <div className={cx('form-group')}>
+                                    <div className={cx('input-form-password')}>
+                                        <label htmlFor="current-password" className={cx('label')}>
+                                            Mật khẩu hiện tại
+                                        </label>
+                                        <Field
+                                            type={isShowCurrentPassword ? 'text' : 'password'}
+                                            id="current-password"
+                                            className={cx('input-form', {
+                                                verify: this.state.startVerify && this.state.currentPassword,
+                                            })}
+                                            name="currentPassword"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.currentPassword}
+                                            onInput={this.debouncedVerifyCurrentPassword}
+                                        />
+
+                                        {this.state.startVerify && this.state.currentPassword && (
+                                            <span className={cx('icon-wrapper')}>
+                                                {this.props.isCurrentPasswordVerified ? (
+                                                    <BsFillCheckCircleFill className={cx('icon', 'verified')} />
+                                                ) : (
+                                                    <AiFillCloseCircle className={cx('icon', 'error')} />
+                                                )}
+
+                                                {this.props.isLoading_verifyCurrentPassword && <Loading inner verify />}
+                                            </span>
+                                        )}
+
+                                        <Eye1
+                                            className={cx('toggle-show-password', {
+                                                'green-eye': isShowCurrentPassword,
+                                            })}
+                                            onClick={() => this.handleShowHidePassword('current')}
+                                        />
+                                    </div>
+
+                                    {this.state.currentPassword && !this.props.isCurrentPasswordVerified && (
+                                        <div className={cx('error-message')}>Mật khẩu không chính xác</div>
+                                    )}
+                                </div>
+
+                                <div className={cx('form-group')}>
+                                    <div className={cx('input-form-password')}>
+                                        <label htmlFor="password" className={cx('label')}>
+                                            Mật khẩu mới
+                                        </label>
+                                        <Field
+                                            type={isShowNewPassword ? 'text' : 'password'}
+                                            id="password"
+                                            className={cx('input-form')}
+                                            name="newPassword"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.newPassword}
+                                        />
+                                        <Eye2
+                                            className={cx('toggle-show-password', {
+                                                'green-eye': isShowNewPassword,
+                                            })}
+                                            onClick={() => this.handleShowHidePassword('new')}
+                                        />
+                                    </div>
+                                    <ErrorMessage name="newPassword">
+                                        {(msg) => <div className={cx('error-message')}>{msg}</div>}
+                                    </ErrorMessage>
+                                </div>
+
+                                <div className={cx('form-group')}>
+                                    <div className={cx('input-form-password')}>
+                                        <label htmlFor="newPasswordConfirmation" className={cx('label')}>
+                                            Xác nhận mật khẩu mới
+                                        </label>
+                                        <Field
+                                            type={isShowNewPasswordConfirmation ? 'text' : 'password'}
+                                            id="newPasswordConfirmation"
+                                            className={cx('input-form')}
+                                            name="newPasswordConfirmation"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.newPasswordConfirmation}
+                                        />
+                                        <Eye3
+                                            className={cx('toggle-show-password', {
+                                                'green-eye': isShowNewPasswordConfirmation,
+                                            })}
+                                            onClick={() => this.handleShowHidePassword('confirm')}
+                                        />
+                                    </div>
+                                    <ErrorMessage name="newPasswordConfirmation">
+                                        {(msg) => <div className={cx('error-message')}>{msg}</div>}
+                                    </ErrorMessage>
+                                </div>
+
+                                <Button
+                                    disabled={
+                                        !props.values.currentPassword ||
+                                        !props.values.newPassword ||
+                                        !props.values.newPasswordConfirmation
+                                    }
+                                    type="submit"
+                                    className={cx('save-btn')}
+                                >
+                                    Đổi mật khẩu
+                                </Button>
+                            </Form>
+                        )}
+                    </Formik>
+                </div>
+            </AccountPage>
         );
     }
 }

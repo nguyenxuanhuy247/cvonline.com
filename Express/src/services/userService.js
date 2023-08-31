@@ -1,5 +1,7 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
+require('dotenv').config();
+import Jwt from 'jsonwebtoken';
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 
@@ -105,6 +107,20 @@ const getUserInfo = async (isEmail, input) => {
     }
 };
 
+// Create JWT
+const createJWT = async (payload) => {
+    const key = process.env.ACCESS_TOKEN_SECRET;
+    let token = null;
+    try {
+        token = await jwt.sign(payload, key);
+    } catch (error) {
+        console.log('An error in createJWT() in userService.js : ', error);
+    }
+
+    return token;
+};
+
+// =================================================================
 // Update password
 export const postChangePassword = async (data) => {
     try {
@@ -174,8 +190,7 @@ export const handleGetResetPassword = async (id, token) => {
         });
 
         if (user) {
-            const JWT_SECRET = 'reset password';
-            const secret = JWT_SECRET + user.password;
+            const secret = process.env.ACCESS_TOKEN_SECRET + user.password;
             const isVerified = jwt.verify(token, secret);
 
             if (isVerified) {
@@ -302,6 +317,10 @@ export const postUserSignIn = async (data) => {
             });
 
             if (user) {
+                const payload = { id: user.id, email: user.email };
+                const key = process.env.ACCESS_TOKEN_SECRET;
+                const token = jwt.sign(payload, key);
+
                 if (!isGoogle) {
                     if (user.password) {
                         let isPasswordMatch = await bcrypt.compareSync(password, user.password);
@@ -315,6 +334,7 @@ export const postUserSignIn = async (data) => {
                                     errorCode: 0,
                                     errorMessage: `Đăng nhập với Email thành công`,
                                     data: data,
+                                    token: token,
                                 };
                             } else {
                                 return message;
@@ -340,6 +360,7 @@ export const postUserSignIn = async (data) => {
                             errorCode: 0,
                             errorMessage: `Đăng nhập với tài khoản Google thành công`,
                             data: data,
+                            token: token,
                         };
                     } else {
                         return message;

@@ -1,23 +1,21 @@
 import { PureComponent } from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
 import classnames from 'classnames/bind';
 import { FaUser, FaUsersCog } from 'react-icons/fa';
 import { MdVerifiedUser } from 'react-icons/md';
 
 import styles from './AccountPage.module.scss';
 import { MainLayout } from '~/layouts';
-import PersonalInfo from '~/pages/AccountPage/Components/PersonalInfo.js';
-import PasswordSetting from '~/pages/AccountPage/Components/PasswordSetting.js';
-import UserIDSetting from '~/pages/AccountPage/Components/UserIDSetting.js';
 import { path } from '~/utils';
 
 const cx = classnames.bind(styles);
 
 class AccountPage extends PureComponent {
     render() {
-        const { paramId } = this.props?.match?.params ?? {};
+        const pathName = window.location.pathname;
 
-        return (
+        return this.props.isSignIn ? (
             <MainLayout>
                 <div className={cx('account-page')}>
                     <div className={cx('left-col')}>
@@ -25,38 +23,49 @@ class AccountPage extends PureComponent {
                         <div className={cx('item-list')}>
                             <Link
                                 to={path.PERSONALINFO}
-                                className={cx('item', { hover: paramId === 'personal-infomation' })}
+                                className={cx('item', { hover: pathName === path.PERSONALINFO })}
                             >
                                 <FaUser className={cx('icon')} />
                                 <span className={cx('text')}>Thông tin tài khoản</span>
                             </Link>
                             <Link
                                 to={path.PASSWORDSETTING}
-                                className={cx('item', { hover: paramId === 'password-setting' })}
+                                className={cx('item', { hover: pathName === path.PASSWORDSETTING })}
                             >
                                 <MdVerifiedUser className={cx('icon')} />
                                 <span className={cx('text')}>Cài đặt mật khẩu</span>
                             </Link>
                             <Link
                                 to={path.USERIDSETTING}
-                                className={cx('item', { hover: paramId === 'user-id-setting' })}
+                                className={cx('item', { hover: pathName === path.USERIDSETTING })}
                             >
                                 <FaUsersCog className={cx('icon')} />
                                 <span className={cx('text')}>Cài đặt ID người dùng</span>
                             </Link>
                         </div>
                     </div>
-                    <div className={cx('right-col')}>
-                        <Switch>
-                            <Route path={path.PERSONALINFO} component={PersonalInfo} />
-                            <Route path={path.PASSWORDSETTING} component={PasswordSetting} />
-                            <Route path={path.USERIDSETTING} component={UserIDSetting} />
-                        </Switch>
-                    </div>
+                    <div className={cx('right-col')}>{this.props.children}</div>
                 </div>
             </MainLayout>
+        ) : (
+            <Redirect
+                to={{
+                    pathname: path.SIGNIN,
+                    state: { from: pathName },
+                }}
+            />
         );
     }
 }
 
-export default AccountPage;
+const mapStateToProps = (state) => {
+    return {
+        isSignIn: state.user.isSignIn,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountPage);

@@ -1,6 +1,8 @@
+require('dotenv').config();
 import express from 'express';
 import bodyParser from 'body-parser';
-require('dotenv').config();
+import cookieParser from 'cookie-parser';
+
 import configViewEngine from '~/config/viewEngine.js';
 import webRoutes from '~/routes/routes';
 import connectDB from '~/config/connectDB.js';
@@ -29,6 +31,7 @@ app.use(function (req, res, next) {
 // Config app
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(cookieParser());
 
 configViewEngine(app);
 webRoutes(app);
@@ -38,6 +41,7 @@ connectDB();
 
 // Listens for connections on localhost:1402
 let port = process.env.PORT || 1402;
+
 app.listen(port, () => {
     console.log(`Backend Nodejs is running at localhost:${port}`);
 });

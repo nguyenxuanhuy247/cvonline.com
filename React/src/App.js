@@ -1,28 +1,14 @@
 import { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
 import 'reset-css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { userIsAuthenticated, userIsNotAuthenticated } from '~/HOC/authentication.js';
-import { path } from '~/utils';
-import { AuthLayout } from '~/layouts';
-import { HomePage, CVPage, AccountPage } from '~/pages';
+import AppRoutes from '~/routes/AppRoutes.js';
 class App extends Component {
     render() {
         return (
             <div>
-                <Switch>
-                    <Route exact path={path.HOME} component={userIsAuthenticated(HomePage)} />
-                    <Route path={path.SIGNIN} component={userIsNotAuthenticated(AuthLayout)} />
-                    <Route path={path.SIGNUP} component={userIsNotAuthenticated(AuthLayout)} />
-                    <Route path={path.FORGOTPASSWORD} component={userIsNotAuthenticated(AuthLayout)} />
-                    <Route path={`${path.HOME}settings/:paramId`} component={userIsAuthenticated(AccountPage)} />
-                    <Route path={path.PERSONALINFO} component={userIsAuthenticated(AccountPage)} />
-                    <Route path={path.PASSWORDSETTING} component={userIsAuthenticated(AccountPage)} />
-                    <Route path={path.USERIDSETTING} component={userIsAuthenticated(AccountPage)} />
-                    <Route path={`${path.HOME}:paramId`} component={userIsAuthenticated(CVPage)} />
-                </Switch>
+                <AppRoutes />
 
                 <ToastContainer
                     position="top-center"

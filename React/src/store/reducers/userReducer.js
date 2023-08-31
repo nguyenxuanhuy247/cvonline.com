@@ -82,6 +82,8 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSignIn: false,
+                isSignUp: false,
+                owner: null,
             };
 
         // =================================================================
@@ -142,9 +144,14 @@ const userReducer = (state = initialState, action) => {
             const userID = userInfoData.id;
             const lastUserIDInList = userIDList[userIDList.length - 1];
 
-            if (userID !== state.owner.id && userID !== lastUserIDInList) {
+            if (state.isSignIn) {
+                if (userID !== state.owner?.id && userID !== lastUserIDInList) {
+                    userIDList.push(userID);
+                }
+            } else if (userID !== lastUserIDInList) {
                 userIDList.push(userID);
             }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },

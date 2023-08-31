@@ -156,5 +156,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
-// : this.props.allCVList !== undefined && <NotFound404 text="Không tìm thấy danh sách" />
-// {this.props.isLoading && <Loading text="Đang tải..." />}

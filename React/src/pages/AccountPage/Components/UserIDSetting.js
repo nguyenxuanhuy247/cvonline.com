@@ -12,6 +12,7 @@ import * as userActions from '~/store/actions/userActions.js';
 import Loading from '~/components/Modal/Loading.js';
 import { Toast } from '~/components/Toast/Toast.js';
 import { dispatch } from '~/config/redux';
+import AccountPage from '~/pages/AccountPage/AccountPage.js';
 
 const cx = classnames.bind(styles);
 
@@ -88,67 +89,71 @@ class UserIDSetting extends PureComponent {
         const isDisabled = !isFilled || !this.props.isUserIDVerified;
 
         return (
-            <div className={cx('user-id-setting')}>
-                <span className={cx('title')}>Cài đặt ID người dùng</span>
-                <div className={cx('required')}>Nếu bạn đổi ID người dùng sẽ thay đổi địa chỉ tìm kiếm CV của bạn </div>
+            <AccountPage>
+                <div className={cx('user-id-setting')}>
+                    <span className={cx('title')}>Cài đặt ID người dùng</span>
+                    <div className={cx('required')}>
+                        Nếu bạn đổi ID người dùng sẽ thay đổi địa chỉ tìm kiếm CV của bạn{' '}
+                    </div>
 
-                <form className={cx('form')}>
-                    <div className={cx('input-form-userID')}>
-                        <div className={cx('form-group')}>
-                            <label htmlFor="userID" className={cx('form-label')}>
-                                ID người dùng
-                            </label>
-                            <input
-                                type="text"
-                                id="userID"
-                                value={this.state.newID}
-                                className={cx('form-input')}
-                                spellCheck={false}
-                                onChange={(e) => this.handleInputNewUserID(e)}
-                                onKeyDown={(e) => this.preventLoadFormWhenPressEnter(e)}
-                                onInput={this.debouncedVerifyUserID}
-                            />
+                    <form className={cx('form')}>
+                        <div className={cx('input-form-userID')}>
+                            <div className={cx('form-group')}>
+                                <label htmlFor="userID" className={cx('form-label')}>
+                                    ID người dùng
+                                </label>
+                                <input
+                                    type="text"
+                                    id="userID"
+                                    value={this.state.newID}
+                                    className={cx('form-input')}
+                                    spellCheck={false}
+                                    onChange={(e) => this.handleInputNewUserID(e)}
+                                    onKeyDown={(e) => this.preventLoadFormWhenPressEnter(e)}
+                                    onInput={this.debouncedVerifyUserID}
+                                />
 
-                            {this.state.showIconAndText && this.state.newID && (
-                                <span className={cx('icon-wrapper')}>
-                                    {this.props.isUserIDVerified ? (
-                                        <BsFillCheckCircleFill className={cx('icon', 'verified')} />
-                                    ) : (
-                                        <AiFillCloseCircle
-                                            className={cx('icon', 'error')}
-                                            onClick={() => this.handleClearIDInput()}
-                                        />
-                                    )}
+                                {this.state.showIconAndText && this.state.newID && (
+                                    <span className={cx('icon-wrapper')}>
+                                        {this.props.isUserIDVerified ? (
+                                            <BsFillCheckCircleFill className={cx('icon', 'verified')} />
+                                        ) : (
+                                            <AiFillCloseCircle
+                                                className={cx('icon', 'error')}
+                                                onClick={() => this.handleClearIDInput()}
+                                            />
+                                        )}
 
-                                    {this.props.isLoading_verifyUserID && <Loading inner verify />}
-                                </span>
-                            )}
+                                        {this.props.isLoading_verifyUserID && <Loading inner verify />}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                    </div>
 
-                    <div className={cx('message-container')}>
-                        {this.state.showIconAndText &&
-                            this.state.showText &&
-                            (this.state.newID ? (
-                                this.props.isUserIDVerified ? (
-                                    <p className={cx('message', 'OK')}>ID người dùng khả dụng</p>
+                        <div className={cx('message-container')}>
+                            {this.state.showIconAndText &&
+                                this.state.showText &&
+                                (this.state.newID ? (
+                                    this.props.isUserIDVerified ? (
+                                        <p className={cx('message', 'OK')}>ID người dùng khả dụng</p>
+                                    ) : (
+                                        <p className={cx('message', 'error')}>ID người dùng không khả dụng</p>
+                                    )
                                 ) : (
-                                    <p className={cx('message', 'error')}>ID người dùng không khả dụng</p>
-                                )
-                            ) : (
-                                <p className={cx('message', 'error')}>Vui lòng nhập ID người dùng</p>
-                            ))}
-                    </div>
+                                    <p className={cx('message', 'error')}>Vui lòng nhập ID người dùng</p>
+                                ))}
+                        </div>
 
-                    <Button
-                        disabled={isDisabled}
-                        className={cx('save-btn')}
-                        onClick={(e) => this.handleChangeUserID(e)}
-                    >
-                        {this.props.isLoading_changeUserID ? <Loading inner auth /> : `Lưu`}
-                    </Button>
-                </form>
-            </div>
+                        <Button
+                            disabled={isDisabled}
+                            className={cx('save-btn')}
+                            onClick={(e) => this.handleChangeUserID(e)}
+                        >
+                            {this.props.isLoading_changeUserID ? <Loading inner auth /> : `Lưu`}
+                        </Button>
+                    </form>
+                </div>
+            </AccountPage>
         );
     }
 }

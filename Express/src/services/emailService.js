@@ -3,12 +3,6 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 
-const ejs = require('ejs');
-const fs = require('fs');
-const util = require('util');
-const readFile = util.promisify(fs.readFile);
-import express from 'express';
-
 // RESET PASSWORD
 export const handleSendEmailResetPassword = async (data) => {
     try {
@@ -21,8 +15,7 @@ export const handleSendEmailResetPassword = async (data) => {
         });
 
         if (user) {
-            const JWT_SECRET = 'reset password';
-            const secret = JWT_SECRET + user.password;
+            const secret = process.env.ACCESS_TOKEN_SECRET + user.password;
             const payload = { id: user.id, email: user.email };
             var token = jwt.sign(payload, secret, { expiresIn: '10h' });
             const link = `${process.env.EXPRESS_URL}/reset-password/${user.id}/${token}`;

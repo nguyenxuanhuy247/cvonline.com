@@ -22,6 +22,7 @@ module.exports = {
                   }
                 : {},
         timezone: '+07:00',
+        logging: false,
     },
     test: {
         username: process.env.DB_USERNAME,
