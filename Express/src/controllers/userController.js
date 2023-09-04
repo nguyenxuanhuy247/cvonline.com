@@ -2,6 +2,54 @@ import * as userService from '~/services/userService.js';
 import * as emailService from '~/services/emailService.js';
 const yup = require('yup');
 
+// =================================================================
+
+// HANDLE USER SIGNIN
+export const handleUserSignIn = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.postUserSignIn(data);
+
+    if (message.errorCode === 0) {
+        res.cookie('jwt', message.token, { httpOnly: true });
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    } else if (message.errorCode === 33) {
+        res.status(409).json(message);
+    }
+};
+
+// HANDLE USER SIGNUP
+export const handleUserSignUp = async (req, res) => {
+    const data = req.body;
+
+    let message = await userService.postUserSignUp(data);
+
+    if (message.errorCode === 0) {
+        return res.status(201).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(409).json(message);
+    }
+};
+
+// DELETE ACCOUNT
+export const handleDeleteAccount = async (req, res) => {
+    const data = req.query;
+
+    const message = await userService.deleteAccount(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    }
+};
+
 // HANDLE USER CHANGE PASSWORD
 export const handleForgotPassword = async (req, res) => {
     const data = req.body;
@@ -80,37 +128,6 @@ export const handlePostResetPassword = async (req, res) => {
             redirectSiteName: 'Quên mật khẩu',
             redirectSite: 'http://localhost:2407/forgot-password',
         });
-    }
-};
-
-// HANDLE USER SIGNUP
-export const handleUserSignUp = async (req, res) => {
-    const data = req.body;
-
-    let message = await userService.postUserSignUp(data);
-
-    if (message.errorCode === 0) {
-        return res.status(201).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(409).json(message);
-    }
-};
-
-// HANDLE USER SIGNIN
-export const handleUserSignIn = async (req, res) => {
-    const data = req.body;
-
-    const message = await userService.postUserSignIn(data);
-
-    if (message.errorCode === 0) {
-        res.cookie('jwt', message.token, { httpOnly: true });
-        return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32 || message.errorCode === 33 || message.errorCode === 34) {
-        res.status(404).json(message);
     }
 };
 
@@ -332,7 +349,7 @@ export const handleChangeUserID = async (req, res) => {
 export const handleSendCVByEmail = async (req, res) => {
     const data = req.body;
 
-    let message = await emailService.handleSendCVByEmail(data);
+    const message = await emailService.handleSendCVByEmail(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);

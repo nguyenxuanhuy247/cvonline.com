@@ -16,6 +16,11 @@ export const postForgotPassword = (data) => {
     return axios.post(`/api/forgot-password`, data);
 };
 
+// DELETE ACCOUNT
+export const deleteAccount = (userId) => {
+    return axios.delete(`/api/delete-account?userId=${userId}`);
+};
+
 // =============================================================================
 // READ HOME LAYOUT
 

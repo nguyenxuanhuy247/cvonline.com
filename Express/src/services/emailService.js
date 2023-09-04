@@ -86,27 +86,28 @@ export const handleSendCVByEmail = async (data) => {
             const avatar = user.avatar;
             const binaryAvatar = avatar?.toString('binary');
 
-            const transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
-                auth: {
-                    user: user.email,
-                    pass: user.gmailPassword,
-                },
-            });
+            try {
+                const transporter = await nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: user.email,
+                        pass: user.gmailPassword,
+                    },
+                });
 
-            // send mail with defined transport object
-            await transporter.sendMail({
-                from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
-                to: data.to,
-                subject: data.subject,
-                text: data.subject,
-                attachments: [
-                    { path: binaryAvatar, cid: 'avatar' },
-                    { path: './src/public/img/cv-ung-vien.png', cid: 'logo' },
-                ],
-                html: `<div style="background-color: #f3f3f3; padding: 24px 0 80px; ">
+                // send mail with defined transport object
+                await transporter.sendMail({
+                    from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
+                    to: data.to,
+                    subject: data.subject,
+                    text: data.subject,
+                    attachments: [
+                        { path: binaryAvatar, cid: 'avatar' },
+                        { path: './src/public/img/cv-ung-vien.png', cid: 'logo' },
+                    ],
+                    html: `<div style="background-color: #f3f3f3; padding: 24px 0 80px; ">
                 <a href="${process.env.REACT_URL}" target="_blank" rel="noreferrer" style="text-decoration: none;">
                   <img src="cid:logo" alt="${user.fullName}"
                     style="  
@@ -364,7 +365,15 @@ export const handleSendCVByEmail = async (data) => {
               </div>
                 
                 `,
-            });
+                });
+            } catch (error) {
+                console.log('An error in NODEMAILER in emailService.js : ', error);
+
+                return {
+                    errorCode: 32,
+                    errorMessage: `Kiểm tra lại Google App Password`,
+                };
+            }
 
             return {
                 errorCode: 0,

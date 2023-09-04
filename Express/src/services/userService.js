@@ -1,46 +1,16 @@
 import db from '~/models';
 import bcrypt from 'bcryptjs';
 require('dotenv').config();
-import Jwt from 'jsonwebtoken';
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 const { Op } = require('sequelize');
 
 const salt = bcrypt.genSaltSync(10);
 
-// Email check function
-const checkUserEmailInDB = async (email) => {
-    try {
-        let user = await db.users.findOne({
-            where: { email: email },
-            attributes: ['email'],
-            raw: true,
-        });
-
-        if (user) {
-            return {
-                errorCode: 0,
-                errorMessage: `Email hợp lệ`,
-            };
-        } else {
-            return {
-                errorCode: 32,
-                errorMessage: `Email không tồn tại trong hệ thống`,
-            };
-        }
-    } catch (error) {
-        console.log('An error in checkUserEmailInDB() in userService.js : ', error);
-
-        return {
-            errorCode: 31,
-            errorMessage: `[Kết nối Database] Xác thực email thất bại`,
-        };
-    }
-};
-
+// =================================================================
 // Hash password function
 const hashUserPassword = async (password) => {
     try {
-        let hashPassword = await bcrypt.hashSync(password, salt);
+        const hashPassword = await bcrypt.hashSync(password, salt);
 
         return {
             errorCode: 0,
@@ -88,13 +58,12 @@ const getUserInfo = async (isEmail, input) => {
 
             return {
                 errorCode: 0,
-                errorMessage: `Tải thông tin người dùng thành công`,
                 data: newUser,
             };
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy người dùng. Tải thông tin người dùng thất bại`,
+                errorMessage: `Không tìm thấy người dùng`,
             };
         }
     } catch (error) {
@@ -102,25 +71,178 @@ const getUserInfo = async (isEmail, input) => {
 
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Tải thông tin người dùng thất bại`,
+            errorMessage: `Xảy ra lỗi. Tải thông tin người dùng thất bại`,
         };
     }
 };
 
-// Create JWT
-const createJWT = async (payload) => {
-    const key = process.env.ACCESS_TOKEN_SECRET;
-    let token = null;
-    try {
-        token = await jwt.sign(payload, key);
-    } catch (error) {
-        console.log('An error in createJWT() in userService.js : ', error);
-    }
+// =================================================================
 
-    return token;
+// HANDLE USER SIGNIN
+export const postUserSignIn = async (data) => {
+    try {
+        const { email, password, fullName, isGoogle } = data;
+
+        const user = await db.users.findOne({
+            where: { email: email },
+            attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
+            raw: true,
+        });
+
+        if (user) {
+            const payload = { id: user.id, email: user.email };
+            const key = process.env.ACCESS_TOKEN_SECRET;
+            const token = jwt.sign(payload, key);
+
+            if (!isGoogle) {
+                if (user.password) {
+                    const isPasswordMatch = await bcrypt.compareSync(password, user.password);
+
+                    if (isPasswordMatch) {
+                        const message = await getUserInfo(true, email);
+                        const { errorCode, data } = message;
+
+                        if (errorCode === 0) {
+                            return {
+                                errorCode: 0,
+                                errorMessage: `Đăng nhập thành công`,
+                                data: data,
+                                token: token,
+                            };
+                        } else {
+                            return message;
+                        }
+                    } else {
+                        return {
+                            errorCode: 33,
+                            errorMessage: `Sai mật khẩu`,
+                        };
+                    }
+                } else {
+                    return {
+                        errorCode: 32,
+                        errorMessage: `Chưa thiết lập mật khẩu`,
+                    };
+                }
+            } else {
+                const message = await getUserInfo(true, email);
+                const { errorCode, data } = message;
+
+                if (errorCode === 0) {
+                    return {
+                        errorCode: 0,
+                        errorMessage: `Đăng nhập với tài khoản Google thành công`,
+                        data: data,
+                        token: token,
+                    };
+                } else {
+                    return message;
+                }
+            }
+        } else if (isGoogle) {
+            await db.users.create({
+                email: email,
+                fullName: fullName,
+                jobPosition: 'Fullstack developer',
+            });
+
+            const message = await getUserInfo(true, email);
+            const { errorCode, data } = message;
+
+            if (errorCode === 0) {
+                return {
+                    errorCode: 0,
+                    errorMessage: `Đăng ký tài khoản với Google thành công`,
+                    data: data,
+                };
+            } else {
+                return message;
+            }
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Email này chưa đăng ký tài khoản`,
+            };
+        }
+    } catch (error) {
+        console.log('An error in postUserSignIn() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Xảy ra lỗi! Vui lòng đăng nhập lại sau`,
+        };
+    }
 };
 
-// =================================================================
+// HANDLE USER SIGNUP
+export const postUserSignUp = async (data) => {
+    try {
+        const { fullName, email, password } = data;
+
+        const hashPassword = await bcrypt.hashSync(password, salt);
+
+        if (hashPassword) {
+            const [user, created] = await db.users.findOrCreate({
+                where: {
+                    email: email,
+                },
+                defaults: {
+                    fullName: fullName,
+                    email: email,
+                    password: hashPassword,
+                    jobPosition: 'Fullstack developer',
+                },
+                raw: true,
+            });
+
+            if (created) {
+                await db.technologies.create({
+                    type: 'PRODUCTDESC',
+                    key: 'PD',
+                    userId: user.id,
+                    productOrder: 1,
+                });
+
+                return {
+                    errorCode: 0,
+                    errorMessage: `Đăng ký tài khoản thành công`,
+                };
+            } else {
+                return {
+                    errorCode: 32,
+                    errorMessage: `Email này đã được đăng ký`,
+                };
+            }
+        }
+    } catch (error) {
+        console.log('An error in postUserSignUp() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Xảy ra lỗi! Vui lòng đăng ký lại sau`,
+        };
+    }
+};
+
+// DELETE ACCOUNT
+export const deleteAccount = async (data) => {
+    try {
+        const { userId } = data;
+
+        await db.users.destroy({ where: { id: userId } });
+        await db.technologies.destroy({ where: { userId: userId } });
+
+        return {
+            errorCode: 0,
+            errorMessage: `Xóa tài khoản thành công`,
+        };
+    } catch (error) {
+        console.log('An error in deleteAccount() in userService.js : ', error);
+        return {
+            errorCode: 31,
+            errorMessage: `Xảy ra lỗi! Vui lòng thử lại sau`,
+        };
+    }
+};
+
 // Update password
 export const postChangePassword = async (data) => {
     try {
@@ -242,171 +364,6 @@ export const handlePostResetPassword = async (id, password) => {
 
         return {
             errorCode: 31,
-        };
-    }
-};
-
-// HANDLE USER SIGNUP
-export const postUserSignUp = async (data) => {
-    try {
-        const { fullName, email, password } = data;
-
-        const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
-
-        if (errorCode === 0) {
-            const [user, created] = await db.users.findOrCreate({
-                where: {
-                    email: email,
-                },
-                defaults: {
-                    fullName: fullName,
-                    email: email,
-                    password: hashPassword,
-                    jobPosition: 'Fullstack developer',
-                },
-                raw: true,
-            });
-
-            if (created) {
-                await db.technologies.create({
-                    type: 'PRODUCTDESC',
-                    key: 'PD',
-                    userId: user.id,
-                    productOrder: 1,
-                });
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Đăng ký tài khoản thành công`,
-                };
-            } else {
-                return {
-                    errorCode: 32,
-                    errorMessage: `Địa chỉ email đã được sử dụng`,
-                };
-            }
-        } else {
-            return {
-                errorCode: 31,
-                errorMessage: errorMessage,
-            };
-        }
-    } catch (error) {
-        console.log('An error in postUserSignUp() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `[Kết nối Database] Đăng ký tài khoản thất bại`,
-        };
-    }
-};
-
-// HANDLE USER SIGNIN
-export const postUserSignIn = async (data) => {
-    try {
-        const { email, password, fullName, isGoogle } = data;
-
-        // Use email to check whether the user exists
-        const { errorCode, errorMessage } = await checkUserEmailInDB(email);
-
-        if (errorCode === 0) {
-            // Get user's data again prevent someone from deleting/changing data
-            const user = await db.users.findOne({
-                where: { email: email },
-                attributes: ['id', 'avatar', 'fullName', 'email', 'password'],
-                raw: true,
-            });
-
-            if (user) {
-                const payload = { id: user.id, email: user.email };
-                const key = process.env.ACCESS_TOKEN_SECRET;
-                const token = jwt.sign(payload, key);
-
-                if (!isGoogle) {
-                    if (user.password) {
-                        let isPasswordMatch = await bcrypt.compareSync(password, user.password);
-
-                        if (isPasswordMatch) {
-                            const message = await getUserInfo(true, email);
-                            const { errorCode, data } = message;
-
-                            if (errorCode === 0) {
-                                return {
-                                    errorCode: 0,
-                                    errorMessage: `Đăng nhập với Email thành công`,
-                                    data: data,
-                                    token: token,
-                                };
-                            } else {
-                                return message;
-                            }
-                        } else {
-                            return {
-                                errorCode: 34,
-                                errorMessage: `Mật khẩu không chính xác`,
-                            };
-                        }
-                    } else {
-                        return {
-                            errorCode: 32,
-                            errorMessage: `Chưa thiết lập mật khẩu`,
-                        };
-                    }
-                } else {
-                    const message = await getUserInfo(true, email);
-                    const { errorCode, data } = message;
-
-                    if (errorCode === 0) {
-                        return {
-                            errorCode: 0,
-                            errorMessage: `Đăng nhập với tài khoản Google thành công`,
-                            data: data,
-                            token: token,
-                        };
-                    } else {
-                        return message;
-                    }
-                }
-            } else {
-                return {
-                    errorCode: 32,
-                    errorMessage: `Email không tồn tại trong hệ thống`,
-                };
-            }
-        } else if (errorCode === 32 && isGoogle) {
-            await db.users.create({
-                email: email,
-                fullName: fullName,
-                jobPosition: 'Fullstack developer',
-            });
-
-            const message = await getUserInfo(true, email);
-            const { errorCode, data } = message;
-
-            if (errorCode === 0) {
-                return {
-                    errorCode: 0,
-                    errorMessage: `Đăng ký tài khoản với Google thành công`,
-                    data: data,
-                };
-            } else {
-                return message;
-            }
-        } else if (errorCode === 31) {
-            return {
-                errorCode: 31,
-                errorMessage: errorMessage,
-            };
-        } else {
-            return {
-                errorCode: 34,
-                errorMessage: `Bạn chưa đăng ký tài khoản`,
-            };
-        }
-    } catch (error) {
-        console.log('An error in postUserSignIn() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `[Kết nối Database] Đăng nhập thất bại`,
         };
     }
 };
@@ -588,6 +545,7 @@ export const handleUpdateUserInformation = async (data) => {
             where: { id: userId },
             raw: false,
         });
+
         const keyArray = Object.keys(await db.users.rawAttributes);
 
         if (user) {

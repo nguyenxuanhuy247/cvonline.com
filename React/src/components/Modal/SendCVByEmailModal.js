@@ -45,14 +45,8 @@ class SendCVByEmailModal extends PureComponent {
             const data = { ...this.state, from: this.props.owner?.email };
 
             await this.setState({ isLoading: true });
-            const errorCode = await this.props.SendCVByEmail(data);
-            console.log('Error: ', errorCode);
-            console.log('typeof errorCode 1111: ', typeof errorCode);
-            console.log('typeof errorCode 2222: ', typeof errorCode === 'number');
-
-            if (typeof errorCode === 'number') {
-                await this.setState({ isLoading: false });
-            }
+            await this.props.SendCVByEmail(data);
+            await this.setState({ isLoading: false });
         }
     };
 
@@ -229,7 +223,11 @@ class SendCVByEmailModal extends PureComponent {
                             <Button className={cx('btn', 'cancel')} onClick={onClose}>
                                 Hủy
                             </Button>
-                            <Button className={cx('btn', 'finish')} onClick={() => this.handleSendInfoAndCVByEmail()}>
+                            <Button
+                                disabled={this.state.isLoading}
+                                className={cx('btn', 'finish')}
+                                onClick={() => this.handleSendInfoAndCVByEmail()}
+                            >
                                 {!this.state.isLoading ? 'Gửi CV' : <Loading inner auth />}
                             </Button>
                         </div>

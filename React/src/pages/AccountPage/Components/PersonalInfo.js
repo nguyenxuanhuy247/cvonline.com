@@ -8,6 +8,7 @@ import Button from '~/components/Button/Button.js';
 import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
 import AccountPage from '~/pages/AccountPage/AccountPage.js';
+import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 
@@ -16,6 +17,7 @@ class PersonalInfo extends PureComponent {
         super(props);
         this.state = {
             fullName: '',
+            isLoading: false,
         };
     }
 
@@ -49,6 +51,19 @@ class PersonalInfo extends PureComponent {
 
     handleClearFullNameInput = () => {
         this.setState({ fullName: '' });
+    };
+
+    handleDeleteAccount = async () => {
+        const { id: userId } = this.props?.owner ?? {};
+
+        await this.setState({ isLoading: true });
+        const errorCode = await this.props.deleteAccount(userId);
+        await this.setState({ isLoading: false });
+
+        if (errorCode === 0) {
+            Toast.TOP_CENTER_SUCCESS('Xóa tài khoản thành công', 2000);
+            this.props.userSignOut();
+        }
     };
 
     componentDidMount() {
@@ -120,7 +135,13 @@ class PersonalInfo extends PureComponent {
                             Lưu
                         </Button>
                     </form>
+
+                    <Button className={cx('delete-account')} onClick={() => this.handleDeleteAccount()}>
+                        Xóa tài khoản
+                    </Button>
                 </div>
+
+                {this.state.isLoading && <Loading />}
             </AccountPage>
         );
     }
@@ -135,6 +156,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateUserInformation: (data) => dispatch(userActions.updateUserInformation(data)),
+        deleteAccount: (userId) => dispatch(userActions.deleteAccount(userId)),
+        userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };
 

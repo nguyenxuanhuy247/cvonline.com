@@ -1,17 +1,25 @@
-// CHECK USER LOGIN
-export const checkUserLogin = (req, res, next) => {
-    const cookies = req.cookies;
+import jwt from 'jsonwebtoken';
 
-    if (cookies && cookies.jwt) {
+// =================================================================
+
+// CHECK SIGNIN
+export const checkReqSignIn = (req, res, next) => {
+    const { email, password, isGoogle } = req.body;
+
+    if (!email) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập Họ và tên',
+            errorMessage: 'Vui lòng nhập Email',
         });
-    } else {
-        return res.status(401).json({
-            errorCode: 10,
-            errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập.',
-        });
+    }
+
+    if (!isGoogle) {
+        if (!password) {
+            return res.status(400).json({
+                errorCode: 11,
+                errorMessage: 'Vui lòng nhập Mật khẩu',
+            });
+        }
     }
 
     next();
@@ -45,27 +53,30 @@ export const checkReqSignUp = (req, res, next) => {
     next();
 };
 
-// CHECK SIGNIN INFO
-export const checkReqSignIn = (req, res, next) => {
-    const { email, password, isGoogle } = req.body;
+// CHECK DELETE ACCOUNT
+export const checkReqDeleteAccount = (req, res, next) => {
+    const cookies = req.cookies;
 
-    if (!email) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập Email',
-        });
-    }
+    if (cookies && cookies.jwt) {
+        const token = cookies.jwt;
+        const key = process.env.ACCESS_TOKEN_SECRET;
 
-    if (!isGoogle) {
-        if (!password) {
-            return res.status(400).json({
-                errorCode: 11,
-                errorMessage: 'Vui lòng nhập Mật khẩu',
+        var decoded = jwt.verify(token, key);
+
+        if (decoded) {
+            next();
+        } else {
+            return res.status(401).json({
+                errorCode: 10,
+                errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập',
             });
         }
+    } else {
+        return res.status(401).json({
+            errorCode: 10,
+            errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập',
+        });
     }
-
-    next();
 };
 
 // CHECK FORGOT PASSWORD

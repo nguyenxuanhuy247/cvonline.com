@@ -2,6 +2,42 @@ import actionNames from './actionNames';
 import * as userService from '~/services/userService.js';
 import { Toast } from '~/components/Toast/Toast.js';
 
+// USER SIGN IN
+export const userSignIn = (userData) => {
+    return async (dispatch) => {
+        dispatch(userSignIn_Start());
+        try {
+            let res = await userService.postSignIn(userData);
+            const { errorCode, errorMessage, data } = res;
+            if (errorCode === 0) {
+                dispatch(userSignIn_Success(data));
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+                dispatch(userSignIn_Fail());
+            }
+        } catch (error) {
+            const { errorMessage } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            dispatch(userSignIn_Fail());
+
+            console.log('An error in userSignInStart() - userActions.js: ', error);
+        }
+    };
+};
+
+export const userSignIn_Start = () => ({
+    type: actionNames.USER_SIGNIN_START,
+});
+
+export const userSignIn_Success = (user) => ({
+    type: actionNames.USER_SIGNIN_SUCCESS,
+    payload: user,
+});
+
+export const userSignIn_Fail = () => ({
+    type: actionNames.USER_SIGNIN_FAILURE,
+});
+
 // USER SIGN UP - CREATE USER INFORMATION
 export const userSignUpStart = (userData) => {
     return async (dispatch) => {
@@ -35,41 +71,6 @@ export const userSignUp_Success = () => ({
 
 export const userSignUp_Fail = () => ({
     type: actionNames.USER_SIGNUP_FAILURE,
-});
-
-// USER SIGN IN
-export const userSignInStart = (userData) => {
-    return async (dispatch) => {
-        dispatch(userSignIn_Start());
-        try {
-            let res = await userService.postSignIn(userData);
-            const { errorCode, errorMessage, data } = res;
-            if (errorCode === 0) {
-                dispatch(userSignIn_Success(data));
-            } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
-                dispatch(userSignIn_Fail());
-            }
-        } catch (error) {
-            const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
-            dispatch(userSignIn_Fail());
-            console.log('An error in userSignInStart() - userActions.js: ', error);
-        }
-    };
-};
-
-export const userSignIn_Start = () => ({
-    type: actionNames.USER_SIGNIN_START,
-});
-
-export const userSignIn_Success = (user) => ({
-    type: actionNames.USER_SIGNIN_SUCCESS,
-    payload: user,
-});
-
-export const userSignIn_Fail = () => ({
-    type: actionNames.USER_SIGNIN_FAILURE,
 });
 
 // USER SIGN OUT
@@ -114,6 +115,43 @@ export const userForgotPassword_Success = () => ({
 
 export const userForgotPassword_Failure = () => ({
     type: actionNames.USER_FORGOT_PASSWORD_FAILURE,
+});
+
+// DELETE ACCOUNT
+export const deleteAccount = (userId) => {
+    return async (dispatch) => {
+        dispatch(deleteAccount_Start());
+        try {
+            let res = await userService.deleteAccount(userId);
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                dispatch(deleteAccount_Success());
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                dispatch(deleteAccount_Failure());
+                return errorCode;
+            }
+        } catch (error) {
+            const { errorMessage, errorCode } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            dispatch(userForgotPassword_Failure());
+            console.log('An error in userForgotPasswordStart() - userActions.js: ', error);
+            return errorCode;
+        }
+    };
+};
+
+export const deleteAccount_Start = () => ({
+    type: actionNames.DELETE_ACCOUNT_START,
+});
+
+export const deleteAccount_Success = () => ({
+    type: actionNames.DELETE_ACCOUNT_SUCCESS,
+});
+
+export const deleteAccount_Failure = () => ({
+    type: actionNames.DELETE_ACCOUNT_FAILURE,
 });
 
 // =================================================================

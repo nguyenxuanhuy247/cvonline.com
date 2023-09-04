@@ -8,6 +8,7 @@ const initialState = {
         homeLayout: false,
         changeUserID: false,
         search: false,
+        deleteAccount: false,
     },
     isSignIn: false,
     isSignUp: false,
@@ -84,6 +85,26 @@ const userReducer = (state = initialState, action) => {
                 isSignIn: false,
                 isSignUp: false,
                 owner: null,
+            };
+
+        // DELETE ACCOUNT
+        case actionNames.DELETE_ACCOUNT_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, deleteAccount: true },
+            };
+        case actionNames.DELETE_ACCOUNT_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, deleteAccount: false },
+                isSignIn: false,
+                isSignUp: false,
+                owner: null,
+            };
+        case actionNames.DELETE_ACCOUNT_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, deleteAccount: false },
             };
 
         // =================================================================

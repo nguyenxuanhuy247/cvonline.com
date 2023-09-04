@@ -92,4 +92,13 @@
             cursor: pointer;
         }
     }
+    
+    .delete-account {
+        background-color: red;
+        color: #fff;
+        align-self: flex-end;
+        margin-top: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+    }
 }

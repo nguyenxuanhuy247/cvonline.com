@@ -177,7 +177,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        userSignIn: (userData) => dispatch(userActions.userSignInStart(userData)),
+        userSignIn: (data) => dispatch(userActions.userSignIn(data)),
     };
 };
 

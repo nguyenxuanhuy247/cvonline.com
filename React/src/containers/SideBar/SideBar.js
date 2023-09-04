@@ -100,7 +100,7 @@ class SideBar extends PureComponent {
                     <span className={cx('text')}>Trang chủ</span>
                 </Button>
                 <Button
-                    route={this.props.isSignIn && `/${this.props.owner?.id}`}
+                    route={this.props.isSignIn ? `/${this.props.owner?.id}` : '#!'}
                     className={cx('button', {
                         hover: pathname === `/${ownerID}`,
                     })}

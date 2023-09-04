@@ -7,8 +7,9 @@ const actionMaker = (text_1, text_2) => {
 };
 
 const actionNames = Object.freeze({
-    // USER SIGN IN
+    // USER SIGN UP
     ...actionMaker(`USER`, `SIGNUP`),
+    ...actionMaker(`DELETE`, `ACCOUNT`),
 
     // USER SIGN IN
     ...actionMaker(`USER`, `SIGNIN`),
