@@ -1,10 +1,11 @@
 import * as userService from '~/services/userService.js';
 import * as emailService from '~/services/emailService.js';
+require('dotenv').config();
 const yup = require('yup');
 
 // =================================================================
 
-// HANDLE USER SIGNIN
+// SIGNIN
 export const handleUserSignIn = async (req, res) => {
     const data = req.body;
 
@@ -22,7 +23,7 @@ export const handleUserSignIn = async (req, res) => {
     }
 };
 
-// HANDLE USER SIGNUP
+// SIGNUP
 export const handleUserSignUp = async (req, res) => {
     const data = req.body;
 
@@ -50,7 +51,7 @@ export const handleDeleteAccount = async (req, res) => {
     }
 };
 
-// HANDLE USER CHANGE PASSWORD
+// FORGOT PASSWORD
 export const handleForgotPassword = async (req, res) => {
     const data = req.body;
 
@@ -65,7 +66,7 @@ export const handleForgotPassword = async (req, res) => {
     }
 };
 
-// HANDLE USER RESET PASSWORD
+// RESET PASSWORD
 export const handleGetResetPassword = async (req, res) => {
     const { id, token } = req.params;
     if (id && token) {
@@ -76,13 +77,13 @@ export const handleGetResetPassword = async (req, res) => {
                 errorCode: 1,
                 errorMessage: '',
                 values: { password: '', confirmedPassword: '' },
+                href: process.env.REACT_URL,
             });
         }
     }
 
     return res.render('reset-password-redirect.ejs', {
-        message: 'Liên kết đã hết hiệu lực, vui lòng nhập lại Email',
-        redirectSiteName: 'Quên mật khẩu',
+        message: 'Liên kết đã hết hiệu lực',
         redirectSite: 'http://localhost:2407/forgot-password',
     });
 };
@@ -113,6 +114,7 @@ export const handlePostResetPassword = async (req, res) => {
                     errorCode: message.errorCode,
                     errorMessage: '',
                     values: { password: '', confirmedPassword: '' },
+                    href: process.env.REACT_URL,
                 });
             }
         } catch (error) {
@@ -124,15 +126,14 @@ export const handlePostResetPassword = async (req, res) => {
         }
     } else {
         return res.render('reset-password-redirect.ejs', {
-            message: 'Liên kết đã hết hiệu lực, vui lòng nhập lại Email',
-            redirectSiteName: 'Quên mật khẩu',
+            message: 'Liên kết đã hết hiệu lực',
             redirectSite: 'http://localhost:2407/forgot-password',
         });
     }
 };
 
 // =================================================================
-// READ HOME LAYOUT
+// SEARCH PRODUCT
 export const handleGetSearch = async (req, res) => {
     const data = req.query;
     const message = await userService.handleGetSearch(data);

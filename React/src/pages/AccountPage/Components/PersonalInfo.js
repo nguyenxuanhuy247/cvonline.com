@@ -9,6 +9,7 @@ import * as userActions from '~/store/actions';
 import { Toast } from '~/components/Toast/Toast.js';
 import AccountPage from '~/pages/AccountPage/AccountPage.js';
 import Loading from '~/components/Modal/Loading.js';
+import ConfirmDeleteAccountModal from '~/components/Modal/ConfirmDeleteAccountModal.js';
 
 const cx = classnames.bind(styles);
 
@@ -18,6 +19,7 @@ class PersonalInfo extends PureComponent {
         this.state = {
             fullName: '',
             isLoading: false,
+            isOpenModal: false,
         };
     }
 
@@ -64,6 +66,14 @@ class PersonalInfo extends PureComponent {
             Toast.TOP_CENTER_SUCCESS('Xóa tài khoản thành công', 2000);
             this.props.userSignOut();
         }
+    };
+
+    openDeleteAccountModal = () => {
+        this.setState({ isOpenModal: true });
+    };
+
+    closeDeleteAccountModal = () => {
+        this.setState({ isOpenModal: false });
     };
 
     componentDidMount() {
@@ -136,12 +146,18 @@ class PersonalInfo extends PureComponent {
                         </Button>
                     </form>
 
-                    <Button className={cx('delete-account')} onClick={() => this.handleDeleteAccount()}>
+                    <Button className={cx('delete-account')} onClick={this.openDeleteAccountModal}>
                         Xóa tài khoản
                     </Button>
                 </div>
 
                 {this.state.isLoading && <Loading />}
+
+                <ConfirmDeleteAccountModal
+                    isOpen={this.state.isOpenModal}
+                    onClose={this.closeDeleteAccountModal}
+                    onDelete={this.handleDeleteAccount}
+                />
             </AccountPage>
         );
     }

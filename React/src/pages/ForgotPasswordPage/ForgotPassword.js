@@ -183,7 +183,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         verifyUserEmail: (userEmail) => dispatch(appActions.verifyUserEmail(userEmail)),
-        userForgotPassword: (data) => dispatch(userActions.userForgotPasswordStart(data)),
+        userForgotPassword: (data) => dispatch(userActions.userForgotPassword(data)),
     };
 };
 

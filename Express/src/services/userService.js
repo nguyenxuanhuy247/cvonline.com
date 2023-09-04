@@ -7,26 +7,6 @@ const { Op } = require('sequelize');
 const salt = bcrypt.genSaltSync(10);
 
 // =================================================================
-// Hash password function
-const hashUserPassword = async (password) => {
-    try {
-        const hashPassword = await bcrypt.hashSync(password, salt);
-
-        return {
-            errorCode: 0,
-            errorMessage: `Mã hóa mật khẩu thành công`,
-            hashPassword: hashPassword,
-        };
-    } catch (error) {
-        console.log('An error in hashUserPassword() : ', error);
-
-        return {
-            errorCode: 31,
-            errorMessage: `[Kết nối Database] Mã hóa mật khẩu thất bại`,
-        };
-    }
-};
-
 // Get user information
 const getUserInfo = async (isEmail, input) => {
     try {
@@ -243,65 +223,6 @@ export const deleteAccount = async (data) => {
     }
 };
 
-// Update password
-export const postChangePassword = async (data) => {
-    try {
-        const { userId, password } = data;
-
-        const user = await db.users.findOne({
-            where: { id: userId },
-            raw: false,
-        });
-
-        if (user) {
-            let userData = await db.users.findOne({
-                where: { id: userId },
-                attributes: ['password'],
-                raw: true,
-            });
-
-            if (userData) {
-                let isPasswordMatch = await bcrypt.compareSync(password, userData.password);
-
-                if (!isPasswordMatch) {
-                    const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
-
-                    if (errorCode === 0) {
-                        user.password = hashPassword;
-                        await user.save();
-
-                        return {
-                            errorCode: 0,
-                            errorMessage: `Cập nhật Mật khẩu thành công`,
-                        };
-                    } else {
-                        return {
-                            errorCode: 34,
-                            errorMessage: errorMessage,
-                        };
-                    }
-                } else {
-                    return {
-                        errorCode: 33,
-                        errorMessage: `Mật khẩu đã được sử dụng`,
-                    };
-                }
-            }
-        } else {
-            return {
-                errorCode: 32,
-                errorMessage: `[Không tìm thấy user ID] Cập nhật Password thất bại`,
-            };
-        }
-    } catch (error) {
-        console.log('An error in postUserSignIn() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `[Kết nối Database] Đăng nhập thất bại`,
-        };
-    }
-};
-
 // HANDLE RESET PASSWORD
 export const handleGetResetPassword = async (id, token) => {
     try {
@@ -344,16 +265,14 @@ export const handlePostResetPassword = async (id, password) => {
         });
 
         if (user) {
-            const { errorCode, errorMessage, hashPassword } = await hashUserPassword(password);
+            const hashPassword = await bcrypt.hashSync(password, salt);
 
-            if (errorCode === 0) {
-                user.password = hashPassword;
-                await user.save();
+            user.password = hashPassword;
+            await user.save();
 
-                return {
-                    errorCode: 0,
-                };
-            }
+            return {
+                errorCode: 0,
+            };
         }
 
         return {
@@ -409,7 +328,7 @@ export const handleGetSearch = async (data) => {
         console.log('An error in handleGetSearch() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Tìm kiếm sản phẩm thất bại`,
+            errorMessage: `Xảy ra lỗi! Tìm kiếm sản phẩm thất bại`,
         };
     }
 };
@@ -529,7 +448,7 @@ export const handleGetUserInformation = async (data) => {
         console.log('An error in handleGetUserInformation() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Tải thông tin người dùng thất bại`,
+            errorMessage: `Xảy ra lỗi! Tải thông tin người dùng thất bại`,
         };
     }
 };
@@ -561,13 +480,8 @@ export const handleUpdateUserInformation = async (data) => {
                     }
                 }
             } else {
-                const { errorCode, errorMessage, hashPassword } = await hashUserPassword(newData.password);
-
-                if (errorCode === 0) {
-                    user.password = hashPassword;
-                } else {
-                    return { errorCode, errorMessage };
-                }
+                const hashPassword = await bcrypt.hashSync(newData.password, salt);
+                user.password = hashPassword;
             }
 
             await user.save();
@@ -594,7 +508,7 @@ export const handleUpdateUserInformation = async (data) => {
         console.log('An error in handleUpdateUserInformation() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Cập nhật ${label} thất bại`,
+            errorMessage: `Xảy ra lỗi! Cập nhật ${label} thất bại`,
         };
     }
 };

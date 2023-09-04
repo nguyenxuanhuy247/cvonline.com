@@ -28,7 +28,7 @@ class UserIDSetting extends PureComponent {
     }
 
     handleInputNewUserID = (e) => {
-        const newUserID = e.target.value;
+        const newUserID = e.target.value.replace(/ /g, '');
 
         if (newUserID) {
             this.setState({ newID: newUserID, showIconAndText: true });
@@ -93,7 +93,7 @@ class UserIDSetting extends PureComponent {
                 <div className={cx('user-id-setting')}>
                     <span className={cx('title')}>Cài đặt ID người dùng</span>
                     <div className={cx('required')}>
-                        Nếu bạn đổi ID người dùng sẽ thay đổi địa chỉ tìm kiếm CV của bạn{' '}
+                        Thay đổi ID người dùng sẽ làm thay đổi địa chỉ tìm kiếm trang CV của bạn
                     </div>
 
                     <form className={cx('form')}>

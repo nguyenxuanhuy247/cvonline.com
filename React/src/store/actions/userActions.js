@@ -73,15 +73,48 @@ export const userSignUp_Fail = () => ({
     type: actionNames.USER_SIGNUP_FAILURE,
 });
 
-// USER SIGN OUT
-export const userSignOut = () => {
-    return {
-        type: actionNames.USER_SIGNOUT,
+// DELETE ACCOUNT
+export const deleteAccount = (userId) => {
+    return async (dispatch) => {
+        dispatch(deleteAccount_Start());
+        try {
+            let res = await userService.deleteAccount(userId);
+            const { errorCode, errorMessage } = res ?? {};
+            if (errorCode === 0) {
+                dispatch(deleteAccount_Success());
+
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+                dispatch(deleteAccount_Failure());
+
+                return errorCode;
+            }
+        } catch (error) {
+            const { errorMessage, errorCode } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            dispatch(userForgotPassword_Failure());
+            console.log('An error in deleteAccount() - userActions.js: ', error);
+
+            return errorCode;
+        }
     };
 };
 
-// CHANGE PASSWORD
-export const userForgotPasswordStart = (data) => {
+export const deleteAccount_Start = () => ({
+    type: actionNames.DELETE_ACCOUNT_START,
+});
+
+export const deleteAccount_Success = () => ({
+    type: actionNames.DELETE_ACCOUNT_SUCCESS,
+});
+
+export const deleteAccount_Failure = () => ({
+    type: actionNames.DELETE_ACCOUNT_FAILURE,
+});
+
+// FORGOT PASSWORD
+export const userForgotPassword = (data) => {
     return async (dispatch) => {
         dispatch(userForgotPassword_Start());
         try {
@@ -89,17 +122,20 @@ export const userForgotPasswordStart = (data) => {
             const { errorCode, errorMessage } = res ?? {};
             if (errorCode === 0) {
                 dispatch(userForgotPassword_Success());
+
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(userForgotPassword_Failure());
+
                 return errorCode;
             }
         } catch (error) {
             const { errorMessage, errorCode } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             dispatch(userForgotPassword_Failure());
-            console.log('An error in userForgotPasswordStart() - userActions.js: ', error);
+            console.log('An error in userForgotPassword() - userActions.js: ', error);
+
             return errorCode;
         }
     };
@@ -117,42 +153,12 @@ export const userForgotPassword_Failure = () => ({
     type: actionNames.USER_FORGOT_PASSWORD_FAILURE,
 });
 
-// DELETE ACCOUNT
-export const deleteAccount = (userId) => {
-    return async (dispatch) => {
-        dispatch(deleteAccount_Start());
-        try {
-            let res = await userService.deleteAccount(userId);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                dispatch(deleteAccount_Success());
-                return errorCode;
-            } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
-                dispatch(deleteAccount_Failure());
-                return errorCode;
-            }
-        } catch (error) {
-            const { errorMessage, errorCode } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
-            dispatch(userForgotPassword_Failure());
-            console.log('An error in userForgotPasswordStart() - userActions.js: ', error);
-            return errorCode;
-        }
+// USER SIGN OUT
+export const userSignOut = () => {
+    return {
+        type: actionNames.USER_SIGNOUT,
     };
 };
-
-export const deleteAccount_Start = () => ({
-    type: actionNames.DELETE_ACCOUNT_START,
-});
-
-export const deleteAccount_Success = () => ({
-    type: actionNames.DELETE_ACCOUNT_SUCCESS,
-});
-
-export const deleteAccount_Failure = () => ({
-    type: actionNames.DELETE_ACCOUNT_FAILURE,
-});
 
 // =================================================================
 // SEARCH VALUE
@@ -241,7 +247,6 @@ export const readHomeLayout_Failure = () => ({
 // READ USER INFORMATION
 export const readUserInformation = (userId) => {
     return async (dispatch) => {
-        dispatch(readUserInformation_Start());
         try {
             const res = await userService.readUserInformation(userId);
 
@@ -259,7 +264,7 @@ export const readUserInformation = (userId) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             dispatch(readUserInformation_Failure());
             console.log('An error in readUserInformation() - userActions.js: ', error);
 
@@ -267,10 +272,6 @@ export const readUserInformation = (userId) => {
         }
     };
 };
-
-export const readUserInformation_Start = () => ({
-    type: actionNames.READ_USER_INFORMATION_START,
-});
 
 export const readUserInformation_Success = (data) => ({
     type: actionNames.READ_USER_INFORMATION_SUCCESS,
@@ -295,14 +296,14 @@ export const updateUserInformation = (userData) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(updateUserInformation_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             dispatch(updateUserInformation_Failure());
             console.log('An error in updateTechnology() - userActions.js: ', error);
 

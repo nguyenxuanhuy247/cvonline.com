@@ -60,14 +60,14 @@ export const handleSendEmailResetPassword = async (data) => {
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Email không tồn tại trong hệ thống`,
+                errorMessage: `Email này chưa được đăng ký`,
             };
         }
     } catch (error) {
         console.log('An error in handleSendEmailResetPassword() in emailService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Không gửi được email đặt lại mật khẩu`,
+            errorMessage: `Xảy ra lỗi! Vui lòng thử lại sau`,
         };
     }
 };
@@ -213,7 +213,7 @@ export const handleSendCVByEmail = async (data) => {
                                         column-gap: 8px;
                                       "
                                     >
-                                      <span style="min-width: 100px; font-weight: 600;"
+                                      <span style="font-weight: 600;"
                                         >Số điện thoại</span
                                       >
                                       <span>:</span>
@@ -230,13 +230,15 @@ export const handleSendCVByEmail = async (data) => {
                                         column-gap: 8px;
                                       "
                                     >
-                                      <span style="min-width: 100px; font-weight: 600;"
+                                      <span style="font-weight: 600;"
                                         >Email</span
                                       >
                                       <span>:</span>
-                                      <span style="text-decoration: none; word-break: break-all;">${
-                                          user.email || 'Không có'
-                                      }</span>
+                                      <a href="mailto:${
+                                          user.email
+                                      }" style="text-decoration: none; word-break: break-all; color: #496c92;">${
+                        user.email || 'Không có'
+                    }</a>
                                     </td>
                                   </tr>
                                 </tbody>

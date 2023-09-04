@@ -23,42 +23,8 @@ const initialState = {
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         // AUTH LAYOUT
-        // USER FORGOT PASSWORD
-        case actionNames.USER_FORGOT_PASSWORD_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, forgotPassword: true },
-            };
-        case actionNames.USER_FORGOT_PASSWORD_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, forgotPassword: false },
-            };
-        case actionNames.USER_FORGOT_PASSWORD_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, forgotPassword: false },
-            };
 
-        // USER SIGN UP
-        case actionNames.USER_SIGNUP_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, authLayout: true },
-            };
-        case actionNames.USER_SIGNUP_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, authLayout: false },
-                isSignUp: true,
-            };
-        case actionNames.USER_SIGNUP_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, authLayout: false },
-            };
-
-        // USER SIGN IN
+        // SIGN IN
         case actionNames.USER_SIGNIN_START:
             return {
                 ...state,
@@ -78,13 +44,22 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, authLayout: false },
             };
 
-        // USER SIGN OUT
-        case actionNames.USER_SIGNOUT:
+        // SIGN UP
+        case actionNames.USER_SIGNUP_START:
             return {
                 ...state,
-                isSignIn: false,
-                isSignUp: false,
-                owner: null,
+                isLoading: { ...state.isLoading, authLayout: true },
+            };
+        case actionNames.USER_SIGNUP_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, authLayout: false },
+                isSignUp: true,
+            };
+        case actionNames.USER_SIGNUP_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, authLayout: false },
             };
 
         // DELETE ACCOUNT
@@ -105,6 +80,33 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, deleteAccount: false },
+            };
+
+        // FORGOT PASSWORD
+        case actionNames.USER_FORGOT_PASSWORD_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, forgotPassword: true },
+            };
+        case actionNames.USER_FORGOT_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, forgotPassword: false },
+            };
+        case actionNames.USER_FORGOT_PASSWORD_FAILURE:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, forgotPassword: false },
+            };
+
+        // SIGN OUT
+        case actionNames.USER_SIGNOUT:
+            return {
+                ...state,
+                isSignIn: false,
+                isSignUp: false,
+                owner: null,
+                CVHistory: [],
             };
 
         // =================================================================
@@ -154,11 +156,6 @@ const userReducer = (state = initialState, action) => {
         // =================================================================
         // CV LAYOUT
         // READ USER INFORMATION
-        case actionNames.READ_USER_INFORMATION_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, CVLayout: true },
-            };
         case actionNames.READ_USER_INFORMATION_SUCCESS:
             const userIDList = [...state.CVHistory];
             const userInfoData = action.payload;
@@ -175,17 +172,28 @@ const userReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
                 userInfo: action.payload,
                 CVHistory: userIDList,
             };
         case actionNames.READ_USER_INFORMATION_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
                 userInfo: { id: 0 },
             };
 
+        // UPDATE USER INFORMATION
+        case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
+            return {
+                ...state,
+                owner: action.payload,
+                userInfo: action.payload,
+            };
+        case actionNames.UPDATE_USER_INFORMATION_FAILURE:
+            return {
+                ...state,
+            };
+
+        // UPDATE CV HISTORY
         case 'UPDATE_CV_HISTORY':
             const copy_CVHistory = [...state.CVHistory];
             copy_CVHistory.shift();
@@ -195,24 +203,6 @@ const userReducer = (state = initialState, action) => {
                 CVHistory: copy_CVHistory,
             };
 
-        // UPDATE USER INFORMATION
-        case actionNames.UPDATE_USER_INFORMATION_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, CVLayout: true },
-            };
-        case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
-                owner: action.payload,
-                userInfo: action.payload,
-            };
-        case actionNames.UPDATE_USER_INFORMATION_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
-            };
         // =================================================================
         // CREATE PRODUCT
         case actionNames.CREATE_PRODUCT_START:

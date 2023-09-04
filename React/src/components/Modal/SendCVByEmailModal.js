@@ -89,7 +89,9 @@ class SendCVByEmailModal extends PureComponent {
                             </div>
 
                             <div className={cx('background')}>
-                                <img src={logoWithText} alt="cvonline.com" className={cx('logo')} />
+                                <a href="/" target="_blank" rel="noopener">
+                                    <img src={logoWithText} alt="cvonline.com" className={cx('logo')} />
+                                </a>
 
                                 <div className={cx('cover-letter')}>
                                     <p className={cx('title')}>THƯ ỨNG TUYỂN VỊ TRÍ {this.props.owner.jobPosition}</p>

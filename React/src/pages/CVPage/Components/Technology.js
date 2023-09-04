@@ -179,7 +179,7 @@ class Technology extends PureComponent {
                 </Button>
 
                 {isCanEdit && (
-                    <>
+                    <div className={cx('edit-button-container')}>
                         <Button
                             className={cx('technology-button', 'move-button', {
                                 'sourcecode-list': type === 'SOURCECODE',
@@ -201,7 +201,7 @@ class Technology extends PureComponent {
                             <MdDelete />
                             {this.state.isLoading && <Loading inner small />}
                         </Button>
-                    </>
+                    </div>
                 )}
             </div>
         ) : (

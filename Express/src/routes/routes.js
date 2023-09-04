@@ -12,7 +12,6 @@ let initWebRoutes = (app) => {
     router.post('/api/signin', userMiddleware.checkReqSignIn, userController.handleUserSignIn);
     router.post('/api/signup', userMiddleware.checkReqSignUp, userController.handleUserSignUp);
     router.delete('/api/delete-account', userMiddleware.checkReqDeleteAccount, userController.handleDeleteAccount);
-    
     router.post('/api/forgot-password', userMiddleware.checkReqForgotPassword, userController.handleForgotPassword);
     router.get('/reset-password/:id/:token', userController.handleGetResetPassword);
     router.post('/reset-password/:id/:token', userController.handlePostResetPassword);

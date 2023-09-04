@@ -119,9 +119,17 @@ class SearchBar extends PureComponent {
                                             <div className={cx('result-desc')}>
                                                 <p className={cx('product-name')}>{result.name}</p>
                                                 <div className={cx('author')}>
-                                                    <p className={cx('name')}>{result.user.fullName}</p>
+                                                    <p className={cx('name')}>
+                                                        {result.user.fullName
+                                                            ? result.user.fullName
+                                                            : 'Chưa có Tên tác giả'}
+                                                    </p>
                                                     <span className={cx('separate')}>|</span>
-                                                    <p className={cx('job-title')}>{result.user.jobPosition}</p>
+                                                    <p className={cx('job-title')}>
+                                                        {result.user.jobPosition
+                                                            ? result.user.jobPosition
+                                                            : 'Chưa có Vị trí ứng tuyển'}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </Button>

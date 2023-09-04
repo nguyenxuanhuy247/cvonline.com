@@ -1,0 +1,147 @@
+@import '../GlobalStyles/GlobalStyles.module.scss';
+
+.overlay {
+    font-family: var(--alexandria-font);
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+
+    .container {
+        overflow: hidden;
+        width: 440px;
+        background-color: #fff;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding: 8px 12px 8px 20px;
+            background-color: red;
+            color: #fff;
+
+            .title {
+                flex: 1;
+                font-size: 2rem;
+                font-weight: 500;
+            }
+        }
+
+        .modal-body {
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+
+            .confirm {
+                .account-name {
+                    font-weight: 600;
+                    word-break: break-word;
+                }
+            }
+
+            .warning-container {
+                margin-top: 8px;
+                padding: 8px 12px;
+                border-left: 6px solid #fa725d;
+                background-color: #ffe9d9;
+
+                .warning-title {
+                    display: flex;
+                    align-items: center;
+                    column-gap: 4px;
+                    font-size: 1.8rem;
+                    color: #771505;
+
+                    .icon {
+                        font-size: 20px;
+                    }
+                }
+
+                .warning-text {
+                    font-size: 1.4rem;
+                    color: #bc4c2e;
+                }
+            }
+        }
+
+        .modal-footer {
+            padding: 24px 16px 16px;
+            display: flex;
+            justify-content: space-between;
+
+            .btn {
+                font-size: 1.6rem;
+                padding: 10px;
+                border: none;
+                min-width: 100px;
+                color: #fff;
+                column-gap: 8px;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            .cancel {
+                color: #000;
+                background-color: var(--button-bgc-grey-02);
+            }
+
+            .finish {
+                color: #fff;
+                background-color: red;
+            }
+        }
+    }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.container {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+// Tablet + Mobile
+@media (max-width: 991px) {
+    .overlay {
+        .container {
+            .modal-header {
+                .title {
+                    font-size: 1.8rem;
+                }
+            }
+        }
+    }
+}
+
+// Mobile
+@media (max-width: 767px) {
+    .overlay {
+        .container {
+            .modal-header {
+                .title {
+                    font-size: 1.8rem;
+                }
+            }
+
+            .btn {
+                min-width: 100px;
+            }
+
+            .modal-body {
+                padding: 16px;
+                flex-direction: column;
+                padding: 12px;
+            }
+        }
+    }
+}
