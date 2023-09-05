@@ -26,7 +26,7 @@ export const checkReqVerifyUserID = (req, res, next) => {
     next();
 };
 
-// VERIFY USER ID
+// VERIFY CURRENT PASSWORD
 export const checkReqVerifyCurrentPassword = (req, res, next) => {
     const { userId, currentPassword } = req.body;
 

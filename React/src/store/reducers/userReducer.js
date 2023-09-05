@@ -128,7 +128,7 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, search: false },
                 searchResultList: [],
             };
-        case 'CLEAR_SEARCH_RESULT':
+        case actionNames.CLEAR_SEARCH_RESULT:
             return {
                 ...state,
                 searchResultList: [],
@@ -194,7 +194,7 @@ const userReducer = (state = initialState, action) => {
             };
 
         // UPDATE CV HISTORY
-        case 'UPDATE_CV_HISTORY':
+        case actionNames.REMOVE_CV_FROM_HISTORY:
             const copy_CVHistory = [...state.CVHistory];
             copy_CVHistory.shift();
 

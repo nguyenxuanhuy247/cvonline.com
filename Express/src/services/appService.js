@@ -27,7 +27,7 @@ export const handleVerifyUserEmail = async (data) => {
         console.log('An error in handleVerifyUserEmail() in appService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Xác thực Email người dùng thất bại`,
+            errorMessage: `Xảy ra lỗi! Không xác thực được email`,
         };
     }
 };
@@ -58,12 +58,12 @@ export const handleVerifyUserID = async (data) => {
         console.log('An error in handleVerifyUserID() in appService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Xác thực ID người dùng thất bại`,
+            errorMessage: `Xảy ra lỗi! Không xác thực được ID người dùng`,
         };
     }
 };
 
-// VERIFY USER ID
+// VERIFY CURRENT PASSWORD
 export const handleVerifyCurrentPassword = async (data) => {
     try {
         const { userId, currentPassword } = data;
@@ -98,7 +98,7 @@ export const handleVerifyCurrentPassword = async (data) => {
         console.log('An error in handleVerifyCurrentPassword() in appService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Xác thực mật khẩu thất bại`,
+            errorMessage: `Xảy ra lỗi! Không xác thực được mật khẩu hiện tại`,
         };
     }
 };

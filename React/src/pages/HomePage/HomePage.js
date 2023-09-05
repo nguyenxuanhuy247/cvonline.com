@@ -38,8 +38,10 @@ class HomePage extends PureComponent {
                                                     alt={userInfo.fullName}
                                                     round
                                                 />
-                                                <span className={cx('full-name')}>{userInfo.fullName}</span>
-                                                <span className={cx('job-title')}>{userInfo.jobPosition}</span>
+                                                <div className={cx('full-name-job-title')}>
+                                                    <span className={cx('full-name')}>{userInfo.fullName}</span>
+                                                    <span className={cx('job-title')}>{userInfo.jobPosition}</span>
+                                                </div>
                                             </div>
                                             <div className={cx('outcome')}>
                                                 <div className={cx('project-technology')}>

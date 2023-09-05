@@ -15,7 +15,7 @@ export const verifyUserEmail = (userEmail) => {
                 return errorCode;
             } else {
                 dispatch(verifyUserEmail_Fail());
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi khi xác thực được Email', 3000);
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Không xác thực được email', 3000);
 
                 return errorCode;
             }
@@ -55,7 +55,7 @@ export const verifyUserID = (userID) => {
                 dispatch(verifyUserID_Success());
             } else {
                 dispatch(verifyUserID_Fail());
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi khi xác thực được ID người dùng', 3000);
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Không xác thực được ID người dùng', 3000);
             }
         } catch (error) {
             if (error.status === 503) {
@@ -93,7 +93,7 @@ export const verifyCurrentPassword = (data) => {
                 return errorCode;
             } else {
                 dispatch(verifyCurrentPassword_Fail());
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi, không xác thực được mật khẩu hiện tại', 3000);
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Không xác thực được mật khẩu hiện tại', 3000);
 
                 return errorCode;
             }

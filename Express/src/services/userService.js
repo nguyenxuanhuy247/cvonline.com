@@ -429,7 +429,7 @@ export const handleGetHomeLayout = async () => {
         console.log('An error in handleGetHomeLayout() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] Danh sách CV thất bại`,
+            errorMessage: `Xảy ra lỗi! Tải danh sách CV thất bại`,
         };
     }
 };

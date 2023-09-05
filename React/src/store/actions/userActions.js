@@ -209,21 +209,15 @@ export const readHomeLayout = () => {
 
             if (errorCode === 0) {
                 dispatch(readHomeLayout_Success(data));
-
-                return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(readHomeLayout_Failure(data));
-
-                return errorCode;
             }
         } catch (error) {
-            const { errorCode, errorMessage, data } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            const { errorMessage, data } = error.response?.data ?? {};
+            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
             dispatch(readHomeLayout_Failure(data));
             console.log('An error in readHomeLayout() - userActions.js: ', error);
-
-            return errorCode;
         }
     };
 };

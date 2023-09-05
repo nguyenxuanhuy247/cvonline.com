@@ -30,6 +30,7 @@ const actionNames = Object.freeze({
     // USER INFORMATION
     ...actionMaker(`READ`, `USER_INFORMATION`),
     ...actionMaker(`UPDATE`, `USER_INFORMATION`),
+    REMOVE_CV_FROM_HISTORY: 'REMOVE_CV_FROM_HISTORY',
 
     // PRODUCT LIST
     ...actionMaker(`CREATE`, `PRODUCT`),
@@ -53,6 +54,8 @@ const actionNames = Object.freeze({
     ...actionMaker(`VERIFY`, `CURRENT_PASSWORD`),
 
     // =================================================================
+    // SEARCH
+    CLEAR_SEARCH_RESULT: 'CLEAR_SEARCH_RESULT',
 });
 
 export default actionNames;

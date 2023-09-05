@@ -115,7 +115,7 @@ class SideBar extends PureComponent {
                     disabled={!firstUserIDInList}
                     route={`/${firstUserIDInList}`}
                     className={cx('button')}
-                    onClick={() => this.props.updateCVHistory()}
+                    onClick={() => this.props.removeCVFromHistory()}
                 >
                     <span className={cx('icon')}>
                         <MdRemoveRedEye />
@@ -151,7 +151,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         readUserInformation: (userId) => dispatch(userActions.readUserInformation(userId)),
-        updateCVHistory: () => dispatch({ type: 'UPDATE_CV_HISTORY' }),
+        removeCVFromHistory: () => dispatch({ type: 'REMOVE_CV_FROM_HISTORY' }),
         userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };
