@@ -124,7 +124,7 @@ class SearchBar extends PureComponent {
                                                             ? result.user.fullName
                                                             : 'Chưa có Tên tác giả'}
                                                     </p>
-                                                    <span className={cx('separate')}>|</span>
+                                                    <p className={cx('separate')}>-</p>
                                                     <p className={cx('job-title')}>
                                                         {result.user.jobPosition
                                                             ? result.user.jobPosition

@@ -125,37 +125,41 @@ class PasswordSetting extends PureComponent {
                                         <label htmlFor="current-password" className={cx('label')}>
                                             Mật khẩu hiện tại
                                         </label>
-                                        <Field
-                                            type={isShowCurrentPassword ? 'text' : 'password'}
-                                            id="current-password"
-                                            className={cx('input-form', {
-                                                verify: this.state.startVerify && this.state.currentPassword,
-                                            })}
-                                            name="currentPassword"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.currentPassword}
-                                            onInput={this.debouncedVerifyCurrentPassword}
-                                        />
+                                        <div className={cx('input-form-container')}>
+                                            <Field
+                                                type={isShowCurrentPassword ? 'text' : 'password'}
+                                                id="current-password"
+                                                className={cx('input-form', {
+                                                    verify: this.state.startVerify && this.state.currentPassword,
+                                                })}
+                                                name="currentPassword"
+                                                onChange={props.handleChange}
+                                                onBlur={props.handleBlur}
+                                                value={props.values.currentPassword}
+                                                onInput={this.debouncedVerifyCurrentPassword}
+                                            />
 
-                                        {this.state.startVerify && this.state.currentPassword && (
-                                            <span className={cx('icon-wrapper')}>
-                                                {this.props.isCurrentPasswordVerified ? (
-                                                    <BsFillCheckCircleFill className={cx('icon', 'verified')} />
-                                                ) : (
-                                                    <AiFillCloseCircle className={cx('icon', 'error')} />
-                                                )}
+                                            {this.state.startVerify && this.state.currentPassword && (
+                                                <span className={cx('icon-wrapper')}>
+                                                    {this.props.isCurrentPasswordVerified ? (
+                                                        <BsFillCheckCircleFill className={cx('icon', 'verified')} />
+                                                    ) : (
+                                                        <AiFillCloseCircle className={cx('icon', 'error')} />
+                                                    )}
 
-                                                {this.props.isLoading_verifyCurrentPassword && <Loading inner verify />}
-                                            </span>
-                                        )}
+                                                    {this.props.isLoading_verifyCurrentPassword && (
+                                                        <Loading inner verify />
+                                                    )}
+                                                </span>
+                                            )}
 
-                                        <Eye1
-                                            className={cx('toggle-show-password', {
-                                                'green-eye': isShowCurrentPassword,
-                                            })}
-                                            onClick={() => this.handleShowHidePassword('current')}
-                                        />
+                                            <Eye1
+                                                className={cx('toggle-show-password', {
+                                                    'green-eye': isShowCurrentPassword,
+                                                })}
+                                                onClick={() => this.handleShowHidePassword('current')}
+                                            />
+                                        </div>
                                     </div>
 
                                     {this.state.currentPassword && !this.props.isCurrentPasswordVerified && (
@@ -168,21 +172,23 @@ class PasswordSetting extends PureComponent {
                                         <label htmlFor="password" className={cx('label')}>
                                             Mật khẩu mới
                                         </label>
-                                        <Field
-                                            type={isShowNewPassword ? 'text' : 'password'}
-                                            id="password"
-                                            className={cx('input-form')}
-                                            name="newPassword"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.newPassword}
-                                        />
-                                        <Eye2
-                                            className={cx('toggle-show-password', {
-                                                'green-eye': isShowNewPassword,
-                                            })}
-                                            onClick={() => this.handleShowHidePassword('new')}
-                                        />
+                                        <div className={cx('input-form-container')}>
+                                            <Field
+                                                type={isShowNewPassword ? 'text' : 'password'}
+                                                id="password"
+                                                className={cx('input-form')}
+                                                name="newPassword"
+                                                onChange={props.handleChange}
+                                                onBlur={props.handleBlur}
+                                                value={props.values.newPassword}
+                                            />
+                                            <Eye2
+                                                className={cx('toggle-show-password', {
+                                                    'green-eye': isShowNewPassword,
+                                                })}
+                                                onClick={() => this.handleShowHidePassword('new')}
+                                            />
+                                        </div>
                                     </div>
                                     <ErrorMessage name="newPassword">
                                         {(msg) => <div className={cx('error-message')}>{msg}</div>}
@@ -194,21 +200,23 @@ class PasswordSetting extends PureComponent {
                                         <label htmlFor="newPasswordConfirmation" className={cx('label')}>
                                             Xác nhận mật khẩu mới
                                         </label>
-                                        <Field
-                                            type={isShowNewPasswordConfirmation ? 'text' : 'password'}
-                                            id="newPasswordConfirmation"
-                                            className={cx('input-form')}
-                                            name="newPasswordConfirmation"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.newPasswordConfirmation}
-                                        />
-                                        <Eye3
-                                            className={cx('toggle-show-password', {
-                                                'green-eye': isShowNewPasswordConfirmation,
-                                            })}
-                                            onClick={() => this.handleShowHidePassword('confirm')}
-                                        />
+                                        <div className={cx('input-form-container')}>
+                                            <Field
+                                                type={isShowNewPasswordConfirmation ? 'text' : 'password'}
+                                                id="newPasswordConfirmation"
+                                                className={cx('input-form')}
+                                                name="newPasswordConfirmation"
+                                                onChange={props.handleChange}
+                                                onBlur={props.handleBlur}
+                                                value={props.values.newPasswordConfirmation}
+                                            />
+                                            <Eye3
+                                                className={cx('toggle-show-password', {
+                                                    'green-eye': isShowNewPasswordConfirmation,
+                                                })}
+                                                onClick={() => this.handleShowHidePassword('confirm')}
+                                            />
+                                        </div>
                                     </div>
                                     <ErrorMessage name="newPasswordConfirmation">
                                         {(msg) => <div className={cx('error-message')}>{msg}</div>}

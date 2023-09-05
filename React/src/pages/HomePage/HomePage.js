@@ -22,7 +22,7 @@ class HomePage extends PureComponent {
         const length = this.props.allCVList?.length;
 
         return (
-            <MainLayout>
+            <MainLayout isShowScrollButtons={true}>
                 <div className={cx('home-page')}>
                     {length > 0 && (
                         <div className={cx('home-page-container')}>

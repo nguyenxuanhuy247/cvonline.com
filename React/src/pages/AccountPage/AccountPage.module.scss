@@ -1,7 +1,7 @@
 .account-page {
     font-family: var(--alexandria-font);
     display: flex;
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100vh - var(--header-height-pc));
     width: 1200px;
     max-width: 100%;
     margin: 0 auto;
@@ -55,5 +55,40 @@
     .right-col {
         flex: 1 1;
         padding: 20px;
+    }
+}
+
+// =========================================================================
+// Mobile
+@media (max-width: 767px) {
+    .account-page {
+        padding: 0;
+        flex-direction: column;
+        min-height: calc(100vh - 2 * var(--header-height-mobile));
+
+        .left-col {
+            border-right: none;
+
+            .title {
+            }
+
+            .item-list {
+                .item {
+                    .icon {
+                    }
+
+                    .text {
+                    }
+
+                    &.hover {
+                    }
+                }
+            }
+        }
+
+        .right-col {
+            padding: 16px;
+            padding-top: 0;
+        }
     }
 }

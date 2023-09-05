@@ -2,10 +2,12 @@
 
 .home-page {
     background-color: #f0f2f5;
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100vh - var(--header-height-pc));
 
     .home-page-container {
-        padding: 16px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         row-gap: 16px;
@@ -22,7 +24,7 @@
                 flex-direction: column;
                 align-items: center;
                 row-gap: 4px;
-                padding: 24px 16px;
+                padding: 30px 16px 24px;
                 background-color: var(--bgc-user-infomation);
                 color: #fff;
                 width: 30%;
@@ -34,13 +36,13 @@
                 }
 
                 .full-name-job-title {
+                    margin-top: 12px;
                     text-align: center;
 
                     .full-name {
                         --line-clamp: 2;
                         @include line-clamp;
 
-                        margin-top: 12px;
                         font-size: 2.2rem;
                         font-weight: 600;
                         line-height: 1.4;
@@ -52,6 +54,8 @@
                     }
 
                     .job-title {
+                        margin-top: 4px;
+                        display: block;
                         width: 100%;
                         background-color: transparent;
                         font-size: 2rem;
@@ -60,7 +64,7 @@
             }
 
             .outcome {
-                padding: 16px;
+                padding: 20px;
                 align-self: flex-start;
                 flex: 1;
 
@@ -68,6 +72,7 @@
                     .project-stats {
                         display: flex;
                         align-items: flex-end;
+                        justify-content: center;
                         column-gap: 8px;
                         color: var(--text-color-01);
 
@@ -196,7 +201,6 @@
 @media (min-width: 768px) and (max-width: 991px) {
     .body {
         .cv-container {
-            --header-height: 56px;
             flex-direction: column;
             padding: 0;
 
@@ -240,163 +244,66 @@
 @media (max-width: 767px) {
     .home-page {
         .home-page-container {
+            padding: 12px;
+
             .candidate {
                 flex-direction: column;
 
                 .avatar-name-job-title {
+                    padding: 16px 12px;
                     width: 100%;
 
                     .avatar {
-                        width: 200px;
-                        height: 200px;
-                        border: 4px solid var(--primary-color);
                     }
 
-                    .full-name {
-                        --line-clamp: 2;
-                        @include line-clamp;
-
-                        margin-top: 12px;
-                        font-size: 2.2rem;
-                        font-weight: 600;
-                        line-height: 1.4;
-                        text-align: center;
-                        word-break: break-word;
-
-                        &.contentEditable {
-                            @include content-editable;
+                    .full-name-job-title {
+                        .full-name {
+                            &.contentEditable {
+                            }
                         }
-                    }
 
-                    .job-title {
-                        width: 100%;
-                        background-color: transparent;
-                        font-size: 2rem;
-                        text-align: center;
+                        .job-title {
+                        }
                     }
                 }
 
                 .outcome {
-                    padding: 16px;
-                    align-self: flex-start;
-                    flex: 1;
+                    padding: 12px;
+                    width: 100%;
 
                     .project-technology {
                         .project-stats {
-                            display: flex;
-                            align-items: flex-end;
-                            column-gap: 8px;
-                            color: var(--text-color-01);
-
                             .text {
-                                font-size: 1.8rem;
-                                font-weight: 600;
-                                line-height: 1.4;
                             }
 
                             .number {
-                                font-size: 3.2rem;
-                                font-weight: 600;
-                                line-height: 1.1;
-                                color: red;
                             }
                         }
 
                         .technology-stats {
-                            margin-top: 8px;
-
                             .text {
-                                padding: 8px 8px 4px;
-                                text-align: center;
-                                background-color: var(--bgc-user-infomation);
-                                color: #fff;
-                                font-size: 1.8rem;
-                                font-weight: 600;
-                                line-height: 1.4;
                             }
 
                             .listed {
-                                margin-top: 12px;
-                                display: flex;
-                                column-gap: 12px;
-
                                 .side {
-                                    flex: 1;
-                                    display: flex;
-                                    flex-direction: column;
-                                    row-gap: 12px;
-                                    border: 1px solid var(--primary-color);
-                                    padding: 12px;
-
                                     .title {
-                                        width: 100%;
-                                        max-width: 100%;
-                                        margin: 0 auto;
-                                        font-family: var(--alexandria-font);
-                                        display: block;
-                                        font-size: 1.8rem;
-                                        padding: 4px 8px;
-                                        text-align: center;
-                                        font-weight: 600;
-                                        color: #fff;
-                                        border: 1px solid var(--primary-color);
-                                        background-color: var(--primary-color);
                                     }
 
                                     .list {
-                                        display: flex;
-                                        flex-direction: column;
-                                        row-gap: 8px;
-
                                         .technology {
-                                            display: flex;
-                                            align-items: center;
-                                            column-gap: 4px;
-                                            justify-content: flex-start;
-                                            column-gap: 4px;
-                                            font-size: 1.5rem;
-                                            font-weight: 500;
-                                            line-height: 1.6;
-                                            background-color: transparent;
-                                            padding: 4px 8px;
-                                            border-radius: 4px;
-                                            width: 100%;
-                                            color: #000;
-                                            border: 1px solid var(--primary-color);
-
                                             .image {
-                                                flex-shrink: 0;
-                                                width: 24px;
-                                                height: 24px;
-                                                border-radius: 50%;
-                                                object-fit: contain;
-                                                border: none;
-                                                border: 3px solid transparent;
                                             }
 
                                             .name {
-                                                @include line-clamp;
-
-                                                margin-left: 0px;
-                                                text-align: left;
-                                                word-break: break-all;
                                             }
                                         }
                                     }
 
                                     .empty-list {
-                                        display: flex;
-                                        flex-direction: column;
-                                        align-items: center;
-
                                         .empty-list-image {
-                                            width: 160px;
-                                            height: 160px;
                                         }
 
                                         .empty-list-text {
-                                            font-weight: 500;
-                                            color: var(--text-color-01);
                                         }
                                     }
                                 }

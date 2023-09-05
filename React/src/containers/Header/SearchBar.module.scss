@@ -54,9 +54,10 @@
 }
 
 .search-result-tooltip {
+    margin: auto;
     overflow: auto;
     max-height: calc(100vh - 200px);
-    width: 540px;
+    width: 600px;
     max-width: calc(100% - 24px);
     color: black;
     padding: 16px;
@@ -133,11 +134,21 @@
                     display: flex;
                     align-items: center;
 
+                    .name,
+                    .job-title {
+                        @include line-clamp;
+                        word-break: break-all;
+                    }
+
+                    .name {
+                    }
+
                     .separate {
                         padding: 0 8px;
                     }
 
                     .job-title {
+                        min-width: 140px;
                         font-weight: 300;
                     }
                 }
@@ -157,6 +168,7 @@
     scrollbar-width: none; /* Firefox */
 }
 
+// =========================================================================
 // Tablet + Mobile
 @media (max-width: 991px) {
     .search-bar {
@@ -175,5 +187,6 @@
 
     .search-result-tooltip {
         padding: 12px;
+        max-width: calc(100% - 12px);
     }
 }

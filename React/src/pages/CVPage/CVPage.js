@@ -187,37 +187,6 @@ class PersonalLayout extends PureComponent {
                 };
             });
         }
-
-        // Scroll to TOP or BOTTOM button
-        const goToTopButton = document.getElementById('go-top-button');
-        const goToBottomButton = document.getElementById('go-bottom-button');
-
-        if (goToTopButton && goToBottomButton) {
-            const checkHeight = () => {
-                const documentHeight = document.body.scrollHeight;
-                const scrollTY_innerHeight = window.scrollY + window.innerHeight;
-
-                if (scrollTY_innerHeight >= documentHeight - 50) {
-                    goToTopButton.style.display = 'grid';
-                    goToBottomButton.style.display = 'none';
-                } else if (window.scrollY > 0) {
-                    goToTopButton.style.display = 'grid';
-                    goToBottomButton.style.display = 'grid';
-                } else if (window.scrollY === 0) {
-                    goToTopButton.style.display = 'none';
-                }
-            };
-
-            window.addEventListener('scroll', checkHeight);
-
-            goToTopButton.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            goToBottomButton.addEventListener('click', () => {
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            });
-        }
     }
 
     componentDidUpdate(prevProps) {
@@ -240,7 +209,7 @@ class PersonalLayout extends PureComponent {
         const isCanEdit = userID === ownerID;
 
         return (
-            <MainLayout>
+            <MainLayout isShowScrollButtons={true}>
                 <div className={cx('cv-page')}>
                     {userID !== 0 ? (
                         <div>
@@ -466,15 +435,6 @@ class PersonalLayout extends PureComponent {
 
                                     {this.props.isLoading && <Loading text="Đang tải..." />}
                                 </div>
-                            </div>
-
-                            <div className={cx('scroll-to-top-bottom')}>
-                                <span className={cx('go-to-button', 'go-top')} id="go-top-button">
-                                    <FaArrowUp />
-                                </span>
-                                <span className={cx('go-to-button', 'go-bottom')} id="go-bottom-button">
-                                    <FaArrowDown />
-                                </span>
                             </div>
                         </div>
                     ) : (

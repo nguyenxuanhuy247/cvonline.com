@@ -5,4 +5,60 @@
         @include main-layout-margin;
         background-color: var(--main-bgc-grey);
     }
+
+    .scroll-to-top-bottom {
+        z-index: 10;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        display: inline-flex;
+        flex-direction: column;
+        row-gap: 8px;
+
+        .go-to-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            background: red;
+            display: none;
+            place-items: center;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+
+            &.go-bottom {
+                display: grid;
+            }
+        }
+    }
+}
+
+// =================================================================
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+    .main-layout {
+        .main-section {
+            margin: var(--header-height-tablet) 0;
+        }
+
+        .scroll-to-top-bottom {
+            right: 16px;
+            bottom: calc(var(--header-height-tablet) + 16px);
+        }
+    }
+}
+
+// =================================================================
+// Mobile
+@media (max-width: 767px) {
+    .main-layout {
+        .main-section {
+            margin: var(--header-height-mobile) 0;
+        }
+
+        .scroll-to-top-bottom {
+            right: 12px;
+            bottom: calc(var(--header-height-mobile) + 12px);
+        }
+    }
 }

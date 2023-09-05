@@ -284,39 +284,41 @@
     }
 }
 
+// =================================================================
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
-    .body {
-        .cv-container {
-            --header-height: 56px;
-            flex-direction: column;
-            padding: 0;
+    .cv-page {
+        .cv-page-section {
+            .cv-container {
+                flex-direction: column;
+                padding: 0;
 
-            .user-information {
-                @include flex-max-width-100;
-                display: flex;
-                padding: 12px;
-
-                .user-information-basic {
-                    @include flex-max-width-50;
+                .user-information-container {
+                    @include flex-max-width-100;
                     display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
+                    padding: 12px;
 
-                .user-information-detail {
-                    @include flex-max-width-50;
+                    .user-information-basic {
+                        @include flex-max-width-50;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                    }
 
-                    .candidate-info {
-                        padding: 12px 0;
-                        border-top: none;
-                        margin-top: 0;
+                    .user-information-detail {
+                        @include flex-max-width-50;
+
+                        .candidate-info {
+                            padding: 12px 0;
+                            border-top: none;
+                            margin-top: 0;
+                        }
                     }
                 }
-            }
 
-            .product-list-container {
-                @include flex-max-width-100;
+                .product-list-container {
+                    @include flex-max-width-100;
+                }
             }
         }
 
@@ -327,35 +329,38 @@
     }
 }
 
+// =================================================================
 // Mobile
 @media (max-width: 767px) {
-    .body {
-        .cv-container {
-            --header-height: 56px;
-            flex-direction: column;
-            padding: 0;
+    .cv-page {
+        .cv-page-section {
+            .cv-container {
+                flex-direction: column;
+                padding: 0;
 
-            .user-information {
-                @include flex-max-width-100;
-                padding: 12px;
+                .user-information-container {
+                    @include flex-max-width-100;
+                    padding: 12px;
+                    padding-top: 20px;
 
-                .user-information-basic {
-                    .select-job-title {
-                        margin-bottom: 12px;
+                    .user-information-basic {
+                        .select-job-title {
+                            margin-bottom: 12px;
+                        }
                     }
-                }
 
-                .user-information-detail {
-                    .candidate-info {
-                        .text {
-                            text-align: center;
+                    .user-information-detail {
+                        .candidate-info {
+                            .text {
+                                text-align: center;
+                            }
                         }
                     }
                 }
-            }
 
-            .product-list-container {
-                @include flex-max-width-100;
+                .product-list-container {
+                    @include flex-max-width-100;
+                }
             }
         }
 

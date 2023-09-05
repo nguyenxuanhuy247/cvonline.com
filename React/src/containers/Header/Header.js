@@ -58,7 +58,7 @@ class Header extends PureComponent {
                         </Button>
                         <Button
                             route={path.SIGNUP}
-                            className={cx('btn')}
+                            className={cx('btn', 'hide-on-mobile')}
                             onMouseOver={(e) => this.handleChangeActiveButton(e)}
                         >
                             Đăng ký

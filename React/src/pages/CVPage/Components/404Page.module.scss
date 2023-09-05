@@ -2,7 +2,7 @@
 
 .not-found-section {
     background-color: #f0f2f5;
-    height: calc(100vh - var(--header-height));
+    height: calc(100vh - var(--header-height-pc));
     display: grid;
     place-items: center;
 

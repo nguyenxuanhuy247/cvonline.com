@@ -2,7 +2,7 @@
 
 .side-bar {
     position: fixed;
-    top: var(--header-height);
+    top: var(--header-height-pc);
     left: 0;
     bottom: 0;
     display: flex;
@@ -44,6 +44,90 @@
             .icon,
             .text {
                 color: #fff;
+            }
+        }
+    }
+}
+
+// =================================================================
+// Tablet + Mobile
+@media (max-width: 991px) {
+    .side-bar {
+        flex-direction: row;
+        top: auto;
+        right: 0;
+        justify-content: space-around;
+        padding: 4px 12px;
+    }
+}
+
+// =================================================================
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+    .side-bar {
+        padding: 4px 12px;
+
+        .button {
+            height: 68px;
+            background-color: transparent;
+            border-radius: 4px;
+            row-gap: 4px;
+
+            .icon {
+                font-size: 24px;
+                color: rgb(101, 103, 107);
+                display: grid;
+                place-items: center;
+            }
+
+            .text {
+                color: rgb(101, 103, 107);
+            }
+
+            &:hover,
+            &.hover {
+                background-color: transparent;
+
+                .icon,
+                .text {
+                    color: var(--primary-color);
+                }
+            }
+        }
+    }
+}
+
+// =================================================================
+// Mobile
+@media (max-width: 767px) {
+    .side-bar {
+        padding: 4px 12px;
+
+        .button {
+            height: 48px;
+            background-color: transparent;
+            border-radius: 4px;
+            row-gap: 4px;
+
+            .icon {
+                font-size: 20px;
+                color: rgb(101, 103, 107);
+                display: grid;
+                place-items: center;
+            }
+
+            .text {
+                color: rgb(101, 103, 107);
+            }
+
+            &:hover,
+            &.hover {
+                background-color: transparent;
+
+                .icon,
+                .text {
+                    color: var(--primary-color);
+                }
             }
         }
     }
