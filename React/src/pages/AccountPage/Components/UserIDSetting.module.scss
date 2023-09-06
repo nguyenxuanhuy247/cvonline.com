@@ -28,7 +28,6 @@
 
         .input-form-userID {
             .form-group {
-                position: relative;
                 display: flex;
                 align-items: center;
                 column-gap: 12px;
@@ -40,38 +39,46 @@
                     font-weight: 600;
                 }
 
-                .form-input {
-                    padding-right: 40px;
+                .form-input-container {
                     flex: 1;
-                    padding: 0 12px;
-                    height: 40px;
-                    background-color: #fff;
-                    border: 1px solid #e9eaec;
-                    border-radius: 2px;
-                    font-size: 1.4rem;
-                    line-height: 100%;
-                    font-weight: 500;
-                }
+                    position: relative;
 
-                .icon-wrapper {
-                    position: absolute;
-                    top: 50%;
-                    right: 12px;
-                    transform: translate(0, -50%);
-                    display: grid;
-                    place-items: center;
+                    .form-input {
+                        width: 100%;
+                        padding: 0 12px;
+                        height: 40px;
+                        background-color: #fff;
+                        border: 1px solid #e9eaec;
+                        border-radius: 2px;
+                        font-size: 1.4rem;
+                        line-height: 100%;
+                        font-weight: 500;
 
-                    .icon {
-                        font-size: 20px;
-
-                        &.verified {
-                            color: green;
+                        &.padding-right {
+                            padding-right: 40px;
                         }
+                    }
 
-                        &.error {
-                            font-size: 22px;
-                            color: red;
-                            cursor: pointer;
+                    .icon-wrapper {
+                        position: absolute;
+                        top: 50%;
+                        right: 12px;
+                        transform: translate(0, -50%);
+                        display: grid;
+                        place-items: center;
+
+                        .icon {
+                            font-size: 20px;
+
+                            &.verified {
+                                color: green;
+                            }
+
+                            &.error {
+                                font-size: 22px;
+                                color: red;
+                                cursor: pointer;
+                            }
                         }
                     }
                 }
@@ -111,6 +118,38 @@
             height: 42px;
             user-select: none;
             cursor: pointer;
+        }
+    }
+}
+
+// =========================================================================
+// Tablet + Mobile
+@media (max-width: 991px) {
+    .user-id-setting {
+        .form {
+            .input-form-userID {
+                .form-group {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    row-gap: 4px;
+
+                    .form-input-container {
+                        width: 100%;
+
+                        .form-input {
+                            padding: 11px 12px;
+                            max-height: 40px;
+                        }
+                    }
+                }
+            }
+
+            .message-container {
+                .message {
+                    margin-left: 0;
+                    text-align: center;
+                }
+            }
         }
     }
 }

@@ -2,13 +2,16 @@ import actionNames from '../actions/actionNames';
 
 const initialState = {
     isLoading: {
-        forgotPassword: false,
         authLayout: false,
-        CVLayout: false,
+        forgotPassword: false,
+        deleteAccount: false,
         homeLayout: false,
+        CVLayout: false,
+        updateUserInformation: false,
+        updateProduct: false,
+
         changeUserID: false,
         search: false,
-        deleteAccount: false,
     },
     isSignIn: false,
     isSignUp: false,
@@ -182,15 +185,22 @@ const userReducer = (state = initialState, action) => {
             };
 
         // UPDATE USER INFORMATION
+        case actionNames.UPDATE_USER_INFORMATION_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, updateUserInformation: true },
+            };
         case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
             return {
                 ...state,
+                isLoading: { ...state.isLoading, updateUserInformation: false },
                 owner: action.payload,
                 userInfo: action.payload,
             };
         case actionNames.UPDATE_USER_INFORMATION_FAILURE:
             return {
                 ...state,
+                isLoading: { ...state.isLoading, updateUserInformation: false },
             };
 
         // UPDATE CV HISTORY
@@ -249,7 +259,7 @@ const userReducer = (state = initialState, action) => {
         case actionNames.UPDATE_PRODUCT_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: true },
+                isLoading: { ...state.isLoading, updateProduct: false },
             };
         case actionNames.UPDATE_PRODUCT_SUCCESS:
             const { productData, index: updated_index, updatedItem } = action.payload;
@@ -264,13 +274,13 @@ const userReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, updateProduct: false },
                 productList: newUpdated_productList,
             };
         case actionNames.UPDATE_PRODUCT_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, updateProduct: false },
             };
 
         // DELETE PRODUCT

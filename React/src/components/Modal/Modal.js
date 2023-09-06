@@ -4,16 +4,17 @@ import { MdClose } from 'react-icons/md';
 
 import styles from './Modal.module.scss';
 import Button from '~/components/Button/Button.js';
+import Loading from '~/components/Modal/Loading.js';
 
 const cx = classnames.bind(styles);
 
 class ChangeImageModal extends PureComponent {
     render() {
-        const { title = 'Nhập tiêu đề của modal', round, onClose, onFinish, children } = this.props;
-
+        const { isLoading, title = 'Nhập tiêu đề của modal', round, onClose, onFinish, children } = this.props;
+        
         return (
             <div className={cx('overlay')} onClick={onClose}>
-                <div className={cx('container', { 'round': round })} onClick={(e) => e.stopPropagation()}>
+                <div className={cx('container', { round: round })} onClick={(e) => e.stopPropagation()}>
                     <div className={cx('modal-header')}>
                         <p className={cx('title')}>{title}</p>
                         <span className={cx('close')} onClick={onClose}>
@@ -28,7 +29,7 @@ class ChangeImageModal extends PureComponent {
                             Hủy
                         </Button>
                         <Button className={cx('btn', 'finish')} onClick={onFinish}>
-                            Hoàn tất
+                            {!isLoading ? 'Hoàn tất' : <Loading inner button />}
                         </Button>
                     </div>
                 </div>

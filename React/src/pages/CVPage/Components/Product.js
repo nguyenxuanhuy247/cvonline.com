@@ -427,6 +427,7 @@ class Product extends PureComponent {
 
                             {isCanEdit && this.state.isChangeImageModalOpen && (
                                 <ChangeImageModal
+                                    isLoading={this.props.isUpdateProductImageLoading}
                                     round={false}
                                     src={productInfo?.image}
                                     onClose={() => this.handleCloseChangeImageModal()}
@@ -760,6 +761,7 @@ const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
         userInfo: state.user.userInfo,
+        isUpdateProductImageLoading: state.user.isLoading.updateProduct,
     };
 };
 

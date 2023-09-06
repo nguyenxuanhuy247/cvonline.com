@@ -2,7 +2,7 @@
 
 .not-found-section {
     background-color: #f0f2f5;
-    height: calc(100vh - var(--header-height-pc));
+    min-height: calc(100vh - var(--header-height-pc));
     display: grid;
     place-items: center;
 
@@ -18,6 +18,42 @@
 
         .text {
             font-size: 3rem;
+        }
+    }
+}
+
+// =================================================================
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+    .not-found-section {
+        min-height: calc(100vh - 2 * var(--header-height-tablet));
+
+        .not-found-container {
+            .number {
+                font-size: 16rem;
+            }
+
+            .text {
+                font-size: 2.5rem;
+            }
+        }
+    }
+}
+
+// =========================================================================
+// Mobile
+@media (max-width: 767px) {
+    .not-found-section {
+        min-height: calc(100vh - 2 * var(--header-height-mobile));
+
+        .not-found-container {
+            .number {
+                font-size: 12rem;
+            }
+
+            .text {
+                font-size: 2rem;
+            }
         }
     }
 }

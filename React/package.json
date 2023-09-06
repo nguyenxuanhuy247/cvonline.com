@@ -35,7 +35,6 @@
         "react-sortablejs": "^6.1.4",
         "react-toastify": "^8.0.0",
         "redux": "^4.2.1",
-        "redux-auth-wrapper": "^3.0.0",
         "redux-persist": "^6.0.0",
         "redux-thunk": "^2.4.2",
         "reset-css": "^5.0.1",

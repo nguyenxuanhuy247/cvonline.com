@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-import { FaUserCircle, FaAddressBook, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
@@ -177,6 +177,11 @@ class PersonalLayout extends PureComponent {
                         event.preventDefault();
                         let nextEl = inputArray[index + 1];
 
+                        const isEmailEl = nextEl?.id === 'js-email-user-info';
+                        if (isEmailEl) {
+                            nextEl = inputArray[index + 2];
+                        }
+
                         if (nextEl) {
                             nextEl.focus();
                         } else {
@@ -237,6 +242,7 @@ class PersonalLayout extends PureComponent {
 
                                                     {isCanEdit && this.state.isModalChangeAvatarOpen && (
                                                         <ChangeImageModal
+                                                            isLoading={this.props.isUpdateUserInformationLoading}
                                                             round
                                                             title="Thay đổi Avatar"
                                                             src={this.props.userInfo?.avatar}
@@ -341,6 +347,7 @@ class PersonalLayout extends PureComponent {
                                                             <MdEmail />
                                                         </span>
                                                         <ContentEditableTag
+                                                            id="js-email-user-info"
                                                             isCanEdit={false}
                                                             content={this.props?.userInfo?.email || ''}
                                                             className={cx('email', {
@@ -433,7 +440,7 @@ class PersonalLayout extends PureComponent {
                                         )}
                                     </div>
 
-                                    {this.props.isLoading && <Loading text="Đang tải..." />}
+                                    {this.props.isCVLayoutLoading && <Loading text="Đang tải..." />}
                                 </div>
                             </div>
                         </div>
@@ -452,7 +459,8 @@ const mapStateToProps = (state) => {
         userInfo: state.user.userInfo,
         productList: state.user.productList,
         historyUserIDList: state.user.historyUserIDList,
-        isLoading: state.user.isLoading.CVLayout,
+        isCVLayoutLoading: state.user.isLoading.CVLayout,
+        isUpdateUserInformationLoading: state.user.isLoading.updateUserInformation,
     };
 };
 

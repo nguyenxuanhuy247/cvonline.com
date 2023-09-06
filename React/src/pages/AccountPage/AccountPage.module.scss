@@ -10,7 +10,7 @@
     .left-col {
         padding: 20px 16px;
         width: 300px;
-        border-right: 1px solid;
+        border-right: 2px solid #999;
 
         .title {
             font-size: 2.2rem;
@@ -58,6 +58,15 @@
     }
 }
 
+// =================================================================
+// Tablet
+@media (min-width: 768px) and (max-width: 991px) {
+    .account-page {
+        padding: 0;
+        min-height: calc(100vh - 2 * var(--header-height-pc));
+    }
+}
+
 // =========================================================================
 // Mobile
 @media (max-width: 767px) {
@@ -68,22 +77,6 @@
 
         .left-col {
             border-right: none;
-
-            .title {
-            }
-
-            .item-list {
-                .item {
-                    .icon {
-                    }
-
-                    .text {
-                    }
-
-                    &.hover {
-                    }
-                }
-            }
         }
 
         .right-col {

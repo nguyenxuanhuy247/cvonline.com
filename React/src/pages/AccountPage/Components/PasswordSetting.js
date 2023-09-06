@@ -92,12 +92,12 @@ class PasswordSetting extends PureComponent {
                         validationSchema={Yup.object().shape({
                             currentPassword: Yup.string().required('Hãy nhập mật khẩu hiện tại của bạn'),
                             newPassword: Yup.string()
-                                .required('Hãy nhập mật khẩu mới của bạn')
+                                .required('Nhập mật khẩu mới của bạn')
                                 .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
                                 .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự'),
                             newPasswordConfirmation: Yup.string()
-                                .required('Hãy nhập lại mật khẩu mới để xác nhận')
-                                .oneOf([Yup.ref('newPassword'), null], 'Mật khẩu xác nhận chưa đúng'),
+                                .required('Nhập lại mật khẩu mới để xác nhận')
+                                .oneOf([Yup.ref('newPassword'), null], 'Mật khẩu xác nhận không đúng'),
                         })}
                         onSubmit={async (values, actions) => {
                             const { id: userId } = this.props.owner ?? {};

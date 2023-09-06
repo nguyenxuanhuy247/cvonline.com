@@ -64,7 +64,7 @@
             }
 
             .outcome {
-                padding: 20px;
+                padding: 12px 16px;
                 align-self: flex-start;
                 flex: 1;
 
@@ -199,42 +199,17 @@
 // =================================================================
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
-    .body {
-        .cv-container {
-            flex-direction: column;
-            padding: 0;
+    .home-page {
+        .home-page-container {
+            padding: 16px;
 
-            .user-information {
-                @include flex-max-width-100;
-                display: flex;
-                padding: 12px;
-
-                .user-information-basic {
-                    @include flex-max-width-50;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
+            .candidate {
+                .avatar-name-job-title {
                 }
 
-                .user-information-detail {
-                    @include flex-max-width-50;
-
-                    .candidate-info {
-                        padding: 12px 0;
-                        border-top: none;
-                        margin-top: 0;
-                    }
+                .outcome {
                 }
             }
-
-            .product-list-container {
-                @include flex-max-width-100;
-            }
-        }
-
-        .scroll-to-top-bottom {
-            bottom: 12px;
-            right: 12px;
         }
     }
 }
@@ -252,64 +227,11 @@
                 .avatar-name-job-title {
                     padding: 16px 12px;
                     width: 100%;
-
-                    .avatar {
-                    }
-
-                    .full-name-job-title {
-                        .full-name {
-                            &.contentEditable {
-                            }
-                        }
-
-                        .job-title {
-                        }
-                    }
                 }
 
                 .outcome {
                     padding: 12px;
                     width: 100%;
-
-                    .project-technology {
-                        .project-stats {
-                            .text {
-                            }
-
-                            .number {
-                            }
-                        }
-
-                        .technology-stats {
-                            .text {
-                            }
-
-                            .listed {
-                                .side {
-                                    .title {
-                                    }
-
-                                    .list {
-                                        .technology {
-                                            .image {
-                                            }
-
-                                            .name {
-                                            }
-                                        }
-                                    }
-
-                                    .empty-list {
-                                        .empty-list-image {
-                                        }
-
-                                        .empty-list-text {
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

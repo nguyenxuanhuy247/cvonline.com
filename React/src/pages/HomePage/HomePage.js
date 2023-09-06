@@ -134,7 +134,7 @@ class HomePage extends PureComponent {
                     )}
 
                     {length <= 0 && this.props.allCVList !== undefined && (
-                        <NotFound404 text="Không tìm thấy danh sách" />
+                        <NotFound404 text="Không tìm thấy danh sách CV" />
                     )}
 
                     {this.props.isLoading && <Loading text="Đang tải..." />}

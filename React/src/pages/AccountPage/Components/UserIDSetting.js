@@ -102,31 +102,33 @@ class UserIDSetting extends PureComponent {
                                 <label htmlFor="userID" className={cx('form-label')}>
                                     ID người dùng
                                 </label>
-                                <input
-                                    type="text"
-                                    id="userID"
-                                    value={this.state.newID}
-                                    className={cx('form-input')}
-                                    spellCheck={false}
-                                    onChange={(e) => this.handleInputNewUserID(e)}
-                                    onKeyDown={(e) => this.preventLoadFormWhenPressEnter(e)}
-                                    onInput={this.debouncedVerifyUserID}
-                                />
+                                <div className={cx('form-input-container')}>
+                                    <input
+                                        type="text"
+                                        id="userID"
+                                        value={this.state.newID}
+                                        className={cx('form-input', { 'padding-right': this.state.newID })}
+                                        spellCheck={false}
+                                        onChange={(e) => this.handleInputNewUserID(e)}
+                                        onKeyDown={(e) => this.preventLoadFormWhenPressEnter(e)}
+                                        onInput={this.debouncedVerifyUserID}
+                                    />
 
-                                {this.state.showIconAndText && this.state.newID && (
-                                    <span className={cx('icon-wrapper')}>
-                                        {this.props.isUserIDVerified ? (
-                                            <BsFillCheckCircleFill className={cx('icon', 'verified')} />
-                                        ) : (
-                                            <AiFillCloseCircle
-                                                className={cx('icon', 'error')}
-                                                onClick={() => this.handleClearIDInput()}
-                                            />
-                                        )}
+                                    {this.state.showIconAndText && this.state.newID && (
+                                        <span className={cx('icon-wrapper')}>
+                                            {this.props.isUserIDVerified ? (
+                                                <BsFillCheckCircleFill className={cx('icon', 'verified')} />
+                                            ) : (
+                                                <AiFillCloseCircle
+                                                    className={cx('icon', 'error')}
+                                                    onClick={() => this.handleClearIDInput()}
+                                                />
+                                            )}
 
-                                        {this.props.isLoading_verifyUserID && <Loading inner verify />}
-                                    </span>
-                                )}
+                                            {this.props.isLoading_verifyUserID && <Loading inner verify />}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                         </div>
 

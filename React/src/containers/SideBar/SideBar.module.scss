@@ -65,10 +65,12 @@
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
     .side-bar {
-        padding: 4px 12px;
+        height: var(--header-height-pc);
+        padding: 8px 16px;
+        border-top: 1px solid #e4e6eb;
 
         .button {
-            height: 68px;
+            height: 100%;
             background-color: transparent;
             border-radius: 4px;
             row-gap: 4px;
@@ -101,10 +103,13 @@
 // Mobile
 @media (max-width: 767px) {
     .side-bar {
-        padding: 4px 12px;
+        height: var(--header-height-mobile);
+        padding: 6px 12px;
+        border-top: 1px solid #e4e6eb;
 
         .button {
-            height: 48px;
+            padding: 8px 0;
+            height: 100%;
             background-color: transparent;
             border-radius: 4px;
             row-gap: 4px;

@@ -5,7 +5,7 @@ import styles from './Loading.module.scss';
 const cx = classnames.bind(styles);
 class Loading extends PureComponent {
     render() {
-        const { inner, small, verify, text, auth, search } = this.props;
+        const { inner, small, verify, text, auth, button, search } = this.props;
 
         return (
             <div className={cx('overlay', { inner: inner })}>
@@ -14,7 +14,7 @@ class Loading extends PureComponent {
                         'loading',
                         { 'small-spinner': small },
                         { 'verify-spinner': verify },
-                        { 'auth-spinner': auth },
+                        { 'auth-spinner': auth || button },
                         { 'search-spinner': search },
                     )}
                     data-text={text}

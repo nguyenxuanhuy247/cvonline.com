@@ -66,11 +66,14 @@ class ChangeImageModal extends PureComponent {
     };
 
     render() {
-        const { onClose, round, title = 'Thay đổi hình ảnh' } = this.props;
+        const { isLoading, onClose, round, title = 'Thay đổi hình ảnh' } = this.props;
         const { isOpenCropImageModal } = this.state;
+
+        console.log('AAAAAAAAAA', isLoading);
 
         return !isOpenCropImageModal ? (
             <Modal
+                isLoading={isLoading}
                 round={round}
                 title={title}
                 onClose={() => onClose()}

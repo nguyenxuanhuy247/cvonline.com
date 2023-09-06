@@ -29,7 +29,6 @@
         row-gap: 16px;
 
         .form-group {
-            position: relative;
             display: flex;
             align-items: center;
 
@@ -39,11 +38,12 @@
             }
 
             .form-input-container {
+                position: relative;
                 flex: 1;
 
                 .form-input {
                     width: 100%;
-                    padding: 0 44px 0 12px;
+                    padding: 0 42px 0 12px;
                     height: 40px;
                     background-color: #fff;
                     border: 1px solid #e9eaec;
@@ -100,5 +100,29 @@
         margin-top: 40px;
         padding: 8px 16px;
         cursor: pointer;
+    }
+}
+
+// =========================================================================
+// Tablet + Mobile
+@media (max-width: 991px) {
+    .personal-info {
+        .error-message-container {
+            .error-message {
+                margin-left: 0;
+            }
+        }
+
+        .form {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+                row-gap: 4px;
+
+                .form-input-container {
+                    width: 100%;
+                }
+            }
+        }
     }
 }

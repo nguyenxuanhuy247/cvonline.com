@@ -8,7 +8,7 @@
     align-items: center;
     column-gap: 20px;
     justify-content: space-between;
-    padding: 0 12px;
+    padding: 0 20px;
     border-bottom: 1px solid #e4e6eb;
     position: fixed;
     top: 0;
@@ -19,7 +19,7 @@
         @include flex-max-width-25;
 
         .logo {
-            height: 44px;
+            height: 40px;
             object-fit: contain;
         }
     }
@@ -142,6 +142,13 @@
         .search-bar {
             @include flex-max-width-50;
         }
+
+        .actions {
+            .btn {
+                padding: 8px 12px;
+                min-width: 120px;
+            }
+        }
     }
 }
 
@@ -149,7 +156,8 @@
 // Mobile
 @media (max-width: 767px) {
     .header {
-        column-gap: 12px;
+        height: var(--header-height-mobile);
+        column-gap: 4px;
         padding: 0 12px;
 
         .logo-link {
@@ -183,7 +191,7 @@
             .active {
                 @include active-btn;
                 border-radius: 99px;
-                padding: 8px 16px;
+                padding: 8px;
                 min-width: 0;
                 flex-shrink: 0;
             }
