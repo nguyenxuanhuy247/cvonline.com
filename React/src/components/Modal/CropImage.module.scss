@@ -39,6 +39,11 @@
                 width: 100px;
                 max-width: 100%;
                 cursor: pointer;
+
+                &.active {
+                    color: #fff;
+                    background-color: var(--primary-color);
+                }
             }
         }
     }

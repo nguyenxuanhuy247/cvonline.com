@@ -31,7 +31,20 @@ class PersonalLayout extends PureComponent {
         this.state = {
             isModalChangeAvatarOpen: false,
         };
+
+        this.redirectID = React.createRef();
     }
+
+    // =================================================================
+
+    signOutAndRedirectToSignInPage = () => {
+        const { history } = this.props;
+
+        this.redirectID.current = setTimeout(() => {
+            this.props.userSignOut();
+            history.push('/signin');
+        }, 1000);
+    };
 
     // =================================================================
     // CRUD USER INFORMATION
@@ -64,19 +77,30 @@ class PersonalLayout extends PureComponent {
 
     handleUpdateUserInformation = async (e, name, label) => {
         const { id: userId } = this.props?.userInfo ?? {};
+        const { history } = this.props;
 
-        let value;
-        if (name === 'jobPosition') {
-            value = e.target.value;
-        } else if (name === 'languages') {
-            value = e.target.innerText;
+        if (userId) {
+            let value;
+            if (name === 'jobPosition') {
+                value = e.target.value;
+            } else if (name === 'languages') {
+                value = e.target.innerText;
+            } else {
+                value = e.target.innerText?.trim();
+            }
+
+            if (value !== this.props?.userInfo?.[name]) {
+                const data = { userId: userId, [name]: value, label: label };
+                const errorCode = await this.props.updateUserInformation(data);
+
+                if (errorCode === 10) {
+                    this.props.userSignOut();
+                    history.push('/signin');
+                }
+            }
         } else {
-            value = e.target.innerText?.trim();
-        }
-
-        if (value !== this.props?.userInfo?.[name]) {
-            const data = { userId: userId, [name]: value, label: label };
-            await this.props.updateUserInformation(data);
+            this.props.userSignOut();
+            history.push('/signin');
         }
     };
 
@@ -86,19 +110,30 @@ class PersonalLayout extends PureComponent {
     handleCreateProduct = async () => {
         const { id: userId } = this.props?.userInfo ?? {};
 
-        const errorCode = await this.props.createProduct(userId);
+        if (userId) {
+            const errorCode = await this.props.createProduct(userId);
 
-        if (errorCode === 0) {
-            const lastProductData = this.props.productList?.at(-1);
-            const lastProductId = lastProductData?.productInfo?.id;
+            if (errorCode === 0) {
+                const lastProductData = this.props.productList?.at(-1);
+                const lastProductId = lastProductData?.productInfo?.id;
 
-            const lastProductName = document.getElementById(`js-product-name-${lastProductId}`);
-            lastProductName?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const lastProductName = document.getElementById(`js-product-name-${lastProductId}`);
+                lastProductName?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (errorCode === 10) {
+                this.signOutAndRedirectToSignInPage();
+            }
+        } else {
+            Toast.TOP_CENTER_WARN('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3000);
+            this.signOutAndRedirectToSignInPage();
         }
     };
 
     handleDeleteProduct = (productId, index) => {
-        this.props.deleteProduct(productId, index);
+        if (productId) {
+            this.props.deleteProduct(productId, index);
+        } else {
+            Toast.TOP_CENTER_ERROR(`Thiếu Product ID để xóa sản phẩm. Vui lòng thử lại`);
+        }
     };
 
     handleMoveProduct = async (order, operator) => {
@@ -148,16 +183,26 @@ class PersonalLayout extends PureComponent {
         const { paramId } = this.props?.match?.params ?? {};
         const { languages } = this.props?.userInfo ?? {};
 
-        const errorCode1 = await this.props.readUserInformation(paramId);
+        if (paramId) {
+            const errorCode1 = await this.props.readUserInformation(paramId);
 
-        // Set languages from database by JS
-        const languagesElement = document.getElementById(`js-language-desc`);
-        if (languagesElement) {
-            languagesElement.innerText = languages || '';
-        }
+            // Set languages from database by JS
+            const languagesElement = document.getElementById(`js-language-desc`);
+            if (languagesElement) {
+                languagesElement.innerText = languages || '';
+            }
 
-        if (errorCode1 === 0 && isReadProduct) {
-            await this.props.readProduct(paramId);
+            if (errorCode1 === 0 && isReadProduct) {
+                const errorCode2 = await this.props.readProduct(paramId);
+                if (errorCode2 === 10) {
+                    this.signOutAndRedirectToSignInPage();
+                }
+            } else if (errorCode1 === 10) {
+                this.signOutAndRedirectToSignInPage();
+            }
+        } else {
+            Toast.TOP_CENTER_WARN('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3000);
+            this.signOutAndRedirectToSignInPage();
         }
     };
 
@@ -206,6 +251,10 @@ class PersonalLayout extends PureComponent {
             this.fetchUserInformationAndProductList(true);
         }
     }
+
+    componentWillUnmount = () => {
+        clearTimeout(this.redirectID.current);
+    };
 
     render = () => {
         const { id: userID } = this.props?.userInfo ?? {};
@@ -431,16 +480,25 @@ class PersonalLayout extends PureComponent {
                                                     className={cx('add-new-product-button')}
                                                     onClick={() => this.handleCreateProduct()}
                                                 >
-                                                    <span className={cx('add-new-product-icon')}>
-                                                        <IoIosAddCircle />
-                                                    </span>
-                                                    THÊM SẢN PHẨM
+                                                    {!this.props.isCreateProductLoading ? (
+                                                        <div className={cx('inner')}>
+                                                            <span className={cx('icon')}>
+                                                                <IoIosAddCircle />
+                                                            </span>
+                                                            THÊM SẢN PHẨM
+                                                        </div>
+                                                    ) : (
+                                                        <Loading inner largeButton />
+                                                    )}
                                                 </Button>
                                             </div>
                                         )}
                                     </div>
 
-                                    {this.props.isCVLayoutLoading && <Loading text="Đang tải..." />}
+                                    {this.props.isCVLayoutLoading && <Loading text="Đang tải CV..." />}
+                                    {this.props.isCreateProductLoading && <Loading text="Đang tạo sản phẩm mới..." />}
+                                    {this.props.isDeleteProductLoading && <Loading text="Đang xóa sản phẩm..." />}
+                                    {this.props.isMoveProductLoading && <Loading text="Đang di chuyển sản phẩm..." />}
                                 </div>
                             </div>
                         </div>
@@ -461,6 +519,9 @@ const mapStateToProps = (state) => {
         historyUserIDList: state.user.historyUserIDList,
         isCVLayoutLoading: state.user.isLoading.CVLayout,
         isUpdateUserInformationLoading: state.user.isLoading.updateUserInformation,
+        isCreateProductLoading: state.user.isLoading.createProduct,
+        isDeleteProductLoading: state.user.isLoading.deleteProduct,
+        isMoveProductLoading: state.user.isLoading.moveProduct,
     };
 };
 

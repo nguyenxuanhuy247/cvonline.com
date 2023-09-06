@@ -8,7 +8,10 @@ const initialState = {
         homeLayout: false,
         CVLayout: false,
         updateUserInformation: false,
+        createProduct: false,
         updateProduct: false,
+        deleteProduct: false,
+        moveProduct: false,
 
         changeUserID: false,
         search: false,
@@ -154,6 +157,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, homeLayout: false },
+                allCVList: [],
             };
 
         // =================================================================
@@ -218,7 +222,7 @@ const userReducer = (state = initialState, action) => {
         case actionNames.CREATE_PRODUCT_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: true },
+                isLoading: { ...state.isLoading, createProduct: true },
             };
         case actionNames.CREATE_PRODUCT_SUCCESS:
             const data = action.payload;
@@ -227,13 +231,13 @@ const userReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, createProduct: false },
                 productList: created_productList,
             };
         case actionNames.CREATE_PRODUCT_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, createProduct: false },
             };
 
         // READ PRODUCT
@@ -259,7 +263,7 @@ const userReducer = (state = initialState, action) => {
         case actionNames.UPDATE_PRODUCT_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, updateProduct: false },
+                isLoading: { ...state.isLoading, updateProduct: true },
             };
         case actionNames.UPDATE_PRODUCT_SUCCESS:
             const { productData, index: updated_index, updatedItem } = action.payload;
@@ -287,7 +291,7 @@ const userReducer = (state = initialState, action) => {
         case actionNames.DELETE_PRODUCT_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: true },
+                isLoading: { ...state.isLoading, deleteProduct: true },
             };
         case actionNames.DELETE_PRODUCT_SUCCESS:
             const index = action.payload;
@@ -296,20 +300,20 @@ const userReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, deleteProduct: false },
                 productList: deleted_productList,
             };
         case actionNames.DELETE_PRODUCT_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, deleteProduct: false },
             };
 
         // MOVE PRODUCT
         case actionNames.MOVE_PRODUCT_START:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: true },
+                isLoading: { ...state.isLoading, moveProduct: true },
             };
         case actionNames.MOVE_PRODUCT_SUCCESS:
             const { movedItemIndex, siblingItemIndex } = action.payload;
@@ -323,13 +327,13 @@ const userReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, moveProduct: false },
                 productList: newProductList,
             };
         case actionNames.MOVE_PRODUCT_FAILURE:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
+                isLoading: { ...state.isLoading, moveProduct: false },
             };
 
         // =================================================================

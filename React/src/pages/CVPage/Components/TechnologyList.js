@@ -9,6 +9,8 @@ import Button from '~/components/Button/Button.js';
 import Technology from '~/pages/CVPage/Components/Technology.js';
 import CreateEditTechnology from '~/pages/CVPage/Components/CreateEditTechnology.js';
 import * as userActions from '~/store/actions';
+import Image from '~/components/Image/Image.js';
+import { JpgImages } from '~/components/Image/Images.js';
 
 import styles from './TechnologyList.module.scss';
 
@@ -78,12 +80,13 @@ class TechnologyList extends PureComponent {
     };
 
     componentDidMount() {
-        this.setState({ list: this.props.technologyList });
+        console.log(this.props.type, this.props.technologyList);
+        this.setState({ list: this.props.technologyList || [] });
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.technologyList !== this.props.technologyList) {
-            this.setState({ list: this.props.technologyList });
+            this.setState({ list: this.props.technologyList || [] });
         }
     }
 
@@ -145,6 +148,13 @@ class TechnologyList extends PureComponent {
                         );
                     })}
                 </ReactSortable>
+
+                {this.state.list?.length === 0 && (
+                    <div className={cx('empty-list')}>
+                        <Image src={JpgImages.emptyProductIcon} className={cx('empty-list-image')} />
+                        <span className={cx('empty-list-text')}>Danh sách trống</span>
+                    </div>
+                )}
 
                 {isCanEdit &&
                     (!this.state.isCreateTechnology ? (

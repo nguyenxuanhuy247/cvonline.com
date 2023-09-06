@@ -16,8 +16,13 @@ export const userSignIn = (userData) => {
                 dispatch(userSignIn_Fail());
             }
         } catch (error) {
-            const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            if (errorCode !== 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(userSignIn_Fail());
 
             console.log('An error in userSignInStart() - userActions.js: ', error);
@@ -53,8 +58,12 @@ export const userSignUpStart = (userData) => {
                 dispatch(userSignUp_Fail());
             }
         } catch (error) {
-            const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            if (errorCode !== 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
             dispatch(userSignUp_Fail());
             console.log('An error in userSignUpStart() - userActions.js: ', error);
         }
@@ -91,8 +100,12 @@ export const deleteAccount = (userId) => {
                 return errorCode;
             }
         } catch (error) {
-            const { errorMessage, errorCode } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            if (errorCode !== 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
             dispatch(userForgotPassword_Failure());
             console.log('An error in deleteAccount() - userActions.js: ', error);
 
@@ -131,8 +144,12 @@ export const userForgotPassword = (data) => {
                 return errorCode;
             }
         } catch (error) {
-            const { errorMessage, errorCode } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            if (errorCode !== 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
             dispatch(userForgotPassword_Failure());
             console.log('An error in userForgotPassword() - userActions.js: ', error);
 
@@ -176,8 +193,10 @@ export const readSearch = (searchValue) => {
             }
         } catch (error) {
             const { errorCode, errorMessage, data } = error.response?.data ?? {};
-            if (errorCode === 31) {
-                Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            if (errorCode !== 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
             }
             dispatch(readSearch_Failure(data));
             console.log('An error in readSearch() - userActions.js: ', error);
@@ -205,18 +224,23 @@ export const readHomeLayout = () => {
         try {
             const res = await userService.readHomeLayout();
 
-            const { errorCode, errorMessage, data } = res ?? {};
+            const { errorCode, data } = res ?? {};
 
             if (errorCode === 0) {
                 dispatch(readHomeLayout_Success(data));
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
-                dispatch(readHomeLayout_Failure(data));
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                dispatch(readHomeLayout_Failure());
             }
         } catch (error) {
-            const { errorMessage, data } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
-            dispatch(readHomeLayout_Failure(data));
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            if (errorCode !== 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
+            dispatch(readHomeLayout_Failure());
             console.log('An error in readHomeLayout() - userActions.js: ', error);
         }
     };
@@ -258,7 +282,13 @@ export const readUserInformation = (userId) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(readUserInformation_Failure());
             console.log('An error in readUserInformation() - userActions.js: ', error);
 
@@ -297,9 +327,15 @@ export const updateUserInformation = (userData) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 3000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(updateUserInformation_Failure());
-            console.log('An error in updateTechnology() - userActions.js: ', error);
+            console.log('An error in updateUserInformation() - userActions.js: ', error);
 
             return errorCode;
         }
@@ -335,14 +371,20 @@ export const createProduct = (userId) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(createProduct_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(createProduct_Failure());
             console.log('An error in createProduct() - userActions.js: ', error);
 
@@ -377,14 +419,20 @@ export const readProduct = (userId) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(readProduct_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(readProduct_Failure());
             console.log('An error in readProduct() - userActions.js: ', error);
 
@@ -419,14 +467,20 @@ export const updateProduct = (productData, index, updatedItem) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(updateProduct_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(updateProduct_Failure());
             console.log('An error in updateProduct() - userActions.js: ', error);
 
@@ -460,14 +514,20 @@ export const deleteProduct = (productId, index) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(deleteProduct_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(deleteProduct_Failure());
             console.log('An error in deleteProduct() - userActions.js: ', error);
 
@@ -502,14 +562,20 @@ export const moveProduct = (productData, index) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(moveProduct_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(moveProduct_Failure());
             console.log('An error in moveProduct() - userActions.js: ', error);
 
@@ -547,14 +613,20 @@ export const createTechnology = (technologyData, productIndex) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(createTechnology_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(createTechnology_Failure());
             console.log('An error in createTechnology() - userActions.js: ', error);
 
@@ -585,14 +657,20 @@ export const updateTechnology = (technologyData, productIndex) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(updateTechnology_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(updateTechnology_Failure());
             console.log('An error in updateTechnology() - userActions.js: ', error);
 
@@ -621,12 +699,18 @@ export const dragAndDropTechology = (technologyData, productIndex) => {
                 const reduxData = { dataFromDB, productIndex };
                 dispatch(dragAndDropTechology_Success(reduxData));
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(dragAndDropTechology_Failure());
             }
         } catch (error) {
-            const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 4000);
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(dragAndDropTechology_Failure());
             console.log('An error in dragAndDropTechology() - userActions.js: ', error);
         }
@@ -655,14 +739,20 @@ export const deleteTechnology = (technologyData, productIndex) => {
 
                 return errorCode;
             } else {
-                Toast.TOP_CENTER_ERROR(errorMessage, 4000);
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
                 dispatch(deleteTechnology_Failure());
 
                 return errorCode;
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_CENTER_ERROR(errorMessage || error.message, 5000);
+
+            if (errorCode) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3000);
+            } else {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            }
+
             dispatch(deleteTechnology_Failure());
             console.log('An error in deleteTechnology() - userActions.js: ', error);
 

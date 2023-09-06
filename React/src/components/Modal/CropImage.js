@@ -66,16 +66,32 @@ const CropImage = ({ src, round = false }, ref) => {
                 <div className={cx('ratio')}>
                     <p className={cx('ratio-label')}>Tỉ lệ</p>
                     <div className={cx('ratio-list')}>
-                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={1 / 1}>
+                        <Button
+                            className={cx('ratio-item', { active: +aspect === 1 / 1 })}
+                            onClick={handleChangeRatioImage}
+                            data-ratio={1 / 1}
+                        >
                             1 : 1
                         </Button>
-                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={3 / 2}>
+                        <Button
+                            className={cx('ratio-item', { active: +aspect === 3 / 2 })}
+                            onClick={handleChangeRatioImage}
+                            data-ratio={3 / 2}
+                        >
                             3 : 2
                         </Button>
-                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={4 / 3}>
+                        <Button
+                            className={cx('ratio-item', { active: +aspect === 4 / 3 })}
+                            onClick={handleChangeRatioImage}
+                            data-ratio={4 / 3}
+                        >
                             4 : 3
                         </Button>
-                        <Button className={cx('ratio-item')} onClick={handleChangeRatioImage} data-ratio={16 / 9}>
+                        <Button
+                            className={cx('ratio-item', { active: +aspect === 16 / 9 })}
+                            onClick={handleChangeRatioImage}
+                            data-ratio={16 / 9}
+                        >
                             16 : 9
                         </Button>
                     </div>

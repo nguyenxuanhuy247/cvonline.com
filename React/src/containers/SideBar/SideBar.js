@@ -29,23 +29,12 @@ class SideBar extends PureComponent {
     }
 
     handleGoBackToMyCVPage = async () => {
-        const { id: ownerID } = this.props?.owner ?? {};
-        const { id: userID } = this.props?.userInfo ?? {};
         const isSignIn = this.props.isSignIn;
 
-        if (isSignIn) {
-            if (ownerID !== userID) {
-                const errorCode = await this.props.readUserInformation(ownerID);
-
-                if (errorCode !== 0) {
-                    Toast.TOP_CENTER_ERROR('Vui lòng đăng nhập lại', 3000);
-                    this.props.userSignOut();
-                }
-            }
-        } else {
+        if (!isSignIn) {
             Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để tạo CV của bạn', 2000);
             this.id.current = setTimeout(() => {
-                window.location.replace('http://localhost:2407/signin');
+                window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}signin`);
             }, 2000);
         }
     };
@@ -63,7 +52,7 @@ class SideBar extends PureComponent {
         } else {
             Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để gửi CV bằng email', 2000);
             this.id.current = setTimeout(() => {
-                window.location.replace('http://localhost:2407/signin');
+                window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}signin`);
             }, 2000);
         }
     };

@@ -230,6 +230,8 @@
                     background-color: var(--button-bgc-green-02);
 
                     .add-new-product-button {
+                        height: 52px;
+                        min-width: 250px;
                         background-color: var(--primary-color);
                         color: #fff;
                         border-radius: 99px;
@@ -237,10 +239,16 @@
                         column-gap: 8px;
                         cursor: pointer;
 
-                        .add-new-product-icon {
-                            display: grid;
-                            place-items: center;
-                            font-size: 32px;
+                        .inner {
+                            display: flex;
+                            align-items: center;
+                            column-gap: 8px;
+
+                            .icon {
+                                display: grid;
+                                place-items: center;
+                                font-size: 32px;
+                            }
                         }
                     }
                 }

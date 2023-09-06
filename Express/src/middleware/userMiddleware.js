@@ -86,7 +86,7 @@ export const checkReqForgotPassword = (req, res, next) => {
     if (!email) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập email để lấy lại mật khẩu',
+            errorMessage: 'Nhập Email để lấy lại mật khẩu',
         });
     }
 
@@ -119,7 +119,7 @@ export const checkReqGetUserInformation = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập User ID để tải Thông tin người dùng',
+            errorMessage: 'Thiếu ID người dùng, vui lòng đăng nhập lại',
         });
     }
 
@@ -128,12 +128,12 @@ export const checkReqGetUserInformation = (req, res, next) => {
 
 // UPDATE USER INFORMATION
 export const checkReqUpdateUserInformation = (req, res, next) => {
-    const { userId, label } = req.body;
+    const { userId } = req.body;
 
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: `Nhập User ID để cập nhật ${label}`,
+            errorMessage: `Thiếu ID người dùng, vui lòng đăng nhập lại`,
         });
     }
 
@@ -150,7 +150,7 @@ export const checkReqCreateProduct = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập User ID để tạo sản phẩm mới',
+            errorMessage: `Thiếu ID người dùng, vui lòng đăng nhập lại`,
         });
     }
 
@@ -164,7 +164,7 @@ export const checkReqGetProduct = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập User ID để tải danh sách sản phẩm',
+            errorMessage: `Thiếu ID người dùng, vui lòng đăng nhập lại`,
         });
     }
 
@@ -178,7 +178,7 @@ export const checkReqUpdateProduct = (req, res, next) => {
     if (!productId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: `Nhập Product ID để cập nhật ${label}`,
+            errorMessage: `Lỗi! Thiếu Product ID để cập nhật ${label}`,
         });
     }
 
@@ -192,7 +192,7 @@ export const checkReqDeleteProduct = (req, res, next) => {
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
-            errorMessage: 'Nhập Product ID để xóa sản phẩm',
+            errorMessage: 'Lỗi! Thiếu Product ID để xóa sản phẩm',
         });
     }
 
@@ -206,14 +206,14 @@ export const checkReqMoveProduct = (req, res, next) => {
     if (!movedItemID || !siblingItemID) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập Product ID để di chuyển sản phẩm',
+            errorMessage: 'Lỗi! Thiếu Product ID để di chuyển sản phẩm',
         });
     }
 
     if (!movedItemOrder || !siblingItemOrder) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Nhập Product Order để di chuyển sản phẩm',
+            errorMessage: 'Lỗi! Thiếu Product Order để di chuyển sản phẩm',
         });
     }
 
@@ -230,14 +230,14 @@ export const checkReqCreateTechnology = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: `Nhập User ID người dùng để tạo mới ${label}`,
+            errorMessage: `Thiếu ID người dùng để tạo mới ${label}. Vui lòng đăng nhập lại`,
         });
     }
 
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
-            errorMessage: `Nhập Product ID sản phẩm để tạo mới ${label}`,
+            errorMessage: `Lỗi! Thiếu Product ID sản phẩm để tạo mới ${label}`,
         });
     }
 
@@ -274,14 +274,14 @@ export const checkReqUpdateTechnology = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: `Nhập User ID để cập nhật ${label}`,
+            errorMessage: `Thiếu ID người dùng để cập nhật ${label}. Vui lòng đăng nhập lại`,
         });
     }
 
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
-            errorMessage: `Nhập Product ID để cập nhật ${label}`,
+            errorMessage: `Lỗi! Thiếu Product ID để cập nhật ${label}`,
         });
     }
 
@@ -328,13 +328,14 @@ export const checkReqDeleteTechnology = (req, res, next) => {
     if (!technologyId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: `Nhập Technology ID để xóa ${label}`,
+            errorMessage: `Thiếu Technology ID để xóa ${label}`,
         });
     }
 
     next();
 };
 
+// =================================================================
 // CHANGE USER ID
 export const checkReqChangeUserID = (req, res, next) => {
     const { currentID, newID } = req.body;

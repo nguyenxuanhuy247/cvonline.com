@@ -8,7 +8,7 @@ import { MainLayout } from '~/layouts';
 import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
 import Loading from '~/components/Modal/Loading.js';
-import { JpgImages } from '~/components/Image/Images';
+import { JpgImages } from '~/components/Image/Images.js';
 import NotFound404 from '~/pages/CVPage/Components/404Page.js';
 
 const cx = classnames.bind(styles);

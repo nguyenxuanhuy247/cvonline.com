@@ -54,16 +54,24 @@ class Product extends PureComponent {
 
         const value = e.target.innerText?.trimEnd();
 
-        if (updatedItem === 'name') {
-            const data = { productId: productId, name: value, label: 'Tên sản phẩm' };
-            if (value !== productName) {
-                this.props.updateProduct(data, index, updatedItem);
+        if (productId) {
+            if (updatedItem === 'name') {
+                const data = { productId: productId, name: value, label: 'Tên sản phẩm' };
+                if (value !== productName) {
+                    this.props.updateProduct(data, index, updatedItem);
+                }
+            } else {
+                const data = { productId: productId, desc: value, label: 'Mô tả sản phẩm' };
+                if (value !== productDesc) {
+                    this.props.updateProduct(data, index, updatedItem);
+                }
             }
         } else {
-            const data = { productId: productId, desc: value, label: 'Mô tả sản phẩm' };
-            if (value !== productDesc) {
-                this.props.updateProduct(data, index, updatedItem);
-            }
+            Toast.TOP_CENTER_ERROR(
+                `Thiếu Product ID để cập nhật ${
+                    updatedItem === 'name' ? 'Tên sản phẩm' : 'Mô tả sản phẩm'
+                }. Vui lòng thử lại`,
+            );
         }
     };
 
@@ -72,16 +80,18 @@ class Product extends PureComponent {
         const { productInfo } = this.props?.productData ?? {};
         const { id: productId, image: imageDB } = productInfo ?? {};
 
-        const data = { productId: productId, image: url, label: 'Hình ảnh sản phẩm' };
+        if (productId) {
+            const data = { productId: productId, image: url, label: 'Hình ảnh sản phẩm' };
 
-        if (url !== imageDB) {
-            const errorCode = await this.props?.updateProduct(data, index, 'image');
+            if (url !== imageDB) {
+                const errorCode = await this.props?.updateProduct(data, index, 'image');
 
-            return errorCode;
+                return errorCode;
+            } else {
+                Toast.TOP_CENTER_WARN(`Ảnh này đã được sử dụng, hãy chọn ảnh khác`, 3000);
+            }
         } else {
-            Toast.TOP_CENTER_WARN(`Ảnh này đã được sử dụng, hãy chọn ảnh khác`, 3000);
-
-            return 1;
+            Toast.TOP_CENTER_ERROR(`Thiếu Product ID để cập nhật Hình ảnh sản phẩm. Vui lòng thử lại`);
         }
     };
 
@@ -438,6 +448,7 @@ class Product extends PureComponent {
                     </div>
 
                     <div className={cx('source-code-section')}>
+                        <p className={cx('source-code-title')}>SOURCE CODE</p>
                         <TechnologyList
                             technologyListID={`js-source-code-list-${productID}`}
                             index={this.props.index}
