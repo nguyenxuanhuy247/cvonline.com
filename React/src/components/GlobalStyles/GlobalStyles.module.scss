@@ -24,6 +24,7 @@
     // Border color
     --auth-error-input-border-color-red: #ff453a;
     --auth-hover-input-border-color-green: #49b253;
+    --main-border-grey: #e4e6eb;
 
     // Button background color
     --auth-bgc-grey: #f3f5f7;
@@ -33,6 +34,7 @@
     --button-bgc-grey-01: #f4f5f5;
     --button-bgc-grey-02: #ddd;
     --button-bgc-white: #fff;
+    --button-bgc-midnight: #212f3f;
 
     // Font fimily
     --alexandria-font: 'Alexandria', sans-serif;
@@ -247,6 +249,11 @@ a {
 @mixin flex-max-width-50 {
     flex: 1 1 50%;
     max-width: 50%;
+}
+
+@mixin flex-max-width-55 {
+    flex: 1 1 55%;
+    max-width: 55%;
 }
 
 @mixin flex-max-width-60 {

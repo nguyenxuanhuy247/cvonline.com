@@ -34,7 +34,7 @@ class Auth extends PureComponent {
                         <Route path={path.FORGOTPASSWORD} component={ForgotPassword} />
                     </Switch>
                 </div>
-                {this.props.isLoading && <Loading text="Đang xác thực..." />}
+                {this.props.isLoading && <Loading authLayout text="Đang xác thực..." />}
             </div>
         );
     }

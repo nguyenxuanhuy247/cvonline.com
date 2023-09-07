@@ -194,22 +194,35 @@
             }
         }
     }
+
+    .empty-product-list {
+        height: calc(100vh - var(--header-height-pc));
+        flex: 1;
+        display: grid;
+        place-items: center;
+        padding: 12px;
+        background: #fff;
+
+        .image {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+        }
+    }
 }
 
 // =================================================================
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
     .home-page {
+        min-height: calc(100vh - 2 * var(--header-height-tablet));
+
         .home-page-container {
             padding: 16px;
+        }
 
-            .candidate {
-                .avatar-name-job-title {
-                }
-
-                .outcome {
-                }
-            }
+        .empty-product-list {
+            height: calc(100vh - 2 * var(--header-height-tablet));
         }
     }
 }
@@ -218,6 +231,8 @@
 // Mobile
 @media (max-width: 767px) {
     .home-page {
+        min-height: calc(100vh - 2 * var(--header-height-mobile));
+
         .home-page-container {
             padding: 12px;
 
@@ -232,8 +247,55 @@
                 .outcome {
                     padding: 12px;
                     width: 100%;
+
+                    .project-technology {
+                        .project-stats {
+                            .text {
+                            }
+
+                            .number {
+                            }
+                        }
+
+                        .technology-stats {
+                            .text {
+                            }
+
+                            .listed {
+                                flex-direction: column;
+                                row-gap: 12px;
+
+                                .side {
+                                    .title {
+                                    }
+
+                                    .list {
+                                        .technology {
+                                            .image {
+                                            }
+
+                                            .name {
+                                            }
+                                        }
+                                    }
+
+                                    .empty-list {
+                                        .empty-list-image {
+                                        }
+
+                                        .empty-list-text {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
+
+        .empty-product-list {
+            height: calc(100vh - 2 * var(--header-height-mobile));
         }
     }
 }

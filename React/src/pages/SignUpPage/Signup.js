@@ -60,8 +60,8 @@ class Signup extends Component {
                             validationSchema={Yup.object().shape({
                                 fullName: Yup.string().required('Hãy nhập họ và tên của bạn'),
                                 email: Yup.string()
-                                    .required('Hãy nhập địa chỉ email của bạn')
-                                    .email('Hãy nhập đúng định dạng email'),
+                                    .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.com$/, 'Định dạng email chưa đúng')
+                                    .required('Hãy nhập địa chỉ email của bạn'),
                                 password: Yup.string()
                                     .required('Hãy nhập mật khẩu của bạn')
                                     .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
@@ -71,12 +71,18 @@ class Signup extends Component {
                                     .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận chưa đúng'),
                             })}
                             onSubmit={(values, actions) => {
+                                this.setState({
+                                    isShowPassword: false,
+                                    isShowConfirmationPassword: false,
+                                });
+
                                 this.props.userSignUp(values);
+                                console.log(111111111111111111111)
                             }}
                         >
                             {(props) => (
                                 <Form className={cx('form-signup')} onSubmit={props.handleSubmit}>
-                                    <p className={cx('title')}>Chào mừng bạn đến với cvonline.com</p>
+                                    <p className={cx('title')}>Chào mừng bạn đến với CV online</p>
 
                                     <div className={cx('form-group')}>
                                         <label htmlFor="fullName" className={cx('label')}>

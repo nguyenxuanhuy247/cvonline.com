@@ -61,20 +61,21 @@ class SignIn extends Component {
                         initialValues={{ email: '', password: '' }}
                         validationSchema={Yup.object().shape({
                             email: Yup.string()
-                                .required('Hãy nhập địa chỉ email của bạn')
-                                .email('Định dạng email không đúng'),
+                                .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.com$/, 'Định dạng email chưa đúng')
+                                .required('Hãy nhập địa chỉ email của bạn'),
                             password: Yup.string()
                                 .required('Hãy nhập mật khẩu của bạn')
                                 .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
                                 .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự'),
                         })}
                         onSubmit={async (values, actions) => {
+                            this.setState({ isShowPassword: false });
                             this.props.userSignIn(values);
                         }}
                     >
                         {(props) => (
                             <Form className={cx('form-signin')}>
-                                <p className={cx('title')}>Chào mừng bạn đến với cvonline.com</p>
+                                <p className={cx('title')}>Chào mừng bạn đã quay trở lại</p>
 
                                 <div className={cx('message-container')}>
                                     {props.errors.email && props.touched.email ? (

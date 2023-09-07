@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import className from 'classnames/bind';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, useFormikContext } from 'formik';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import * as Yup from 'yup';
@@ -29,7 +29,7 @@ class ForgotPassword extends Component {
     }
 
     validateEmail = (email) => {
-        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.com$/;
         return regex.test(email);
     };
 
@@ -57,11 +57,10 @@ class ForgotPassword extends Component {
                         initialValues={{ email: '' }}
                         validationSchema={Yup.object().shape({
                             email: Yup.string()
-                                .required('Hãy nhập địa chỉ email của bạn')
-                                .email('Định dạng email không đúng'),
+                                .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.com$/, 'Định dạng email chưa đúng')
+                                .required('Hãy nhập địa chỉ email của bạn'),
                         })}
                         onSubmit={async (values, actions) => {
-                            console.log(values);
                             const errorCode = await this.props.userForgotPassword(values);
                             if (errorCode === 0) {
                                 actions.resetForm();
@@ -91,11 +90,11 @@ class ForgotPassword extends Component {
                                                 this.state.userEmail &&
                                                 (this.props.isVerified ? (
                                                     <p className={cx('message', 'OK', 'hide')}>
-                                                        Email người dùng khả dụng
+                                                        Email có thể sử dụng để lấy lại mật khẩu
                                                     </p>
                                                 ) : (
                                                     <p className={cx('message', 'error', 'hide')}>
-                                                        Email chưa được đăng ký
+                                                        Email chưa được đăng ký tài khoản
                                                     </p>
                                                 ))}
 
@@ -137,7 +136,13 @@ class ForgotPassword extends Component {
                                                 {this.props.isVerified ? (
                                                     <BsFillCheckCircleFill className={cx('icon', 'verified')} />
                                                 ) : (
-                                                    <AiFillCloseCircle className={cx('icon', 'error')} />
+                                                    <AiFillCloseCircle
+                                                        className={cx('icon', 'error')}
+                                                        onClick={() => {
+                                                            props.setFieldValue('email', '');
+                                                            this.setState({ userEmail: '', isResetSucceeded: false });
+                                                        }}
+                                                    />
                                                 )}
 
                                                 {this.props.isLoading_verifyEmail && <Loading inner verify />}

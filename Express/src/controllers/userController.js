@@ -78,6 +78,7 @@ export const handleGetResetPassword = async (req, res) => {
                 errorMessage: '',
                 values: { password: '', confirmedPassword: '' },
                 href: process.env.REACT_URL,
+                fieldError: '',
             });
         }
     }
@@ -93,15 +94,15 @@ export const handlePostResetPassword = async (req, res) => {
 
     if ((id, token)) {
         const schema = yup.object().shape({
-            password: yup
-                .string()
-                .required('Hãy nhập Mật khẩu mới')
-                .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
-                .max(25, 'Mật khẩu chỉ được độ dài tối đa 25 ký tự'),
             confirmedPassword: yup
                 .string()
-                .required('Hãy nhập Xác nhận mật khẩu mới')
-                .oneOf([yup.ref('password'), null], 'Xác nhận mật khẩu không trùng khớp với mật khẩu'),
+                .required('Hãy xác nhận mật khẩu mới')
+                .oneOf([yup.ref('password'), null], 'Xác nhận mật khẩu không trùng khớp'),
+            password: yup
+                .string()
+                .required('Hãy nhập mật khẩu mới')
+                .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
+                .max(25, 'Mật khẩu chỉ được độ dài tối đa 25 ký tự'),
         });
 
         try {
@@ -115,6 +116,7 @@ export const handlePostResetPassword = async (req, res) => {
                     errorMessage: '',
                     values: { password: '', confirmedPassword: '' },
                     href: process.env.REACT_URL,
+                    fieldError: '',
                 });
             }
         } catch (error) {
@@ -122,6 +124,8 @@ export const handlePostResetPassword = async (req, res) => {
                 errorCode: 1,
                 errorMessage: error.message,
                 values: error.value,
+                href: process.env.REACT_URL,
+                fieldError: error.path,
             });
         }
     } else {

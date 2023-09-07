@@ -56,7 +56,7 @@ class TechnologyList extends PureComponent {
 
             const updateData = oldData.map((oldTechnology, index) => {
                 return {
-                    technologyID: newData[index].id,
+                    technologyID: newData[index]?.id,
                     technologyOrder: oldTechnology.technologyOrder,
                 };
             });
@@ -80,7 +80,6 @@ class TechnologyList extends PureComponent {
     };
 
     componentDidMount() {
-        console.log(this.props.type, this.props.technologyList);
         this.setState({ list: this.props.technologyList || [] });
     }
 
@@ -104,53 +103,59 @@ class TechnologyList extends PureComponent {
                     'sourcecode-list': type === 'SOURCECODE',
                 })}
             >
-                <ReactSortable
-                    disabled={!isCanEdit}
-                    list={this.state.list}
-                    setList={(newState) => this.handleSetListAndSaveToDatabase(newState)}
-                    id={this.props.technologyListID}
-                    className={cx('technology-list-inner', {
-                        'sourcecode-list': type === 'SOURCECODE',
-                        'technology-list': type === 'TECHNOLOGY',
-                        'library-list': type === 'LIBRARY',
-                    })}
-                    animation={150}
-                >
-                    {this.state.list?.map((technology) => {
-                        return (
-                            <Technology
-                                key={technology.id}
-                                index={this.props.index}
-                                // =================================================================
-                                draggable={draggable}
-                                librarylist={this.state.list}
-                                // Common info
-                                side={side}
-                                label={label}
-                                productId={productId}
-                                keyprop={keyprop}
-                                type={type}
-                                // Technology info
-                                id={technology?.id}
-                                src={technology?.image}
-                                name={technology?.name}
-                                version={technology?.version}
-                                href={technology?.link}
-                                // =================================================================
-                                // Show and Hide Create Technology Container
-                                isCloseEditTechnology={this.state.isCreateTechnology}
-                                onShowCreateTechnology={this.handleShowCreateTechnology}
-                                onCloseCreateTechnology={this.handleCloseCreateTechnology}
-                                // =================================================================
-                                isSearch={isSearch}
-                                onSearchLibrary={onSearchLibrary}
-                            />
-                        );
-                    })}
-                </ReactSortable>
+                {this.state.list?.length > 0 && (
+                    <ReactSortable
+                        disabled={!isCanEdit}
+                        list={this.state.list}
+                        setList={(newState) => this.handleSetListAndSaveToDatabase(newState)}
+                        id={this.props.technologyListID}
+                        className={cx('technology-list-inner', {
+                            'sourcecode-list': type === 'SOURCECODE',
+                            'technology-list': type === 'TECHNOLOGY',
+                            'library-list': type === 'LIBRARY',
+                        })}
+                        animation={150}
+                    >
+                        {this.state.list?.map((technology) => {
+                            return (
+                                <Technology
+                                    key={technology.id}
+                                    index={this.props.index}
+                                    // =================================================================
+                                    draggable={draggable}
+                                    librarylist={this.state.list}
+                                    // Common info
+                                    side={side}
+                                    label={label}
+                                    productId={productId}
+                                    keyprop={keyprop}
+                                    type={type}
+                                    // Technology info
+                                    id={technology?.id}
+                                    src={technology?.image}
+                                    name={technology?.name}
+                                    version={technology?.version}
+                                    href={technology?.link}
+                                    // =================================================================
+                                    // Show and Hide Create Technology Container
+                                    isCloseEditTechnology={this.state.isCreateTechnology}
+                                    onShowCreateTechnology={this.handleShowCreateTechnology}
+                                    onCloseCreateTechnology={this.handleCloseCreateTechnology}
+                                    // =================================================================
+                                    isSearch={isSearch}
+                                    onSearchLibrary={onSearchLibrary}
+                                />
+                            );
+                        })}
+                    </ReactSortable>
+                )}
 
                 {this.state.list?.length === 0 && (
-                    <div className={cx('empty-list')}>
+                    <div
+                        className={cx('empty-list', {
+                            'sourcecode-list': type === 'SOURCECODE',
+                        })}
+                    >
                         <Image src={JpgImages.emptyProductIcon} className={cx('empty-list-image')} />
                         <span className={cx('empty-list-text')}>Danh sách trống</span>
                     </div>

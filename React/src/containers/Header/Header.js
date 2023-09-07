@@ -2,8 +2,6 @@ import { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import DefaultTippy from '@tippyjs/react';
-import { FaBell } from 'react-icons/fa';
 
 import styles from './Header.module.scss';
 import logoWithText from '~/assets/logo/logo-with-text.png';
@@ -66,12 +64,6 @@ class Header extends PureComponent {
                     </div>
                 ) : (
                     <div className={cx('login')}>
-                        <DefaultTippy content="Thông báo" arrow="" offset={[0, 10]}>
-                            <Button className={cx('icon')}>
-                                <FaBell />
-                            </Button>
-                        </DefaultTippy>
-
                         <Menu data={MENU_AVATAR_DATA}>
                             <Button className={cx('user')}>
                                 <Image

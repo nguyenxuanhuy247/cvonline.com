@@ -108,83 +108,85 @@ class Technology extends PureComponent {
         return !this.state.isEdit ? (
             <div
                 id={`js-container-button-${SIDE_TYPE_ID}`}
-                className={cx('button-container', {
+                className={cx('button-and-edit-button-container', {
                     'sourcecode-list': type === 'SOURCECODE',
                     'technology-list': type === 'TECHNOLOGY',
                     'library-list': type === 'LIBRARY',
                 })}
             >
-                <Button
-                    href={href}
-                    id={`js-button-${SIDE_TYPE_ID}`}
-                    className={cx(
-                        'button',
-                        {
-                            'sourcecode-list': type === 'SOURCECODE',
-                            'technology-list': type === 'TECHNOLOGY',
-                            'library-list': type === 'LIBRARY',
-                        },
-                        { 'no-link-cursor': !href },
-                    )}
-                >
-                    {type !== 'LIBRARY' ? (
-                        src && <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
-                    ) : (
-                        <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
-                    )}
-
-                    <div className={cx('name-link')}>
-                        <HeadlessTippy
-                            placement="top"
-                            arrow="true"
-                            render={(attrs) => (
-                                <div tabIndex="-1" {...attrs}>
-                                    {name && <div className={cx('tooltip-name')}>{name}</div>}
-                                </div>
-                            )}
-                        >
-                            {name && (
-                                <span className={cx('name')} id={`js-name-button-${SIDE_TYPE_ID}`}>
-                                    {name}
-                                </span>
-                            )}
-                        </HeadlessTippy>
-
-                        <HeadlessTippy
-                            placement="bottom"
-                            offset={[0, 10]}
-                            render={(attrs) => (
-                                <div tabIndex="-1" {...attrs}>
-                                    {href && <div className={cx('library-href')}>{href}</div>}
-                                </div>
-                            )}
-                        >
-                            {href && (
-                                <span className={cx('link')}>
-                                    <BsLink45Deg />
-                                </span>
-                            )}
-                        </HeadlessTippy>
-                    </div>
-                    <HeadlessTippy
-                        placement="top"
-                        render={(attrs) => (
-                            <div tabIndex="-1" {...attrs}>
-                                {version && <div className={cx('tooltip-version')}>{version}</div>}
-                            </div>
+                <div className={cx('button-conntainer')}>
+                    <Button
+                        href={href}
+                        id={`js-button-${SIDE_TYPE_ID}`}
+                        className={cx(
+                            'button',
+                            {
+                                'sourcecode-list': type === 'SOURCECODE',
+                                'technology-list': type === 'TECHNOLOGY',
+                                'library-list': type === 'LIBRARY',
+                            },
+                            { 'no-link-cursor': !href },
                         )}
                     >
-                        {version && <span className={cx('version')}>{version}</span>}
-                    </HeadlessTippy>
-                </Button>
+                        {type !== 'LIBRARY' ? (
+                            src && <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
+                        ) : (
+                            <Image src={src || JpgImages.imagePlaceholder} className={cx('image')} />
+                        )}
+
+                        <div className={cx('name-link')}>
+                            <HeadlessTippy
+                                placement="top"
+                                arrow="true"
+                                render={(attrs) => (
+                                    <div tabIndex="-1" {...attrs}>
+                                        {name && <div className={cx('tooltip-name')}>{name}</div>}
+                                    </div>
+                                )}
+                            >
+                                {name && (
+                                    <span className={cx('name')} id={`js-name-button-${SIDE_TYPE_ID}`}>
+                                        {name}
+                                    </span>
+                                )}
+                            </HeadlessTippy>
+
+                            <HeadlessTippy
+                                placement="bottom"
+                                offset={[0, 10]}
+                                render={(attrs) => (
+                                    <div tabIndex="-1" {...attrs}>
+                                        {href && <div className={cx('library-href')}>{href}</div>}
+                                    </div>
+                                )}
+                            >
+                                {href && (
+                                    <span className={cx('link')}>
+                                        <BsLink45Deg />
+                                    </span>
+                                )}
+                            </HeadlessTippy>
+                        </div>
+                        <HeadlessTippy
+                            placement="top"
+                            render={(attrs) => (
+                                <div tabIndex="-1" {...attrs}>
+                                    {version && <div className={cx('tooltip-version')}>{version}</div>}
+                                </div>
+                            )}
+                        >
+                            {version && <span className={cx('version')}>{version}</span>}
+                        </HeadlessTippy>
+                    </Button>
+                </div>
 
                 {isCanEdit && (
-                    <div className={cx('edit-button-container')}>
-                        <Button
-                            className={cx('technology-button', 'move-button', {
-                                'sourcecode-list': type === 'SOURCECODE',
-                            })}
-                        >
+                    <div
+                        className={cx('edit-button-container', {
+                            'sourcecode-list': type === 'SOURCECODE',
+                        })}
+                    >
+                        <Button className={cx('technology-button', 'move-button')}>
                             <BiMove />
                         </Button>
 

@@ -10,6 +10,10 @@
     align-items: center;
     justify-content: center;
 
+    &.auth-layout {
+        inset: 0;
+    }
+
     &.inner {
         position: absolute;
         inset: 0;

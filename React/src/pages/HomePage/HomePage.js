@@ -9,7 +9,6 @@ import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
 import Loading from '~/components/Modal/Loading.js';
 import { JpgImages } from '~/components/Image/Images.js';
-import NotFound404 from '~/pages/CVPage/Components/404Page.js';
 
 const cx = classnames.bind(styles);
 
@@ -134,7 +133,9 @@ class HomePage extends PureComponent {
                     )}
 
                     {length <= 0 && this.props.allCVList !== undefined && (
-                        <NotFound404 text="Không tìm thấy danh sách CV" />
+                        <div className={cx('empty-product-list')}>
+                            <Image src={JpgImages.emptyProductList} className={cx('image')} />
+                        </div>
                     )}
 
                     {this.props.isLoading && <Loading text="Đang tải..." />}

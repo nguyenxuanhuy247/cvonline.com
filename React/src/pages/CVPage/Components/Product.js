@@ -573,7 +573,7 @@ class Product extends PureComponent {
                                         onSearchLibrary={() => this.handleSearchLibrary('FE', productID)}
                                     />
 
-                                    {!this.state.FE_isSearch && this.state.FE_isPagination && (
+                                    {!this.state.FE_isSearch && this.state.FE_isPagination && FETotalPage !== 0 && (
                                         <div className={cx('pagination-container')}>
                                             <Pagination
                                                 count={FETotalPage}
@@ -721,7 +721,7 @@ class Product extends PureComponent {
                                         onSearchLibrary={() => this.handleSearchLibrary('BE', productID)}
                                     />
 
-                                    {!this.state.BE_isSearch && this.state.BE_isPagination && (
+                                    {!this.state.BE_isSearch && this.state.BE_isPagination && BETotalPage !== 0 && (
                                         <div className={cx('pagination-container')}>
                                             <Pagination
                                                 count={BETotalPage}

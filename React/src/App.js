@@ -11,8 +11,8 @@ class App extends Component {
                 <AppRoutes />
 
                 <ToastContainer
-                    position="top-center"
-                    autoClose={5000}
+                    position="top-right"
+                    autoClose={3000}
                     hideProgressBar={false}
                     newestOnTop={false}
                     closeOnClick
@@ -21,7 +21,7 @@ class App extends Component {
                     draggable
                     pauseOnHover
                     theme="colored"
-                    style={{ width: 'fit-content', maxWidth: '100%', textAlign: 'center' }}
+                    style={{ width: 'fit-content', minWidth: '300px', textAlign: 'center' }}
                 />
             </div>
         );

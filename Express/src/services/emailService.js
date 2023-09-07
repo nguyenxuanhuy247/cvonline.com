@@ -47,7 +47,7 @@ export const handleSendEmailResetPassword = async (data) => {
               
                 <p>Cảm ơn bạn đã sử dụng dịch vụ.</p>
               
-                <p>CVonline</p>
+                <p>Team CV online</p>
               
                 <p style="font-size:14px;font-style:italic;text-align:center;display:block;color:#888">-- Đây là email tự động. Xin bạn vui lòng không gửi phản hồi vào hộp thư này --</p>
               </div>`,
