@@ -12,7 +12,6 @@ const initialState = {
         updateProduct: false,
         deleteProduct: false,
         moveProduct: false,
-
         changeUserID: false,
         search: false,
     },
@@ -367,8 +366,8 @@ const userReducer = (state = initialState, action) => {
         // CHANGE USER ID
         case actionNames.CHANGE_ID_START:
             return {
-                isLoading: { ...state.isLoading, changeUserID: true },
                 ...state,
+                isLoading: { ...state.isLoading, changeUserID: true },
             };
 
         case actionNames.CHANGE_ID_SUCCESS:
@@ -379,8 +378,8 @@ const userReducer = (state = initialState, action) => {
             };
         case actionNames.CHANGE_ID_FAILURE:
             return {
-                isLoading: { ...state.isLoading, changeUserID: false },
                 ...state,
+                isLoading: { ...state.isLoading, changeUserID: false },
             };
 
         default:

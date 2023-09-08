@@ -64,6 +64,9 @@ class PasswordSetting extends PureComponent {
 
             if (errorCode === 0) {
                 await this.setState({ isCurrentPasswordVerified: true });
+            } else if (errorCode === 32) {
+                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng đăng nhập lại', 3000);
+                this.props.userSignOut();
             } else {
                 await this.setState({ isCurrentPasswordVerified: false });
             }
@@ -94,13 +97,24 @@ class PasswordSetting extends PureComponent {
                             newPassword: Yup.string()
                                 .required('Nhập mật khẩu mới của bạn')
                                 .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
-                                .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự'),
+                                .max(25, 'Mật khẩu phải có độ dài tối đa 25 ký tự')
+                                .matches(/.*[A-Z].*/, 'Mật khẩu phải bao gồm chữ hoa')
+                                .matches(/.*[a-z].*/, 'Mật khẩu phải bao gồm chữ thường')
+                                .matches(/.*\d.*/, 'Mật khẩu phải bao gồm chữ số')
+                                .matches(/.*\W.*/, 'Mật khẩu phải bao gồm ký tự đặc biệt'),
                             newPasswordConfirmation: Yup.string()
                                 .required('Nhập lại mật khẩu mới để xác nhận')
                                 .oneOf([Yup.ref('newPassword'), null], 'Mật khẩu xác nhận không đúng'),
                         })}
                         onSubmit={async (values, actions) => {
                             const { id: userId } = this.props.owner ?? {};
+
+                            this.setState({
+                                isShowCurrentPassword: false,
+                                isShowNewPassword: false,
+                                isShowNewPasswordConfirmation: false,
+                            });
+
                             if (this.state.isCurrentPasswordVerified) {
                                 const data = {
                                     userId: userId,
@@ -114,6 +128,9 @@ class PasswordSetting extends PureComponent {
                                     Toast.TOP_CENTER_SUCCESS('Cập nhật mật khẩu mới thành công', 3000);
                                     actions.resetForm();
                                     this.setState({ startVerify: false, currentPassword: '' });
+                                } else if (errorCode === 10 || errorCode === 32) {
+                                    Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng đăng nhập lại', 3000);
+                                    this.props.userSignOut();
                                 }
                             }
                         }}
@@ -122,7 +139,7 @@ class PasswordSetting extends PureComponent {
                             <Form className={cx('change-password-form')} onSubmit={props.handleSubmit}>
                                 <div className={cx('form-group')}>
                                     <div className={cx('input-form-password')}>
-                                        <label htmlFor="current-password" className={cx('label')}>
+                                        <label htmlFor="current-password" className={cx('form-label')}>
                                             Mật khẩu hiện tại
                                         </label>
                                         <div className={cx('input-form-container')}>
@@ -144,10 +161,19 @@ class PasswordSetting extends PureComponent {
                                                     {this.props.isCurrentPasswordVerified ? (
                                                         <BsFillCheckCircleFill className={cx('icon', 'verified')} />
                                                     ) : (
-                                                        <AiFillCloseCircle className={cx('icon', 'error')} />
+                                                        <AiFillCloseCircle
+                                                            className={cx('icon', 'error')}
+                                                            onClick={() => {
+                                                                props.setFieldValue('currentPassword', '');
+                                                                this.setState({
+                                                                    currentPassword: '',
+                                                                    isCurrentPasswordVerified: false,
+                                                                });
+                                                            }}
+                                                        />
                                                     )}
 
-                                                    {this.props.isLoading_verifyCurrentPassword && (
+                                                    {this.props.isVerifyCurrentPasswordLoading && (
                                                         <Loading inner verify />
                                                     )}
                                                 </span>
@@ -169,7 +195,7 @@ class PasswordSetting extends PureComponent {
 
                                 <div className={cx('form-group')}>
                                     <div className={cx('input-form-password')}>
-                                        <label htmlFor="password" className={cx('label')}>
+                                        <label htmlFor="password" className={cx('form-label')}>
                                             Mật khẩu mới
                                         </label>
                                         <div className={cx('input-form-container')}>
@@ -197,7 +223,7 @@ class PasswordSetting extends PureComponent {
 
                                 <div className={cx('form-group')}>
                                     <div className={cx('input-form-password')}>
-                                        <label htmlFor="newPasswordConfirmation" className={cx('label')}>
+                                        <label htmlFor="newPasswordConfirmation" className={cx('form-label')}>
                                             Xác nhận mật khẩu mới
                                         </label>
                                         <div className={cx('input-form-container')}>
@@ -227,12 +253,13 @@ class PasswordSetting extends PureComponent {
                                     disabled={
                                         !props.values.currentPassword ||
                                         !props.values.newPassword ||
-                                        !props.values.newPasswordConfirmation
+                                        !props.values.newPasswordConfirmation ||
+                                        this.props.isUpdatePasswordLoading
                                     }
                                     type="submit"
                                     className={cx('save-btn')}
                                 >
-                                    Đổi mật khẩu
+                                    {!this.props.isUpdatePasswordLoading ? 'Đổi mật khẩu' : <Loading inner button />}
                                 </Button>
                             </Form>
                         )}
@@ -246,7 +273,8 @@ class PasswordSetting extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
-        isLoading_verifyCurrentPassword: state.app.isLoading.verifiedCurrentPassword,
+        isUpdatePasswordLoading: state.user.isLoading.updateUserInformation,
+        isVerifyCurrentPasswordLoading: state.app.isLoading.verifiedCurrentPassword,
         isCurrentPasswordVerified: state.app.isCurrentPasswordVerified,
     };
 };
@@ -255,6 +283,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         verifyCurrentPassword: (data) => dispatch(appActions.verifyCurrentPassword(data)),
         updateUserInformation: (data) => dispatch(userActions.updateUserInformation(data)),
+        userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };
 

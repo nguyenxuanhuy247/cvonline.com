@@ -18,7 +18,6 @@ class PersonalInfo extends PureComponent {
         super(props);
         this.state = {
             fullName: '',
-            isLoading: false,
             isOpenModal: false,
         };
     }
@@ -58,13 +57,10 @@ class PersonalInfo extends PureComponent {
     handleDeleteAccount = async () => {
         const { id: userId } = this.props?.owner ?? {};
 
-        await this.setState({ isLoading: true });
         const errorCode = await this.props.deleteAccount(userId);
-        await this.setState({ isLoading: false });
 
         if (errorCode === 0) {
             Toast.TOP_CENTER_SUCCESS('Xóa tài khoản thành công', 2000);
-            this.props.userSignOut();
         }
     };
 
@@ -81,8 +77,10 @@ class PersonalInfo extends PureComponent {
     }
 
     render() {
-        const isFilled = !!this.state.fullName;
-        const isEqual = this.props.owner?.fullName === this.state.fullName;
+        const isDisabled =
+            !this.state.fullName ||
+            this.props.owner?.fullName === this.state.fullName ||
+            this.props.isUpdateFullnameLoading;
 
         return (
             <AccountPage>
@@ -106,6 +104,7 @@ class PersonalInfo extends PureComponent {
                                     id="full-name"
                                     value={this.state.fullName}
                                     className={cx('form-input')}
+                                    placeholder="Nhập tên chủ sở hữu"
                                     spellCheck={false}
                                     onInput={(e) => this.handleChangeFullName(e)}
                                     onKeyDown={(e) => this.preventLoadFormWhenPressEnter(e)}
@@ -138,11 +137,11 @@ class PersonalInfo extends PureComponent {
                         </div>
 
                         <Button
-                            disabled={!isFilled || isEqual}
+                            disabled={isDisabled}
                             className={cx('save-btn')}
                             onClick={(e) => this.handleUpdateFullName(e)}
                         >
-                            Lưu
+                            {!this.props.isUpdateFullnameLoading ? 'Lưu' : <Loading inner button />}
                         </Button>
                     </form>
 
@@ -151,7 +150,7 @@ class PersonalInfo extends PureComponent {
                     </Button>
                 </div>
 
-                {this.state.isLoading && <Loading />}
+                {this.props.isDeleteAccountLoading && <Loading text="Đang xóa tài khoản" deleteAccount />}
 
                 <ConfirmDeleteAccountModal
                     isOpen={this.state.isOpenModal}
@@ -165,6 +164,8 @@ class PersonalInfo extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
+        isUpdateFullnameLoading: state.user.isLoading.updateUserInformation,
+        isDeleteAccountLoading: state.user.isLoading.deleteAccount,
         owner: state.user.owner,
     };
 };

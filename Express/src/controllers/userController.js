@@ -85,7 +85,7 @@ export const handleGetResetPassword = async (req, res) => {
 
     return res.render('reset-password-redirect.ejs', {
         message: 'Liên kết đã hết hiệu lực',
-        redirectSite: 'http://localhost:2407/forgot-password',
+        redirectURL: `${process.env.REACT_URL}/forgot-password`,
     });
 };
 
@@ -102,7 +102,11 @@ export const handlePostResetPassword = async (req, res) => {
                 .string()
                 .required('Hãy nhập mật khẩu mới')
                 .min(6, 'Mật khẩu phải có độ dài tối thiểu 6 ký tự')
-                .max(25, 'Mật khẩu chỉ được độ dài tối đa 25 ký tự'),
+                .max(25, 'Mật khẩu chỉ được độ dài tối đa 25 ký tự')
+                .matches(/.*\W.*/, 'Mật khẩu phải bao gồm ký tự đặc biệt')
+                .matches(/.*\d.*/, 'Mật khẩu phải bao gồm chữ số')
+                .matches(/.*[a-z].*/, 'Mật khẩu phải bao gồm chữ thường')
+                .matches(/.*[A-Z].*/, 'Mật khẩu phải bao gồm chữ hoa'),
         });
 
         try {
@@ -131,7 +135,7 @@ export const handlePostResetPassword = async (req, res) => {
     } else {
         return res.render('reset-password-redirect.ejs', {
             message: 'Liên kết đã hết hiệu lực',
-            redirectSite: 'http://localhost:2407/forgot-password',
+            redirectSite: `${process.env.REACT_URL}/forgot-password`,
         });
     }
 };
@@ -345,7 +349,7 @@ export const handleChangeUserID = async (req, res) => {
     } else if (message.errorCode === 31) {
         res.status(503).json(message);
     } else if (message.errorCode === 32) {
-        res.status(409).json(message);
+        res.status(404).json(message);
     }
 };
 

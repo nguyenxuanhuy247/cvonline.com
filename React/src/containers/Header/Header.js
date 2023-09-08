@@ -68,12 +68,13 @@ class Header extends PureComponent {
                             <Button className={cx('user')}>
                                 <Image
                                     src={this.props?.avatar || JpgImages.avatarPlaceholder}
-                                    wrapperClass={cx('wapper')}
                                     className={cx('avatar')}
                                     alt={this.props?.fullName}
                                     round
                                 />
-                                {this.props?.fullName && <span className={cx('fullname')}>{this.props?.fullName}</span>}
+                                <span className={cx('fullname')}>
+                                    {this.props?.fullName ? this.props?.fullName : 'Chưa đặt tên'}
+                                </span>
                             </Button>
                         </Menu>
                     </div>

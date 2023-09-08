@@ -72,7 +72,8 @@ class GetGoogleAppPasswordModal extends PureComponent {
                                 </Button>
                             </form>
                             <span className={cx('close')} onClick={onClose}>
-                                <MdClose />
+                                <MdClose className={cx('hide-on-mobile')} />
+                                <span className={cx('only-show-on-mobile')}>Hủy</span>
                             </span>
                         </div>
                         <div className={cx('warning')}>

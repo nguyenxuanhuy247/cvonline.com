@@ -15,7 +15,7 @@
         .message-container {
             margin: 4px 0;
             text-align: center;
-            height: 40px;
+            min-height: 40px;
 
             .error-message {
                 @include auth-form-error-message;
@@ -183,8 +183,4 @@
             margin-left: 12px;
         }
     }
-}
-
-// Mobile
-@media (max-width: 767px) {
 }

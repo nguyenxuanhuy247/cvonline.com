@@ -32,7 +32,7 @@ class ConfirmDeleteAccountModal extends PureComponent {
                                     Cảnh báo
                                 </div>
                                 <p className={cx('warning-text')}>
-                                    Nếu xóa tài khoản này, bạn sẽ không thể truy cập vào trang CV của bạn nữa
+                                    Nếu xóa tài khoản này, bạn sẽ không thể truy cập vào trang CV của bạn nữa.
                                 </p>
                             </div>
                         </div>

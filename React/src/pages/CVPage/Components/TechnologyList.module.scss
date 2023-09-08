@@ -2,12 +2,13 @@
 
 .technology-list {
     width: 100%;
+    display: flex;
+    flex-direction: column;
     text-align: center;
+    row-gap: 12px;
 
     &.sourcecode-list {
-        padding: 12px;
-        display: flex;
-        align-items: center;
+        padding: 20px 12px;
         column-gap: 16px;
         border: 1px dashed var(--bgc-user-infomation);
 
@@ -19,6 +20,7 @@
     .technology-list-inner {
         @include flex-max-width-100;
         display: flex;
+        justify-content: center;
         column-gap: 6px;
         row-gap: 6px;
         flex-wrap: wrap;
@@ -33,28 +35,9 @@
         }
     }
 
-    .empty-list {
-        margin-bottom: 12px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .empty-list-image {
-            width: 120px;
-            height: 120px;
-        }
-
-        .empty-list-text {
-            font-size: 1.5rem;
-            font-weight: 500;
-            color: var(--text-color-01);
-        }
-    }
-
     .add-technology-button {
         width: auto;
-        margin: 12px auto;
+        margin: 0 auto;
         text-align: center;
         padding: 8px;
         color: var(--primary-color);
@@ -62,11 +45,6 @@
         border-radius: 4px;
         font-size: 20px;
         column-gap: 8px;
-
-        &.sourcecode-list {
-            margin: 0;
-            white-space: nowrap;
-        }
 
         &:hover {
             cursor: pointer;
@@ -95,6 +73,14 @@
             color: #000;
         }
     }
+
+    &.can-not-edit {
+        &.technology-list {
+            .technology-list-inner {
+                justify-content: center;
+            }
+        }
+    }
 }
 
 .show-all-edit-button {
@@ -102,52 +88,17 @@
 }
 
 // =================================================================
-
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
-    .technology-list {
-        .technology-list-inner {
-            &.sourcecode-list {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: flex-start;
-                column-gap: 4px;
-                row-gap: 4px;
-                flex-wrap: wrap;
-            }
-
-            &.sourcecode-list {
-                text-align: center;
-            }
-        }
-    }
 }
 
+// =================================================================
+// Mobile
 @media (max-width: 767px) {
     .technology-list {
         &.sourcecode-list {
-            flex-direction: column;
-        }
-
-        .technology-list-inner {
-            &.sourcecode-list {
-                flex-direction: row;
-                justify-content: center;
-                text-align: center;
-                column-gap: 4px;
-                row-gap: 4px;
-                flex-wrap: wrap;
-            }
-
-            &.sourcecode-list {
-                text-align: left;
-            }
-        }
-
-        .add-technology-button {
-            &.sourcecode-list {
-                margin-top: 12px;
-                width: auto;
+            .technology-list-inner {
+                flex-direction: column;
             }
         }
     }

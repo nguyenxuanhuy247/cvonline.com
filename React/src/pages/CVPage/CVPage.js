@@ -18,7 +18,7 @@ import { MainLayout } from '~/layouts';
 
 import Product from '~/pages/CVPage/Components/Product.js';
 import ContentEditableTag from '~/pages/CVPage/Components/ContentEditableTag.js';
-import NotFound404 from '~/pages/CVPage/Components/404Page.js';
+import { NotFound404 } from '~/pages/CVPage/Components/404Page.js';
 
 import * as userActions from '~/store/actions';
 import styles from './CVPage.module.scss';
@@ -93,7 +93,7 @@ class PersonalLayout extends PureComponent {
                 const data = { userId: userId, [name]: value, label: label };
                 const errorCode = await this.props.updateUserInformation(data);
 
-                if (errorCode === 10) {
+                if (errorCode === 10 || errorCode === 32) {
                     this.props.userSignOut();
                     history.push('/signin');
                 }
@@ -469,9 +469,7 @@ class PersonalLayout extends PureComponent {
                                         </div>
 
                                         {!isCanEdit && this.props.productList?.length === 0 && (
-                                            <div className={cx('empty-product-list')}>
-                                                <Image src={JpgImages.emptyProductList} className={cx('image')} />
-                                            </div>
+                                            <NotFound404 text="Không có sản phẩm" />
                                         )}
 
                                         {isCanEdit && (
@@ -503,7 +501,7 @@ class PersonalLayout extends PureComponent {
                             </div>
                         </div>
                     ) : (
-                        this.props?.userInfo !== null && <NotFound404 />
+                        this.props?.userInfo !== null && <NotFound404 text="Không tìm thấy CV phù hợp" />
                     )}
                 </div>
             </MainLayout>

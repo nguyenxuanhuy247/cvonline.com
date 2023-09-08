@@ -194,21 +194,6 @@
             }
         }
     }
-
-    .empty-product-list {
-        height: calc(100vh - var(--header-height-pc));
-        flex: 1;
-        display: grid;
-        place-items: center;
-        padding: 12px;
-        background: #fff;
-
-        .image {
-            height: 100%;
-            width: 100%;
-            object-fit: contain;
-        }
-    }
 }
 
 // =================================================================
@@ -238,6 +223,7 @@
 
             .candidate {
                 flex-direction: column;
+                border-radius: 4px;
 
                 .avatar-name-job-title {
                     padding: 16px 12px;
@@ -249,44 +235,10 @@
                     width: 100%;
 
                     .project-technology {
-                        .project-stats {
-                            .text {
-                            }
-
-                            .number {
-                            }
-                        }
-
                         .technology-stats {
-                            .text {
-                            }
-
                             .listed {
                                 flex-direction: column;
                                 row-gap: 12px;
-
-                                .side {
-                                    .title {
-                                    }
-
-                                    .list {
-                                        .technology {
-                                            .image {
-                                            }
-
-                                            .name {
-                                            }
-                                        }
-                                    }
-
-                                    .empty-list {
-                                        .empty-list-image {
-                                        }
-
-                                        .empty-list-text {
-                                        }
-                                    }
-                                }
                             }
                         }
                     }

@@ -164,10 +164,10 @@
                 }
 
                 .technology-used {
+                    padding: 20px 12px;
                     font-family: var(--alexandria-font);
                     border: 1px dashed var(--green-color-01);
                     margin: 16px 0;
-                    padding: 12px;
 
                     &:hover {
                         border-style: solid;
@@ -211,13 +211,13 @@
                 }
 
                 .library-used {
+                    padding: 20px 12px;
                     font-family: var(--alexandria-font);
                     display: flex;
                     flex-direction: column;
                     row-gap: 12px;
                     position: relative;
                     border: 1px dashed var(--green-color-01);
-                    padding: 12px;
 
                     &:hover {
                         border-style: solid;
@@ -367,6 +367,7 @@
                     }
 
                     .pagination-container {
+                        margin-top: 12px;
                         display: grid;
                         place-items: center;
                     }
@@ -446,6 +447,7 @@
     }
 }
 
+// =================================================================
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
     .product-container {

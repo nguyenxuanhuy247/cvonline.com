@@ -14,14 +14,24 @@ import Loading from '~/components/Modal/Loading.js';
 const cx = className.bind(styles);
 
 class Auth extends PureComponent {
-    render() {
+    redirectToURLIfSignedIn = () => {
         const { history } = this.props;
         const { state } = this.props.location;
 
         if (this.props.isSignIn) {
             history.push(state?.from || '/');
         }
+    };
 
+    componentDidUpdate() {
+        this.redirectToURLIfSignedIn();
+    }
+
+    componentDidMount() {
+        this.redirectToURLIfSignedIn();
+    }
+
+    render() {
         return (
             <div className={cx('auth-container')}>
                 <div className={cx('inner')}>

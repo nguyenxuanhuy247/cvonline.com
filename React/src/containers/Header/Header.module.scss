@@ -71,26 +71,23 @@
             padding: 2px 8px 4px 4px;
             cursor: pointer;
 
-            .wapper {
-                width: auto;
-
-                .avatar {
-                    display: block;
-                    flex-shrink: 0;
-                    display: inline-flex;
-                    justify-content: center;
-                    align-items: center;
-                    width: 40px;
-                    height: 40px;
-                    font-size: 22px;
-                    background-color: #e5f7ed;
-                    border-radius: 50%;
-                    color: var(--primary-color);
-                    padding: 0;
-                    overflow: hidden;
-                    object-fit: cover;
-                    cursor: pointer;
-                }
+            .avatar {
+                display: block;
+                flex-shrink: 0;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+                background-color: #e5f7ed;
+                border-radius: 50%;
+                border: 1px solid transparent;
+                color: var(--primary-color);
+                padding: 0;
+                overflow: hidden;
+                object-fit: cover;
+                cursor: pointer;
             }
 
             .fullname {
@@ -174,6 +171,10 @@
             .user {
                 padding: 0;
                 background-color: #fff;
+
+                .avatar {
+                    border: 1px solid var(--main-border-grey);
+                }
 
                 .fullname {
                     display: none;

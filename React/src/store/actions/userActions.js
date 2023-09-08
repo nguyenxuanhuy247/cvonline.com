@@ -244,10 +244,8 @@ export const readHomeLayout = () => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
             }
 
             dispatch(readHomeLayout_Failure());
@@ -293,10 +291,8 @@ export const readUserInformation = (userId) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
             }
 
             dispatch(readUserInformation_Failure());
@@ -338,10 +334,8 @@ export const updateUserInformation = (userData) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            if (errorCode !== 10 && errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
             }
 
             dispatch(updateUserInformation_Failure());
@@ -437,10 +431,8 @@ export const readProduct = (userId) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
             }
 
             dispatch(readProduct_Failure());
@@ -802,10 +794,8 @@ export const changeUserID = (data) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
             }
 
             dispatch(changeUserID_Fail());

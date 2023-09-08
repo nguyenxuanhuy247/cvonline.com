@@ -18,6 +18,10 @@
     display: flex;
     align-items: center;
 
+    &.sourcecode-list {
+        align-self: flex-start;
+    }
+
     .button-conntainer {
         z-index: 2;
         width: 100%;
@@ -47,7 +51,7 @@
                 width: 24px;
                 height: 24px;
                 border-radius: 50%;
-                object-fit: contain;
+                object-fit: cover;
                 border: none;
                 border: 3px solid transparent;
             }
@@ -107,9 +111,8 @@
     .edit-button-container {
         position: absolute;
         z-index: 0;
-        min-width: 88px;
         column-gap: 2px;
-        right: 0;
+        right: 6px;
         display: flex;
         transition: 0.25s;
 
@@ -145,6 +148,8 @@
 
     &.sourcecode-list {
         .edit-button-container {
+            z-index: 4;
+            width: 88px;
             display: flex;
             opacity: 0;
             visibility: hidden;
@@ -195,13 +200,77 @@
         }
     }
 
-    &:hover {
-        .button-conntainer {
-            margin-right: 90px;
+    &.can-edit {
+        &.sourcecode-list {
+            &:hover {
+                .button-conntainer {
+                    margin-right: 0;
+                }
+            }
         }
 
-        .edit-button-container {
-            display: flex;
+        &:hover {
+            .button-conntainer {
+                margin-right: 90px;
+            }
+
+            .edit-button-container {
+                display: flex;
+            }
+        }
+    }
+}
+
+// =================================================================
+// Mobile
+@media (max-width: 767px) {
+    .button-and-edit-button-container {
+        &.can-edit {
+            &.sourcecode-list {
+                align-self: stretch;
+
+                .button-conntainer {
+                    transition: 0.15s ease-in-out;
+                }
+
+                .edit-button-container {
+                    z-index: 0;
+                    opacity: 1;
+                    visibility: visible;
+                    right: 0;
+                    top: 50%;
+                    transform: translate(0, -50%);
+                    left: auto;
+                    transition: none;
+                }
+
+                &.hover-button {
+                    .button-conntainer {
+                        margin-right: 90px;
+                    }
+
+                    .edit-button-container {
+                        margin-top: 0;
+                        right: 0;
+                        top: 50%;
+                        transform: translate(0, -50%);
+                    }
+                }
+
+                &:hover {
+                    .button-conntainer {
+                        margin-right: 90px;
+                    }
+
+                    .edit-button-container {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+
+        &.sourcecode-list {
+            align-self: stretch;
         }
     }
 }

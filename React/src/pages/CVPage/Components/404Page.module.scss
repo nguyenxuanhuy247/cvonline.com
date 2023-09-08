@@ -1,40 +1,62 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
-.not-found-section {
-    background-color: #f0f2f5;
+.not-found {
     min-height: calc(100vh - var(--header-height-pc));
+    flex: 1;
     display: grid;
     place-items: center;
+    padding: 12px;
+    background: #fff;
 
-    .not-found-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    .not-found-inner {
         text-align: center;
 
-        .number {
-            font-size: 20rem;
+        .image {
+            height: 500px;
+            width: 500px;
+            max-width: 100%;
+            object-fit: contain;
         }
 
         .text {
-            font-size: 3rem;
+            position: relative;
+            top: -30px;
+            font-size: 2.4rem;
+            font-weight: 500;
+            color: var(--text-color-01);
+            text-align: center;
         }
+    }
+}
+
+.empty-list {
+    margin: auto;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .text {
+        font-weight: 500;
+        color: var(--text-color-01);
     }
 }
 
 // =================================================================
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
-    .not-found-section {
+    .not-found {
         min-height: calc(100vh - 2 * var(--header-height-tablet));
 
-        .not-found-container {
-            .number {
-                font-size: 16rem;
-            }
-
-            .text {
-                font-size: 2.5rem;
+        .not-found-inner {
+            .image {
+                height: 480px;
+                width: 480px;
             }
         }
     }
@@ -43,16 +65,14 @@
 // =========================================================================
 // Mobile
 @media (max-width: 767px) {
-    .not-found-section {
+    .not-found {
         min-height: calc(100vh - 2 * var(--header-height-mobile));
 
-        .not-found-container {
-            .number {
-                font-size: 12rem;
-            }
-
-            .text {
-                font-size: 2rem;
+        .not-found-inner {
+            .image {
+                height: 400px;
+                width: 400px;
+                object-fit: contain;
             }
         }
     }

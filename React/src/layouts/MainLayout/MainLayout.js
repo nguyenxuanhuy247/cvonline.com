@@ -26,8 +26,9 @@ class MainLayout extends PureComponent {
                 } else if (window.scrollY > 0) {
                     goToTopButton.style.display = 'grid';
                     goToBottomButton.style.display = 'grid';
-                } else if (window.scrollY === 0) {
+                } else if (window.scrollY <= 50) {
                     goToTopButton.style.display = 'none';
+                    goToBottomButton.style.display = 'none';
                 }
             };
 
@@ -45,6 +46,7 @@ class MainLayout extends PureComponent {
 
     render() {
         const { isShowScrollButtons } = this.props;
+        
         return (
             <div className={cx('main-layout')}>
                 <Header />

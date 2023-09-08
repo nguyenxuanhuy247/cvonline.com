@@ -9,10 +9,9 @@ import Button from '~/components/Button/Button.js';
 import Technology from '~/pages/CVPage/Components/Technology.js';
 import CreateEditTechnology from '~/pages/CVPage/Components/CreateEditTechnology.js';
 import * as userActions from '~/store/actions';
-import Image from '~/components/Image/Image.js';
-import { JpgImages } from '~/components/Image/Images.js';
 
 import styles from './TechnologyList.module.scss';
+import { EmptyList404 } from './404Page';
 
 const cx = classnames.bind(styles);
 
@@ -40,7 +39,7 @@ class TechnologyList extends PureComponent {
 
     // =================================================================
 
-    handleSetListAndSaveToDatabase = async (newState) => {
+    handleSetListAndSaveToDatabase = async (newState, isCanEdit) => {
         const { index: productIndex } = this.props ?? {};
         const { id: userId } = this.props?.userInfo ?? {};
 
@@ -50,7 +49,7 @@ class TechnologyList extends PureComponent {
 
         const isEqual = _.isEqual(this.state.list, newState);
 
-        if (!isEqual && newState.length > 0) {
+        if (!isEqual && newState.length > 0 && isCanEdit) {
             const oldData = newState;
             const newData = this.state.list;
 
@@ -63,7 +62,7 @@ class TechnologyList extends PureComponent {
 
             const getData = {
                 type: this.props?.type,
-                label: `Sắp xếp danh sách ${this.props?.label}`,
+                label: `${this.props?.label}`,
                 userId: userId,
                 productId: this.props?.productId,
                 key: this.props?.keyprop,
@@ -99,15 +98,19 @@ class TechnologyList extends PureComponent {
 
         return (
             <div
-                className={cx('technology-list', {
-                    'sourcecode-list': type === 'SOURCECODE',
-                })}
+                className={cx(
+                    'technology-list',
+                    {
+                        'sourcecode-list': type === 'SOURCECODE',
+                    },
+                    { 'can-not-edit': !isCanEdit },
+                )}
             >
                 {this.state.list?.length > 0 && (
                     <ReactSortable
                         disabled={!isCanEdit}
                         list={this.state.list}
-                        setList={(newState) => this.handleSetListAndSaveToDatabase(newState)}
+                        setList={(newState) => this.handleSetListAndSaveToDatabase(newState, isCanEdit)}
                         id={this.props.technologyListID}
                         className={cx('technology-list-inner', {
                             'sourcecode-list': type === 'SOURCECODE',
@@ -150,16 +153,7 @@ class TechnologyList extends PureComponent {
                     </ReactSortable>
                 )}
 
-                {this.state.list?.length === 0 && (
-                    <div
-                        className={cx('empty-list', {
-                            'sourcecode-list': type === 'SOURCECODE',
-                        })}
-                    >
-                        <Image src={JpgImages.emptyProductIcon} className={cx('empty-list-image')} />
-                        <span className={cx('empty-list-text')}>Danh sách trống</span>
-                    </div>
-                )}
+                {this.state.list?.length === 0 && <EmptyList404 />}
 
                 {isCanEdit &&
                     (!this.state.isCreateTechnology ? (

@@ -161,7 +161,7 @@ class CreateEditTechnology extends PureComponent {
         return (
             <div
                 className={cx('create-edit-technology', {
-                    'create-source-code': !isedit && type === 'SOURCECODE',
+                    'source-code': type === 'SOURCECODE',
                     'edit-technology': isedit,
                 })}
                 id={id}

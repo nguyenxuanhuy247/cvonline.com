@@ -1,3 +1,5 @@
+@import '../../../components/GlobalStyles/GlobalStyles.module.scss';
+
 .user-id-setting {
     display: flex;
     flex-direction: column;
@@ -7,17 +9,18 @@
     background-color: #fff;
 
     .title {
-        font-size: 2.2rem;
+        font-size: 2rem;
         font-weight: 600;
     }
 
     .required {
         display: flex;
-        align-items: center;
         column-gap: 4px;
-        font-size: 1.5rem;
+        font-size: 1.4rem;
+        line-height: 1.4;
         font-weight: 300;
         color: red;
+        align-items: center;
     }
 
     .form {
@@ -32,11 +35,11 @@
                 align-items: center;
                 column-gap: 12px;
 
-                .label {
-                    width: 200px;
-                    text-align: right;
-                    color: #666;
-                    font-weight: 600;
+                .form-label {
+                    width: 120px;
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                    text-align: left;
                 }
 
                 .form-input-container {
@@ -86,19 +89,23 @@
         }
 
         .message-container {
-            height: 20px;
+            min-height: 40px;
 
             .message {
-                margin-left: 130px;
+                margin-left: 132px;
                 font-size: 1.4rem;
                 font-weight: 400;
 
-                &.OK {
-                    color: var(--primary-color);
+                &.verified {
+                    @include auth-form-success-message;
+                    margin-top: 0;
+                    width: initial;
                 }
 
                 &.error {
-                    color: red;
+                    @include auth-form-error-message;
+                    margin-top: 0;
+                    width: initial;
                 }
             }
         }
@@ -106,7 +113,7 @@
         .save-btn {
             width: 200px;
             align-self: flex-end;
-            margin-top: 16px;
+            margin-top: 12px;
             margin-left: auto;
             margin-right: auto;
             background-color: #00b14f;
@@ -131,7 +138,7 @@
                 .form-group {
                     flex-direction: column;
                     align-items: flex-start;
-                    row-gap: 4px;
+                    row-gap: 6px;
 
                     .form-input-container {
                         width: 100%;

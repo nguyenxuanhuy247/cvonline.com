@@ -8,7 +8,7 @@ import { MainLayout } from '~/layouts';
 import Image from '~/components/Image/Image.js';
 import * as userActions from '~/store/actions';
 import Loading from '~/components/Modal/Loading.js';
-import { JpgImages } from '~/components/Image/Images.js';
+import { EmptyList404, NotFound404 } from '~/pages/CVPage/Components/404Page.js';
 
 const cx = classnames.bind(styles);
 
@@ -75,15 +75,7 @@ class HomePage extends PureComponent {
                                                                         })}
                                                                     </div>
                                                                 ) : (
-                                                                    <div className={cx('empty-list')}>
-                                                                        <Image
-                                                                            src={JpgImages.emptyProductIcon}
-                                                                            className={cx('empty-list-image')}
-                                                                        />
-                                                                        <span className={cx('empty-list-text')}>
-                                                                            Danh sách trống
-                                                                        </span>
-                                                                    </div>
+                                                                    <EmptyList404 />
                                                                 )}
                                                             </div>
                                                             <div className={cx('side')}>
@@ -109,15 +101,7 @@ class HomePage extends PureComponent {
                                                                             );
                                                                         })
                                                                     ) : (
-                                                                        <div className={cx('empty-list')}>
-                                                                            <Image
-                                                                                src={JpgImages.emptyProductIcon}
-                                                                                className={cx('empty-list-image')}
-                                                                            />
-                                                                            <span className={cx('empty-list-text')}>
-                                                                                Danh sách trống
-                                                                            </span>
-                                                                        </div>
+                                                                        <EmptyList404 />
                                                                     )}
                                                                 </div>
                                                             </div>
@@ -133,9 +117,7 @@ class HomePage extends PureComponent {
                     )}
 
                     {length <= 0 && this.props.allCVList !== undefined && (
-                        <div className={cx('empty-product-list')}>
-                            <Image src={JpgImages.emptyProductList} className={cx('image')} />
-                        </div>
+                        <NotFound404 text="Không tìm thấy dánh sách CV" />
                     )}
 
                     {this.props.isLoading && <Loading text="Đang tải..." />}

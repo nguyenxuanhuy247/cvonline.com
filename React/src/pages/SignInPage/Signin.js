@@ -49,6 +49,13 @@ class SignIn extends Component {
             size: 'large',
             type: 'standard',
         });
+
+        const googleSigninContainer = document.getElementById('google_id_signin-container');
+        const googleSignin = document.getElementById('google_id_signin');
+        const context = googleSignin.innerHTML;
+        if (!context) {
+            googleSigninContainer.style.display = 'none';
+        }
     };
 
     render() {
@@ -66,7 +73,11 @@ class SignIn extends Component {
                             password: Yup.string()
                                 .required('Hãy nhập mật khẩu của bạn')
                                 .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
-                                .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự'),
+                                .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự')
+                                .matches(/.*[A-Z].*/, 'Mật khẩu phải bao gồm chữ hoa')
+                                .matches(/.*[a-z].*/, 'Mật khẩu phải bao gồm chữ thường')
+                                .matches(/.*\d.*/, 'Mật khẩu phải bao gồm chữ số')
+                                .matches(/.*\W.*/, 'Mật khẩu phải bao gồm ký tự đặc biệt'),
                         })}
                         onSubmit={async (values, actions) => {
                             this.setState({ isShowPassword: false });
@@ -153,7 +164,7 @@ class SignIn extends Component {
                         )}
                     </Formik>
 
-                    <div className={cx('signin-with-google')}>
+                    <div id="google_id_signin-container" className={cx('signin-with-google')}>
                         <p className={cx('text')}>Hoặc đăng nhập bằng</p>
                         <div id="google_id_signin"></div>
                     </div>

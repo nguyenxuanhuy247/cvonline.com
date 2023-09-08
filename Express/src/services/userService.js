@@ -1088,7 +1088,7 @@ export const handleChangeUserID = async (data) => {
                 };
             } else {
                 return {
-                    errorCode: 33,
+                    errorCode: 32,
                     errorMessage: `Không tìm thấy ID mới của người dùng`,
                 };
             }

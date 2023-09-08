@@ -1,25 +1,28 @@
 @import '../../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .create-edit-technology {
+    width: 400px;
+    max-width: 100%;
     position: relative;
     font-family: var(--alexandria-font);
     padding: 8px;
-    margin: 12px auto;
+    margin: 0 auto;
     border: 1px dashed #333;
-    max-width: 100%;
-
-    &.create-source-code {
-        flex-shrink: 0;
-        width: 46%;
-        margin: 0;
-    }
-
-    &.edit-technology {
-        margin: 0;
-    }
 
     &:hover {
         border: 1px solid var(--primary-color);
+    }
+
+    &.edit-technology {
+        margin: 0 auto;
+    }
+
+    &.source-code {
+        margin: 0 auto;
+
+        &.edit-technology {
+            margin: 0;
+        }
     }
 
     .info {
@@ -28,10 +31,10 @@
         row-gap: 6px;
 
         .heading {
-            font-size: 1.5rem;
+            padding: 8px 12px;
+            font-size: 1.6rem;
             font-weight: 400;
             text-align: center;
-            padding: 12px;
             color: #fff;
             background-color: var(--button-bgc-green-01);
         }
@@ -116,29 +119,12 @@
     }
 }
 
+// =================================================================
 // Tablet
 @media (min-width: 768px) and (max-width: 991px) {
-    .create-edit-technology {
-        width: 400px;
-        
-        &.edit-technology {
-            margin: 0;
-        }
-    }
 }
 
+// =================================================================
 // Mobile
 @media (max-width: 767px) {
-    .create-edit-technology {
-        width: 400px;
-
-        &.create-source-code {
-            margin-top: 12px;
-            width: 400px;
-        }
-
-        &.edit-technology {
-            margin: 0 auto;
-        }
-    }
 }

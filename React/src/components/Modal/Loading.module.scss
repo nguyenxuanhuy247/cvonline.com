@@ -147,6 +147,18 @@
             }
         }
     }
+
+    &.delete-account {
+        background-color: rgba(0, 0, 0, 0.6);
+        inset: 0;
+        z-index: 20;
+
+        .loading {
+            &::before {
+                border-color: red transparent;
+            }
+        }
+    }
 }
 
 @keyframes spinner {

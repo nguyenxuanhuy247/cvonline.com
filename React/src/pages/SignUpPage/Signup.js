@@ -65,7 +65,11 @@ class Signup extends Component {
                                 password: Yup.string()
                                     .required('Hãy nhập mật khẩu của bạn')
                                     .min(6, 'Mật khẩu phải có độ dài từ 6 ký tự')
-                                    .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự'),
+                                    .max(25, 'Mật khẩu phải có độ dài nhỏ hơn 25 ký tự')
+                                    .matches(/.*[A-Z].*/, 'Mật khẩu phải bao gồm chữ hoa')
+                                    .matches(/.*[a-z].*/, 'Mật khẩu phải bao gồm chữ thường')
+                                    .matches(/.*\d.*/, 'Mật khẩu phải bao gồm chữ số')
+                                    .matches(/.*\W.*/, 'Mật khẩu phải bao gồm ký tự đặc biệt'),
                                 confirmedPassword: Yup.string()
                                     .required('Hãy nhập mật khẩu xác nhận')
                                     .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận chưa đúng'),
@@ -77,7 +81,6 @@ class Signup extends Component {
                                 });
 
                                 this.props.userSignUp(values);
-                                console.log(111111111111111111111)
                             }}
                         >
                             {(props) => (
@@ -156,7 +159,7 @@ class Signup extends Component {
                                         ) : (
                                             <ul className={cx('rule-password')}>
                                                 <li>Mật khẩu từ 6 đến 25 ký tự</li>
-                                                <li>Bao gồm chữ hoa, chữ thường và ký tự số</li>
+                                                <li>Bao gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt</li>
                                             </ul>
                                         )}
                                     </div>

@@ -58,8 +58,9 @@ export const verifyUserID = (userID) => {
                 Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Không xác thực được ID người dùng', 3000);
             }
         } catch (error) {
-            if (error.status === 503) {
-                Toast.TOP_CENTER_ERROR(error.message, 3000);
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            if (errorCode !== 32) {
+                Toast.TOP_CENTER_ERROR(errorMessage || 'Xảy ra lỗi! Không xác thực được ID người dùng', 3000);
             }
 
             dispatch(verifyUserID_Fail());
@@ -98,9 +99,9 @@ export const verifyCurrentPassword = (data) => {
                 return errorCode;
             }
         } catch (error) {
-            const { errorCode } = error.response?.data ?? {};
-            if (error.status === 503) {
-                Toast.TOP_CENTER_ERROR(error.message, 3000);
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+            if (errorCode !== 32 && errorCode !== 33) {
+                Toast.TOP_CENTER_ERROR(errorMessage || 'Xảy ra lỗi! Không xác thực được mật khẩu hiện tại', 3000);
             }
 
             dispatch(verifyCurrentPassword_Fail());
