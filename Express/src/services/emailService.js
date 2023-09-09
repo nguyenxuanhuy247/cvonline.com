@@ -18,7 +18,7 @@ export const handleSendEmailResetPassword = async (data) => {
             const secret = process.env.ACCESS_TOKEN_SECRET + user.password;
             const payload = { id: user.id, email: user.email };
             var token = jwt.sign(payload, secret, { expiresIn: '10h' });
-            const link = `${process.env.EXPRESS_URL}/reset-password/${user.id}/${token}`;
+            const link = `${process.env.EXPRESS_BACKEND_URL}/reset-password/${user.id}/${token}`;
 
             const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
@@ -108,7 +108,9 @@ export const handleSendCVByEmail = async (data) => {
                         { path: './src/public/img/cv-ung-vien.png', cid: 'logo' },
                     ],
                     html: `<div style="background-color: #f3f3f3; padding: 24px 0 80px; ">
-                <a href="${process.env.REACT_URL}" target="_blank" rel="noreferrer" style="text-decoration: none;">
+                <a href="${
+                    process.env.EXPRESS_FRONTEND_URL
+                }" target="_blank" rel="noreferrer" style="text-decoration: none;">
                   <img src="cid:logo" alt="${user.fullName}"
                     style="  
                       display: block;
@@ -321,7 +323,7 @@ export const handleSendCVByEmail = async (data) => {
                             border-radius: 4px;
                             cursor: pointer;
                           "
-                          href="${process.env.REACT_URL}/${user.id}"
+                          href="${process.env.EXPRESS_FRONTEND_URL}/${user.id}"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -356,7 +358,7 @@ export const handleSendCVByEmail = async (data) => {
                           color: #888;
                         "
                       >
-                        *** Email được gửi bởi <a href="${process.env.REACT_URL}" target="_blank"
+                        *** Email được gửi bởi <a href="${process.env.EXPRESS_FRONTEND_URL}" target="_blank"
                         rel="noreferrer" style="text-decoration: none;">cvonline.com</a> - sản phẩm của Nguyễn Xuân Huy
                         ***
                       </p>
