@@ -49,6 +49,7 @@
     }
 }
 
+// =================================================================
 // Mobile
 @media (max-width: 767px) {
     .image-display {
@@ -63,6 +64,7 @@
         flex-wrap: wrap;
 
         .btn {
+            height: 36px;
             min-width: 90px;
             padding: 8px 12px;
         }

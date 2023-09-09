@@ -21,7 +21,7 @@ export const userSignIn = (userData) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(userSignIn_Fail());
@@ -64,7 +64,7 @@ export const userSignUpStart = (userData) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(userSignUp_Fail());
@@ -93,6 +93,7 @@ export const deleteAccount = (userId) => {
             let res = await userService.deleteAccount(userId);
             const { errorCode, errorMessage } = res ?? {};
             if (errorCode === 0) {
+                Toast.TOP_CENTER_SUCCESS('Xóa tài khoản thành công', 2000);
                 dispatch(deleteAccount_Success());
 
                 return errorCode;
@@ -108,7 +109,7 @@ export const deleteAccount = (userId) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(userForgotPassword_Failure());
@@ -151,10 +152,8 @@ export const userForgotPassword = (data) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(userForgotPassword_Failure());
@@ -204,7 +203,7 @@ export const readSearch = (searchValue) => {
             if (errorCode === 31) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else if (!errorCode) {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(readSearch_Failure(data));
@@ -238,14 +237,14 @@ export const readHomeLayout = () => {
             if (errorCode === 0) {
                 dispatch(readHomeLayout_Success(data));
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
                 dispatch(readHomeLayout_Failure());
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(readHomeLayout_Failure());
@@ -292,7 +291,7 @@ export const readUserInformation = (userId) => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(readUserInformation_Failure());
@@ -335,7 +334,7 @@ export const updateUserInformation = (userData) => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 10 && errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(updateUserInformation_Failure());
@@ -386,7 +385,7 @@ export const createProduct = (userId) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(createProduct_Failure());
@@ -432,7 +431,7 @@ export const readProduct = (userId) => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(readProduct_Failure());
@@ -480,7 +479,7 @@ export const updateProduct = (productData, index, updatedItem) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(updateProduct_Failure());
@@ -527,7 +526,7 @@ export const deleteProduct = (productId, index) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(deleteProduct_Failure());
@@ -575,7 +574,7 @@ export const moveProduct = (productData, index) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(moveProduct_Failure());
@@ -626,7 +625,7 @@ export const createTechnology = (technologyData, productIndex) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(createTechnology_Failure());
@@ -670,7 +669,7 @@ export const updateTechnology = (technologyData, productIndex) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(updateTechnology_Failure());
@@ -710,7 +709,7 @@ export const dragAndDropTechology = (technologyData, productIndex) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(dragAndDropTechology_Failure());
@@ -752,7 +751,7 @@ export const deleteTechnology = (technologyData, productIndex) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(deleteTechnology_Failure());
@@ -795,7 +794,7 @@ export const changeUserID = (data) => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Xảy ra lỗi! Vui lòng thử lại', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(changeUserID_Fail());
@@ -823,28 +822,43 @@ export const changeUserID_Fail = () => ({
 // SEND CV BY EMAIL
 export const SendCVByEmail = (data) => {
     return async (dispatch) => {
-        dispatch(changeUserID_Start());
+        dispatch(SendCVByEmail_Start());
         try {
             let res = await userService.SendCVByEmail(data);
             const { errorCode, errorMessage } = res ?? {};
             if (errorCode === 0) {
                 Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
-                return errorCode;
+                dispatch(SendCVByEmailD_Success());
             } else {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                return errorCode;
+                dispatch(SendCVByEmailD_Success());
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Xảy ra lỗi! Vui lòng thử lại', 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                dispatch(SendCVByEmail_Fail(errorCode));
+            } else if (errorCode === 32) {
+                Toast.TOP_CENTER_ERROR('Lỗi hệ thống! Vui lòng đăng nhập lại ☹️', 3000);
+                dispatch(SendCVByEmail_Fail(errorCode));
+                window.location.href = `${process.env.REACT_APP_FRONTEND_URL}signin`;
             }
 
             console.log('An error in SendCVByEmail() - userActions.js: ', error);
-            return errorCode;
         }
     };
 };
+
+export const SendCVByEmail_Start = () => ({
+    type: actionNames.SEND_CV_BY_EMAIL_START,
+});
+
+export const SendCVByEmailD_Success = () => ({
+    type: actionNames.SEND_CV_BY_EMAIL_SUCCESS,
+});
+
+export const SendCVByEmail_Fail = (data) => ({
+    type: actionNames.SEND_CV_BY_EMAIL_FAILURE,
+    payload: data,
+});

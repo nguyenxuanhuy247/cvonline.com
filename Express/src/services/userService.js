@@ -51,7 +51,7 @@ const getUserInfo = async (isEmail, input) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tải thông tin ứng viên thất bại`,
+            errorMessage: `Lỗi Server! Không tải được thông tin ứng viên ☹️`,
         };
     }
 };
@@ -101,7 +101,7 @@ export const postUserSignIn = async (data) => {
                 } else {
                     return {
                         errorCode: 32,
-                        errorMessage: `Chưa thiết lập mật khẩu`,
+                        errorMessage: `Chưa thiết lập mật khẩu. Hãy nhấn vào "Quên mật khẩu ?"`,
                     };
                 }
             } else {
@@ -148,7 +148,7 @@ export const postUserSignIn = async (data) => {
         console.log('An error in postUserSignIn() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Vui lòng đăng nhập lại sau`,
+            errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
         };
     }
 };
@@ -197,7 +197,7 @@ export const postUserSignUp = async (data) => {
         console.log('An error in postUserSignUp() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Vui lòng đăng ký lại sau`,
+            errorMessage: `Lỗi Server! Không thể đăng ký tài khoản ☹️`,
         };
     }
 };
@@ -218,7 +218,7 @@ export const deleteAccount = async (data) => {
         console.log('An error in deleteAccount() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Vui lòng thử lại sau`,
+            errorMessage: `Lỗi Server! Không thể xóa tài khoản ☹️`,
         };
     }
 };
@@ -328,7 +328,7 @@ export const handleGetSearch = async (data) => {
         console.log('An error in handleGetSearch() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tìm kiếm sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Tìm kiếm sản phẩm thất bại`,
         };
     }
 };
@@ -429,7 +429,7 @@ export const handleGetHomeLayout = async () => {
         console.log('An error in handleGetHomeLayout() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tải danh sách CV thất bại`,
+            errorMessage: `Lỗi Server! Tải danh sách CV thất bại`,
         };
     }
 };
@@ -448,7 +448,7 @@ export const handleGetUserInformation = async (data) => {
         console.log('An error in handleGetUserInformation() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tải thông tin ứng viên thất bại`,
+            errorMessage: `Lỗi Server! Tải thông tin ứng viên thất bại`,
         };
     }
 };
@@ -508,7 +508,7 @@ export const handleUpdateUserInformation = async (data) => {
         console.log('An error in handleUpdateUserInformation() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Cập nhật ${label} thất bại`,
+            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại`,
         };
     }
 };
@@ -567,7 +567,7 @@ export const handleCreateProduct = async (data) => {
         console.log('An error in handleCreateProduct() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tạo sản phẩm mới thất bại`,
+            errorMessage: `Lỗi Server! Tạo sản phẩm mới thất bại`,
         };
     }
 };
@@ -720,7 +720,7 @@ export const handleGetProduct = async (data) => {
         console.log('An error in handleGetProductList() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tải danh sách sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Tải danh sách sản phẩm thất bại`,
         };
     }
 };
@@ -761,7 +761,7 @@ export const handleUpdateProduct = async (data) => {
         console.log('An error in handleUpdateProduct() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Cập nhật ${label} thất bại`,
+            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại`,
         };
     }
 };
@@ -794,7 +794,7 @@ export const handleDeleteProduct = async (data) => {
         console.log('An error in handleDeleteProduct() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Xóa sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Xóa sản phẩm thất bại`,
         };
     }
 };
@@ -834,7 +834,7 @@ export const handleMoveProduct = async (data) => {
         console.log('An error in handleMoveProduct() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Di chuyển sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Di chuyển sản phẩm thất bại`,
         };
     }
 };
@@ -890,7 +890,7 @@ const handleFindAllTechnologyList = async (data, CRUD) => {
         console.log('An error in handleFindAllTechnologyList() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tải danh sách khi ${CRUD} ${label} thất bại`,
+            errorMessage: `Lỗi Server! Tải danh sách khi ${CRUD} ${label} thất bại`,
         };
     }
 };
@@ -950,7 +950,7 @@ export const handleCreateTechnology = async (data) => {
         console.log('An error in handleCreateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Tạo mới ${label} thất bại`,
+            errorMessage: `Lỗi Server! Tạo mới ${label} thất bại`,
         };
     }
 };
@@ -986,7 +986,7 @@ export const handleUpdateTechnology = async (data) => {
         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Cập nhật ${label} thất bại`,
+            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại`,
         };
     }
 };
@@ -1018,7 +1018,7 @@ export const handleUpdateMultipleTechnologies = async (data) => {
         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Sắp xếp danh sách ${label} thất bại`,
+            errorMessage: `Lỗi Server! Sắp xếp danh sách ${label} thất bại`,
         };
     }
 };
@@ -1048,7 +1048,7 @@ export const handleDeleteTechnology = async (data) => {
         console.log('An error in handleDeleteTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Xóa ${label} thất bại`,
+            errorMessage: `Lỗi Server! Xóa ${label} thất bại`,
         };
     }
 };
@@ -1102,7 +1102,7 @@ export const handleChangeUserID = async (data) => {
         console.log('An error in handleChangeUserID() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Cập nhật ID người dùng thất bại`,
+            errorMessage: `Lỗi Server! Cập nhật ID người dùng thất bại`,
         };
     }
 };

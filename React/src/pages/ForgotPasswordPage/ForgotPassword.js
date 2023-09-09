@@ -61,12 +61,14 @@ class ForgotPassword extends Component {
                                 .required('Hãy nhập địa chỉ email của bạn'),
                         })}
                         onSubmit={async (values, actions) => {
-                            const errorCode = await this.props.userForgotPassword(values);
-                            if (errorCode === 0) {
-                                actions.resetForm();
-                                this.setState({ isResetSucceeded: true, userEmail: '' });
-                            } else {
-                                this.setState({ isResetSucceeded: false });
+                            if (this.props.isVerified) {
+                                const errorCode = await this.props.userForgotPassword(values);
+                                if (errorCode === 0) {
+                                    actions.resetForm();
+                                    this.setState({ isResetSucceeded: true, userEmail: '' });
+                                } else {
+                                    this.setState({ isResetSucceeded: false });
+                                }
                             }
                         }}
                     >
@@ -86,7 +88,7 @@ class ForgotPassword extends Component {
                                         </p>
                                     ) : (
                                         <>
-                                            {!this.props.isLoading_verifyEmail &&
+                                            {!this.props.isVerifyEmailLoading &&
                                                 this.state.userEmail &&
                                                 (this.props.isVerified ? (
                                                     <p className={cx('message', 'OK', 'hide')}>
@@ -98,7 +100,7 @@ class ForgotPassword extends Component {
                                                     </p>
                                                 ))}
 
-                                            {!this.props.isLoading_verifyEmail && (
+                                            {!this.props.isVerifyEmailLoading && (
                                                 <ErrorMessage name="email">
                                                     {(msg) => (
                                                         <div
@@ -145,7 +147,7 @@ class ForgotPassword extends Component {
                                                     />
                                                 )}
 
-                                                {this.props.isLoading_verifyEmail && <Loading inner verify />}
+                                                {this.props.isVerifyEmailLoading && <Loading inner verify />}
                                             </span>
                                         )}
                                     </div>
@@ -154,9 +156,9 @@ class ForgotPassword extends Component {
                                 <Button
                                     type="submit"
                                     className={cx('submit-btn')}
-                                    disabled={!this.props.isVerified || !this.state.userEmail}
+                                    disabled={this.props.isVerifyEmailLoading}
                                 >
-                                    {this.props.isLoading_forgotPassword ? <Loading inner auth /> : `Tạo lại mật khẩu`}
+                                    {this.props.isForgotPasswordLoading ? <Loading inner auth /> : `Tạo lại mật khẩu`}
                                 </Button>
                             </Form>
                         )}
@@ -179,8 +181,8 @@ class ForgotPassword extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        isLoading_forgotPassword: state.user.isLoading.forgotPassword,
-        isLoading_verifyEmail: state.app.isLoading.verifiedUserEmail,
+        isForgotPasswordLoading: state.user.isLoading.forgotPassword,
+        isVerifyEmailLoading: state.app.isLoading.verifiedUserEmail,
         isVerified: state.app.isUserEmailVerified,
     };
 };

@@ -34,7 +34,7 @@ module.exports = {
                 type: Sequelize.TEXT('long'),
             },
             userId: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
             },
             productId: {
                 type: Sequelize.INTEGER,

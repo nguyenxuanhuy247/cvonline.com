@@ -39,7 +39,7 @@ export const checkReqVerifyCurrentPassword = (req, res, next) => {
 
     if (!currentPassword) {
         return res.status(400).json({
-            errorCode: 11,
+            errorCode: 10,
             errorMessage: 'Vui lòng nhập mật khẩu hiện tại',
         });
     }

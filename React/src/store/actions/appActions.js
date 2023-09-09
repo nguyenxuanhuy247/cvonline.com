@@ -21,8 +21,8 @@ export const verifyUserEmail = (userEmail) => {
             }
         } catch (error) {
             const { errorCode } = error.response?.data ?? {};
-            if (error.status === 503) {
-                Toast.TOP_CENTER_ERROR(error.message, 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_CENTER_ERROR(error.message || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
             dispatch(verifyUserEmail_Fail());
             console.log('An error in verifyUserEmail() - appActions.js: ', error);
@@ -44,6 +44,7 @@ export const verifyUserEmail_Fail = () => ({
     type: actionNames.VERIFY_EMAIL_FAILURE,
 });
 
+// =================================================================
 // VERIFY USER ID
 export const verifyUserID = (userID) => {
     return async (dispatch) => {
@@ -55,12 +56,12 @@ export const verifyUserID = (userID) => {
                 dispatch(verifyUserID_Success());
             } else {
                 dispatch(verifyUserID_Fail());
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Không xác thực được ID người dùng', 3000);
+                Toast.TOP_CENTER_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             if (errorCode !== 32) {
-                Toast.TOP_CENTER_ERROR(errorMessage || 'Xảy ra lỗi! Không xác thực được ID người dùng', 3000);
+                Toast.TOP_CENTER_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(verifyUserID_Fail());
@@ -81,6 +82,7 @@ export const verifyUserID_Fail = () => ({
     type: actionNames.VERIFY_ID_FAILURE,
 });
 
+// =================================================================
 // VERIFY CURRENT PASSWORD
 export const verifyCurrentPassword = (data) => {
     return async (dispatch) => {
@@ -101,7 +103,7 @@ export const verifyCurrentPassword = (data) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             if (errorCode !== 32 && errorCode !== 33) {
-                Toast.TOP_CENTER_ERROR(errorMessage || 'Xảy ra lỗi! Không xác thực được mật khẩu hiện tại', 3000);
+                Toast.TOP_CENTER_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
             }
 
             dispatch(verifyCurrentPassword_Fail());

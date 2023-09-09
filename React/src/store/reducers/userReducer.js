@@ -14,6 +14,7 @@ const initialState = {
         moveProduct: false,
         changeUserID: false,
         search: false,
+        sendCVByEmail: false,
     },
     isSignIn: false,
     isSignUp: false,
@@ -23,6 +24,7 @@ const initialState = {
     userInfo: null,
     productList: undefined,
     searchResultList: [],
+    isCVSent: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -139,7 +141,6 @@ const userReducer = (state = initialState, action) => {
                 searchResultList: [],
             };
 
-        // HOME LAYOUT
         // READ HOME LAYOUT
         case actionNames.READ_HOME_LAYOUT_START:
             return {
@@ -157,6 +158,32 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, homeLayout: false },
                 allCVList: [],
+            };
+
+        // SEND CV BY EMAIL
+        case actionNames.SEND_CV_BY_EMAIL_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sendCVByEmail: true },
+            };
+        case actionNames.SEND_CV_BY_EMAIL_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sendCVByEmail: false },
+                isCVSent: true,
+            };
+        case actionNames.SEND_CV_BY_EMAIL_FAILURE:
+            const errorCode = action.payload;
+            let props;
+            if (errorCode === 32) {
+                props = { isSignIn: false, isSignUp: false };
+            }
+
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, sendCVByEmail: false },
+                isCVSent: false,
+                ...props,
             };
 
         // =================================================================

@@ -68,7 +68,7 @@ class UserIDSetting extends PureComponent {
             if (errorCode === 0) {
                 this.setState({ showIconAndText: false, showText: false, startChanging: false });
             } else if (errorCode === 32) {
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng đăng nhập lại', 3000);
+                Toast.TOP_CENTER_ERROR('Lỗi hệ thống! Vui lòng đăng nhập lại ☹️', 3000);
                 this.props.userSignOut();
             }
         } else {

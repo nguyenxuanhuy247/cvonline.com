@@ -15,19 +15,19 @@ export const handleVerifyUserEmail = async (data) => {
         if (user) {
             return {
                 errorCode: 0,
-                errorMessage: `Email người dùng khả dụng`,
+                errorMessage: `Email có thể sử dụng để lấy lại mật khẩu`,
             };
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Email người dùng không tồn tại`,
+                errorMessage: `Email chưa được đăng ký tài khoản`,
             };
         }
     } catch (error) {
         console.log('An error in handleVerifyUserEmail() in appService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Không xác thực được email`,
+            errorMessage: `Lỗi Server! Không xác thực được email ☹️`,
         };
     }
 };
@@ -46,19 +46,19 @@ export const handleVerifyUserID = async (data) => {
         if (!user) {
             return {
                 errorCode: 0,
-                errorMessage: `ID người dùng khả dụng`,
+                errorMessage: `Có thể sử dụng ID này`,
             };
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `ID người dùng không khả dụng`,
+                errorMessage: `Không thể sử dụng ID này`,
             };
         }
     } catch (error) {
         console.log('An error in handleVerifyUserID() in appService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Không xác thực được ID người dùng`,
+            errorMessage: `Lỗi Server! Không xác thực được ID người dùng ☹️`,
         };
     }
 };
@@ -98,7 +98,7 @@ export const handleVerifyCurrentPassword = async (data) => {
         console.log('An error in handleVerifyCurrentPassword() in appService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Không xác thực được mật khẩu hiện tại`,
+            errorMessage: `Lỗi Server! Không xác thực được mật khẩu hiện tại ☹️`,
         };
     }
 };

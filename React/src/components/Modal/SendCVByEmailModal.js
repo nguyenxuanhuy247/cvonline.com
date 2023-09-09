@@ -16,7 +16,6 @@ class SendCVByEmailModal extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: false,
             to: '',
             subject: '',
             companyName: '',
@@ -43,10 +42,7 @@ class SendCVByEmailModal extends PureComponent {
             Toast.TOP_CENTER_WARN('Nhập vị trí ứng tuyển', 3000);
         } else {
             const data = { ...this.state, from: this.props.owner?.email };
-
-            await this.setState({ isLoading: true });
             await this.props.SendCVByEmail(data);
-            await this.setState({ isLoading: false });
         }
     };
 
@@ -230,11 +226,11 @@ class SendCVByEmailModal extends PureComponent {
                                 Hủy
                             </Button>
                             <Button
-                                disabled={this.state.isLoading}
+                                disabled={this.props.isSendCVByEmailLoading}
                                 className={cx('btn', 'finish')}
                                 onClick={() => this.handleSendInfoAndCVByEmail()}
                             >
-                                {!this.state.isLoading ? 'Gửi CV' : <Loading inner auth />}
+                                {!this.props.isSendCVByEmailLoading ? 'Gửi CV' : <Loading inner auth />}
                             </Button>
                         </div>
                     </div>
@@ -248,12 +244,15 @@ const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
         userInfo: state.user.userInfo,
+        isSendCVByEmailLoading: state.user.isLoading.sendCVByEmail,
+        isCVSent: state.user.isCVSent,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         SendCVByEmail: (data) => dispatch(userActions.SendCVByEmail(data)),
+        userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };
 

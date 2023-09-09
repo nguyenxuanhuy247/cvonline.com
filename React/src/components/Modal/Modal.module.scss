@@ -108,6 +108,7 @@
     scrollbar-width: none; /* Firefox */
 }
 
+// =========================================================================
 // Tablet + Mobile
 @media (max-width: 991px) {
     .overlay {
@@ -121,10 +122,15 @@
     }
 }
 
+// =========================================================================
 // Mobile
 @media (max-width: 767px) {
     .overlay {
         .container {
+            &.round {
+                width: 400px;
+            }
+
             .modal-header {
                 .title {
                     font-size: 1.8rem;
@@ -133,6 +139,7 @@
 
             .btn {
                 min-width: 100px;
+                height: 36px;
             }
 
             .modal-body {

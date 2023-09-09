@@ -25,6 +25,8 @@ const actionNames = Object.freeze({
     ...actionMaker(`READ`, `SEARCH`),
     // HOME
     ...actionMaker(`READ`, `HOME_LAYOUT`),
+    // SEND CV BY EMAIL
+    ...actionMaker(`SEND_CV`, `BY_EMAIL`),
 
     // =================================================================
     // USER INFORMATION

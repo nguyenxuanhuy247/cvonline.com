@@ -13,8 +13,9 @@
         font-size: 2rem;
         font-weight: 600;
     }
+
     .error-message-container {
-        height: 40px;
+        min-height: 40px;
 
         .error-message {
             margin-left: 100px;

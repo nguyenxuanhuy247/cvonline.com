@@ -68,13 +68,13 @@ export const checkReqDeleteAccount = (req, res, next) => {
         } else {
             return res.status(401).json({
                 errorCode: 10,
-                errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập',
+                errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập.',
             });
         }
     } else {
         return res.status(401).json({
             errorCode: 10,
-            errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập',
+            errorMessage: 'Bạn chưa có quyền, vui lòng đăng nhập.',
         });
     }
 };
@@ -370,14 +370,14 @@ export const checkReqSendCVByEmail = (req, res, next) => {
 
     if (!subject) {
         return res.status(400).json({
-            errorCode: 11,
-            errorMessage: 'Vui lòng nhập tiêu đề của email gửi nhà tuyển dụng',
+            errorCode: 10,
+            errorMessage: 'Vui lòng nhập tiêu đề của Email',
         });
     }
 
     if (!from) {
         return res.status(400).json({
-            errorCode: 12,
+            errorCode: 10,
             errorMessage: 'Vui lòng nhập Email của bạn',
         });
     }

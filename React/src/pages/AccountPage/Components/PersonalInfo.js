@@ -56,12 +56,7 @@ class PersonalInfo extends PureComponent {
 
     handleDeleteAccount = async () => {
         const { id: userId } = this.props?.owner ?? {};
-
-        const errorCode = await this.props.deleteAccount(userId);
-
-        if (errorCode === 0) {
-            Toast.TOP_CENTER_SUCCESS('Xóa tài khoản thành công', 2000);
-        }
+        this.props.deleteAccount(userId);
     };
 
     openDeleteAccountModal = () => {

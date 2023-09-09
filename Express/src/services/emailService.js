@@ -30,15 +30,14 @@ export const handleSendEmailResetPassword = async (data) => {
                 },
             });
 
-            // console.log('transporter', transporter);
-
-            // send mail with defined transport object
-            await transporter.sendMail({
-                from: '"cvonline.com" <no-reply@cvonline.com.vn>',
-                to: receiverEmail,
-                subject: 'Đặt lại mật khẩu',
-                text: 'Đặt lại mật khẩu',
-                html: `<div style="font-size:16px;color:#500050">
+            try {
+                // send mail with defined transport object
+                await transporter.sendMail({
+                    from: '"cvonline.com" <no-reply@cvonline.com.vn>',
+                    to: receiverEmail,
+                    subject: 'Đặt lại mật khẩu',
+                    text: 'Đặt lại mật khẩu',
+                    html: `<div style="font-size:16px;color:#500050">
                 <h3>Bạn vừa gửi yêu cầu đặt lại mật khẩu?</h3>
                 <p>Click vào link sau để đặt lại mật khẩu: <a href=${link} style="color:#00b14f;text-decoration:underline">${link}</a></p>
               
@@ -49,14 +48,22 @@ export const handleSendEmailResetPassword = async (data) => {
               
                 <p>Team CV online</p>
               
-                <p style="font-size:14px;font-style:italic;text-align:center;display:block;color:#888">--- Đây là email tự động. Xin bạn vui lòng không gửi phản hồi vào hộp thư này ---</p>
+                <p style="font-size:14px;text-align:center;display:block;color:#888">--- Đây là email tự động. Xin bạn vui lòng không gửi phản hồi vào hộp thư này ---</p>
               </div>`,
-            });
+                });
 
-            return {
-                errorCode: 0,
-                errorMessage: `Email đặt lại mật khẩu đã được gửi`,
-            };
+                return {
+                    errorCode: 0,
+                    errorMessage: `Email đặt lại mật khẩu đã được gửi`,
+                };
+            } catch (error) {
+                console.log('An error in NODEMAILER in handleSendEmailResetPassword() in emailService.js : ', error);
+
+                return {
+                    errorCode: 31,
+                    errorMessage: `Lỗi Server! Không kết nối được với hệ thống gửi email ☹️`,
+                };
+            }
         } else {
             return {
                 errorCode: 32,
@@ -65,9 +72,10 @@ export const handleSendEmailResetPassword = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleSendEmailResetPassword() in emailService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Xảy ra lỗi! Vui lòng thử lại sau`,
+            errorMessage: `Lỗi Server! Không gửi được email để đặt lại mật khẩu ☹️`,
         };
     }
 };
@@ -85,8 +93,6 @@ export const handleSendCVByEmail = async (data) => {
         if (user && user.gmailPassword) {
             const avatar = user.avatar;
             const binaryAvatar = avatar?.toString('binary');
-
-            console.log('AAAAAAAAAAAA', user);
 
             try {
                 const transporter = await nodemailer.createTransport({
@@ -375,19 +381,19 @@ export const handleSendCVByEmail = async (data) => {
                 
                 `,
                 });
-            } catch (error) {
-                console.log('An error in NODEMAILER in emailService.js : ', error);
 
                 return {
-                    errorCode: 32,
-                    errorMessage: `Kiểm tra lại Google App Password`,
+                    errorCode: 0,
+                    errorMessage: `CV của bạn đã được gửi tới nhà tuyển dụng`,
+                };
+            } catch (error) {
+                console.log('An error in NODEMAILER in handleSendCVByEmail() in emailService.js : ', error);
+
+                return {
+                    errorCode: 31,
+                    errorMessage: `Lỗi Server! Không kết nối được với hệ thống gửi email ☹️`,
                 };
             }
-
-            return {
-                errorCode: 0,
-                errorMessage: `CV của bạn đã được gửi tới nhà tuyển dụng`,
-            };
         } else {
             return {
                 errorCode: 32,
@@ -398,7 +404,7 @@ export const handleSendCVByEmail = async (data) => {
         console.log('An error in handleSendCVByEmail() in emailService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `[Kết nối Database] CV của bạn không thể gửi tới nhà tuyển dụng`,
+            errorMessage: `Lỗi Server! Không thể gửi CV tới nhà tuyển dụng ☹️`,
         };
     }
 };
