@@ -53,7 +53,6 @@ export const checkReqSignUp = (req, res, next) => {
     next();
 };
 
-<<<<<<< HEAD
 // CHECK DELETE ACCOUNT
 export const checkReqDeleteAccount = (req, res, next) => {
     const cookies = req.cookies;
@@ -83,20 +82,11 @@ export const checkReqDeleteAccount = (req, res, next) => {
 // CHECK FORGOT PASSWORD
 export const checkReqForgotPassword = (req, res, next) => {
     const { email } = req.body;
-=======
-// CHECK SIGNIN INFO
-export const checkReqSignIn = (req, res, next) => {
-    const { email, password } = req.body;
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
 
     if (!email) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: 'Nhập Email để lấy lại mật khẩu',
-=======
-            errorMessage: 'Vui lòng nhập Email',
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -129,11 +119,7 @@ export const checkReqGetUserInformation = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: 'Thiếu ID người dùng, vui lòng đăng nhập lại',
-=======
-            errorMessage: 'Nhập User ID để tải Thông tin người dùng',
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -147,11 +133,7 @@ export const checkReqUpdateUserInformation = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: `Thiếu ID người dùng, vui lòng đăng nhập lại`,
-=======
-            errorMessage: `Nhập User ID để cập nhật ${label}`,
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -168,11 +150,7 @@ export const checkReqCreateProduct = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: `Thiếu ID người dùng, vui lòng đăng nhập lại`,
-=======
-            errorMessage: 'Nhập User ID để tạo sản phẩm mới',
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -186,11 +164,7 @@ export const checkReqGetProduct = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: `Thiếu ID người dùng, vui lòng đăng nhập lại`,
-=======
-            errorMessage: 'Nhập User ID để tải danh sách sản phẩm',
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -199,28 +173,12 @@ export const checkReqGetProduct = (req, res, next) => {
 
 // UPDATE PRODUCT
 export const checkReqUpdateProduct = (req, res, next) => {
-<<<<<<< HEAD
     const { productId, label } = req.body;
 
     if (!productId) {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: `Lỗi! Thiếu Product ID để cập nhật ${label}`,
-=======
-    const { userId, productId, label } = req.body;
-
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: `Nhập User ID để cập nhật ${label}`,
-        });
-    }
-
-    if (!productId) {
-        return res.status(400).json({
-            errorCode: 11,
-            errorMessage: `Nhập Product ID để cập nhật ${label}`,
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -229,23 +187,11 @@ export const checkReqUpdateProduct = (req, res, next) => {
 
 // DELETE PRODUCT
 export const checkReqDeleteProduct = (req, res, next) => {
-<<<<<<< HEAD
     const { productId } = req.query;
-=======
-    const { userId, productId } = req.query;
-
-    if (!userId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Nhập User ID người dùng để xóa sản phẩm',
-        });
-    }
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
 
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
-<<<<<<< HEAD
             errorMessage: 'Lỗi! Thiếu Product ID để xóa sản phẩm',
         });
     }
@@ -268,9 +214,6 @@ export const checkReqMoveProduct = (req, res, next) => {
         return res.status(400).json({
             errorCode: 10,
             errorMessage: 'Lỗi! Thiếu Product Order để di chuyển sản phẩm',
-=======
-            errorMessage: 'Nhập Product ID để xóa sản phẩm',
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -287,22 +230,14 @@ export const checkReqCreateTechnology = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: `Thiếu ID người dùng để tạo mới ${label}. Vui lòng đăng nhập lại`,
-=======
-            errorMessage: `Nhập User ID người dùng để tạo mới ${label}`,
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
     if (!productId) {
         return res.status(400).json({
             errorCode: 11,
-<<<<<<< HEAD
             errorMessage: `Lỗi! Thiếu Product ID sản phẩm để tạo mới ${label}`,
-=======
-            errorMessage: `Nhập Product ID sản phẩm để tạo mới ${label}`,
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -339,7 +274,6 @@ export const checkReqUpdateTechnology = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: `Thiếu ID người dùng để cập nhật ${label}. Vui lòng đăng nhập lại`,
         });
     }
@@ -348,9 +282,6 @@ export const checkReqUpdateTechnology = (req, res, next) => {
         return res.status(400).json({
             errorCode: 11,
             errorMessage: `Lỗi! Thiếu Product ID để cập nhật ${label}`,
-=======
-            errorMessage: `Nhập User ID để cập nhật ${label}`,
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
@@ -397,7 +328,6 @@ export const checkReqDeleteTechnology = (req, res, next) => {
     if (!technologyId) {
         return res.status(400).json({
             errorCode: 10,
-<<<<<<< HEAD
             errorMessage: `Thiếu Technology ID để xóa ${label}`,
         });
     }
@@ -449,9 +379,6 @@ export const checkReqSendCVByEmail = (req, res, next) => {
         return res.status(400).json({
             errorCode: 12,
             errorMessage: 'Vui lòng nhập Email của bạn',
-=======
-            errorMessage: `Nhập Technology ID để xóa ${label}`,
->>>>>>> edb112d ([Deploy] Fix raw query in BE)
         });
     }
 
