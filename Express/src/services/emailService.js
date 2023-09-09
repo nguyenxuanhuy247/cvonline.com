@@ -30,7 +30,7 @@ export const handleSendEmailResetPassword = async (data) => {
                 },
             });
 
-            console.log('transporter', transporter);
+            // console.log('transporter', transporter);
 
             // send mail with defined transport object
             await transporter.sendMail({
@@ -86,6 +86,8 @@ export const handleSendCVByEmail = async (data) => {
             const avatar = user.avatar;
             const binaryAvatar = avatar?.toString('binary');
 
+            console.log('AAAAAAAAAAAA', user);
+
             try {
                 const transporter = await nodemailer.createTransport({
                     host: 'smtp.gmail.com',
@@ -114,8 +116,8 @@ export const handleSendCVByEmail = async (data) => {
                   <img src="cid:logo" alt="${user.fullName}"
                     style="  
                       display: block;
-                      width: 400px;
-                      max-width: 100%;
+                      width: 300px;
+                      max-width: calc(100% - 24px);
                       margin: 0 auto 24px;
                     "
                   />
@@ -151,15 +153,16 @@ export const handleSendCVByEmail = async (data) => {
                       >
                         <tbody>
                           <tr>
-                            <td style="width: 200px; display: flex; padding: 0;">
+                            <td style="width: 200px; display: flex; align-items: center; justify-content: center; padding: 0;">
                               <img
                                 src="cid:avatar"
-                                alt="${user.fullName}"
+                                alt="Ảnh đại diện"
                                 style="    
                                   width: 180px;
                                   height: 180px;
                                   border-radius: 50%;
                                   object-fit: cover;
+                                  border: 1px solid #ccc;
                                 "
                               />
                             </td>
@@ -312,8 +315,10 @@ export const handleSendCVByEmail = async (data) => {
                       <div style="text-align: center; margin: 16px;">
                         <a
                           style="
+                            display: inline-block;
                             text-decoration: none;
-                            min-width: 100px;
+                            min-width: 200px;
+                            max-width: 100%;
                             padding: 10px;
                             font-size: 16px;
                             font-weight: 600;

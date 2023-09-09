@@ -103,7 +103,7 @@ class SendCVByEmailModal extends PureComponent {
                                             <div className={cx('basic-info')}>
                                                 <img
                                                     src={this.props.owner.avatar}
-                                                    alt="ac"
+                                                    alt="Ảnh đại diện"
                                                     className={cx('candidate-image')}
                                                 />
                                                 <div className={cx('candidate-desc')}>

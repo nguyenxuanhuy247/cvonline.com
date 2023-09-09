@@ -83,8 +83,8 @@
 
                     .logo {
                         display: block;
-                        width: 400px;
-                        max-width: 100%;
+                        width: 300px;
+                        max-width: calc(100% - 24px);
                         margin: 20px auto 0;
                     }
 
@@ -127,6 +127,7 @@
                                     height: 180px;
                                     border-radius: 50%;
                                     object-fit: cover;
+                                    border: 1px solid #ccc;
                                 }
 
                                 .candidate-desc {
