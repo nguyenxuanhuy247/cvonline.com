@@ -2,6 +2,7 @@ import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { MdClose } from 'react-icons/md';
+import { Redirect } from 'react-router-dom';
 
 import styles from './SendCVByEmailModal.module.scss';
 import Button from '~/components/Button/Button.js';
@@ -41,7 +42,7 @@ class SendCVByEmailModal extends PureComponent {
         } else if (!this.state.jobTitle) {
             Toast.TOP_CENTER_WARN('Nhập vị trí ứng tuyển', 3000);
         } else {
-            const data = { ...this.state, from: this.props.owner?.email };
+            const data = { ...this.state, from: 'this.props.owner?.email' };
             await this.props.SendCVByEmail(data);
         }
     };
@@ -50,7 +51,8 @@ class SendCVByEmailModal extends PureComponent {
         const { isOpen, onClose } = this.props;
 
         return (
-            isOpen && (
+            isOpen &&
+            (this.props.isSignIn ? (
                 <div className={cx('overlay')} onClick={onClose}>
                     <div className={cx('container')} onClick={(e) => e.stopPropagation()}>
                         <div className={cx('modal-header')}>
@@ -235,7 +237,9 @@ class SendCVByEmailModal extends PureComponent {
                         </div>
                     </div>
                 </div>
-            )
+            ) : (
+                <Redirect to="/signin" />
+            ))
         );
     }
 }
@@ -246,6 +250,7 @@ const mapStateToProps = (state) => {
         userInfo: state.user.userInfo,
         isSendCVByEmailLoading: state.user.isLoading.sendCVByEmail,
         isCVSent: state.user.isCVSent,
+        isSignIn: state.user.isSignIn,
     };
 };
 

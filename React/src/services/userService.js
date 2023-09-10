@@ -29,9 +29,13 @@ export const readSearch = (searchValue) => {
 };
 
 // READ HOME LAYOUT
-
 export const readHomeLayout = () => {
     return axios.get(`/api/get-home-layout`);
+};
+
+// READ CV LAYOUT
+export const readCVLayout = (userId) => {
+    return axios.get(`/api/get-cv-layout?userId=${userId}`);
 };
 
 // =============================================================================

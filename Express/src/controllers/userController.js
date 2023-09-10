@@ -170,6 +170,21 @@ export const handleGetHomeLayout = async (req, res) => {
 };
 
 // =================================================================
+// READ CV LAYOUT
+export const handleGetCVLayout = async (req, res) => {
+    const { userId } = req.query;
+    const message = await userService.handleGetCVLayout(userId);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32) {
+        res.status(404).json(message);
+    }
+};
+
+// =================================================================
 // CRUD USER INFORMATION
 
 // READ USER INFORMATION

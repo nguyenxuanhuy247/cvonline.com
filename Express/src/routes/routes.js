@@ -19,6 +19,7 @@ let initWebRoutes = (app) => {
     // OTHERS
     router.get('/api/search', userMiddleware.checkReqGetSearch, userController.handleGetSearch);
     router.get('/api/get-home-layout', userController.handleGetHomeLayout);
+    router.get('/api/get-cv-layout', userMiddleware.checkReqGetCVLayout, userController.handleGetCVLayout);
 
     // CRUD USER INFOMATION
     router.get(

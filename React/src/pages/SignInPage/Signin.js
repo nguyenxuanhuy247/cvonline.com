@@ -45,9 +45,13 @@ class SignIn extends Component {
         });
 
         window.google?.accounts?.id?.renderButton?.(document.getElementById('google_id_signin'), {
-            theme: 'outline',
-            size: 'large',
             type: 'standard',
+            theme: 'filled_blue',
+            size: 'medium',
+            text: 'signin_with',
+            shape: 'rectangular',
+            logo_alignment: 'left',
+            width: '280',
         });
 
         window.google?.accounts.id.prompt();
@@ -167,7 +171,7 @@ class SignIn extends Component {
                     </Formik>
 
                     <div id="google_id_signin-container" className={cx('signin-with-google')}>
-                        <p className={cx('text')}>Hoặc đăng nhập bằng</p>
+                        <p className={cx('text')}>Hoặc</p>
                         <div id="google_id_signin"></div>
                     </div>
 

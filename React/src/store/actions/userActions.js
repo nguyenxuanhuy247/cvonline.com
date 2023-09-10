@@ -25,7 +25,6 @@ export const userSignIn = (userData) => {
             }
 
             dispatch(userSignIn_Fail());
-
             console.log('An error in userSignInStart() - userActions.js: ', error);
         }
     };
@@ -264,6 +263,49 @@ export const readHomeLayout_Success = (data) => ({
 
 export const readHomeLayout_Failure = () => ({
     type: actionNames.READ_HOME_LAYOUT_FAILURE,
+});
+
+// READ HOME LAYOUT
+export const readCVLayout = (userId) => {
+    return async (dispatch) => {
+        dispatch(readCVLayout_Start());
+        try {
+            const res = await userService.readCVLayout(userId);
+
+            const { errorCode, data } = res ?? {};
+
+            if (errorCode === 0) {
+                dispatch(readCVLayout_Success(data));
+            } else {
+                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                dispatch(readCVLayout_Failure());
+            }
+        } catch (error) {
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+
+            if (errorCode === 10) {
+            } else if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+            }
+
+            dispatch(readCVLayout_Failure(errorCode));
+            console.log('An error in readCVLayout() - userActions.js: ', error);
+        }
+    };
+};
+
+export const readCVLayout_Start = () => ({
+    type: actionNames.READ_CV_LAYOUT_START,
+});
+
+export const readCVLayout_Success = (data) => ({
+    type: actionNames.READ_CV_LAYOUT_SUCCESS,
+    payload: data,
+});
+
+export const readCVLayout_Failure = (data) => ({
+    type: actionNames.READ_CV_LAYOUT_FAILURE,
+    payload: data,
 });
 
 // =================================================================
@@ -835,16 +877,9 @@ export const SendCVByEmail = (data) => {
             }
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
 
-            if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-                dispatch(SendCVByEmail_Fail(errorCode));
-            } else if (errorCode === 32) {
-                Toast.TOP_CENTER_ERROR('Lỗi hệ thống! Vui lòng đăng nhập lại ☹️', 3000);
-                dispatch(SendCVByEmail_Fail(errorCode));
-                window.location.href = `${process.env.REACT_APP_FRONTEND_URL}signin`;
-            }
-
+            dispatch(SendCVByEmail_Fail(errorCode));
             console.log('An error in SendCVByEmail() - userActions.js: ', error);
         }
     };

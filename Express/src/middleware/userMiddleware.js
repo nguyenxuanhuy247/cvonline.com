@@ -109,6 +109,20 @@ export const checkReqGetSearch = (req, res, next) => {
     next();
 };
 
+// CHECK CV LAYOUT
+export const checkReqGetCVLayout = (req, res, next) => {
+    const { userId } = req.query;
+
+    if (!userId) {
+        return res.status(400).json({
+            errorCode: 10,
+            errorMessage: 'Thiếu ID người dùng, vui lòng đăng nhập lại',
+        });
+    }
+
+    next();
+};
+
 // =================================================================
 // CHECK CRUD USER INFORMATION
 

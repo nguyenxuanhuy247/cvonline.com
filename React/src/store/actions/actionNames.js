@@ -23,8 +23,10 @@ const actionNames = Object.freeze({
     // =================================================================
     // SEARCH
     ...actionMaker(`READ`, `SEARCH`),
-    // HOME
+    // HOME LAYOUT
     ...actionMaker(`READ`, `HOME_LAYOUT`),
+    // CV LAYOUT
+    ...actionMaker(`READ`, `CV_LAYOUT`),
     // SEND CV BY EMAIL
     ...actionMaker(`SEND_CV`, `BY_EMAIL`),
 

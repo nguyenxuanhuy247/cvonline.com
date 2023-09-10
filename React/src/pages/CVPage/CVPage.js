@@ -207,7 +207,10 @@ class PersonalLayout extends PureComponent {
     };
 
     async componentDidMount() {
-        this.fetchUserInformationAndProductList(true);
+        const { paramId } = this.props?.match?.params ?? {};
+        this.props.readCVLayout(paramId);
+
+        // this.fetchUserInformationAndProductList(true);
 
         // Auto scroll to TOP when go to CV Layout
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -525,6 +528,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        // Read CV Layout
+        readCVLayout: (userId) => dispatch(userActions.readCVLayout(userId)),
+
         // CRUD User information
         readUserInformation: (userId) => dispatch(userActions.readUserInformation(userId)),
         updateUserInformation: (data) => dispatch(userActions.updateUserInformation(data)),

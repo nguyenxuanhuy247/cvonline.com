@@ -160,6 +160,35 @@ const userReducer = (state = initialState, action) => {
                 allCVList: [],
             };
 
+        // READ CV LAYOUT
+        case actionNames.READ_CV_LAYOUT_START:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: true },
+            };
+        case actionNames.READ_CV_LAYOUT_SUCCESS:
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                ...action.payload,
+            };
+        case actionNames.READ_CV_LAYOUT_FAILURE:
+            const CVLayoutErrorCode = action.payload;
+
+            let CVLayoutProps;
+
+            if (CVLayoutErrorCode === 10) {
+                CVLayoutProps = { isSignIn: false, isSignUp: false };
+            }
+
+            return {
+                ...state,
+                isLoading: { ...state.isLoading, CVLayout: false },
+                userInfo: { id: 0 },
+                productList: [],
+                ...CVLayoutProps,
+            };
+
         // SEND CV BY EMAIL
         case actionNames.SEND_CV_BY_EMAIL_START:
             return {
@@ -173,17 +202,18 @@ const userReducer = (state = initialState, action) => {
                 isCVSent: true,
             };
         case actionNames.SEND_CV_BY_EMAIL_FAILURE:
-            const errorCode = action.payload;
-            let props;
-            if (errorCode === 32) {
-                props = { isSignIn: false, isSignUp: false };
+            const sendCVByEmailErrorCode = action.payload;
+            let sendCVByEmailProps;
+
+            if (sendCVByEmailErrorCode === 32) {
+                sendCVByEmailProps = { isSignIn: false, isSignUp: false };
             }
 
             return {
                 ...state,
                 isLoading: { ...state.isLoading, sendCVByEmail: false },
                 isCVSent: false,
-                ...props,
+                ...sendCVByEmailProps,
             };
 
         // =================================================================
