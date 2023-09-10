@@ -77,7 +77,10 @@ export const handleGetResetPassword = async (req, res) => {
                 errorCode: 1,
                 errorMessage: '',
                 values: { password: '', confirmedPassword: '' },
-                href: process.env.EXPRESS_FRONTEND_URL,
+                href:
+                    process.env.EXPRESS_FRONTEND_URL_1 ||
+                    process.env.EXPRESS_FRONTEND_URL_2 ||
+                    process.env.EXPRESS_FRONTEND_URL_3,
                 fieldError: '',
             });
         }
@@ -85,7 +88,11 @@ export const handleGetResetPassword = async (req, res) => {
 
     return res.render('reset-password-redirect.ejs', {
         message: 'Liên kết đã hết hiệu lực',
-        redirectURL: `${process.env.EXPRESS_FRONTEND_URL}/forgot-password`,
+        redirectURL: `${
+            process.env.EXPRESS_FRONTEND_URL_1 ||
+            process.env.EXPRESS_FRONTEND_URL_2 ||
+            process.env.EXPRESS_FRONTEND_URL_3
+        }/forgot-password`,
     });
 };
 
@@ -119,7 +126,10 @@ export const handlePostResetPassword = async (req, res) => {
                     errorCode: message.errorCode,
                     errorMessage: '',
                     values: { password: '', confirmedPassword: '' },
-                    href: process.env.EXPRESS_FRONTEND_URL,
+                    href:
+                        process.env.EXPRESS_FRONTEND_URL_1 ||
+                        process.env.EXPRESS_FRONTEND_URL_2 ||
+                        process.env.EXPRESS_FRONTEND_URL_3,
                     fieldError: '',
                 });
             }
@@ -128,14 +138,21 @@ export const handlePostResetPassword = async (req, res) => {
                 errorCode: 1,
                 errorMessage: error.message,
                 values: error.value,
-                href: process.env.EXPRESS_FRONTEND_URL,
+                href:
+                    process.env.EXPRESS_FRONTEND_URL_1 ||
+                    process.env.EXPRESS_FRONTEND_URL_2 ||
+                    process.env.EXPRESS_FRONTEND_URL_3,
                 fieldError: error.path,
             });
         }
     } else {
         return res.render('reset-password-redirect.ejs', {
             message: 'Liên kết đã hết hiệu lực',
-            redirectSite: `${process.env.EXPRESS_FRONTEND_URL}/forgot-password`,
+            redirectSite: `${
+                process.env.EXPRESS_FRONTEND_URL_1 ||
+                process.env.EXPRESS_FRONTEND_URL_2 ||
+                process.env.EXPRESS_FRONTEND_URL_3
+            }/forgot-password`,
         });
     }
 };

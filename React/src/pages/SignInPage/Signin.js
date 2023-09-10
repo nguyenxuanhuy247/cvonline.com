@@ -42,7 +42,6 @@ class SignIn extends Component {
         window.google?.accounts?.id?.initialize?.({
             client_id: '926424110135-dpsp6egfi7g128s401rparkaba2gtq1c.apps.googleusercontent.com',
             callback: this.handleSignInWithGoogle,
-            use_fedcm_for_prompt: true,
         });
 
         window.google?.accounts?.id?.renderButton?.(document.getElementById('google_id_signin'), {
