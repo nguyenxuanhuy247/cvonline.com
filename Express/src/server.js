@@ -2,6 +2,7 @@ require('dotenv').config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import configViewEngine from '~/config/viewEngine.js';
 import webRoutes from '~/routes/routes';
@@ -27,6 +28,14 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+
+app.use(
+    cors({
+        origin: ['http://localhost:2407', process.env.EXPRESS_FRONTEND_URL],
+        credentials: true,
+        opener: 'same-origin-allow-popups',
+    }),
+);
 
 // Config app
 app.use(bodyParser.json({ limit: '50mb' }));

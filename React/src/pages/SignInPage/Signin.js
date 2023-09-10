@@ -49,7 +49,7 @@ class SignIn extends Component {
             size: 'large',
             type: 'standard',
         });
-        
+
         window.google?.accounts.id.prompt();
 
         const googleSigninContainer = document.getElementById('google_id_signin-container');

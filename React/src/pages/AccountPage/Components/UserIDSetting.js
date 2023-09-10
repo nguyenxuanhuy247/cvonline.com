@@ -105,7 +105,7 @@ class UserIDSetting extends PureComponent {
                         Thay đổi ID người dùng sẽ làm thay đổi địa chỉ tìm kiếm trang CV của bạn
                     </div>
 
-                    <form className={cx('form')}>
+                    <form className={cx('form')} id="form-user-id-setting">
                         <div className={cx('input-form-userID')}>
                             <div className={cx('form-group')}>
                                 <label htmlFor="userID" className={cx('form-label')}>
