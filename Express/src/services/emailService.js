@@ -117,9 +117,7 @@ export const handleSendCVByEmail = async (data) => {
                     ],
                     html: `<div style="background-color: #f3f3f3; padding: 24px 0 80px; ">
                 <a href="${
-                    process.env.EXPRESS_FRONTEND_URL_1 ||
-                    process.env.EXPRESS_FRONTEND_URL_2 ||
-                    process.env.EXPRESS_FRONTEND_URL_3
+                    process.env.EXPRESS_FRONTEND_URL
                 }" target="_blank" rel="noreferrer" style="text-decoration: none;">
                   <img src="cid:logo" alt="${user.fullName}"
                     style="  
@@ -336,11 +334,7 @@ export const handleSendCVByEmail = async (data) => {
                             border-radius: 4px;
                             cursor: pointer;
                           "
-                          href="${
-                              process.env.EXPRESS_FRONTEND_URL_1 ||
-                              process.env.EXPRESS_FRONTEND_URL_2 ||
-                              process.env.EXPRESS_FRONTEND_URL_3
-                          }/${user.id}"
+                          href="${process.env.EXPRESS_FRONTEND_URL}/${user.id}"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -375,11 +369,7 @@ export const handleSendCVByEmail = async (data) => {
                           color: #888;
                         "
                       >
-                        *** Email được gửi bởi <a href="${
-                            process.env.EXPRESS_FRONTEND_URL_1 ||
-                            process.env.EXPRESS_FRONTEND_URL_2 ||
-                            process.env.EXPRESS_FRONTEND_URL_3
-                        }" target="_blank"
+                        *** Email được gửi bởi <a href="${process.env.EXPRESS_FRONTEND_URL}" target="_blank"
                         rel="noreferrer" style="text-decoration: none;">cvonline.com</a> - sản phẩm của Nguyễn Xuân Huy
                         ***
                       </p>
