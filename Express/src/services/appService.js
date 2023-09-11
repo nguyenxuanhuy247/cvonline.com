@@ -25,6 +25,7 @@ export const handleVerifyUserEmail = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleVerifyUserEmail() in appService.js : ', error);
+
         return {
             errorCode: 31,
             errorMessage: `Lỗi Server! Không xác thực được email ☹️`,
@@ -56,9 +57,10 @@ export const handleVerifyUserID = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleVerifyUserID() in appService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không xác thực được ID người dùng ☹️`,
+            errorMessage: `Lỗi Server! Không xác thực được ID của tài khoản ☹️`,
         };
     }
 };
@@ -91,11 +93,12 @@ export const handleVerifyCurrentPassword = async (data) => {
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy người dùng`,
+                errorMessage: `Hồ sơ của bạn không còn tồn tại. Vui lòng đăng nhập lại ☹️`,
             };
         }
     } catch (error) {
         console.log('An error in handleVerifyCurrentPassword() in appService.js : ', error);
+
         return {
             errorCode: 31,
             errorMessage: `Lỗi Server! Không xác thực được mật khẩu hiện tại ☹️`,

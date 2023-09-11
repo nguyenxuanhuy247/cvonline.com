@@ -872,7 +872,7 @@ export const handleMoveProduct = async (data) => {
 // CRUD TECHNOLOGY
 
 const handleFindAllTechnologyList = async (data) => {
-    const { type, userId, productId, key, side } = data ?? {};
+    const { type, key, side, userId, productId } = data ?? {};
 
     let findAllQuery;
     let dataSentToClient = {};
@@ -963,7 +963,7 @@ export const handleCreateTechnology = async (data) => {
             };
         } else {
             return {
-                errorCode: 32,
+                errorCode: 33,
                 errorMessage: `${label} này đã tồn tại`,
             };
         }
@@ -995,11 +995,16 @@ export const handleUpdateTechnology = async (data) => {
 
             await technology.save();
 
-            const message = await handleFindAllTechnologyList(data, 'Cập nhật');
+            const dataSentToClient = await handleFindAllTechnologyList(data);
 
-            return message;
+            return {
+                errorCode: 0,
+                errorMessage: `Cập nhật ${label} thành công`,
+                data: dataSentToClient,
+            };
         } else {
             const dataSentToClient = await handleFindAllTechnologyList(data);
+
             return {
                 errorCode: 32,
                 errorMessage: `${label} này không còn tồn tại. Đã cập nhật lại danh sách.`,
@@ -1008,41 +1013,10 @@ export const handleUpdateTechnology = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không thể cập nhật ${label} thất bại ☹️`,
-        };
-    }
-};
-
-export const handleUpdateMultipleTechnologies = async (data) => {
-    const { updateData, getData } = data;
-    const { label } = getData;
-
-    try {
-        for (let index in updateData) {
-            const technology = updateData[index];
-
-            await db.technologies.update(
-                {
-                    technologyOrder: technology.technologyOrder,
-                },
-                {
-                    where: {
-                        id: technology.technologyID,
-                    },
-                },
-            );
-        }
-
-        const message = await handleFindAllTechnologyList(getData, '');
-
-        return message;
-    } catch (error) {
-        console.log('An error in handleUpdateTechnology() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `Lỗi Server! Sắp xếp danh sách ${label} thất bại`,
+            errorMessage: `Lỗi Server! Không thể cập nhật ${label} ☹️`,
         };
     }
 };
@@ -1059,20 +1033,67 @@ export const handleDeleteTechnology = async (data) => {
         if (isExisted) {
             await db.technologies.destroy({ where: { id: technologyId } });
 
-            const message = await handleFindAllTechnologyList(data, 'Xóa');
+            const dataSentToClient = await handleFindAllTechnologyList(data);
 
-            return message;
+            return {
+                errorCode: 0,
+                errorMessage: `Xóa ${label} thành công`,
+                data: dataSentToClient,
+            };
         } else {
+            const dataSentToClient = await handleFindAllTechnologyList(data);
+
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy ${label} cần xóa`,
+                errorMessage: `${label} này không còn tồn tại. Đã cập nhật lại danh sách.`,
+                data: dataSentToClient,
             };
         }
     } catch (error) {
         console.log('An error in handleDeleteTechnology() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Xóa ${label} thất bại`,
+            errorMessage: `Lỗi Server! Không xóa được ${label} ☹️`,
+        };
+    }
+};
+
+// DRAG AND DROP TECHNOLOGY
+export const handleUpdateMultipleTechnologies = async (data) => {
+    const { updateData, getData } = data;
+    const { label } = getData;
+
+    try {
+        for (let index in updateData) {
+            const technology = updateData[index];
+            console.log('AAAAAAAAA', technology.technologyID);
+
+            await db.technologies.update(
+                {
+                    technologyOrder: technology.technologyOrder,
+                },
+                {
+                    where: {
+                        id: technology.technologyID,
+                    },
+                },
+            );
+        }
+
+        const dataSentToClient = await handleFindAllTechnologyList(getData);
+
+        return {
+            errorCode: 0,
+            errorMessage: `Sắp xếp danh sách ${label} thành công`,
+            data: dataSentToClient,
+        };
+    } catch (error) {
+        console.log('An error in handleUpdateMultipleTechnologies() in userService.js : ', error);
+
+        return {
+            errorCode: 31,
+            errorMessage: `Lỗi Server! Không sắp xếp được danh sách ${label} ☹️`,
         };
     }
 };
@@ -1093,40 +1114,22 @@ export const handleChangeUserID = async (data) => {
             await db.users.update({ id: newID }, { where: { id: currentID } });
             await db.technologies.update({ userId: newID }, { where: { userId: currentID } });
 
-            const changedUser = await db.users.findOne({
-                where: { id: newID },
-                attributes: { exclude: ['createdAt', 'updatedAt'] },
-                raw: true,
-            });
-
-            if (changedUser) {
-                const avatar = changedUser.avatar;
-                const binaryAvatar = avatar?.toString('binary');
-                const newUser = { ...changedUser, avatar: binaryAvatar, isPassword: !!changedUser.password };
-                delete newUser.password;
-
-                return {
-                    errorCode: 0,
-                    errorMessage: `Cập nhật ID người dùng thành công`,
-                    data: newUser,
-                };
-            } else {
-                return {
-                    errorCode: 32,
-                    errorMessage: `Không tìm thấy ID mới của người dùng`,
-                };
-            }
+            return {
+                errorCode: 0,
+                errorMessage: `Cập nhật ID người dùng thành công`,
+            };
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy ID của người dùng`,
+                errorMessage: `Hồ sơ của bạn không còn tồn tại. Vui lòng đăng nhập lại ☹️`,
             };
         }
     } catch (error) {
         console.log('An error in handleChangeUserID() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Cập nhật ID người dùng thất bại`,
+            errorMessage: `Lỗi Server! Không cập nhật được ID người dùng ☹️`,
         };
     }
 };

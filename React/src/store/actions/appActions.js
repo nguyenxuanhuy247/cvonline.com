@@ -7,27 +7,21 @@ export const verifyUserEmail = (userEmail) => {
     return async (dispatch) => {
         dispatch(verifyUserEmail_Start());
         try {
-            let res = await appService.verifyUserEmail(userEmail);
-            const { errorCode } = res ?? {};
-            if (errorCode === 0) {
-                dispatch(verifyUserEmail_Success());
-
-                return errorCode;
-            } else {
-                dispatch(verifyUserEmail_Fail());
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Không xác thực được email', 3000);
-
-                return errorCode;
-            }
+            await appService.verifyUserEmail(userEmail);
+            dispatch(verifyUserEmail_Success());
         } catch (error) {
-            const { errorCode } = error.response?.data ?? {};
-            if (errorCode !== 32) {
-                Toast.TOP_CENTER_ERROR(error.message || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
+            const { errorCode, errorMessage } = error.response?.data ?? {};
+
             dispatch(verifyUserEmail_Fail());
             console.log('An error in verifyUserEmail() - appActions.js: ', error);
 
-            return errorCode;
+            if (errorCode === 31) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3500);
+                return errorCode;
+            } else if (!errorCode) {
+                Toast.TOP_CENTER_ERROR('Vui lòng kiểm tra lại kết nối ☹️', 3500);
+                return 100;
+            }
         }
     };
 };
@@ -50,14 +44,8 @@ export const verifyUserID = (userID) => {
     return async (dispatch) => {
         dispatch(verifyUserID_Start());
         try {
-            let res = await appService.verifyUserID(userID);
-            const { errorCode } = res ?? {};
-            if (errorCode === 0) {
-                dispatch(verifyUserID_Success());
-            } else {
-                dispatch(verifyUserID_Fail());
-                Toast.TOP_CENTER_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
+            await appService.verifyUserID(userID);
+            dispatch(verifyUserID_Success());
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             if (errorCode !== 32) {
@@ -90,20 +78,16 @@ export const verifyCurrentPassword = (data) => {
         try {
             let res = await appService.verifyCurrentPassword(data);
             const { errorCode } = res ?? {};
-            if (errorCode === 0) {
-                dispatch(verifyCurrentPassword_Success());
+            dispatch(verifyCurrentPassword_Success());
 
-                return errorCode;
-            } else {
-                dispatch(verifyCurrentPassword_Fail());
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Không xác thực được mật khẩu hiện tại', 3000);
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            if (errorCode !== 32 && errorCode !== 33) {
-                Toast.TOP_CENTER_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+
+            if (errorCode === 10 || errorCode === 32) {
+                Toast.TOP_CENTER_ERROR(errorMessage, 3500);
+            } else if (!errorCode || errorCode !== 33) {
+                Toast.TOP_CENTER_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             }
 
             dispatch(verifyCurrentPassword_Fail());

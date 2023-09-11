@@ -62,13 +62,13 @@ class TechnologyList extends PureComponent {
 
             const getData = {
                 type: this.props?.type,
-                label: `${this.props?.label}`,
-                userId: userId,
-                productId: this.props?.productId,
                 key: this.props?.keyprop,
                 side: this.props?.side,
+                userId: userId,
+                productId: this.props?.productId,
+                label: `${this.props?.label}`,
             };
-
+            // Fix bug
             const data = {
                 updateData: updateData,
                 getData: getData,

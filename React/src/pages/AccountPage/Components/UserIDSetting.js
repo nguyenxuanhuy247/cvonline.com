@@ -62,17 +62,16 @@ class UserIDSetting extends PureComponent {
             newID: this.state.newID,
         };
 
-        if (this.state.newID !== currentUserID) {
+        if (this.state.newID && this.state.newID !== currentUserID) {
             const errorCode = await this.props.changeUserID(data);
 
             if (errorCode === 0) {
                 this.setState({ showIconAndText: false, showText: false, startChanging: false });
-            } else if (errorCode === 32) {
-                Toast.TOP_CENTER_ERROR('Lỗi hệ thống! Vui lòng đăng nhập lại ☹️', 3000);
-                this.props.userSignOut();
             }
+        } else if (!this.state.newID) {
+            Toast.TOP_CENTER_WARN('Vui lòng nhập ID mới của bạn', 3000);
         } else {
-            Toast.TOP_CENTER_WARN('ID hiện tại đang được sử dụng, vui lòng nhập ID khác', 3000);
+            Toast.TOP_CENTER_WARN('ID hiện tại đã được sử dụng. Hãy nhập ID khác', 3000);
         }
     };
 
@@ -184,7 +183,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         verifyUserID: (userID) => dispatch(appActions.verifyUserID(userID)),
         changeUserID: (userID) => dispatch(userActions.changeUserID(userID)),
-        userSignOut: () => dispatch(userActions.userSignOut()),
     };
 };
 

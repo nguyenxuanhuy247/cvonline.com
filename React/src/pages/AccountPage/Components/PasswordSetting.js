@@ -53,19 +53,18 @@ class PasswordSetting extends PureComponent {
     };
 
     VerifyCurrentPassword = async (e) => {
-        const { id: userId } = this.props.owner ?? {};
+        const { id: ownerID } = this.props.owner ?? {};
         const currentPasswordValue = e.target.value?.trimStart();
 
         await this.setState({ startVerify: true, currentPassword: currentPasswordValue });
 
         if (currentPasswordValue) {
-            const data = { userId: userId, currentPassword: currentPasswordValue };
+            const data = { userId: ownerID, currentPassword: currentPasswordValue };
             const errorCode = await this.props.verifyCurrentPassword(data);
 
             if (errorCode === 0) {
                 await this.setState({ isCurrentPasswordVerified: true });
-            } else if (errorCode === 32) {
-                Toast.TOP_CENTER_ERROR('Xảy ra lỗi! Vui lòng đăng nhập lại', 3000);
+            } else if (errorCode === 10 || errorCode === 32) {
                 this.props.userSignOut();
             } else {
                 await this.setState({ isCurrentPasswordVerified: false });

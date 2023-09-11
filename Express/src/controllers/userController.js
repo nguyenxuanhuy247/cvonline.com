@@ -305,8 +305,6 @@ export const handleCreateTechnology = async (req, res) => {
         return res.status(201).json(message);
     } else if (message.errorCode === 31) {
         res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(409).json(message);
     } else if (message.errorCode === 33) {
         res.status(404).json(message);
     }
@@ -317,20 +315,6 @@ export const handleUpdateTechnology = async (req, res) => {
     const data = req.body;
 
     const message = await userService.handleUpdateTechnology(data);
-
-    if (message.errorCode === 0) {
-        return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(404).json(message);
-    }
-};
-
-export const handleUpdateMultipleTechnologies = async (req, res) => {
-    const data = req.body;
-
-    const message = await userService.handleUpdateMultipleTechnologies(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);
@@ -353,8 +337,19 @@ export const handleDeleteTechnology = async (req, res) => {
         res.status(503).json(message);
     } else if (message.errorCode === 32) {
         res.status(404).json(message);
-    } else if (message.errorCode === 33) {
-        res.status(404).json(message);
+    }
+};
+
+// DRAG AND DROP TECHNOLOGY
+export const handleUpdateMultipleTechnologies = async (req, res) => {
+    const data = req.body;
+
+    const message = await userService.handleUpdateMultipleTechnologies(data);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
     }
 };
 

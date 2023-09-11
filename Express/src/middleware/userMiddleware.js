@@ -123,6 +123,34 @@ export const checkReqGetCVLayout = (req, res, next) => {
     next();
 };
 
+// SEND CV VIA EMAIL
+export const checkReqSendCVByEmail = (req, res, next) => {
+    const { from, to, subject } = req.body;
+
+    if (!to) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: 'Vui lòng nhập Email của nhà tuyển dụng',
+        });
+    }
+
+    if (!subject) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: 'Vui lòng nhập tiêu đề của Email',
+        });
+    }
+
+    if (!from) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: 'Vui lòng nhập Email của bạn',
+        });
+    }
+
+    next();
+};
+
 // =================================================================
 // CHECK CRUD USER INFORMATION
 
@@ -311,6 +339,20 @@ export const checkReqUpdateTechnology = (req, res, next) => {
     next();
 };
 
+// DELETE TECHNOLOGY
+export const checkReqDeleteTechnology = (req, res, next) => {
+    const { technologyId, label } = req.query;
+
+    if (!technologyId) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: `Thiếu ID của ${label} cần xóa`,
+        });
+    }
+
+    next();
+};
+
 // DRAG AND DROP TECHNOLOGY
 export const checkReqUpdateMultipleTechnologies = (req, res, next) => {
     const { updateData } = req.body;
@@ -320,22 +362,8 @@ export const checkReqUpdateMultipleTechnologies = (req, res, next) => {
 
     if (!isArray && !length) {
         return res.status(400).json({
-            errorCode: 10,
+            errorCode: 11,
             errorMessage: `Không thể sắp xếp lại danh sách`,
-        });
-    }
-
-    next();
-};
-
-// DELETE TECHNOLOGY
-export const checkReqDeleteTechnology = (req, res, next) => {
-    const { technologyId, label } = req.query;
-
-    if (!technologyId) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: `Thiếu Technology ID để xóa ${label}`,
         });
     }
 
@@ -350,42 +378,14 @@ export const checkReqChangeUserID = (req, res, next) => {
     if (!currentID) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập ID hiện tại của người dùng',
+            errorMessage: `Thiếu ID người dùng. Vui lòng đăng nhập lại ☹️`,
         });
     }
 
     if (!newID) {
         return res.status(400).json({
-            errorCode: 10,
+            errorCode: 11,
             errorMessage: 'Vui lòng nhập ID mới của người dùng',
-        });
-    }
-
-    next();
-};
-
-// SEND CV VIA EMAIL
-export const checkReqSendCVByEmail = (req, res, next) => {
-    const { from, to, subject } = req.body;
-
-    if (!to) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập Email của nhà tuyển dụng',
-        });
-    }
-
-    if (!subject) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập tiêu đề của Email',
-        });
-    }
-
-    if (!from) {
-        return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập Email của bạn',
         });
     }
 

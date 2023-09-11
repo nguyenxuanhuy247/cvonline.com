@@ -100,7 +100,7 @@ class CreateEditTechnology extends PureComponent {
             const errorCode = await this.props?.updateTechnology(data, productIndex);
             await this.setState({ isLoading: false });
 
-            if (errorCode === 0) {
+            if (errorCode === 0 || errorCode === 32) {
                 await this.props.onClose();
             }
         }

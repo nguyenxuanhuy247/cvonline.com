@@ -21,7 +21,7 @@ class ForgotPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isResetSucceeded: false,
+            isEmailSent: false,
             isVerified: false,
             userEmail: '',
         };
@@ -40,10 +40,15 @@ class ForgotPassword extends Component {
         const isEmail = this.validateEmail(userEmail);
 
         if (isEmail && !FEErrorMessageEl) {
-            this.props.verifyUserEmail(userEmail);
-            this.setState({ userEmail: userEmail, isResetSucceeded: false });
+            const errorCode = this.props.verifyUserEmail(userEmail);
+
+            if (errorCode === 32 || errorCode === 100) {
+                this.setState({ userEmail: '', isEmailSent: false });
+            } else {
+                this.setState({ userEmail: userEmail, isEmailSent: false });
+            }
         } else {
-            this.setState({ userEmail: '', isResetSucceeded: false });
+            this.setState({ userEmail: '', isEmailSent: false });
         }
     };
 
@@ -65,9 +70,9 @@ class ForgotPassword extends Component {
                                 const errorCode = await this.props.userForgotPassword(values);
                                 if (errorCode === 0) {
                                     actions.resetForm();
-                                    this.setState({ isResetSucceeded: true, userEmail: '' });
+                                    this.setState({ isEmailSent: true, userEmail: '' });
                                 } else {
-                                    this.setState({ isResetSucceeded: false });
+                                    this.setState({ isEmailSent: false });
                                 }
                             }
                         }}
@@ -81,7 +86,43 @@ class ForgotPassword extends Component {
                                 <p className={cx('title')}>Quên mật khẩu</p>
 
                                 <div className={cx('message-container')}>
-                                    {this.state.isResetSucceeded ? (
+                                    {this.state.isEmailSent && (
+                                        <p className={cx('success-message')}>
+                                            Hãy kiểm tra email của bạn. Sau đó nhấn vào link trong hộp thư để đổi lại
+                                            mật khẩu.
+                                        </p>
+                                    )}
+
+                                    {!this.state.isEmailSent && (
+                                        <>
+                                            {!this.props.isVerifyEmailLoading &&
+                                                this.state.userEmail &&
+                                                (this.props.isVerified ? (
+                                                    <p className={cx('message', 'OK', 'hide')}>
+                                                        Email có thể sử dụng để lấy lại mật khẩu
+                                                    </p>
+                                                ) : (
+                                                    <p className={cx('message', 'error', 'hide')}>
+                                                        Email chưa được đăng ký tài khoản
+                                                    </p>
+                                                ))}
+
+                                            {!this.props.isVerifyEmailLoading && (
+                                                <ErrorMessage name="email">
+                                                    {(msg) => (
+                                                        <div
+                                                            id="forgot-password-error-message-FE"
+                                                            className={cx('message', 'error', 'yup')}
+                                                        >
+                                                            {msg}
+                                                        </div>
+                                                    )}
+                                                </ErrorMessage>
+                                            )}
+                                        </>
+                                    )}
+
+                                    {/* {this.state.isEmailSent ? (
                                         <p className={cx('success-message')}>
                                             Hãy kiểm tra email của bạn. Sau đó nhấn vào link trong hộp thư để đổi lại
                                             mật khẩu.
@@ -113,7 +154,7 @@ class ForgotPassword extends Component {
                                                 </ErrorMessage>
                                             )}
                                         </>
-                                    )}
+                                    )} */}
                                 </div>
                                 <div className={cx('form-group')}>
                                     <label htmlFor="email" className={cx('form-label')}>
@@ -142,7 +183,7 @@ class ForgotPassword extends Component {
                                                         className={cx('icon', 'error')}
                                                         onClick={() => {
                                                             props.setFieldValue('email', '');
-                                                            this.setState({ userEmail: '', isResetSucceeded: false });
+                                                            this.setState({ userEmail: '', isEmailSent: false });
                                                         }}
                                                     />
                                                 )}

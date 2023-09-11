@@ -4,8 +4,8 @@ export const checkReqVerifyUserEmail = (req, res, next) => {
 
     if (!userEmail) {
         return res.status(400).json({
-            errorCode: 10,
-            errorMessage: 'Vui lòng nhập Email của người dùng',
+            errorCode: 11,
+            errorMessage: 'Vui lòng nhập Email để lấy lại mật khẩu',
         });
     }
 
@@ -19,7 +19,7 @@ export const checkReqVerifyUserID = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập ID mới của người dùng',
+            errorMessage: 'Vui lòng nhập ID mới của tài khoản',
         });
     }
 
@@ -33,13 +33,13 @@ export const checkReqVerifyCurrentPassword = (req, res, next) => {
     if (!userId) {
         return res.status(400).json({
             errorCode: 10,
-            errorMessage: 'Vui lòng nhập ID của người dùng',
+            errorMessage: `Thiếu ID người dùng. Vui lòng đăng nhập lại ☹️`,
         });
     }
 
     if (!currentPassword) {
         return res.status(400).json({
-            errorCode: 10,
+            errorCode: 11,
             errorMessage: 'Vui lòng nhập mật khẩu hiện tại',
         });
     }

@@ -439,36 +439,45 @@ const userReducer = (state = initialState, action) => {
         case actionNames.UPDATE_TECHNOLOGY_SUCCESS:
         case actionNames.DELETE_TECHNOLOGY_SUCCESS:
         case actionNames.DRAG_DROP_TECHNOLOGY_SUCCESS:
-            const { productIndex, dataFromDB } = action.payload;
+            const { productIndex: productIndex_Success, dataFromDB: dataFromDB_Success } = action.payload;
 
-            const selectedProduct = state.productList[productIndex];
-            const newProduct = { ...selectedProduct, ...dataFromDB };
+            const selectedProduct = state.productList[productIndex_Success];
+            const newProduct = { ...selectedProduct, ...dataFromDB_Success };
 
-            const CRUDTechnology_newProductList = [...state.productList];
-            CRUDTechnology_newProductList[productIndex] = newProduct;
+            const newProductList_CRUDTechnologySuccess = [...state.productList];
+            newProductList_CRUDTechnologySuccess[productIndex_Success] = newProduct;
 
             return {
                 ...state,
-                productList: CRUDTechnology_newProductList,
+                productList: newProductList_CRUDTechnologySuccess,
             };
 
         case actionNames.CREATE_TECHNOLOGY_FAILURE:
         case actionNames.UPDATE_TECHNOLOGY_FAILURE:
         case actionNames.DELETE_TECHNOLOGY_FAILURE:
         case actionNames.DRAG_DROP_TECHNOLOGY_FAILURE:
-            const technologyErrorCode = action.payload;
-            let technologyProps;
+            const { productIndex: productIndex_Failure, dataFromDB: dataFromDB_Failure } = action.payload;
 
-            if (technologyErrorCode === 10) {
+            let technologyProps;
+            if (dataFromDB_Failure.errorCode === 10) {
                 technologyProps = { isSignIn: false, isSignUp: false };
                 setTimeout(() => {
                     window.location.href = '/signin';
                 }, 3000);
             }
 
+            let newProductList_CRUDTechnologyFailure = [...state.productList];
+            if (dataFromDB_Failure.errorCode === 32) {
+                const selectedProduct = state.productList[productIndex_Failure];
+                const newProduct = { ...selectedProduct, ...dataFromDB_Failure.data };
+
+                newProductList_CRUDTechnologyFailure[productIndex_Failure] = newProduct;
+            }
+
             return {
                 ...state,
                 ...technologyProps,
+                productList: newProductList_CRUDTechnologyFailure,
             };
 
         // =================================================================
@@ -480,15 +489,26 @@ const userReducer = (state = initialState, action) => {
             };
 
         case actionNames.CHANGE_ID_SUCCESS:
+            const newOwner = { ...state.owner };
+            newOwner.id = action.payload;
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, changeUserID: false },
-                owner: action.payload,
+                owner: newOwner,
             };
         case actionNames.CHANGE_ID_FAILURE:
+            const changeIDErrorCode = action.payload;
+
+            let changeIDProps;
+            if (changeIDErrorCode === 10 || changeIDErrorCode === 32) {
+                changeIDProps = { isSignIn: false, isSignUp: false };
+            }
+            
             return {
                 ...state,
                 isLoading: { ...state.isLoading, changeUserID: false },
+                ...changeIDProps,
             };
 
         default:

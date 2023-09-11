@@ -459,17 +459,18 @@ export const createTechnology = (technologyData, productIndex) => {
         try {
             let res = await userService.createTechnology(technologyData);
             const { errorCode, data: dataFromDB } = res ?? {};
-            const reduxData = { dataFromDB, productIndex };
+            const reduxData = { productIndex, dataFromDB };
             dispatch(createTechnology_Success(reduxData));
 
             return errorCode;
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
-            dispatch(createTechnology_Failure(errorCode));
+            const dataFromDB = error.response?.data ?? {};
+            const reduxData = { productIndex, dataFromDB };
+            dispatch(createTechnology_Failure(reduxData));
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             console.log('An error in createTechnology() - userActions.js: ', error);
 
-            return errorCode;
+            return dataFromDB?.errorCode;
         }
     };
 };
@@ -491,17 +492,18 @@ export const updateTechnology = (technologyData, productIndex) => {
             let res = await userService.updateTechnology(technologyData);
             const { errorCode, data: dataFromDB } = res ?? {};
 
-            const reduxData = { dataFromDB, productIndex };
+            const reduxData = { productIndex, dataFromDB };
             dispatch(updateTechnology_Success(reduxData));
 
             return errorCode;
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
-            dispatch(updateTechnology_Failure(errorCode));
+            const dataFromDB = error.response?.data ?? {};
+            const reduxData = { productIndex, dataFromDB };
+            dispatch(updateTechnology_Failure(reduxData));
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             console.log('An error in updateTechnology() - userActions.js: ', error);
 
-            return errorCode;
+            return dataFromDB?.errorCode;
         }
     };
 };
@@ -516,6 +518,34 @@ export const updateTechnology_Failure = (payload) => ({
     payload: payload,
 });
 
+// DELETE TECHNOLOGY
+export const deleteTechnology = (technologyData, productIndex) => {
+    return async (dispatch) => {
+        try {
+            let res = await userService.deleteTechnology(technologyData);
+            const { data: dataFromDB } = res ?? {};
+            const reduxData = { productIndex, dataFromDB };
+            dispatch(deleteTechnology_Success(reduxData));
+        } catch (error) {
+            const dataFromDB = error.response?.data ?? {};
+            const reduxData = { productIndex, dataFromDB };
+            dispatch(deleteTechnology_Failure(reduxData));
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            console.log('An error in deleteTechnology() - userActions.js: ', error);
+        }
+    };
+};
+
+export const deleteTechnology_Success = (data) => ({
+    type: actionNames.DELETE_TECHNOLOGY_SUCCESS,
+    payload: data,
+});
+
+export const deleteTechnology_Failure = (payload) => ({
+    type: actionNames.DELETE_TECHNOLOGY_FAILURE,
+    payload: payload,
+});
+
 // DRAG AND DROP TECHNOLOGY
 export const dragAndDropTechology = (technologyData, productIndex) => {
     return async (dispatch) => {
@@ -526,9 +556,10 @@ export const dragAndDropTechology = (technologyData, productIndex) => {
             const reduxData = { dataFromDB, productIndex };
             dispatch(dragAndDropTechology_Success(reduxData));
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
-            dispatch(dragAndDropTechology_Failure(errorCode));
+            const dataFromDB = error.response?.data ?? {};
+            const reduxData = { productIndex, dataFromDB };
+            dispatch(dragAndDropTechology_Failure(reduxData));
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             console.log('An error in dragAndDropTechology() - userActions.js: ', error);
         }
     };
@@ -544,50 +575,6 @@ export const dragAndDropTechology_Failure = (payload) => ({
     payload: payload,
 });
 
-// DELETE TECHNOLOGY
-export const deleteTechnology = (technologyData, productIndex) => {
-    return async (dispatch) => {
-        try {
-            let res = await userService.deleteTechnology(technologyData);
-            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
-
-            if (errorCode === 0) {
-                const reduxData = { dataFromDB, productIndex };
-                dispatch(deleteTechnology_Success(reduxData));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(deleteTechnology_Failure());
-
-                return errorCode;
-            }
-        } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Vui lòng kiểm tra lại kết nối ☹️', 3000);
-            }
-
-            dispatch(deleteTechnology_Failure());
-            console.log('An error in deleteTechnology() - userActions.js: ', error);
-
-            return errorCode;
-        }
-    };
-};
-
-export const deleteTechnology_Success = (data) => ({
-    type: actionNames.DELETE_TECHNOLOGY_SUCCESS,
-    payload: data,
-});
-
-export const deleteTechnology_Failure = () => ({
-    type: actionNames.DELETE_TECHNOLOGY_FAILURE,
-});
-
 // =================================================================
 // CHANGE USER ID
 export const changeUserID = (data) => {
@@ -595,26 +582,15 @@ export const changeUserID = (data) => {
         dispatch(changeUserID_Start());
         try {
             let res = await userService.changeUserID(data);
-            const { errorCode, errorMessage, data: DB_Data } = res ?? {};
-            if (errorCode === 0) {
-                Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
-                dispatch(changeUserID_Success(DB_Data));
+            const { errorCode, errorMessage } = res ?? {};
+            Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
+            dispatch(changeUserID_Success(data.newID));
 
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(changeUserID_Fail());
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3000);
-            }
-
-            dispatch(changeUserID_Fail());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(changeUserID_Failure(errorCode));
             console.log('An error in changeUserID() - userActions.js: ', error);
 
             return errorCode;
@@ -631,6 +607,7 @@ export const changeUserID_Success = (data) => ({
     payload: data,
 });
 
-export const changeUserID_Fail = () => ({
+export const changeUserID_Failure = (errorCode) => ({
     type: actionNames.CHANGE_ID_FAILURE,
+    payload: errorCode,
 });
