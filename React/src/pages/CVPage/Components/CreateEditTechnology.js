@@ -29,13 +29,6 @@ class CreateEditTechnology extends PureComponent {
 
     // =================================================================
 
-    signOutAndRedirectToSignInPage = () => {
-        this.redirectID.current = setTimeout(() => {
-            this.props.userSignOut();
-            window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}signin`);
-        }, 1000);
-    };
-
     handleOpenChangeImageModal = () => {
         this.setState({ isModalOpen: true });
     };
@@ -82,9 +75,6 @@ class CreateEditTechnology extends PureComponent {
 
                     if (errorCode === 0) {
                         this.props.onClose();
-                    } else if (errorCode === 10) {
-                        Toast.TOP_CENTER_WARN('Không tìm thấy ID người dùng. Vui lòng đăng nhập lại', 3000);
-                        this.signOutAndRedirectToSignInPage();
                     }
                 } else if (!this.state.name) {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của Source code`, 3000);
@@ -99,8 +89,6 @@ class CreateEditTechnology extends PureComponent {
 
                     if (errorCode === 0) {
                         this.props.onClose();
-                    } else if (errorCode === 10) {
-                        this.signOutAndRedirectToSignInPage();
                     }
                 } else {
                     Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
@@ -114,8 +102,6 @@ class CreateEditTechnology extends PureComponent {
 
             if (errorCode === 0) {
                 await this.props.onClose();
-            } else if (errorCode === 10) {
-                this.signOutAndRedirectToSignInPage();
             }
         }
 

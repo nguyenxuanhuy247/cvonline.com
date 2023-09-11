@@ -122,6 +122,14 @@ export const handlePostResetPassword = async (req, res) => {
                     href: process.env.EXPRESS_FRONTEND_URL,
                     fieldError: '',
                 });
+            } else {
+                return res.render('reset-password.ejs', {
+                    errorCode: message.errorCode,
+                    errorMessage: message.errorMessage,
+                    values: { password: '', confirmedPassword: '' },
+                    href: process.env.EXPRESS_FRONTEND_URL,
+                    fieldError: '',
+                });
             }
         } catch (error) {
             return res.render('reset-password.ejs', {
@@ -155,7 +163,6 @@ export const handleGetSearch = async (req, res) => {
     }
 };
 
-// =================================================================
 // READ HOME LAYOUT
 export const handleGetHomeLayout = async (req, res) => {
     const message = await userService.handleGetHomeLayout();
@@ -169,11 +176,25 @@ export const handleGetHomeLayout = async (req, res) => {
     }
 };
 
-// =================================================================
 // READ CV LAYOUT
 export const handleGetCVLayout = async (req, res) => {
     const { userId } = req.query;
     const message = await userService.handleGetCVLayout(userId);
+
+    if (message.errorCode === 0) {
+        return res.status(200).json(message);
+    } else if (message.errorCode === 31) {
+        res.status(503).json(message);
+    } else if (message.errorCode === 32 || message.errorCode === 33) {
+        res.status(404).json(message);
+    }
+};
+
+// SEND CV VIA EMAIL
+export const handleSendCVByEmail = async (req, res) => {
+    const data = req.body;
+
+    const message = await emailService.handleSendCVByEmail(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);
@@ -186,21 +207,6 @@ export const handleGetCVLayout = async (req, res) => {
 
 // =================================================================
 // CRUD USER INFORMATION
-
-// READ USER INFORMATION
-export const handleGetUserInformation = async (req, res) => {
-    const data = req.query;
-
-    const message = await userService.handleGetUserInformation(data);
-
-    if (message.errorCode === 0) {
-        return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(404).json(message);
-    }
-};
 
 // UPDATE USER INFORMATION
 export const handleUpdateUserInformation = async (req, res) => {
@@ -358,22 +364,6 @@ export const handleChangeUserID = async (req, res) => {
     const data = req.body;
 
     let message = await userService.handleChangeUserID(data);
-
-    if (message.errorCode === 0) {
-        return res.status(200).json(message);
-    } else if (message.errorCode === 31) {
-        res.status(503).json(message);
-    } else if (message.errorCode === 32) {
-        res.status(404).json(message);
-    }
-};
-
-// =================================================================
-// SEND CV VIA EMAIL
-export const handleSendCVByEmail = async (req, res) => {
-    const data = req.body;
-
-    const message = await emailService.handleSendCVByEmail(data);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);

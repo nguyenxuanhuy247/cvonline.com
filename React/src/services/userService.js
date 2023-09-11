@@ -41,10 +41,6 @@ export const readCVLayout = (userId) => {
 // =============================================================================
 // CRUD USER INFORMATION
 
-export const readUserInformation = (userId) => {
-    return axios.get(`/api/get-user-information?userId=${userId}`);
-};
-
 export const updateUserInformation = (data) => {
     return axios.put('/api/put-user-information', data);
 };
@@ -56,16 +52,12 @@ export const createProduct = (userId) => {
     return axios.post(`/api/post-product?userId=${userId}`);
 };
 
-export const readProduct = (userId) => {
-    return axios.get(`/api/get-product?userId=${userId}`);
-};
-
 export const updateProduct = (data) => {
     return axios.put(`/api/put-product`, data);
 };
 
-export const deleteProduct = (productId) => {
-    return axios.delete(`/api/delete-product?productId=${productId}`);
+export const deleteProduct = (userId, productId) => {
+    return axios.delete(`/api/delete-product?userId=${userId}&&productId=${productId}`);
 };
 
 export const moveProduct = (data) => {

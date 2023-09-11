@@ -20,13 +20,9 @@ let initWebRoutes = (app) => {
     router.get('/api/search', userMiddleware.checkReqGetSearch, userController.handleGetSearch);
     router.get('/api/get-home-layout', userController.handleGetHomeLayout);
     router.get('/api/get-cv-layout', userMiddleware.checkReqGetCVLayout, userController.handleGetCVLayout);
+    router.post('/api/send-cv-by-email', userMiddleware.checkReqSendCVByEmail, userController.handleSendCVByEmail);
 
     // CRUD USER INFOMATION
-    router.get(
-        '/api/get-user-information',
-        userMiddleware.checkReqGetUserInformation,
-        userController.handleGetUserInformation,
-    );
     router.put(
         '/api/put-user-information',
         userMiddleware.checkReqUpdateUserInformation,
@@ -35,7 +31,6 @@ let initWebRoutes = (app) => {
 
     // CRUD PRODUCT
     router.post('/api/post-product', userMiddleware.checkReqCreateProduct, userController.handleCreateProduct);
-    router.get('/api/get-product', userMiddleware.checkReqGetProduct, userController.handleGetProduct);
     router.put('/api/put-product', userMiddleware.checkReqUpdateProduct, userController.handleUpdateProduct);
     router.delete('/api/delete-product', userMiddleware.checkReqDeleteProduct, userController.handleDeleteProduct);
     router.put('/api/move-product', userMiddleware.checkReqMoveProduct, userController.handleMoveProduct);
@@ -43,7 +38,6 @@ let initWebRoutes = (app) => {
     // CRUD TECHNOLOGY
     router.post('/api/post-technology', userMiddleware.checkReqCreateTechnology, userController.handleCreateTechnology);
     router.put('/api/put-technology', userMiddleware.checkReqUpdateTechnology, userController.handleUpdateTechnology);
-
     router.put(
         '/api/drag-drop-technology',
         userMiddleware.checkReqUpdateMultipleTechnologies,
@@ -64,9 +58,6 @@ let initWebRoutes = (app) => {
         appMiddleware.checkReqVerifyCurrentPassword,
         appController.handleVerifyCurrentPassword,
     );
-
-    // SEND CV VIA EMAL
-    router.post('/api/send-cv-by-email', userMiddleware.checkReqSendCVByEmail, userController.handleSendCVByEmail);
 
     return app.use('/', router);
 };

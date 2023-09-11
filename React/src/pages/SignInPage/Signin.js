@@ -33,7 +33,6 @@ class SignIn extends Component {
 
         if (user) {
             const userData = { email: user.email, fullName: user.name, isGoogle: true };
-
             this.props.userSignIn(userData);
         }
     };

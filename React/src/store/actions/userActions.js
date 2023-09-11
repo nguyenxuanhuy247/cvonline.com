@@ -8,22 +8,11 @@ export const userSignIn = (userData) => {
         dispatch(userSignIn_Start());
         try {
             let res = await userService.postSignIn(userData);
-            const { errorCode, errorMessage, data } = res;
-            if (errorCode === 0) {
-                dispatch(userSignIn_Success(data));
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(userSignIn_Fail());
-            }
+            const { data } = res;
+            dispatch(userSignIn_Success(data));
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
+            const { errorMessage } = error.response?.data ?? {};
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             dispatch(userSignIn_Fail());
             console.log('An error in userSignInStart() - userActions.js: ', error);
         }
@@ -49,23 +38,12 @@ export const userSignUpStart = (userData) => {
         dispatch(userSignUp_Start());
         try {
             let res = await userService.postSignUp(userData);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
-                dispatch(userSignUp_Success());
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(userSignUp_Fail());
-            }
+            const { errorMessage } = res ?? {};
+            Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
+            dispatch(userSignUp_Success());
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
+            const { errorMessage } = error.response?.data ?? {};
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             dispatch(userSignUp_Fail());
             console.log('An error in userSignUpStart() - userActions.js: ', error);
         }
@@ -90,31 +68,14 @@ export const deleteAccount = (userId) => {
         dispatch(deleteAccount_Start());
         try {
             let res = await userService.deleteAccount(userId);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                Toast.TOP_CENTER_SUCCESS('Xóa tài khoản thành công', 2000);
-                dispatch(deleteAccount_Success());
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(deleteAccount_Failure());
-
-                return errorCode;
-            }
+            const { errorMessage } = res ?? {};
+            Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
+            dispatch(deleteAccount_Success());
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(userForgotPassword_Failure());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(deleteAccount_Failure(errorCode));
             console.log('An error in deleteAccount() - userActions.js: ', error);
-
-            return errorCode;
         }
     };
 };
@@ -127,8 +88,9 @@ export const deleteAccount_Success = () => ({
     type: actionNames.DELETE_ACCOUNT_SUCCESS,
 });
 
-export const deleteAccount_Failure = () => ({
+export const deleteAccount_Failure = (errorCode) => ({
     type: actionNames.DELETE_ACCOUNT_FAILURE,
+    payload: errorCode,
 });
 
 // FORGOT PASSWORD
@@ -137,22 +99,15 @@ export const userForgotPassword = (data) => {
         dispatch(userForgotPassword_Start());
         try {
             let res = await userService.postForgotPassword(data);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                dispatch(userForgotPassword_Success());
+            const { errorCode } = res ?? {};
+            dispatch(userForgotPassword_Success());
 
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(userForgotPassword_Failure());
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             }
 
             dispatch(userForgotPassword_Failure());
@@ -189,20 +144,15 @@ export const readSearch = (searchValue) => {
         dispatch(readSearch_Start());
         try {
             const res = await userService.readSearch(searchValue);
-            const { errorCode, data } = res ?? {};
-
-            if (errorCode === 0) {
-                dispatch(readSearch_Success(data));
-            } else {
-                dispatch(readSearch_Failure(data));
-            }
+            const { data } = res ?? {};
+            dispatch(readSearch_Success(data));
         } catch (error) {
             const { errorCode, errorMessage, data } = error.response?.data ?? {};
 
             if (errorCode === 31) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else if (!errorCode) {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                Toast.TOP_RIGHT_ERROR('Vui lòng kiểm tra lại kết nối ☹️', 3000);
             }
 
             dispatch(readSearch_Failure(data));
@@ -230,20 +180,13 @@ export const readHomeLayout = () => {
         dispatch(readHomeLayout_Start());
         try {
             const res = await userService.readHomeLayout();
-
-            const { errorCode, data } = res ?? {};
-
-            if (errorCode === 0) {
-                dispatch(readHomeLayout_Success(data));
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-                dispatch(readHomeLayout_Failure());
-            }
+            const { data } = res ?? {};
+            dispatch(readHomeLayout_Success(data));
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3000);
             }
 
             dispatch(readHomeLayout_Failure());
@@ -265,27 +208,20 @@ export const readHomeLayout_Failure = () => ({
     type: actionNames.READ_HOME_LAYOUT_FAILURE,
 });
 
-// READ HOME LAYOUT
+// READ CV LAYOUT
 export const readCVLayout = (userId) => {
     return async (dispatch) => {
         dispatch(readCVLayout_Start());
         try {
             const res = await userService.readCVLayout(userId);
 
-            const { errorCode, data } = res ?? {};
-
-            if (errorCode === 0) {
-                dispatch(readCVLayout_Success(data));
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-                dispatch(readCVLayout_Failure());
-            }
+            const { data } = res ?? {};
+            dispatch(readCVLayout_Success(data));
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode === 10) {
-            } else if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+            if (errorCode !== 32) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
             }
 
             dispatch(readCVLayout_Failure(errorCode));
@@ -303,56 +239,44 @@ export const readCVLayout_Success = (data) => ({
     payload: data,
 });
 
-export const readCVLayout_Failure = (data) => ({
+export const readCVLayout_Failure = (errorCode) => ({
     type: actionNames.READ_CV_LAYOUT_FAILURE,
-    payload: data,
+    payload: errorCode,
 });
 
-// =================================================================
-// CRUD USER INFORMATION
-
-// READ USER INFORMATION
-export const readUserInformation = (userId) => {
+// SEND CV BY EMAIL
+export const SendCVByEmail = (data) => {
     return async (dispatch) => {
+        dispatch(SendCVByEmail_Start());
         try {
-            const res = await userService.readUserInformation(userId);
-
-            const { errorCode, errorMessage, data } = res ?? {};
-
-            if (errorCode === 0) {
-                dispatch(readUserInformation_Success(data));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(readUserInformation_Failure());
-
-                return errorCode;
-            }
+            let res = await userService.SendCVByEmail(data);
+            const { errorMessage } = res ?? {};
+            Toast.TOP_CENTER_SUCCESS(errorMessage, 2500);
+            dispatch(SendCVByEmailD_Success());
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(readUserInformation_Failure());
-            console.log('An error in readUserInformation() - userActions.js: ', error);
-
-            return errorCode;
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(SendCVByEmail_Fail(errorCode));
+            console.log('An error in SendCVByEmail() - userActions.js: ', error);
         }
     };
 };
 
-export const readUserInformation_Success = (data) => ({
-    type: actionNames.READ_USER_INFORMATION_SUCCESS,
-    payload: data,
+export const SendCVByEmail_Start = () => ({
+    type: actionNames.SEND_CV_BY_EMAIL_START,
 });
 
-export const readUserInformation_Failure = (data) => ({
-    type: actionNames.READ_USER_INFORMATION_FAILURE,
-    payload: data,
+export const SendCVByEmailD_Success = () => ({
+    type: actionNames.SEND_CV_BY_EMAIL_SUCCESS,
 });
+
+export const SendCVByEmail_Fail = (errorCode) => ({
+    type: actionNames.SEND_CV_BY_EMAIL_FAILURE,
+    payload: errorCode,
+});
+
+// =================================================================
+// CRUD USER INFORMATION
 
 // UPDATE USER INFORMATION
 export const updateUserInformation = (userData) => {
@@ -360,26 +284,14 @@ export const updateUserInformation = (userData) => {
         dispatch(updateUserInformation_Start());
         try {
             let res = await userService.updateUserInformation(userData);
-            const { errorCode, errorMessage, data } = res ?? {};
+            const { errorCode, data } = res ?? {};
+            dispatch(updateUserInformation_Success(data));
 
-            if (errorCode === 0) {
-                dispatch(updateUserInformation_Success(data));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(updateUserInformation_Failure());
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode !== 10 && errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(updateUserInformation_Failure());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(updateUserInformation_Failure(errorCode));
             console.log('An error in updateUserInformation() - userActions.js: ', error);
 
             return errorCode;
@@ -396,8 +308,9 @@ export const updateUserInformation_Success = (data) => ({
     payload: data,
 });
 
-export const updateUserInformation_Failure = () => ({
+export const updateUserInformation_Failure = (errorCode) => ({
     type: actionNames.UPDATE_USER_INFORMATION_FAILURE,
+    payload: errorCode,
 });
 
 // =================================================================
@@ -409,28 +322,14 @@ export const createProduct = (userId) => {
         dispatch(createProduct_Start());
         try {
             const res = await userService.createProduct(userId);
-            const { errorCode, errorMessage, data } = res ?? {};
+            const { errorCode, data } = res ?? {};
+            dispatch(createProduct_Success(data));
 
-            if (errorCode === 0) {
-                dispatch(createProduct_Success(data));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(createProduct_Failure());
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(createProduct_Failure());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(createProduct_Failure(errorCode));
             console.log('An error in createProduct() - userActions.js: ', error);
 
             return errorCode;
@@ -447,54 +346,9 @@ export const createProduct_Success = (data) => ({
     payload: data,
 });
 
-export const createProduct_Failure = () => ({
+export const createProduct_Failure = (errorCode) => ({
     type: actionNames.CREATE_PRODUCT_FAILURE,
-});
-
-// READ PRODUCT
-export const readProduct = (userId) => {
-    return async (dispatch) => {
-        dispatch(readProduct_Start());
-        try {
-            const res = await userService.readProduct(userId);
-            const { errorCode, errorMessage, data } = res ?? {};
-
-            if (errorCode === 0) {
-                dispatch(readProduct_Success(data));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(readProduct_Failure());
-
-                return errorCode;
-            }
-        } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(readProduct_Failure());
-            console.log('An error in readProduct() - userActions.js: ', error);
-
-            return errorCode;
-        }
-    };
-};
-
-export const readProduct_Start = () => ({
-    type: actionNames.READ_PRODUCT_START,
-});
-
-export const readProduct_Success = (data) => ({
-    type: actionNames.READ_PRODUCT_SUCCESS,
-    payload: data,
-});
-
-export const readProduct_Failure = () => ({
-    type: actionNames.READ_PRODUCT_FAILURE,
+    payload: errorCode,
 });
 
 // UPDATE PRODUCT
@@ -502,32 +356,15 @@ export const updateProduct = (productData, index, updatedItem) => {
     return async (dispatch) => {
         dispatch(updateProduct_Start());
         try {
-            const res = await userService.updateProduct(productData);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                const reduxData = { productData, index, updatedItem };
-                dispatch(updateProduct_Success(reduxData));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(updateProduct_Failure());
-
-                return errorCode;
-            }
+            await userService.updateProduct(productData);
+            const reduxData = { productData, index, updatedItem };
+            dispatch(updateProduct_Success(reduxData));
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(updateProduct_Failure());
+            const dataFormBE = error.response?.data ?? {};
+            const { errorMessage } = error.response?.data ?? {};
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(updateProduct_Failure(dataFormBE));
             console.log('An error in updateProduct() - userActions.js: ', error);
-
-            return errorCode;
         }
     };
 };
@@ -541,40 +378,24 @@ export const updateProduct_Success = (data) => ({
     payload: data,
 });
 
-export const updateProduct_Failure = () => ({
+export const updateProduct_Failure = (payload) => ({
     type: actionNames.UPDATE_PRODUCT_FAILURE,
+    payload: payload,
 });
 
 // DELETE PRODUCT
-export const deleteProduct = (productId, index) => {
+export const deleteProduct = (userId, productId, index) => {
     return async (dispatch) => {
         dispatch(deleteProduct_Start());
         try {
-            const res = await userService.deleteProduct(productId);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                dispatch(deleteProduct_Success(index));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(deleteProduct_Failure());
-
-                return errorCode;
-            }
+            await userService.deleteProduct(userId, productId);
+            dispatch(deleteProduct_Success(index));
         } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(deleteProduct_Failure());
+            const dataFormBE = error.response?.data ?? {};
+            const { errorMessage } = error.response?.data ?? {};
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(deleteProduct_Failure(dataFormBE));
             console.log('An error in deleteProduct() - userActions.js: ', error);
-
-            return errorCode;
         }
     };
 };
@@ -588,8 +409,9 @@ export const deleteProduct_Success = (index) => ({
     payload: index,
 });
 
-export const deleteProduct_Failure = () => ({
+export const deleteProduct_Failure = (payload) => ({
     type: actionNames.DELETE_PRODUCT_FAILURE,
+    payload: payload,
 });
 
 // MOVE PRODUCT
@@ -598,28 +420,15 @@ export const moveProduct = (productData, index) => {
         dispatch(moveProduct_Start());
         try {
             const res = await userService.moveProduct(productData);
-            const { errorCode, errorMessage } = res ?? {};
+            const { errorCode } = res ?? {};
+            dispatch(moveProduct_Success(index));
 
-            if (errorCode === 0) {
-                dispatch(moveProduct_Success(index));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(moveProduct_Failure());
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
+            const dataFormBE = error.response?.data ?? {};
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(moveProduct_Failure());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(moveProduct_Failure(dataFormBE));
             console.log('An error in moveProduct() - userActions.js: ', error);
 
             return errorCode;
@@ -636,8 +445,9 @@ export const moveProduct_Success = (data) => ({
     payload: data,
 });
 
-export const moveProduct_Failure = () => ({
+export const moveProduct_Failure = (payload) => ({
     type: actionNames.MOVE_PRODUCT_FAILURE,
+    payload: payload,
 });
 
 // =================================================================================================
@@ -648,29 +458,15 @@ export const createTechnology = (technologyData, productIndex) => {
     return async (dispatch) => {
         try {
             let res = await userService.createTechnology(technologyData);
-            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
+            const { errorCode, data: dataFromDB } = res ?? {};
+            const reduxData = { dataFromDB, productIndex };
+            dispatch(createTechnology_Success(reduxData));
 
-            if (errorCode === 0) {
-                const reduxData = { dataFromDB, productIndex };
-                dispatch(createTechnology_Success(reduxData));
-
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(createTechnology_Failure());
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(createTechnology_Failure());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(createTechnology_Failure(errorCode));
             console.log('An error in createTechnology() - userActions.js: ', error);
 
             return errorCode;
@@ -683,8 +479,9 @@ export const createTechnology_Success = (data) => ({
     payload: data,
 });
 
-export const createTechnology_Failure = () => ({
+export const createTechnology_Failure = (payload) => ({
     type: actionNames.CREATE_TECHNOLOGY_FAILURE,
+    payload: payload,
 });
 
 // UPDATE TECHNOLOGY
@@ -692,29 +489,16 @@ export const updateTechnology = (technologyData, productIndex) => {
     return async (dispatch) => {
         try {
             let res = await userService.updateTechnology(technologyData);
-            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
+            const { errorCode, data: dataFromDB } = res ?? {};
 
-            if (errorCode === 0) {
-                const reduxData = { dataFromDB, productIndex };
-                dispatch(updateTechnology_Success(reduxData));
+            const reduxData = { dataFromDB, productIndex };
+            dispatch(updateTechnology_Success(reduxData));
 
-                return errorCode;
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(updateTechnology_Failure());
-
-                return errorCode;
-            }
+            return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(updateTechnology_Failure());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(updateTechnology_Failure(errorCode));
             console.log('An error in updateTechnology() - userActions.js: ', error);
 
             return errorCode;
@@ -727,8 +511,9 @@ export const updateTechnology_Success = (data) => ({
     payload: data,
 });
 
-export const updateTechnology_Failure = () => ({
+export const updateTechnology_Failure = (payload) => ({
     type: actionNames.UPDATE_TECHNOLOGY_FAILURE,
+    payload: payload,
 });
 
 // DRAG AND DROP TECHNOLOGY
@@ -736,25 +521,14 @@ export const dragAndDropTechology = (technologyData, productIndex) => {
     return async (dispatch) => {
         try {
             let res = await userService.dragAndDropTechology(technologyData);
-            const { errorCode, errorMessage, data: dataFromDB } = res ?? {};
+            const { data: dataFromDB } = res ?? {};
 
-            if (errorCode === 0) {
-                const reduxData = { dataFromDB, productIndex };
-                dispatch(dragAndDropTechology_Success(reduxData));
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(dragAndDropTechology_Failure());
-            }
+            const reduxData = { dataFromDB, productIndex };
+            dispatch(dragAndDropTechology_Success(reduxData));
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-
-            if (errorCode) {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-            } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-            }
-
-            dispatch(dragAndDropTechology_Failure());
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            dispatch(dragAndDropTechology_Failure(errorCode));
             console.log('An error in dragAndDropTechology() - userActions.js: ', error);
         }
     };
@@ -765,8 +539,9 @@ export const dragAndDropTechology_Success = (data) => ({
     payload: data,
 });
 
-export const dragAndDropTechology_Failure = () => ({
+export const dragAndDropTechology_Failure = (payload) => ({
     type: actionNames.DRAG_DROP_TECHNOLOGY_FAILURE,
+    payload: payload,
 });
 
 // DELETE TECHNOLOGY
@@ -793,7 +568,7 @@ export const deleteTechnology = (technologyData, productIndex) => {
             if (errorCode) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else {
-                Toast.TOP_RIGHT_ERROR('Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                Toast.TOP_RIGHT_ERROR('Vui lòng kiểm tra lại kết nối ☹️', 3000);
             }
 
             dispatch(deleteTechnology_Failure());
@@ -836,7 +611,7 @@ export const changeUserID = (data) => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3000);
             }
 
             dispatch(changeUserID_Fail());
@@ -858,42 +633,4 @@ export const changeUserID_Success = (data) => ({
 
 export const changeUserID_Fail = () => ({
     type: actionNames.CHANGE_ID_FAILURE,
-});
-
-// =================================================================
-// SEND CV BY EMAIL
-export const SendCVByEmail = (data) => {
-    return async (dispatch) => {
-        dispatch(SendCVByEmail_Start());
-        try {
-            let res = await userService.SendCVByEmail(data);
-            const { errorCode, errorMessage } = res ?? {};
-            if (errorCode === 0) {
-                Toast.TOP_CENTER_SUCCESS(errorMessage, 2000);
-                dispatch(SendCVByEmailD_Success());
-            } else {
-                Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
-                dispatch(SendCVByEmailD_Success());
-            }
-        } catch (error) {
-            const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
-
-            dispatch(SendCVByEmail_Fail(errorCode));
-            console.log('An error in SendCVByEmail() - userActions.js: ', error);
-        }
-    };
-};
-
-export const SendCVByEmail_Start = () => ({
-    type: actionNames.SEND_CV_BY_EMAIL_START,
-});
-
-export const SendCVByEmailD_Success = () => ({
-    type: actionNames.SEND_CV_BY_EMAIL_SUCCESS,
-});
-
-export const SendCVByEmail_Fail = (data) => ({
-    type: actionNames.SEND_CV_BY_EMAIL_FAILURE,
-    payload: data,
 });

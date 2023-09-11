@@ -139,7 +139,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        readUserInformation: (userId) => dispatch(userActions.readUserInformation(userId)),
         removeCVFromHistory: () => dispatch({ type: 'REMOVE_CV_FROM_HISTORY' }),
         userSignOut: () => dispatch(userActions.userSignOut()),
     };

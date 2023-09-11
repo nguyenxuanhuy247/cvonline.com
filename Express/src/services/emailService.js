@@ -397,7 +397,7 @@ export const handleSendCVByEmail = async (data) => {
         } else {
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm thấy người dùng trong hệ thống! Vui lòng đăng nhập lại ☹️`,
+                errorMessage: `Người dùng không tồn tại trong hệ thống! Vui lòng đăng nhập lại ☹️`,
             };
         }
     } catch (error) {

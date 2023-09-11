@@ -7,7 +7,7 @@ const { Op } = require('sequelize');
 const salt = bcrypt.genSaltSync(10);
 
 // =================================================================
-// Get user information
+
 const getUserInfo = async (isEmail, input) => {
     let whereQuery;
     if (isEmail) {
@@ -43,7 +43,7 @@ const getUserInfo = async (isEmail, input) => {
     } else {
         return {
             errorCode: 32,
-            errorMessage: `Không tìm thấy thông tin ứng viên`,
+            errorMessage: `Người dùng không tồn tại trong hệ thống`,
         };
     }
 };
@@ -184,8 +184,26 @@ const getProductList = async (userId) => {
         };
     } else {
         return {
-            errorCode: 32,
+            errorCode: 33,
             errorMessage: `Không tìm thấy danh sách sản phẩm`,
+        };
+    }
+};
+
+const updateProductList = async (userId) => {
+    const getProductListMessage = await getProductList(userId);
+
+    if (getProductListMessage.errorCode === 0) {
+        return {
+            errorCode: 32,
+            errorMessage: `Sản phẩm không còn tồn tại. Đã cập nhật lại danh sách sản phẩm.`,
+            data: getProductListMessage.data,
+        };
+    } else {
+        return {
+            errorCode: 32,
+            errorMessage: `Sản phẩm không còn không tồn tại. Đã cập nhật lại danh sách sản phẩm.`,
+            data: [],
         };
     }
 };
@@ -245,7 +263,7 @@ export const postUserSignIn = async (data) => {
                 if (errorCode === 0) {
                     return {
                         errorCode: 0,
-                        errorMessage: `Đăng nhập với tài khoản Google thành công`,
+                        errorMessage: `Đăng nhập bằng Google thành công`,
                         data: data,
                         token: token,
                     };
@@ -266,7 +284,7 @@ export const postUserSignIn = async (data) => {
             if (errorCode === 0) {
                 return {
                     errorCode: 0,
-                    errorMessage: `Đăng ký tài khoản với Google thành công`,
+                    errorMessage: `Đăng ký bằng Google thành công`,
                     data: data,
                 };
             } else {
@@ -280,6 +298,7 @@ export const postUserSignIn = async (data) => {
         }
     } catch (error) {
         console.log('An error in postUserSignIn() in userService.js : ', error);
+
         return {
             errorCode: 31,
             errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
@@ -329,6 +348,7 @@ export const postUserSignUp = async (data) => {
         }
     } catch (error) {
         console.log('An error in postUserSignUp() in userService.js : ', error);
+
         return {
             errorCode: 31,
             errorMessage: `Lỗi Server! Không thể đăng ký tài khoản ☹️`,
@@ -380,12 +400,14 @@ export const handleGetResetPassword = async (id, token) => {
 
         return {
             errorCode: 31,
+            errorMessage: `Lỗi Server! Không thể đặt lại mật khẩu ☹️`,
         };
     } catch (error) {
         console.log('An error in handleGetResetPassword() in userService.js : ', error);
 
         return {
             errorCode: 31,
+            errorMessage: `Lỗi Server! Không thể đặt lại mật khẩu ☹️`,
         };
     }
 };
@@ -411,12 +433,14 @@ export const handlePostResetPassword = async (id, password) => {
 
         return {
             errorCode: 31,
+            errorMessage: `Lỗi Server! Không thể đặt lại mật khẩu ☹️`,
         };
     } catch (error) {
         console.log('An error in handlePostResetPassword() in userService.js : ', error);
 
         return {
             errorCode: 31,
+            errorMessage: `Lỗi Server! Không thể đặt lại mật khẩu ☹️`,
         };
     }
 };
@@ -460,9 +484,10 @@ export const handleGetSearch = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleGetSearch() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Tìm kiếm sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Tìm kiếm sản phẩm thất bại ☹️`,
         };
     }
 };
@@ -561,9 +586,10 @@ export const handleGetHomeLayout = async () => {
         }
     } catch (error) {
         console.log('An error in handleGetHomeLayout() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Tải danh sách CV thất bại`,
+            errorMessage: `Lỗi Server! Tải danh sách CV thất bại ☹️`,
         };
     }
 };
@@ -586,35 +612,19 @@ export const handleGetCVLayout = async (userId) => {
                 return getProductListMessage;
             }
         } else {
-            return getUserMessage;
+            return { ...getUserMessage, errorCode: 33 };
         }
     } catch (error) {
         console.log('An error in handleGetCVLayout() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không tải được CV của ứng viên`,
+            errorMessage: `Lỗi Server! Không tải được CV của ứng viên ☹️`,
         };
     }
 };
 
 // =================================================================
 // CRUD USER INFORMATION
-
-// READ USER INFORMATION
-export const handleGetUserInformation = async (data) => {
-    try {
-        const { userId } = data;
-        const message = await getUserInfo(false, userId);
-
-        return message;
-    } catch (error) {
-        console.log('An error in handleGetUserInformation() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `Lỗi Server! Tải thông tin ứng viên thất bại`,
-        };
-    }
-};
 
 // UPDATE USER INFORMATION
 export const handleUpdateUserInformation = async (data) => {
@@ -658,20 +668,19 @@ export const handleUpdateUserInformation = async (data) => {
                     errorMessage: `Cập nhật ${label} thành công`,
                     data: data,
                 };
-            } else {
-                return message;
             }
-        } else {
-            return {
-                errorCode: 32,
-                errorMessage: `Không tìm thấy thông tin ứng viên. Cập nhật ${label} thất bại`,
-            };
         }
+
+        return {
+            errorCode: 32,
+            errorMessage: `Hồ sơ của bạn không còn tồn tại. Vui lòng đăng nhập lại ☹️`,
+        };
     } catch (error) {
         console.log('An error in handleUpdateUserInformation() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại`,
+            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại ☹️`,
         };
     }
 };
@@ -684,76 +693,73 @@ export const handleCreateProduct = async (data) => {
     try {
         const { userId } = data;
 
-        const productIDs = await db.technologies.findAll({
-            where: { userId: userId, key: 'PD' },
-            attributes: ['productOrder'],
-            raw: true,
+        const user = await db.users.findOne({
+            where: { id: userId },
+            raw: false,
         });
 
-        const productIDArr = productIDs?.map((productID) => productID.productOrder);
-        const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
-        let maxOrder = 0;
-        if (productIDArrWithNULL?.length > 0) {
-            maxOrder = Math.max(...productIDArrWithNULL);
+        if (user) {
+            const productIDs = await db.technologies.findAll({
+                where: { userId: userId, key: 'PD' },
+                attributes: ['productOrder'],
+                raw: true,
+            });
+
+            const productIDArr = productIDs?.map((productID) => productID.productOrder);
+            const productIDArrWithNULL = productIDArr?.filter((productID) => productID !== null);
+            let maxOrder = 0;
+            if (productIDArrWithNULL?.length > 0) {
+                maxOrder = Math.max(...productIDArrWithNULL);
+            }
+
+            const { id, name, desc, image } = await db.technologies.create({
+                type: 'PRODUCTDESC',
+                key: 'PD',
+                userId: userId,
+                productOrder: maxOrder + 1,
+            });
+
+            let binaryImage;
+            if (image) {
+                binaryImage = image.toString('binary');
+            }
+
+            const newProduct = {
+                order: undefined,
+                productInfo: { id, name, desc, image: binaryImage },
+                sourceCodeList: [],
+                FETechnologyList: [],
+                BETechnologyList: [],
+                FELibraryList: [],
+                numberofFELibrary: 0,
+                BELibraryList: [],
+                numberofBELibrary: 0,
+            };
+
+            return {
+                errorCode: 0,
+                errorMessage: `Tạo sản phẩm mới thành công`,
+                data: newProduct,
+            };
+        } else {
+            return {
+                errorCode: 32,
+                errorMessage: `Hồ sơ của bạn không còn tồn tại. Vui lòng đăng nhập lại ☹️`,
+            };
         }
-
-        const { id, name, desc, image } = await db.technologies.create({
-            type: 'PRODUCTDESC',
-            key: 'PD',
-            userId: userId,
-            productOrder: maxOrder + 1,
-        });
-
-        let binaryImage;
-        if (image) {
-            binaryImage = image.toString('binary');
-        }
-
-        const newProduct = {
-            order: undefined,
-            productInfo: { id, name, desc, image: binaryImage },
-            sourceCodeList: [],
-            FETechnologyList: [],
-            BETechnologyList: [],
-            FELibraryList: [],
-            numberofFELibrary: 0,
-            BELibraryList: [],
-            numberofBELibrary: 0,
-        };
-
-        return {
-            errorCode: 0,
-            errorMessage: `Tạo sản phẩm mới thành công`,
-            data: newProduct,
-        };
     } catch (error) {
         console.log('An error in handleCreateProduct() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Tạo sản phẩm mới thất bại`,
-        };
-    }
-};
-
-// READ PRODUCT
-export const handleGetProduct = async (data) => {
-    try {
-        const { userId } = data;
-        const message = getProductList(userId);
-
-        return message;
-    } catch (error) {
-        console.log('An error in handleGetProductList() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `Lỗi Server! Tải danh sách sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Không tạo được sản phẩm mới ☹️`,
         };
     }
 };
 
 // UPDATE PRODUCT
 export const handleUpdateProduct = async (data) => {
-    const { productId, label } = data;
+    const { userId, productId, label } = data;
     try {
         const product = await db.technologies.findOne({
             where: { id: productId },
@@ -778,16 +784,15 @@ export const handleUpdateProduct = async (data) => {
                 errorMessage: `Cập nhật ${label} thành công`,
             };
         } else {
-            return {
-                errorCode: 32,
-                errorMessage: `Không tìm thấy sản phẩm. Cập nhật ${label} thất bại`,
-            };
+            const getProductListMessage = await updateProductList(userId);
+            return getProductListMessage;
         }
     } catch (error) {
         console.log('An error in handleUpdateProduct() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại`,
+            errorMessage: `Lỗi Server! Không cập nhật được ${label} ☹️`,
         };
     }
 };
@@ -795,7 +800,7 @@ export const handleUpdateProduct = async (data) => {
 // DELETE PRODUCT
 export const handleDeleteProduct = async (data) => {
     try {
-        const { productId } = data ?? {};
+        const { userId, productId } = data ?? {};
 
         const product = await db.technologies.findOne({
             where: { id: productId },
@@ -811,16 +816,15 @@ export const handleDeleteProduct = async (data) => {
                 errorMessage: `Xóa sản phẩm thành công`,
             };
         } else {
-            return {
-                errorCode: 32,
-                errorMessage: `Không tìm thấy sản phẩm cần xóa`,
-            };
+            const getProductListMessage = await updateProductList(userId);
+            return getProductListMessage;
         }
     } catch (error) {
         console.log('An error in handleDeleteProduct() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Xóa sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Không xóa được sản phẩm ☹️`,
         };
     }
 };
@@ -851,16 +855,15 @@ export const handleMoveProduct = async (data) => {
                 errorMessage: `Di chuyển sản phẩm thành công`,
             };
         } else {
-            return {
-                errorCode: 32,
-                errorMessage: `Không tìm thấy sản phẩm cần di chuyển`,
-            };
+            const getProductListMessage = await updateProductList(userId);
+            return getProductListMessage;
         }
     } catch (error) {
         console.log('An error in handleMoveProduct() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Di chuyển sản phẩm thất bại`,
+            errorMessage: `Lỗi Server! Không thể di chuyển sản phẩm ☹️`,
         };
     }
 };
@@ -868,57 +871,45 @@ export const handleMoveProduct = async (data) => {
 // =================================================================
 // CRUD TECHNOLOGY
 
-const handleFindAllTechnologyList = async (data, CRUD) => {
-    const { type, label, userId, productId, key, side } = data ?? {};
+const handleFindAllTechnologyList = async (data) => {
+    const { type, userId, productId, key, side } = data ?? {};
 
-    try {
-        let findAllQuery;
-        let dataSentToClient = {};
+    let findAllQuery;
+    let dataSentToClient = {};
 
-        if (type === 'SOURCECODE') {
-            findAllQuery = { userId: userId, productId: productId, key: key };
-        } else {
-            findAllQuery = { userId: userId, productId: productId, key: key, side: side };
-        }
-
-        const { rows, count } = await db.technologies.findAndCountAll({
-            where: findAllQuery,
-            attributes: ['id', 'image', 'name', 'version', 'link', 'technologyOrder'],
-            order: [['technologyOrder', 'ASC']],
-            raw: true,
-        });
-
-        const technologyList = rows.map((library) => {
-            const binaryImage = library?.image?.toString('binary');
-            return { ...library, image: binaryImage };
-        });
-
-        if (type === 'SOURCECODE') {
-            dataSentToClient.sourceCodeList = technologyList;
-        } else if (type === 'TECHNOLOGY' && side === 'FE') {
-            dataSentToClient.FETechnologyList = technologyList;
-        } else if (type === 'TECHNOLOGY' && side === 'BE') {
-            dataSentToClient.BETechnologyList = technologyList;
-        } else if (type === 'LIBRARY' && side === 'FE') {
-            dataSentToClient.FELibraryList = technologyList;
-            dataSentToClient.numberofFELibrary = count;
-        } else if (type === 'LIBRARY' && side === 'BE') {
-            dataSentToClient.BELibraryList = technologyList;
-            dataSentToClient.numberofBELibrary = count;
-        }
-
-        return {
-            errorCode: 0,
-            errorMessage: `${CRUD} ${label} thành công`,
-            data: dataSentToClient,
-        };
-    } catch (error) {
-        console.log('An error in handleFindAllTechnologyList() in userService.js : ', error);
-        return {
-            errorCode: 31,
-            errorMessage: `Lỗi Server! Tải danh sách khi ${CRUD} ${label} thất bại`,
-        };
+    if (type === 'SOURCECODE') {
+        findAllQuery = { userId: userId, productId: productId, key: key };
+    } else {
+        findAllQuery = { userId: userId, productId: productId, key: key, side: side };
     }
+
+    const { rows, count } = await db.technologies.findAndCountAll({
+        where: findAllQuery,
+        attributes: ['id', 'image', 'name', 'version', 'link', 'technologyOrder'],
+        order: [['technologyOrder', 'ASC']],
+        raw: true,
+    });
+
+    const technologyList = rows.map((library) => {
+        const binaryImage = library?.image?.toString('binary');
+        return { ...library, image: binaryImage };
+    });
+
+    if (type === 'SOURCECODE') {
+        dataSentToClient.sourceCodeList = technologyList;
+    } else if (type === 'TECHNOLOGY' && side === 'FE') {
+        dataSentToClient.FETechnologyList = technologyList;
+    } else if (type === 'TECHNOLOGY' && side === 'BE') {
+        dataSentToClient.BETechnologyList = technologyList;
+    } else if (type === 'LIBRARY' && side === 'FE') {
+        dataSentToClient.FELibraryList = technologyList;
+        dataSentToClient.numberofFELibrary = count;
+    } else if (type === 'LIBRARY' && side === 'BE') {
+        dataSentToClient.BELibraryList = technologyList;
+        dataSentToClient.numberofBELibrary = count;
+    }
+
+    return dataSentToClient;
 };
 
 // CREATE TECHNOLOGY
@@ -963,9 +954,13 @@ export const handleCreateTechnology = async (data) => {
 
             await db.technologies.create(queryCreateTechnology);
 
-            const message = await handleFindAllTechnologyList(data, 'Tạo');
+            const dataSentToClient = await handleFindAllTechnologyList(data);
 
-            return message;
+            return {
+                errorCode: 0,
+                errorMessage: `Tạo mới ${label} thành công`,
+                data: dataSentToClient,
+            };
         } else {
             return {
                 errorCode: 32,
@@ -974,9 +969,10 @@ export const handleCreateTechnology = async (data) => {
         }
     } catch (error) {
         console.log('An error in handleCreateTechnology() in userService.js : ', error);
+
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Tạo mới ${label} thất bại`,
+            errorMessage: `Lỗi Server! Không thể tạo mới ${label} ☹️`,
         };
     }
 };
@@ -1003,16 +999,18 @@ export const handleUpdateTechnology = async (data) => {
 
             return message;
         } else {
+            const dataSentToClient = await handleFindAllTechnologyList(data);
             return {
                 errorCode: 32,
-                errorMessage: `Không tìm công nghệ để cập nhật ${label}`,
+                errorMessage: `${label} này không còn tồn tại. Đã cập nhật lại danh sách.`,
+                data: dataSentToClient,
             };
         }
     } catch (error) {
         console.log('An error in handleUpdateTechnology() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại`,
+            errorMessage: `Lỗi Server! Không thể cập nhật ${label} thất bại ☹️`,
         };
     }
 };

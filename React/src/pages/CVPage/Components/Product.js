@@ -49,29 +49,22 @@ class Product extends PureComponent {
 
     handleUpdateProductNameOrDesc = (e, updatedItem) => {
         const { index } = this.props ?? {};
+        const { id: ownerID } = this.props?.owner ?? {};
         const { productInfo } = this.props?.productData ?? {};
         const { id: productId, name: productName, desc: productDesc } = productInfo ?? {};
 
         const value = e.target.innerText?.trimEnd();
 
-        if (productId) {
-            if (updatedItem === 'name') {
-                const data = { productId: productId, name: value, label: 'Tên sản phẩm' };
-                if (value !== productName) {
-                    this.props.updateProduct(data, index, updatedItem);
-                }
-            } else {
-                const data = { productId: productId, desc: value, label: 'Mô tả sản phẩm' };
-                if (value !== productDesc) {
-                    this.props.updateProduct(data, index, updatedItem);
-                }
+        if (updatedItem === 'name') {
+            const data = { userId: ownerID, productId: productId, name: value, label: 'Tên sản phẩm' };
+            if (value !== productName) {
+                this.props.updateProduct(data, index, updatedItem);
             }
         } else {
-            Toast.TOP_CENTER_ERROR(
-                `Thiếu Product ID để cập nhật ${
-                    updatedItem === 'name' ? 'Tên sản phẩm' : 'Mô tả sản phẩm'
-                }. Vui lòng thử lại`,
-            );
+            const data = { userId: ownerID, productId: productId, desc: value, label: 'Mô tả sản phẩm' };
+            if (value !== productDesc) {
+                this.props.updateProduct(data, index, updatedItem);
+            }
         }
     };
 

@@ -36,17 +36,6 @@ class PersonalLayout extends PureComponent {
     }
 
     // =================================================================
-
-    signOutAndRedirectToSignInPage = () => {
-        const { history } = this.props;
-
-        this.redirectID.current = setTimeout(() => {
-            this.props.userSignOut();
-            history.push('/signin');
-        }, 1000);
-    };
-
-    // =================================================================
     // CRUD USER INFORMATION
 
     handleOpenChangeAvatarModal = () => {
@@ -77,30 +66,19 @@ class PersonalLayout extends PureComponent {
 
     handleUpdateUserInformation = async (e, name, label) => {
         const { id: userId } = this.props?.userInfo ?? {};
-        const { history } = this.props;
 
-        if (userId) {
-            let value;
-            if (name === 'jobPosition') {
-                value = e.target.value;
-            } else if (name === 'languages') {
-                value = e.target.innerText;
-            } else {
-                value = e.target.innerText?.trim();
-            }
-
-            if (value !== this.props?.userInfo?.[name]) {
-                const data = { userId: userId, [name]: value, label: label };
-                const errorCode = await this.props.updateUserInformation(data);
-
-                if (errorCode === 10 || errorCode === 32) {
-                    this.props.userSignOut();
-                    history.push('/signin');
-                }
-            }
+        let value;
+        if (name === 'jobPosition') {
+            value = e.target.value;
+        } else if (name === 'languages') {
+            value = e.target.innerText;
         } else {
-            this.props.userSignOut();
-            history.push('/signin');
+            value = e.target.innerText?.trim();
+        }
+
+        if (value !== this.props?.userInfo?.[name]) {
+            const data = { userId: userId, [name]: value, label: label };
+            await this.props.updateUserInformation(data);
         }
     };
 
@@ -108,35 +86,26 @@ class PersonalLayout extends PureComponent {
     // CRUD PRODUCT
 
     handleCreateProduct = async () => {
-        const { id: userId } = this.props?.userInfo ?? {};
+        const { id: ownerID } = this.props?.owner ?? {};
+        const errorCode = await this.props.createProduct(ownerID);
 
-        if (userId) {
-            const errorCode = await this.props.createProduct(userId);
+        if (errorCode === 0) {
+            const lastProductData = this.props.productList?.at(-1);
+            const lastProductId = lastProductData?.productInfo?.id;
 
-            if (errorCode === 0) {
-                const lastProductData = this.props.productList?.at(-1);
-                const lastProductId = lastProductData?.productInfo?.id;
-
-                const lastProductName = document.getElementById(`js-product-name-${lastProductId}`);
-                lastProductName?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else if (errorCode === 10) {
-                this.signOutAndRedirectToSignInPage();
-            }
-        } else {
-            Toast.TOP_CENTER_WARN('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3000);
-            this.signOutAndRedirectToSignInPage();
+            const lastProductName = document.getElementById(`js-product-name-${lastProductId}`);
+            lastProductName?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     };
 
     handleDeleteProduct = (productId, index) => {
-        if (productId) {
-            this.props.deleteProduct(productId, index);
-        } else {
-            Toast.TOP_CENTER_ERROR(`Thiếu Product ID để xóa sản phẩm. Vui lòng thử lại`);
-        }
+        const { id: ownerID } = this.props?.owner ?? {};
+        this.props.deleteProduct(ownerID, productId, index);
     };
 
     handleMoveProduct = async (order, operator) => {
+        const { id: ownerID } = this.props?.owner ?? {};
+
         const productList_IDAndOrder = this.props.productList?.map((productData) => {
             const productInfo = productData.productInfo;
             return { productId: productInfo.id, productOrder: productInfo.productOrder };
@@ -150,6 +119,7 @@ class PersonalLayout extends PureComponent {
 
         if (movedItem_IDAndOrder && siblingItem_IDAndOrder) {
             const data = {
+                userId: ownerID,
                 movedItemID: movedItem_IDAndOrder.productId,
                 movedItemOrder: siblingItem_IDAndOrder.productOrder,
                 siblingItemID: siblingItem_IDAndOrder.productId,
@@ -174,43 +144,33 @@ class PersonalLayout extends PureComponent {
             }
         } else {
             const text = operator === 'move up' ? 'lên trên' : 'xuống dưới';
-            Toast.TOP_CENTER_WARN(`Không thể di chuyển sản phẩm này ${text}`, 3000);
+            Toast.TOP_CENTER_WARN(`Không thể di chuyển sản phẩm này ${text}`, 3500);
         }
     };
 
     // =================================================================
-    fetchUserInformationAndProductList = async (isReadProduct) => {
-        const { paramId } = this.props?.match?.params ?? {};
-        const { languages } = this.props?.userInfo ?? {};
-
-        if (paramId) {
-            const errorCode1 = await this.props.readUserInformation(paramId);
-
-            // Set languages from database by JS
-            const languagesElement = document.getElementById(`js-language-desc`);
-            if (languagesElement) {
-                languagesElement.innerText = languages || '';
-            }
-
-            if (errorCode1 === 0 && isReadProduct) {
-                const errorCode2 = await this.props.readProduct(paramId);
-                if (errorCode2 === 10) {
-                    this.signOutAndRedirectToSignInPage();
-                }
-            } else if (errorCode1 === 10) {
-                this.signOutAndRedirectToSignInPage();
-            }
-        } else {
-            Toast.TOP_CENTER_WARN('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3000);
-            this.signOutAndRedirectToSignInPage();
-        }
-    };
-
     async componentDidMount() {
         const { paramId } = this.props?.match?.params ?? {};
-        this.props.readCVLayout(paramId);
+        const { languages } = this.props?.userInfo ?? {};
+        const { history } = this.props;
 
-        // this.fetchUserInformationAndProductList(true);
+        // Read CV Layout
+        if (paramId) {
+            this.props.readCVLayout(paramId);
+        } else {
+            Toast.TOP_CENTER_ERROR('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3500);
+
+            this.redirectID.current = setTimeout(() => {
+                this.props.userSignOut();
+                history.push('/signin');
+            }, 2000);
+        }
+
+        // Set languages from database by JS
+        const languagesElement = document.getElementById(`js-language-desc`);
+        if (languagesElement) {
+            languagesElement.innerText = languages || '';
+        }
 
         // Auto scroll to TOP when go to CV Layout
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -243,6 +203,8 @@ class PersonalLayout extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
+        const { paramId } = this.props?.match?.params ?? {};
+
         // Set languages from database by JS
         const { languages } = this.props?.userInfo ?? {};
         const languagesElement = document.getElementById(`js-language-desc`);
@@ -250,8 +212,9 @@ class PersonalLayout extends PureComponent {
             languagesElement.innerText = languages || '';
         }
 
+        // Change to another CV
         if (this.props?.match?.params.paramId !== prevProps?.match?.params.paramId) {
-            this.fetchUserInformationAndProductList(true);
+            this.props.readCVLayout(paramId);
         }
     }
 
@@ -532,13 +495,11 @@ const mapDispatchToProps = (dispatch) => {
         readCVLayout: (userId) => dispatch(userActions.readCVLayout(userId)),
 
         // CRUD User information
-        readUserInformation: (userId) => dispatch(userActions.readUserInformation(userId)),
         updateUserInformation: (data) => dispatch(userActions.updateUserInformation(data)),
 
         // CRUD Product
         createProduct: (userId) => dispatch(userActions.createProduct(userId)),
-        readProduct: (userId) => dispatch(userActions.readProduct(userId)),
-        deleteProduct: (productId, index) => dispatch(userActions.deleteProduct(productId, index)),
+        deleteProduct: (userId, productId, index) => dispatch(userActions.deleteProduct(userId, productId, index)),
         moveProduct: (data, index) => dispatch(userActions.moveProduct(data, index)),
 
         // Sign out

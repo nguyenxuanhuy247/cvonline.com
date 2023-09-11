@@ -32,13 +32,11 @@ const actionNames = Object.freeze({
 
     // =================================================================
     // USER INFORMATION
-    ...actionMaker(`READ`, `USER_INFORMATION`),
     ...actionMaker(`UPDATE`, `USER_INFORMATION`),
     REMOVE_CV_FROM_HISTORY: 'REMOVE_CV_FROM_HISTORY',
 
     // PRODUCT LIST
     ...actionMaker(`CREATE`, `PRODUCT`),
-    ...actionMaker(`READ`, `PRODUCT`),
     ...actionMaker(`UPDATE`, `PRODUCT`),
     ...actionMaker(`DELETE`, `PRODUCT`),
     ...actionMaker(`MOVE`, `PRODUCT`),

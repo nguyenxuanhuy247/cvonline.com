@@ -42,7 +42,7 @@ class SendCVByEmailModal extends PureComponent {
         } else if (!this.state.jobTitle) {
             Toast.TOP_CENTER_WARN('Nhập vị trí ứng tuyển', 3000);
         } else {
-            const data = { ...this.state, from: 'this.props.owner?.email' };
+            const data = { ...this.state, from: this.props.owner?.email };
             await this.props.SendCVByEmail(data);
         }
     };

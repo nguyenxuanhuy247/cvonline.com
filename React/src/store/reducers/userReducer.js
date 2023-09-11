@@ -167,18 +167,36 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, CVLayout: true },
             };
         case actionNames.READ_CV_LAYOUT_SUCCESS:
+            const userIDList = [...state.CVHistory];
+            const userInfoData = action.payload.userInfo;
+            const userID = userInfoData.id;
+            const lastUserIDInList = userIDList[userIDList.length - 1];
+
+            if (state.isSignIn) {
+                if (userID !== state.owner?.id && userID !== lastUserIDInList) {
+                    userIDList.push(userID);
+                }
+            } else if (userID !== lastUserIDInList) {
+                userIDList.push(userID);
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
                 ...action.payload,
+                CVHistory: userIDList,
             };
         case actionNames.READ_CV_LAYOUT_FAILURE:
             const CVLayoutErrorCode = action.payload;
 
             let CVLayoutProps;
 
-            if (CVLayoutErrorCode === 10) {
+            if (state.isSignIn && (CVLayoutErrorCode === 10 || CVLayoutErrorCode === 33)) {
                 CVLayoutProps = { isSignIn: false, isSignUp: false };
+
+                setTimeout(() => {
+                    window.location.href = '/signin';
+                }, 3500);
             }
 
             return {
@@ -218,31 +236,6 @@ const userReducer = (state = initialState, action) => {
 
         // =================================================================
         // CV LAYOUT
-        // READ USER INFORMATION
-        case actionNames.READ_USER_INFORMATION_SUCCESS:
-            const userIDList = [...state.CVHistory];
-            const userInfoData = action.payload;
-            const userID = userInfoData.id;
-            const lastUserIDInList = userIDList[userIDList.length - 1];
-
-            if (state.isSignIn) {
-                if (userID !== state.owner?.id && userID !== lastUserIDInList) {
-                    userIDList.push(userID);
-                }
-            } else if (userID !== lastUserIDInList) {
-                userIDList.push(userID);
-            }
-
-            return {
-                ...state,
-                userInfo: action.payload,
-                CVHistory: userIDList,
-            };
-        case actionNames.READ_USER_INFORMATION_FAILURE:
-            return {
-                ...state,
-                userInfo: { id: 0 },
-            };
 
         // UPDATE USER INFORMATION
         case actionNames.UPDATE_USER_INFORMATION_START:
@@ -258,9 +251,17 @@ const userReducer = (state = initialState, action) => {
                 userInfo: action.payload,
             };
         case actionNames.UPDATE_USER_INFORMATION_FAILURE:
+            const updateUserInformationErrorCode = action.payload;
+            let updateUserInformationProps;
+
+            if (updateUserInformationErrorCode === 10 || updateUserInformationErrorCode === 32) {
+                updateUserInformationProps = { isSignIn: false, isSignUp: false };
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateUserInformation: false },
+                ...updateUserInformationProps,
             };
 
         // UPDATE CV HISTORY
@@ -291,28 +292,17 @@ const userReducer = (state = initialState, action) => {
                 productList: created_productList,
             };
         case actionNames.CREATE_PRODUCT_FAILURE:
+            const createProductErrorCode = action.payload;
+            let createProductProps;
+
+            if (createProductErrorCode === 10 || createProductErrorCode === 32) {
+                createProductProps = { isSignIn: false, isSignUp: false };
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, createProduct: false },
-            };
-
-        // READ PRODUCT
-        case actionNames.READ_PRODUCT_START:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, CVLayout: true },
-            };
-        case actionNames.READ_PRODUCT_SUCCESS:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
-                productList: action.payload,
-            };
-        case actionNames.READ_PRODUCT_FAILURE:
-            return {
-                ...state,
-                isLoading: { ...state.isLoading, CVLayout: false },
-                productList: [],
+                ...createProductProps,
             };
 
         // UPDATE PRODUCT
@@ -338,9 +328,26 @@ const userReducer = (state = initialState, action) => {
                 productList: newUpdated_productList,
             };
         case actionNames.UPDATE_PRODUCT_FAILURE:
+            const updateProductPayload = action.payload;
+            let updateProductProps;
+            let updateProductProductList = { productList: state.productList };
+
+            if (updateProductPayload.errorCode === 10) {
+                updateProductProps = { isSignIn: false, isSignUp: false };
+                setTimeout(() => {
+                    window.location.href = '/signin';
+                }, 3000);
+            }
+
+            if (updateProductPayload.errorCode === 32) {
+                updateProductProductList = { productList: updateProductPayload.data };
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateProduct: false },
+                ...updateProductProps,
+                ...updateProductProductList,
             };
 
         // DELETE PRODUCT
@@ -360,9 +367,26 @@ const userReducer = (state = initialState, action) => {
                 productList: deleted_productList,
             };
         case actionNames.DELETE_PRODUCT_FAILURE:
+            const deleteProductPayload = action.payload;
+            let deleteProductProps;
+            let deleteProductProductList = { productList: state.productList };
+
+            if (deleteProductPayload.errorCode === 10) {
+                deleteProductProps = { isSignIn: false, isSignUp: false };
+                setTimeout(() => {
+                    window.location.href = '/signin';
+                }, 3000);
+            }
+
+            if (deleteProductPayload.errorCode === 32) {
+                deleteProductProductList = { productList: deleteProductPayload.data };
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, deleteProduct: false },
+                ...deleteProductProps,
+                ...deleteProductProductList,
             };
 
         // MOVE PRODUCT
@@ -387,9 +411,26 @@ const userReducer = (state = initialState, action) => {
                 productList: newProductList,
             };
         case actionNames.MOVE_PRODUCT_FAILURE:
+            const moveProductPayload = action.payload;
+            let moveProductProps;
+            let moveProductProductList = { productList: state.productList };
+
+            if (moveProductPayload.errorCode === 10) {
+                moveProductProps = { isSignIn: false, isSignUp: false };
+                setTimeout(() => {
+                    window.location.href = '/signin';
+                }, 3000);
+            }
+
+            if (moveProductPayload.errorCode === 32) {
+                moveProductProductList = { productList: moveProductPayload.data };
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, moveProduct: false },
+                ...moveProductProps,
+                ...moveProductProductList,
             };
 
         // =================================================================
@@ -415,8 +456,19 @@ const userReducer = (state = initialState, action) => {
         case actionNames.UPDATE_TECHNOLOGY_FAILURE:
         case actionNames.DELETE_TECHNOLOGY_FAILURE:
         case actionNames.DRAG_DROP_TECHNOLOGY_FAILURE:
+            const technologyErrorCode = action.payload;
+            let technologyProps;
+
+            if (technologyErrorCode === 10) {
+                technologyProps = { isSignIn: false, isSignUp: false };
+                setTimeout(() => {
+                    window.location.href = '/signin';
+                }, 3000);
+            }
+
             return {
                 ...state,
+                ...technologyProps,
             };
 
         // =================================================================
