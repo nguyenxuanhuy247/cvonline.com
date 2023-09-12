@@ -609,10 +609,10 @@ export const handleGetCVLayout = async (userId) => {
                     data: { userInfo: getUserMessage.data, productList: getProductListMessage.data },
                 };
             } else {
-                return getProductListMessage;
+                return { ...getProductListMessage, data: getUserMessage.data };
             }
         } else {
-            return { ...getUserMessage, errorCode: 33 };
+            return getUserMessage;
         }
     } catch (error) {
         console.log('An error in handleGetCVLayout() in userService.js : ', error);

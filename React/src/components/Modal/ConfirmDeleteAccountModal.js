@@ -38,10 +38,10 @@ class ConfirmDeleteAccountModal extends PureComponent {
                         </div>
 
                         <div className={cx('modal-footer')}>
-                            <Button className={cx('btn', 'cancel')} onClick={onClose}>
+                            <Button className={cx('cancel-button')} onClick={onClose}>
                                 Hủy
                             </Button>
-                            <Button className={cx('btn', 'finish')} onClick={onDelete}>
+                            <Button className={cx('delete-button')} onClick={onDelete}>
                                 Xóa
                             </Button>
                         </div>

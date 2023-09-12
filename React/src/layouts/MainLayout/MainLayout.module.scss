@@ -25,10 +25,6 @@
             color: #fff;
             font-size: 20px;
             cursor: pointer;
-
-            // &.go-bottom {
-            //     display: grid;
-            // }
         }
     }
 }
@@ -38,7 +34,9 @@
 @media (min-width: 768px) and (max-width: 991px) {
     .main-layout {
         .main-section {
-            margin: var(--header-height-tablet) 0;
+            padding-top: var(--header-height-tablet);
+            margin-bottom: var(--header-height-tablet);
+            margin-left: 0;
         }
 
         .scroll-to-top-bottom {
@@ -53,7 +51,9 @@
 @media (max-width: 767px) {
     .main-layout {
         .main-section {
-            margin: var(--header-height-mobile) 0;
+            padding-top: var(--header-height-mobile);
+            margin-bottom: var(--header-height-mobile);
+            margin-left: 0;
         }
 
         .scroll-to-top-bottom {

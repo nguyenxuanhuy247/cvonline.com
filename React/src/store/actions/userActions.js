@@ -12,7 +12,7 @@ export const userSignIn = (userData) => {
             dispatch(userSignIn_Success(data));
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(userSignIn_Fail());
             console.log('An error in userSignInStart() - userActions.js: ', error);
         }
@@ -43,7 +43,7 @@ export const userSignUpStart = (userData) => {
             dispatch(userSignUp_Success());
         } catch (error) {
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(userSignUp_Fail());
             console.log('An error in userSignUpStart() - userActions.js: ', error);
         }
@@ -73,7 +73,7 @@ export const deleteAccount = (userId) => {
             dispatch(deleteAccount_Success());
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(deleteAccount_Failure(errorCode));
             console.log('An error in deleteAccount() - userActions.js: ', error);
         }
@@ -107,7 +107,7 @@ export const userForgotPassword = (data) => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             }
 
             dispatch(userForgotPassword_Failure());
@@ -152,7 +152,7 @@ export const readSearch = (searchValue) => {
             if (errorCode === 31) {
                 Toast.TOP_RIGHT_ERROR(errorMessage, 3000);
             } else if (!errorCode) {
-                Toast.TOP_RIGHT_ERROR('Vui lòng kiểm tra lại kết nối ☹️', 3000);
+                Toast.TOP_RIGHT_ERROR('Không kết nối được với Server ☹️', 3000);
             }
 
             dispatch(readSearch_Failure(data));
@@ -186,7 +186,7 @@ export const readHomeLayout = () => {
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
             if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3000);
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3000);
             }
 
             dispatch(readHomeLayout_Failure());
@@ -218,13 +218,14 @@ export const readCVLayout = (userId) => {
             const { data } = res ?? {};
             dispatch(readCVLayout_Success(data));
         } catch (error) {
+            const dataFromDB = error.response?.data ?? {};
             const { errorCode, errorMessage } = error.response?.data ?? {};
 
-            if (errorCode !== 32) {
-                Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            if (errorCode !== 32 && errorCode !== 33) {
+                Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             }
 
-            dispatch(readCVLayout_Failure(errorCode));
+            dispatch(readCVLayout_Failure(dataFromDB));
             console.log('An error in readCVLayout() - userActions.js: ', error);
         }
     };
@@ -239,9 +240,9 @@ export const readCVLayout_Success = (data) => ({
     payload: data,
 });
 
-export const readCVLayout_Failure = (errorCode) => ({
+export const readCVLayout_Failure = (data) => ({
     type: actionNames.READ_CV_LAYOUT_FAILURE,
-    payload: errorCode,
+    payload: data,
 });
 
 // SEND CV BY EMAIL
@@ -255,7 +256,7 @@ export const SendCVByEmail = (data) => {
             dispatch(SendCVByEmailD_Success());
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(SendCVByEmail_Fail(errorCode));
             console.log('An error in SendCVByEmail() - userActions.js: ', error);
         }
@@ -290,7 +291,7 @@ export const updateUserInformation = (userData) => {
             return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(updateUserInformation_Failure(errorCode));
             console.log('An error in updateUserInformation() - userActions.js: ', error);
 
@@ -328,7 +329,7 @@ export const createProduct = (userId) => {
             return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(createProduct_Failure(errorCode));
             console.log('An error in createProduct() - userActions.js: ', error);
 
@@ -362,7 +363,7 @@ export const updateProduct = (productData, index, updatedItem) => {
         } catch (error) {
             const dataFormBE = error.response?.data ?? {};
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(updateProduct_Failure(dataFormBE));
             console.log('An error in updateProduct() - userActions.js: ', error);
         }
@@ -393,7 +394,7 @@ export const deleteProduct = (userId, productId, index) => {
         } catch (error) {
             const dataFormBE = error.response?.data ?? {};
             const { errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(deleteProduct_Failure(dataFormBE));
             console.log('An error in deleteProduct() - userActions.js: ', error);
         }
@@ -427,7 +428,7 @@ export const moveProduct = (productData, index) => {
         } catch (error) {
             const dataFormBE = error.response?.data ?? {};
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(moveProduct_Failure(dataFormBE));
             console.log('An error in moveProduct() - userActions.js: ', error);
 
@@ -467,7 +468,7 @@ export const createTechnology = (technologyData, productIndex) => {
             const dataFromDB = error.response?.data ?? {};
             const reduxData = { productIndex, dataFromDB };
             dispatch(createTechnology_Failure(reduxData));
-            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Không kết nối được với Server ☹️', 3500);
             console.log('An error in createTechnology() - userActions.js: ', error);
 
             return dataFromDB?.errorCode;
@@ -500,7 +501,7 @@ export const updateTechnology = (technologyData, productIndex) => {
             const dataFromDB = error.response?.data ?? {};
             const reduxData = { productIndex, dataFromDB };
             dispatch(updateTechnology_Failure(reduxData));
-            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Không kết nối được với Server ☹️', 3500);
             console.log('An error in updateTechnology() - userActions.js: ', error);
 
             return dataFromDB?.errorCode;
@@ -530,7 +531,7 @@ export const deleteTechnology = (technologyData, productIndex) => {
             const dataFromDB = error.response?.data ?? {};
             const reduxData = { productIndex, dataFromDB };
             dispatch(deleteTechnology_Failure(reduxData));
-            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Không kết nối được với Server ☹️', 3500);
             console.log('An error in deleteTechnology() - userActions.js: ', error);
         }
     };
@@ -559,7 +560,7 @@ export const dragAndDropTechology = (technologyData, productIndex) => {
             const dataFromDB = error.response?.data ?? {};
             const reduxData = { productIndex, dataFromDB };
             dispatch(dragAndDropTechology_Failure(reduxData));
-            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(dataFromDB?.errorMessage || 'Không kết nối được với Server ☹️', 3500);
             console.log('An error in dragAndDropTechology() - userActions.js: ', error);
         }
     };
@@ -589,7 +590,7 @@ export const changeUserID = (data) => {
             return errorCode;
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
-            Toast.TOP_RIGHT_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+            Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(changeUserID_Failure(errorCode));
             console.log('An error in changeUserID() - userActions.js: ', error);
 

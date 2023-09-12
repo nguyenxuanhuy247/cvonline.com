@@ -46,9 +46,9 @@ class MainLayout extends PureComponent {
 
     render() {
         const { isShowScrollButtons } = this.props;
-        
+
         return (
-            <div className={cx('main-layout')}>
+            <div className={cx('main-layout')} id="main-layout">
                 <Header />
                 <SideBar />
 

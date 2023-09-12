@@ -126,7 +126,7 @@ a {
 }
 
 @mixin main-layout-margin {
-    margin-top: var(--header-height-pc);
+    padding-top: var(--header-height-pc);
     margin-left: var(--side-bar-width);
 }
 
@@ -218,6 +218,40 @@ a {
         cursor: text;
         outline: none;
         border: 1px dashed #999;
+    }
+}
+
+@mixin button-modal-footer {
+    width: 150px;
+    height: 42px;
+    padding: 10px;
+    font-family: var(--inter-font) !important;
+    font-size: 1.4rem;
+    font-weight: 700;
+    border: 2px solid transparent;
+    color: #fff;
+    column-gap: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@mixin finish-button-modal-footer {
+    @include button-modal-footer;
+
+    color: #fff;
+    background-color: var(--primary-color);
+}
+
+@mixin cancel-button-modal-footer {
+    @include button-modal-footer;
+
+    color: #dc1c24;
+    border: 2px solid currentColor;
+    background-color: #fff;
+
+    &:hover {
+        color: #fff;
+        background-color: #dc1c24;
     }
 }
 

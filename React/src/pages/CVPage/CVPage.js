@@ -30,6 +30,7 @@ class PersonalLayout extends PureComponent {
         super(props);
         this.state = {
             isModalChangeAvatarOpen: false,
+            userInfo: null,
         };
 
         this.redirectID = React.createRef();
@@ -65,7 +66,7 @@ class PersonalLayout extends PureComponent {
     };
 
     handleUpdateUserInformation = async (e, name, label) => {
-        const { id: userId } = this.props?.userInfo ?? {};
+        const { id: ownerID } = this.props?.owner ?? {};
 
         let value;
         if (name === 'jobPosition') {
@@ -77,7 +78,7 @@ class PersonalLayout extends PureComponent {
         }
 
         if (value !== this.props?.userInfo?.[name]) {
-            const data = { userId: userId, [name]: value, label: label };
+            const data = { userId: ownerID, [name]: value, label: label };
             await this.props.updateUserInformation(data);
         }
     };
@@ -208,7 +209,7 @@ class PersonalLayout extends PureComponent {
         // Set languages from database by JS
         const { languages } = this.props?.userInfo ?? {};
         const languagesElement = document.getElementById(`js-language-desc`);
-        if (languagesElement) {
+        if (languagesElement && this.props.shouldUpdateUserInfo) {
             languagesElement.innerText = languages || '';
         }
 
@@ -230,7 +231,7 @@ class PersonalLayout extends PureComponent {
 
         return (
             <MainLayout isShowScrollButtons={true}>
-                <div className={cx('cv-page')}>
+                <div className={cx('cv-page')} id="cv-page">
                     {userID !== 0 ? (
                         <div>
                             <div className={cx('cv-page-section')}>
@@ -479,6 +480,7 @@ const mapStateToProps = (state) => {
     return {
         owner: state.user.owner,
         userInfo: state.user.userInfo,
+        shouldUpdateUserInfo: state.user.shouldUpdateUserInfo,
         productList: state.user.productList,
         historyUserIDList: state.user.historyUserIDList,
         isCVLayoutLoading: state.user.isLoading.CVLayout,

@@ -15,11 +15,12 @@ export const verifyUserEmail = (userEmail) => {
             dispatch(verifyUserEmail_Fail());
             console.log('An error in verifyUserEmail() - appActions.js: ', error);
 
-            if (errorCode === 31) {
+            if (errorCode === 31 || errorCode === 11) {
                 Toast.TOP_CENTER_ERROR(errorMessage, 3500);
                 return errorCode;
             } else if (!errorCode) {
-                Toast.TOP_CENTER_ERROR('Vui lòng kiểm tra lại kết nối ☹️', 3500);
+                Toast.TOP_CENTER_ERROR('Không kết nối được với Server ☹️', 3500);
+
                 return 100;
             }
         }
@@ -49,7 +50,7 @@ export const verifyUserID = (userID) => {
         } catch (error) {
             const { errorCode, errorMessage } = error.response?.data ?? {};
             if (errorCode !== 32) {
-                Toast.TOP_CENTER_ERROR(errorMessage || 'Lỗi kết nối! Vui lòng thử lại ☹️', 3000);
+                Toast.TOP_CENTER_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             }
 
             dispatch(verifyUserID_Fail());
@@ -87,7 +88,7 @@ export const verifyCurrentPassword = (data) => {
             if (errorCode === 10 || errorCode === 32) {
                 Toast.TOP_CENTER_ERROR(errorMessage, 3500);
             } else if (!errorCode || errorCode !== 33) {
-                Toast.TOP_CENTER_ERROR(errorMessage || 'Vui lòng kiểm tra lại kết nối ☹️', 3500);
+                Toast.TOP_CENTER_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             }
 
             dispatch(verifyCurrentPassword_Fail());

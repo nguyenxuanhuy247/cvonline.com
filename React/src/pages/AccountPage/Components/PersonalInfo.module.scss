@@ -79,6 +79,7 @@
         }
 
         .save-btn {
+            height: 40px;
             width: 200px;
             align-self: flex-end;
             margin-top: 24px;
@@ -90,13 +91,13 @@
             font-size: 1.6rem;
             line-height: 1.4;
             font-weight: 600;
-            height: 42px;
             user-select: none;
             cursor: pointer;
         }
     }
 
     .delete-account {
+        height: 36px;
         background-color: red;
         color: #fff;
         align-self: flex-end;

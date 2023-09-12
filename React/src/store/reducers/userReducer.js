@@ -22,6 +22,7 @@ const initialState = {
     allCVList: undefined,
     CVHistory: [],
     userInfo: null,
+    shouldUpdateUserInfo: false,
     productList: undefined,
     searchResultList: [],
     isCVSent: false,
@@ -187,11 +188,11 @@ const userReducer = (state = initialState, action) => {
                 CVHistory: userIDList,
             };
         case actionNames.READ_CV_LAYOUT_FAILURE:
-            const CVLayoutErrorCode = action.payload;
+            const CVLayoutDataFromDB = action.payload;
 
             let CVLayoutProps;
 
-            if (state.isSignIn && (CVLayoutErrorCode === 10 || CVLayoutErrorCode === 33)) {
+            if (state.isSignIn && CVLayoutDataFromDB.errorCode === 10) {
                 CVLayoutProps = { isSignIn: false, isSignUp: false };
 
                 setTimeout(() => {
@@ -199,11 +200,21 @@ const userReducer = (state = initialState, action) => {
                 }, 3500);
             }
 
+            let CVLayoutUserInfo;
+            if (CVLayoutDataFromDB.errorCode === 32) {
+                CVLayoutUserInfo = { userInfo: { id: 0 } };
+            }
+
+            let CVLayoutProductList;
+            if (CVLayoutDataFromDB.errorCode === 33) {
+                CVLayoutProductList = { userInfo: CVLayoutDataFromDB.data, productList: [] };
+            }
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
-                userInfo: { id: 0 },
-                productList: [],
+                ...CVLayoutUserInfo,
+                ...CVLayoutProductList,
                 ...CVLayoutProps,
             };
 
@@ -242,6 +253,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateUserInformation: true },
+                shouldUpdateUserInfo: false,
             };
         case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
             return {
@@ -249,6 +261,7 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, updateUserInformation: false },
                 owner: action.payload,
                 userInfo: action.payload,
+                shouldUpdateUserInfo: false,
             };
         case actionNames.UPDATE_USER_INFORMATION_FAILURE:
             const updateUserInformationErrorCode = action.payload;
@@ -261,6 +274,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateUserInformation: false },
+                shouldUpdateUserInfo: true,
                 ...updateUserInformationProps,
             };
 
@@ -504,7 +518,7 @@ const userReducer = (state = initialState, action) => {
             if (changeIDErrorCode === 10 || changeIDErrorCode === 32) {
                 changeIDProps = { isSignIn: false, isSignUp: false };
             }
-            
+
             return {
                 ...state,
                 isLoading: { ...state.isLoading, changeUserID: false },

@@ -68,7 +68,7 @@ class TechnologyList extends PureComponent {
                 productId: this.props?.productId,
                 label: `${this.props?.label}`,
             };
-            // Fix bug
+
             const data = {
                 updateData: updateData,
                 getData: getData,

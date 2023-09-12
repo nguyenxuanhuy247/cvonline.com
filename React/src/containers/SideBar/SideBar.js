@@ -39,7 +39,7 @@ class SideBar extends PureComponent {
         }
     };
 
-    handleClickSendCVViaEmailButton = () => {
+    handleClickSendCVViaEmailButton = async () => {
         const { isGmailPassword } = this.props.owner ?? {};
         const isSignIn = this.props.isSignIn;
 
@@ -52,7 +52,7 @@ class SideBar extends PureComponent {
         } else {
             Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để gửi CV bằng email', 2000);
             this.id.current = setTimeout(() => {
-                window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}signin`);
+                window.location.href = '/signin';
             }, 2000);
         }
     };

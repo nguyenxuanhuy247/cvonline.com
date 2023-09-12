@@ -60,7 +60,7 @@ class ChangeImageModal extends PureComponent {
         this.setState({ isOpenCropImageModal: false });
     };
 
-    handleFinishDropImage = async () => {
+    handleFinishCropImage = async () => {
         const image = await this.ref.current.crop();
         this.setState({ isOpenCropImageModal: false, image: image });
     };
@@ -97,6 +97,7 @@ class ChangeImageModal extends PureComponent {
                         alt="Product Image"
                     />
                 </label>
+
                 <div className={cx('actions')}>
                     <label className={cx('btn', 'change')} onChange={this.handleUploadImage} htmlFor="upload">
                         Tải ảnh
@@ -119,7 +120,7 @@ class ChangeImageModal extends PureComponent {
                 round={round}
                 title="Thay đổi hình ảnh"
                 onClose={this.handleCloseCropImageModal}
-                onFinish={this.handleFinishDropImage}
+                onFinish={this.handleFinishCropImage}
             >
                 <CropImage round={round} src={this.state.image} ref={this.ref} />
             </Modal>

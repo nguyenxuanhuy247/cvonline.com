@@ -10,8 +10,16 @@ const cx = classnames.bind(styles);
 
 class ChangeImageModal extends PureComponent {
     render() {
-        const { isLoading, title = 'Nhập tiêu đề của modal', round, onClose, onFinish, children } = this.props;
-        
+        const {
+            isLoading,
+            title = 'Nhập tiêu đề của modal',
+            round,
+            onClose,
+            onFinish,
+            children,
+            finishButtonText = 'Hoàn tất',
+        } = this.props;
+
         return (
             <div className={cx('overlay')} onClick={onClose}>
                 <div className={cx('container', { round: round })} onClick={(e) => e.stopPropagation()}>
@@ -25,11 +33,11 @@ class ChangeImageModal extends PureComponent {
                     <div className={cx('modal-body')}>{children}</div>
 
                     <div className={cx('modal-footer')}>
-                        <Button className={cx('btn', 'cancel')} onClick={onClose}>
+                        <Button className={cx('cancel-button')} onClick={onClose}>
                             Hủy
                         </Button>
-                        <Button className={cx('btn', 'finish')} onClick={onFinish}>
-                            {!isLoading ? 'Hoàn tất' : <Loading inner button />}
+                        <Button className={cx('finish-button')} onClick={onFinish}>
+                            {!isLoading ? finishButtonText : <Loading inner button />}
                         </Button>
                     </div>
                 </div>

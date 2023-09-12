@@ -48,7 +48,6 @@
             padding: 12px 24px;
             display: flex;
             flex-direction: column;
-            overflow: auto;
             height: 500px;
 
             .email-header {
@@ -76,6 +75,7 @@
                 min-width: 740px;
                 margin-top: 12px;
                 background-color: #f3f3f3;
+                overflow: auto;
 
                 .content {
                     margin: auto;
@@ -108,6 +108,28 @@
                             color: #000;
                             text-align: center;
                             text-transform: uppercase;
+                            display: flex;
+                            align-items: center;
+
+                            .job-title {
+                                flex: 1;
+                                min-width: 300px;
+                                padding: 4px;
+                                margin-left: 8px;
+                                border-radius: 4px;
+                                font-size: 24px;
+                                font-weight: 600;
+                                background-color: rgb(4 89 117/0.1);
+                                color: rgb(4 89 117);
+                                border-bottom: 2px solid rgb(4 89 117);
+
+                                &::placeholder {
+                                    font-size: 24px;
+                                    font-weight: 400;
+                                    line-height: 1.4;
+                                    color: #8d8b8b;
+                                }
+                            }
                         }
 
                         .candidate-info {
@@ -183,19 +205,21 @@
 
                             .input-info {
                                 flex: 1;
-                                min-width: 240px;
+                                min-width: 300px;
                                 height: 100%;
-                                padding: 4px;
+                                padding: 2px 4px;
                                 margin: 1px 4px;
                                 border-radius: 4px;
                                 color: var(--text-color);
-                                font-size: 16px;
+                                font-size: 15px;
                                 font-weight: 700;
-                                background-color: #f4e8f8;
+                                background-color: rgb(4 89 117/0.1);
+                                color: rgb(4 89 117/1);
+                                border-bottom: 2px solid rgb(4 89 117/1);
 
                                 &::placeholder {
-                                    font-size: 16px;
-                                    font-weight: 400;
+                                    font-size: 15px;
+                                    font-weight: 300;
                                     color: #8d8b8b;
                                 }
 
@@ -233,6 +257,13 @@
                                 .paragraph {
                                     margin-top: 4px;
                                     line-height: 1.4;
+
+                                    &.hightlight {
+                                        border: 2px solid red;
+                                        padding: 6px 8px;
+                                        border-radius: 4px;
+                                        font-weight: 600;
+                                    }
                                 }
 
                                 .button-container {
@@ -267,6 +298,67 @@
                         }
                     }
                 }
+
+                .actions {
+                    margin: -40px auto 40px;
+                    display: flex;
+                    justify-content: center;
+                    column-gap: 20px;
+
+                    .btn {
+                        height: 42px;
+                        font-size: 1.6rem;
+                        
+                        .icon {
+                            font-size: 26px;
+                        }
+
+                    }
+
+                    .upload {
+                        width: 200px;
+                        padding: 4px 8px;
+                        border: 1px solid var(--primary-color);
+                        border-radius: 4px;
+                        font-weight: 400;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        column-gap: 8px;
+                        color: var(--primary-color);
+                        background-color: #fff;
+                        cursor: pointer;
+
+                        .icon {
+                            font-size: 26px;
+                            color: var(--primary-color);
+                        }
+
+                        &:hover {
+                            outline: 2px solid var(--primary-color);
+                        }
+                    }
+
+                    .crop {
+                        background-color: var(--primary-color);
+                    }
+
+                    .delete {
+                        color: red;
+                        border: 1px solid red;
+                        background-color: #fff;
+                    }
+                }
+
+                .image-display {
+                    .image {
+                        object-fit: contain;
+                        width: 100%;
+                        height: fit-content;
+                        background-color: #000;
+                        border: 1px solid #ccc;
+                    }
+                }
             }
         }
 
@@ -278,25 +370,12 @@
             column-gap: 20px;
             border-top: 1px solid #ccc;
 
-            .btn {
-                font-size: 1.6rem;
-                padding: 10px;
-                border: none;
-                min-width: 100px;
-                color: #fff;
-                column-gap: 8px;
-                border-radius: 4px;
-                cursor: pointer;
+            .cancel-button {
+                @include cancel-button-modal-footer;
             }
 
-            .cancel {
-                color: #000;
-                background-color: var(--button-bgc-grey-02);
-            }
-
-            .finish {
-                color: #fff;
-                background-color: var(--primary-color);
+            .finish-button {
+                @include finish-button-modal-footer;
             }
         }
     }

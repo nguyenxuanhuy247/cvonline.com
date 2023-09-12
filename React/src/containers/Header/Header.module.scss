@@ -1,6 +1,11 @@
 @import '../../components/GlobalStyles/GlobalStyles.module.scss';
 
 .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9;
     font-family: var(--alexandria-font);
     height: var(--header-height-pc);
     width: 100%;
@@ -10,9 +15,6 @@
     justify-content: space-between;
     padding: 0 20px;
     border-bottom: 1px solid var(--main-border-grey);
-    position: fixed;
-    top: 0;
-    z-index: 9;
     background-color: #fff;
 
     .logo-link {

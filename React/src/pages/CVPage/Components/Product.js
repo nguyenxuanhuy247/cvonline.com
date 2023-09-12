@@ -69,12 +69,13 @@ class Product extends PureComponent {
     };
 
     handleUpdateProductImage = async (url) => {
+        const { id: ownerID } = this.props?.owner ?? {};
         const { index } = this.props ?? {};
         const { productInfo } = this.props?.productData ?? {};
         const { id: productId, image: imageDB } = productInfo ?? {};
 
         if (productId) {
-            const data = { productId: productId, image: url, label: 'Hình ảnh sản phẩm' };
+            const data = { userId: ownerID, productId: productId, image: url, label: 'Hình ảnh sản phẩm' };
 
             if (url !== imageDB) {
                 const errorCode = await this.props?.updateProduct(data, index, 'image');

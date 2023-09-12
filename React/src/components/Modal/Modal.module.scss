@@ -72,26 +72,12 @@
             justify-content: center;
             column-gap: 20px;
 
-            .btn {
-                font-size: 1.6rem;
-                padding: 10px;
-                border: none;
-                min-width: 100px;
-                color: #fff;
-                column-gap: 8px;
-                border-radius: 4px;
-                cursor: pointer;
+            .cancel-button {
+                @include cancel-button-modal-footer;
             }
 
-            .cancel {
-                color: #000;
-                background-color: var(--button-bgc-grey-02);
-            }
-
-            .finish {
-                position: relative;
-                color: #fff;
-                background-color: var(--primary-color);
+            .finish-button {
+                @include finish-button-modal-footer;
             }
         }
     }
@@ -132,20 +118,30 @@
             }
 
             .modal-header {
+                padding: 8px;
+
                 .title {
                     font-size: 1.8rem;
                 }
-            }
 
-            .btn {
-                min-width: 100px;
-                height: 36px;
+                .close {
+                    font-size: 26px;
+                }
             }
 
             .modal-body {
                 padding: 16px;
                 flex-direction: column;
                 padding: 12px;
+
+                .btn {
+                    min-width: 100px;
+                    height: 36px;
+                }
+            }
+
+            .modal-footer {
+                padding: 8px;
             }
         }
     }

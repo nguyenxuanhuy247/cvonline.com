@@ -37,19 +37,21 @@ export const handleSendEmailResetPassword = async (data) => {
                     to: receiverEmail,
                     subject: 'Đặt lại mật khẩu',
                     text: 'Đặt lại mật khẩu',
-                    html: `<div style="font-size:16px;color:#500050">
-                <h3>Bạn vừa gửi yêu cầu đặt lại mật khẩu?</h3>
-                <p>Click vào link sau để đặt lại mật khẩu: <a href=${link} style="color:#00b14f;text-decoration:underline">${link}</a></p>
+                    html: `<div>
+                            <div style="font-size:15px;color: #500050; width:700px; margin: auto">
+                              <h3>Bạn vừa gửi yêu cầu đặt lại mật khẩu?</h3>
+                                <p>Click vào link sau để đặt lại mật khẩu: <a href=${link} style="color:#00b14f;text-decoration:underline;word-break: break-all;">${link}</a></p>
               
-                <p>Nếu không phải bạn đã gửi yêu cầu đặt lại mật khẩu, xin hãy bỏ qua email này.</p>
-                <p>Nếu có bất kì thắc mắc nào, vui lòng liên hệ <a href="mailto:nguyenxuanhuy.yukai@example.com" style="color:#00b14f;text-decoration:underline;" target="_blank">hotro@cvonline.com</a> để nhận được hỗ trợ.</p>
+                                <p>Nếu không phải bạn đã gửi yêu cầu đặt lại mật khẩu, xin hãy bỏ qua email này.</p>
+                                <p>Nếu có bất kì thắc mắc nào, vui lòng liên hệ <a href="mailto:nguyenxuanhuy.yukai@example.com" style="color:#00b14f;text-decoration:underline;" target="_blank">hotro@cvonline.com</a> để nhận được hỗ trợ.</p>
               
-                <p>Cảm ơn bạn đã sử dụng dịch vụ.</p>
+                                <p>Cảm ơn bạn đã sử dụng dịch vụ.</p>
               
-                <p>Team CV online</p>
+                                <p>CV online Team</p>
               
-                <p style="font-size:14px;text-align:center;display:block;color:#888">--- Đây là email tự động. Xin bạn vui lòng không gửi phản hồi vào hộp thư này ---</p>
-              </div>`,
+                                <p style="font-size:14px;text-align:center;display:block;color:#888">--- Đây là email tự động. Xin bạn vui lòng không gửi phản hồi vào hộp thư này ---</p>
+                            </div>
+                          </div>`,
                 });
 
                 return {
@@ -142,7 +144,7 @@ export const handleSendCVByEmail = async (data) => {
                           text-transform: uppercase;
                         "
                       >
-                        THƯ ỨNG TUYỂN VỊ TRÍ ${user.jobPosition}
+                        THƯ ỨNG TUYỂN VỊ TRÍ ${data.jobTitle}
                       </p>
                     </td>
                   </tr>
@@ -338,11 +340,23 @@ export const handleSendCVByEmail = async (data) => {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          Trang CV của tôi
+                          TRANG CV CỦA TÔI
                         </a>
                       </div>
                     </td>
                   </tr>
+
+                  <tr>
+                    <td>
+                      <p style="margin: 8px 0; border: 2px solid red; padding: 6px 8px; border-radius: 4px; font-weight: 600;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do sản phẩm được deploy trên những
+                        trang miễn phí như Supabase (Database), Render (Backend), Firebase
+                        (Frontend) nên ảnh hưởng đến tốc độ tải, mong Quý công ty thông cảm. Tôi
+                        xin đính kèm 1 bản CV pdf để Quý công ty xem xét.
+                      </p>
+                    </td>
+                  </tr>
+
                   <tr>
                     <td>
                       <p style="margin: 8px 0;">
@@ -352,6 +366,7 @@ export const handleSendCVByEmail = async (data) => {
                       </p>
                     </td>
                   </tr>
+
                   <tr>
                     <td>
                       <p style="margin: 8px 0;">

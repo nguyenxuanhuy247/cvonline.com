@@ -19,9 +19,9 @@
     flex-direction: column;
     justify-content: center;
     row-gap: 20px;
-    cursor: pointer;
 
     .btn {
+        height: 36px;
         font-size: 1.6rem;
         padding: 10px;
         border: none;
@@ -64,7 +64,6 @@
         flex-wrap: wrap;
 
         .btn {
-            height: 36px;
             min-width: 90px;
             padding: 8px 12px;
         }

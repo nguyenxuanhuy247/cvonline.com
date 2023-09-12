@@ -56,27 +56,16 @@ export const checkReqSignUp = (req, res, next) => {
 // CHECK DELETE ACCOUNT
 export const checkReqDeleteAccount = (req, res, next) => {
     const cookies = req.cookies;
+    const { userId } = req.query;
 
-    if (cookies && cookies.jwt) {
-        const token = cookies.jwt;
-        const key = process.env.ACCESS_TOKEN_SECRET;
-
-        var decoded = jwt.verify(token, key);
-
-        if (decoded) {
-            next();
-        } else {
-            return res.status(401).json({
-                errorCode: 10,
-                errorMessage: 'Bạn chưa có quyền. Vui lòng đăng nhập lại ☹️',
-            });
-        }
-    } else {
+    if ((!cookies && !cookies?.jwt) || !userId) {
         return res.status(401).json({
             errorCode: 10,
             errorMessage: 'Bạn chưa có quyền. Vui lòng đăng nhập lại ☹️',
         });
     }
+
+    next();
 };
 
 // CHECK FORGOT PASSWORD

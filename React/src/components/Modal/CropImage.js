@@ -29,6 +29,19 @@ const CropImage = ({ src, round = false }, ref) => {
         }
     }, [src, croppedAreaPixels, rotation]);
 
+    const getRatio = () => {
+        const image = new Image();
+        image.src = src;
+        const width = image.width;
+        const height = image.height;
+
+        const ratio = width / height;
+
+        return ratio;
+    };
+
+    const originalRatio = getRatio();
+
     const handleChangeRatioImage = (e) => {
         setAspect(e.target.dataset.ratio);
     };
@@ -93,6 +106,14 @@ const CropImage = ({ src, round = false }, ref) => {
                             data-ratio={16 / 9}
                         >
                             16 : 9
+                        </Button>
+
+                        <Button
+                            className={cx('ratio-item', { active: +aspect === originalRatio })}
+                            onClick={handleChangeRatioImage}
+                            data-ratio={originalRatio}
+                        >
+                            Ảnh gốc
                         </Button>
                     </div>
                 </div>

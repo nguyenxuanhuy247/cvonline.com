@@ -33,7 +33,7 @@ class App extends Component {
 
                 <ToastContainer
                     position="top-right"
-                    autoClose={3000}
+                    autoClose={3500}
                     hideProgressBar={false}
                     newestOnTop={false}
                     closeOnClick
@@ -42,7 +42,7 @@ class App extends Component {
                     draggable
                     pauseOnHover
                     theme="colored"
-                    style={{ width: 'fit-content', minWidth: '300px', textAlign: 'center' }}
+                    style={{ width: 'max-content', minWidth: '300px', margin: 0, textAlign: 'center' }}
                 />
             </div>
         );

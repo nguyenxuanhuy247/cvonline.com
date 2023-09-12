@@ -37,7 +37,7 @@ class SignIn extends Component {
         }
     };
 
-    componentDidMount = () => {
+    displayGoogleSignInButton = () => {
         window.google?.accounts?.id?.initialize?.({
             client_id: '926424110135-dpsp6egfi7g128s401rparkaba2gtq1c.apps.googleusercontent.com',
             callback: this.handleSignInWithGoogle,
@@ -62,6 +62,24 @@ class SignIn extends Component {
             googleSigninContainer.style.display = 'none';
         }
     };
+
+    componentDidMount() {
+        this.displayGoogleSignInButton();
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if (this.props.isSignIn !== prevProps.isSignIn) {
+            this.displayGoogleSignInButton();
+        }
+    };
+
+    componentWillUnmount() {
+        if (window?.google?.accounts?.id) {
+            window.google.accounts.id.prompt = function () {
+                return;
+            };
+        }
+    }
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
