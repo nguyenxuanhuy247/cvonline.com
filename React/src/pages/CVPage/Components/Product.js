@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import Pagination from '@mui/material/Pagination';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AiOutlineSortAscending, AiOutlineSortDescending, AiFillCloseCircle } from 'react-icons/ai';
 import _ from 'lodash';
 
@@ -19,6 +20,31 @@ import * as userActions from '~/store/actions';
 import styles from './Product.module.scss';
 
 const cx = classnames.bind(styles);
+
+const theme = createTheme({
+    components: {
+        MuiPaginationItem: {
+            styleOverrides: {
+                root: {
+                    color: 'var(--green-color-01)',
+                    backgroundColor: '#fff !important',
+                    borderColor: 'var(--green-color-01) !important',
+                    fontSize: '1.2rem',
+
+                    '&:hover': {
+                        color: '#fff',
+                        backgroundColor: 'var(--green-color-01) !important',
+                    },
+
+                    '&.Mui-selected': {
+                        color: '#fff',
+                        backgroundColor: 'var(--green-color-01) !important',
+                    },
+                },
+            },
+        },
+    },
+});
 
 class Product extends PureComponent {
     constructor(props) {
@@ -569,35 +595,17 @@ class Product extends PureComponent {
 
                                     {!this.state.FE_isSearch && this.state.FE_isPagination && FETotalPage !== 0 && (
                                         <div className={cx('pagination-container')}>
-                                            <Pagination
-                                                count={FETotalPage}
-                                                variant="outlined"
-                                                size="medium"
-                                                siblingCount={1}
-                                                boundaryCount={1}
-                                                page={this.state.FE_Page}
-                                                sx={{
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                                        color: 'var(--primary-color)',
-                                                        fontSize: '12px',
-                                                        borderColor: 'var(--green-color-02)',
-                                                    },
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                                        backgroundColor: 'var(--button-bgc-green-02)',
-                                                    },
-
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
-                                                        {
-                                                            color: '#fff',
-                                                            backgroundColor: 'var(--button-bgc-green-01)',
-                                                        },
-
-                                                    '& .Mui-selected:hover': {
-                                                        backgroundColor: 'var(--button-bgc-green-01) !important',
-                                                    },
-                                                }}
-                                                onChange={(e, value) => this.handleChangePage(e, value, 'FE')}
-                                            />
+                                            <ThemeProvider theme={theme}>
+                                                <Pagination
+                                                    count={FETotalPage}
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    siblingCount={1}
+                                                    boundaryCount={1}
+                                                    page={this.state.FE_Page}
+                                                    onChange={(e, value) => this.handleChangePage(e, value, 'FE')}
+                                                />
+                                            </ThemeProvider>
                                         </div>
                                     )}
                                 </div>
@@ -717,35 +725,17 @@ class Product extends PureComponent {
 
                                     {!this.state.BE_isSearch && this.state.BE_isPagination && BETotalPage !== 0 && (
                                         <div className={cx('pagination-container')}>
-                                            <Pagination
-                                                count={BETotalPage}
-                                                variant="outlined"
-                                                size="medium"
-                                                siblingCount={1}
-                                                boundaryCount={1}
-                                                page={this.state.BE_Page}
-                                                sx={{
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root': {
-                                                        color: 'var(--primary-color)',
-                                                        fontSize: '12px',
-                                                        borderColor: 'var(--green-color-02)',
-                                                    },
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root:hover': {
-                                                        backgroundColor: 'var(--button-bgc-green-02)',
-                                                    },
-
-                                                    '& .css-lqq3n7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected':
-                                                        {
-                                                            color: '#fff',
-                                                            backgroundColor: 'var(--button-bgc-green-01)',
-                                                        },
-
-                                                    '& .Mui-selected:hover': {
-                                                        backgroundColor: 'var(--button-bgc-green-01) !important',
-                                                    },
-                                                }}
-                                                onChange={(e, value) => this.handleChangePage(e, value, 'BE')}
-                                            />
+                                            <ThemeProvider theme={theme}>
+                                                <Pagination
+                                                    count={BETotalPage}
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    siblingCount={1}
+                                                    boundaryCount={1}
+                                                    page={this.state.BE_Page}
+                                                    onChange={(e, value) => this.handleChangePage(e, value, 'BE')}
+                                                />
+                                            </ThemeProvider>
                                         </div>
                                     )}
                                 </div>

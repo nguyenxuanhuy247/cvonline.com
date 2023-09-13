@@ -357,15 +357,19 @@ export const updateProduct = (productData, index, updatedItem) => {
     return async (dispatch) => {
         dispatch(updateProduct_Start());
         try {
-            await userService.updateProduct(productData);
+            const res = await userService.updateProduct(productData);
             const reduxData = { productData, index, updatedItem };
             dispatch(updateProduct_Success(reduxData));
+
+            return res.errorCode;
         } catch (error) {
             const dataFormBE = error.response?.data ?? {};
-            const { errorMessage } = error.response?.data ?? {};
+            const { errorCode, errorMessage } = error.response?.data ?? {};
             Toast.TOP_RIGHT_ERROR(errorMessage || 'Không kết nối được với Server ☹️', 3500);
             dispatch(updateProduct_Failure(dataFormBE));
             console.log('An error in updateProduct() - userActions.js: ', error);
+
+            return errorCode;
         }
     };
 };

@@ -188,13 +188,13 @@
                             font-size: 1.5rem;
                             line-height: 1.6;
                             font-weight: 300;
-                            word-break: break-all;
                             margin-top: 12px;
                             padding: 4px 4px 4px 12px;
                             cursor: default;
 
                             &.contentEditable {
                                 @include content-editable;
+                                word-break: break-word;
                             }
                         }
                     }

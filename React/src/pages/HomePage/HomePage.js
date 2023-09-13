@@ -78,6 +78,7 @@ class HomePage extends PureComponent {
                                                                     <EmptyList404 />
                                                                 )}
                                                             </div>
+                                                            
                                                             <div className={cx('side')}>
                                                                 <span className={cx('title')}>Back-end</span>
                                                                 <div className={cx('list')}>
