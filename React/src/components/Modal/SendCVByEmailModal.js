@@ -30,8 +30,8 @@ class SendCVByEmailModal extends PureComponent {
             companyName: '',
             source: '',
             jobTitle: '',
-
             productImage: '',
+
             isOpenCropImageModal: false,
         };
         this.ref = React.createRef();
@@ -75,7 +75,7 @@ class SendCVByEmailModal extends PureComponent {
         }
     };
 
-    handleOpenCropModal = () => {
+    handleOpenCropImageModal = () => {
         this.setState({ isOpenCropImageModal: true });
     };
 
@@ -86,6 +86,10 @@ class SendCVByEmailModal extends PureComponent {
     handleFinishDropImage = async () => {
         const image = await this.ref.current.crop();
         this.setState({ isOpenCropImageModal: false, productImage: image });
+    };
+
+    handleDeleteImage = () => {
+        this.setState({ productImage: '' });
     };
 
     render() {
@@ -140,7 +144,7 @@ class SendCVByEmailModal extends PureComponent {
                                                 <input
                                                     value={this.state.jobTitle}
                                                     className={cx('job-title')}
-                                                    placeholder="Điền vị trí ứng tuyển"
+                                                    placeholder="Nhập vị trí ứng tuyển"
                                                     spellCheck={false}
                                                     onInput={(e) => this.handleInputInfo(e, 'jobTitle')}
                                                 />
@@ -209,7 +213,7 @@ class SendCVByEmailModal extends PureComponent {
                                                         <input
                                                             value={this.state.source}
                                                             className={cx('input-info', 'letter')}
-                                                            placeholder="Điền nguồn tin tuyển dụng"
+                                                            placeholder="Nhập nguồn tin tuyển dụng"
                                                             spellCheck={false}
                                                             onInput={(e) => this.handleInputInfo(e, 'source')}
                                                         />
@@ -218,6 +222,7 @@ class SendCVByEmailModal extends PureComponent {
                                                             defaultValue={this.state.jobTitle}
                                                             className={cx('input-info', 'letter')}
                                                             spellCheck={false}
+                                                            disabled
                                                         />
                                                         . Sau khi tìm hiểu yêu cầu công việc, tôi nhận thấy mình có đủ
                                                         năng lực để đảm nhận vị trí công việc này. Với trình độ của
@@ -246,8 +251,8 @@ class SendCVByEmailModal extends PureComponent {
                                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do sản phẩm được deploy trên những
                                                         trang miễn phí như Supabase (Database), Render (Backend),
                                                         Firebase (Frontend) nên ảnh hưởng đến tốc độ tải, mong Quý công
-                                                        ty thông cảm. Tôi xin đính kèm 1 bản CV pdf để Quý công ty xem
-                                                        xét.
+                                                        ty thông cảm. Tôi xin đính kèm 1 bản CV pdf và hình ảnh sản phẩm
+                                                        để Quý công ty xem xét.
                                                     </p>
 
                                                     <p className={cx('paragraph')}>
@@ -286,27 +291,34 @@ class SendCVByEmailModal extends PureComponent {
                                             Tải ảnh sản phẩm
                                         </label>
 
-                                        <Button
-                                            className={cx('btn', 'crop')}
-                                            onClick={this.handleOpenCropModal}
-                                            disabled={this.state.image ? false : true}
-                                        >
-                                            <BiCut className={cx('icon')} />
-                                            <span className={cx('text')}>Cắt ảnh</span>
-                                        </Button>
-                                        <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
-                                            <MdImageNotSupported className={cx('icon')} />
-                                            <span className={cx('text')}>Xóa ảnh</span>
-                                        </Button>
+                                        {this.state.productImage && (
+                                            <>
+                                                <Button
+                                                    className={cx('btn', 'crop')}
+                                                    onClick={this.handleOpenCropImageModal}
+                                                >
+                                                    <BiCut className={cx('icon')} />
+                                                    <span className={cx('text')}>Cắt ảnh</span>
+                                                </Button>
+
+                                                <Button
+                                                    className={cx('btn', 'delete')}
+                                                    onClick={this.handleDeleteImage}
+                                                >
+                                                    <MdImageNotSupported className={cx('icon')} />
+                                                    <span className={cx('text')}>Xóa ảnh</span>
+                                                </Button>
+                                            </>
+                                        )}
                                     </div>
 
                                     <label
+                                        id="js-product-image-cover-letter"
                                         className={cx('image-display')}
                                         onChange={this.handleUploadImage}
                                         htmlFor="upload"
                                     >
                                         <Image
-                                            id="product-image-cover-letter"
                                             src={this.state.productImage || JpgImages.productPlaceholder}
                                             className={cx('image')}
                                             alt="Product Image"

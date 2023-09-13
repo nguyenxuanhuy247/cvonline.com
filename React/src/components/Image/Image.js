@@ -34,7 +34,7 @@ class Image extends PureComponent {
     }
 
     render() {
-        const { forwardRef, className, round, width, height, alt, style } = this.props;
+        const { id, forwardRef, className, round, width, height, alt, style } = this.props;
 
         const classes = cx('image', {
             [className]: className,
@@ -43,6 +43,7 @@ class Image extends PureComponent {
 
         return (
             <img
+                id={id}
                 className={classes}
                 style={style}
                 src={this.state.url || this.props.src || JpgImages.imagePlaceholder}

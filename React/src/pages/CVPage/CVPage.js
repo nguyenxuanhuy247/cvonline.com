@@ -171,6 +171,15 @@ class PersonalLayout extends PureComponent {
         const languagesElement = document.getElementById(`js-language-desc`);
         if (languagesElement) {
             languagesElement.innerText = languages || '';
+
+            languagesElement.addEventListener('paste', function (event) {
+                event.preventDefault();
+
+                var text = event.clipboardData.getData('text/plain');
+                console.log('AAAAAAA', languagesElement.innerText);
+                // Set the text content of the element to the plain text.
+                languagesElement.innerText += text;
+            });
         }
 
         // Auto scroll to TOP when go to CV Layout
@@ -379,7 +388,9 @@ class PersonalLayout extends PureComponent {
                                                         <ContentEditableTag
                                                             isCanEdit={isCanEdit}
                                                             content={this.props?.userInfo?.address || ''}
-                                                            className={cx('info-text', { contentEditable: isCanEdit })}
+                                                            className={cx('info-text', 'address', {
+                                                                contentEditable: isCanEdit,
+                                                            })}
                                                             placeholder="Địa chỉ"
                                                             onBlur={(e) =>
                                                                 this.handleUpdateUserInformation(

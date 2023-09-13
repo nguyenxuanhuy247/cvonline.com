@@ -50,10 +50,8 @@ class SignIn extends Component {
             text: 'signin_with',
             shape: 'rectangular',
             logo_alignment: 'left',
-            width: '280',
+            width: '200',
         });
-
-        window.google?.accounts.id.prompt();
 
         const googleSigninContainer = document.getElementById('google_id_signin-container');
         const googleSignin = document.getElementById('google_id_signin');
@@ -65,6 +63,7 @@ class SignIn extends Component {
 
     componentDidMount() {
         this.displayGoogleSignInButton();
+        window.google?.accounts.id.prompt();
     }
 
     componentDidUpdate = (prevProps) => {
@@ -72,14 +71,6 @@ class SignIn extends Component {
             this.displayGoogleSignInButton();
         }
     };
-
-    componentWillUnmount() {
-        if (window?.google?.accounts?.id) {
-            window.google.accounts.id.prompt = function () {
-                return;
-            };
-        }
-    }
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;

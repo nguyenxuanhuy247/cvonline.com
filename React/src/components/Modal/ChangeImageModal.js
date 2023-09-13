@@ -52,7 +52,7 @@ class ChangeImageModal extends PureComponent {
         }
     };
 
-    handleOpenCropModal = () => {
+    handleOpenCropImageModal = () => {
         this.setState({ isOpenCropImageModal: true });
     };
 
@@ -105,13 +105,17 @@ class ChangeImageModal extends PureComponent {
                     </label>
                     <Button
                         className={cx('btn', 'crop')}
-                        onClick={this.handleOpenCropModal}
+                        onClick={this.handleOpenCropImageModal}
                         disabled={this.state.image ? false : true}
                     >
-                        <span className={cx('text')}>Cắt</span>
+                        <span className={cx('text')}>Cắt ảnh</span>
                     </Button>
-                    <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
-                        <span className={cx('text')}>Xóa</span>
+                    <Button
+                        className={cx('btn', 'delete')}
+                        onClick={this.handleDeleteImage}
+                        disabled={this.state.image ? false : true}
+                    >
+                        <span className={cx('text')}>Xóa ảnh</span>
                     </Button>
                 </div>
             </Modal>

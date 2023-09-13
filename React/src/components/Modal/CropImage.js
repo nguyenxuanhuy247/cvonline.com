@@ -1,4 +1,4 @@
-import { useState, useCallback, useImperativeHandle, forwardRef } from 'react';
+import { useState, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
 import classnames from 'classnames/bind';
 import Cropper from 'react-easy-crop';
 import Slider from '@mui/material/Slider';
@@ -15,6 +15,7 @@ const CropImage = ({ src, round = false }, ref) => {
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [aspect, setAspect] = useState(1 / 1);
+    const [originalAspect, setOriginalAspect] = useState();
 
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
@@ -29,22 +30,25 @@ const CropImage = ({ src, round = false }, ref) => {
         }
     }, [src, croppedAreaPixels, rotation]);
 
-    const getRatio = () => {
-        const image = new Image();
-        image.src = src;
-        const width = image.width;
-        const height = image.height;
-
-        const ratio = width / height;
-
-        return ratio;
-    };
-
-    const originalRatio = getRatio();
-
     const handleChangeRatioImage = (e) => {
         setAspect(e.target.dataset.ratio);
     };
+
+    useEffect(() => {
+        const getRatio = () => {
+            const image = new Image();
+            image.src = src;
+            const width = image.width;
+            const height = image.height;
+
+            const ratio = width / height;
+
+            return ratio;
+        };
+        const originalRatio = getRatio();
+        setOriginalAspect(originalRatio);
+        setAspect(originalRatio);
+    }, [src]);
 
     useImperativeHandle(
         ref,
@@ -109,9 +113,9 @@ const CropImage = ({ src, round = false }, ref) => {
                         </Button>
 
                         <Button
-                            className={cx('ratio-item', { active: +aspect === originalRatio })}
+                            className={cx('ratio-item', { active: +aspect === originalAspect })}
                             onClick={handleChangeRatioImage}
-                            data-ratio={originalRatio}
+                            data-ratio={originalAspect}
                         >
                             Ảnh gốc
                         </Button>

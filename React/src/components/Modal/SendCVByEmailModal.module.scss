@@ -308,11 +308,14 @@
                     .btn {
                         height: 42px;
                         font-size: 1.6rem;
-                        
+                        background-color: #fff;
+                        user-select: none;
+                        cursor: pointer;
+
                         .icon {
                             font-size: 26px;
+                            color: currentColor;
                         }
-
                     }
 
                     .upload {
@@ -326,37 +329,39 @@
                         align-items: center;
                         column-gap: 8px;
                         color: var(--primary-color);
-                        background-color: #fff;
-                        cursor: pointer;
-
-                        .icon {
-                            font-size: 26px;
-                            color: var(--primary-color);
-                        }
 
                         &:hover {
-                            outline: 2px solid var(--primary-color);
+                            color: #fff;
+                            background-color: var(--primary-color);
                         }
                     }
 
                     .crop {
-                        background-color: var(--primary-color);
+                        color: purple;
+                        border: 1px solid currentColor;
+
+                        &:hover {
+                            color: #fff;
+                            background-color: purple;
+                        }
                     }
 
                     .delete {
                         color: red;
-                        border: 1px solid red;
-                        background-color: #fff;
+                        border: 1px solid currentColor;
+
+                        &:hover {
+                            color: #fff;
+                            background-color: red;
+                        }
                     }
                 }
 
                 .image-display {
                     .image {
-                        object-fit: contain;
                         width: 100%;
                         height: fit-content;
-                        background-color: #000;
-                        border: 1px solid #ccc;
+                        object-fit: contain;
                     }
                 }
             }
