@@ -30,7 +30,6 @@ class PersonalLayout extends PureComponent {
         super(props);
         this.state = {
             isModalChangeAvatarOpen: false,
-            userInfo: null,
         };
 
         this.redirectID = React.createRef();
@@ -152,12 +151,19 @@ class PersonalLayout extends PureComponent {
     // =================================================================
     async componentDidMount() {
         const { paramId } = this.props?.match?.params ?? {};
-        const { languages } = this.props?.userInfo ?? {};
+        // const { languages } = this.props?.userInfo;
         const { history } = this.props;
 
         // Read CV Layout
         if (paramId) {
-            this.props.readCVLayout(paramId);
+            const errorCode = await this.props.readCVLayout(paramId);
+            if (errorCode === 0) {
+                // Set languages from database by JS
+                const languagesElement = document.getElementById(`js-language-desc`);
+                if (languagesElement) {
+                    languagesElement.innerHTML = this.props?.userInfo?.languages || '';
+                }
+            }
         } else {
             Toast.TOP_CENTER_ERROR('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3500);
 
@@ -165,12 +171,6 @@ class PersonalLayout extends PureComponent {
                 this.props.userSignOut();
                 history.push('/signin');
             }, 2000);
-        }
-
-        // Set languages from database by JS
-        const languagesElement = document.getElementById(`js-language-desc`);
-        if (languagesElement) {
-            languagesElement.innerText = languages || '';
         }
 
         // Auto scroll to TOP when go to CV Layout
@@ -207,10 +207,9 @@ class PersonalLayout extends PureComponent {
         const { paramId } = this.props?.match?.params ?? {};
 
         // Set languages from database by JS
-        const { languages } = this.props?.userInfo ?? {};
         const languagesElement = document.getElementById(`js-language-desc`);
         if (languagesElement && this.props.shouldUpdateUserInfo) {
-            languagesElement.innerText = languages || '';
+            languagesElement.innerText = this.props?.userInfo?.languages || '';
         }
 
         // Change to another CV

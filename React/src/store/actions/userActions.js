@@ -215,8 +215,10 @@ export const readCVLayout = (userId) => {
         try {
             const res = await userService.readCVLayout(userId);
 
-            const { data } = res ?? {};
+            const { errorCode, data } = res ?? {};
             dispatch(readCVLayout_Success(data));
+
+            return errorCode;
         } catch (error) {
             const dataFromDB = error.response?.data ?? {};
             const { errorCode, errorMessage } = error.response?.data ?? {};

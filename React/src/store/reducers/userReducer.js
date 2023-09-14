@@ -25,6 +25,7 @@ const initialState = {
     shouldUpdateUserInfo: false,
     productList: undefined,
     searchResultList: [],
+    shouldUpdateProductNameAndDesc: false,
     isCVSent: false,
 };
 
@@ -269,6 +270,10 @@ const userReducer = (state = initialState, action) => {
 
             if (updateUserInformationErrorCode === 10 || updateUserInformationErrorCode === 32) {
                 updateUserInformationProps = { isSignIn: false, isSignUp: false };
+
+                setTimeout(() => {
+                    window.location.href = '/signin';
+                }, 3000);
             }
 
             return {
@@ -324,6 +329,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, updateProduct: true },
+                shouldUpdateProductNameAndDesc: false,
             };
         case actionNames.UPDATE_PRODUCT_SUCCESS:
             const { productData, index: updated_index, updatedItem } = action.payload;
@@ -340,6 +346,7 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, updateProduct: false },
                 productList: newUpdated_productList,
+                shouldUpdateProductNameAndDesc: false,
             };
         case actionNames.UPDATE_PRODUCT_FAILURE:
             const updateProductPayload = action.payload;
@@ -362,6 +369,7 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, updateProduct: false },
                 ...updateProductProps,
                 ...updateProductProductList,
+                shouldUpdateProductNameAndDesc: true,
             };
 
         // DELETE PRODUCT

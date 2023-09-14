@@ -110,12 +110,10 @@ class Technology extends PureComponent {
                 id={`js-container-button-${SIDE_TYPE_ID}`}
                 className={cx(
                     'button-and-edit-button-container',
+                    { 'can-edit': isCanEdit },
                     {
                         'sourcecode-list': type === 'SOURCECODE',
-                        'technology-list': type === 'TECHNOLOGY',
-                        'library-list': type === 'LIBRARY',
                     },
-                    { 'can-edit': isCanEdit },
                 )}
             >
                 <div className={cx('button-conntainer')}>

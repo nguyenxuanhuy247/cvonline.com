@@ -4,6 +4,7 @@ import classnames from 'classnames/bind';
 import { MdClose, MdImageNotSupported } from 'react-icons/md';
 import { BsCardImage } from 'react-icons/bs';
 import { BiCut } from 'react-icons/bi';
+import { AiOutlineClose } from 'react-icons/ai';
 import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -31,6 +32,7 @@ class SendCVByEmailModal extends PureComponent {
             source: '',
             jobTitle: '',
             productImage: '',
+            CVPdf: null,
 
             isOpenCropImageModal: false,
         };
@@ -60,7 +62,7 @@ class SendCVByEmailModal extends PureComponent {
     };
 
     handleUploadImage = async () => {
-        const inputEl = document.getElementById('upload');
+        const inputEl = document.getElementById('upload-image');
         const file = await inputEl.files[0];
 
         if (file) {
@@ -72,6 +74,25 @@ class SendCVByEmailModal extends PureComponent {
             }
         } else {
             toast.error(`Tải ảnh thất bại`);
+        }
+    };
+
+    handleUploadCVPdf = async () => {
+        const inputEl = document.getElementById('upload-cv-pdf');
+        const pdfFile = await inputEl.files[0];
+
+        if (pdfFile) {
+            if (pdfFile.size / (1024 * 1024) <= 5) {
+                const formData = new FormData();
+                await formData.append('pdf', pdfFile);
+
+                console.log('PDF', formData);
+                await this.setState({ CVPdf: formData });
+            } else {
+                toast.error(`Kích thước file lớn hơn 5MB. Vui lòng giảm dung lượng`);
+            }
+        } else {
+            toast.error(`Tải CV PDF thất bại`);
         }
     };
 
@@ -284,7 +305,7 @@ class SendCVByEmailModal extends PureComponent {
                                     <div className={cx('actions')}>
                                         <label
                                             className={cx('btn', 'upload')}
-                                            htmlFor="upload"
+                                            htmlFor="upload-image"
                                             onChange={this.handleUploadImage}
                                         >
                                             <BsCardImage className={cx('icon')} />
@@ -310,20 +331,32 @@ class SendCVByEmailModal extends PureComponent {
                                                 </Button>
                                             </>
                                         )}
+
+                                        <label
+                                            className={cx('btn', 'upload')}
+                                            onChange={this.handleUploadCVPdf}
+                                            htmlFor="upload-cv-pdf"
+                                        >
+                                            Tải CV <input accept=".pdf" type="file" hidden readOnly />
+                                            <div>
+                                                <span>Nguyễn Xuân Huy.pdf</span>
+                                                <AiOutlineClose />
+                                            </div>
+                                        </label>
                                     </div>
 
                                     <label
                                         id="js-product-image-cover-letter"
                                         className={cx('image-display')}
                                         onChange={this.handleUploadImage}
-                                        htmlFor="upload"
+                                        htmlFor="upload-image"
                                     >
                                         <Image
                                             src={this.state.productImage || JpgImages.productPlaceholder}
                                             className={cx('image')}
                                             alt="Product Image"
                                         />
-                                        <input id="upload" type="file" hidden readOnly />
+                                        <input id="upload-image" type="file" hidden readOnly />
                                     </label>
                                 </div>
                             </div>

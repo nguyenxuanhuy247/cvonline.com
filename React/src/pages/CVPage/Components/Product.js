@@ -68,12 +68,14 @@ class Product extends PureComponent {
 
             isChangeImageModalOpen: false,
         };
+
+        this.updateDescErrorCode = React.createRef();
     }
 
     // =================================================================
     // CHANGE PRODUCT DESCRIPTION
 
-    handleUpdateProductNameOrDesc = (e, updatedItem) => {
+    handleUpdateProductNameOrDesc = async (e, updatedItem) => {
         const { index } = this.props ?? {};
         const { id: ownerID } = this.props?.owner ?? {};
         const { productInfo } = this.props?.productData ?? {};
@@ -84,12 +86,12 @@ class Product extends PureComponent {
         if (updatedItem === 'name') {
             const data = { userId: ownerID, productId: productId, name: value, label: 'Tên sản phẩm' };
             if (value !== productName) {
-                this.props.updateProduct(data, index, updatedItem);
+                await this.props.updateProduct(data, index, updatedItem);
             }
         } else {
             const data = { userId: ownerID, productId: productId, desc: value, label: 'Mô tả sản phẩm' };
             if (value !== productDesc) {
-                this.props.updateProduct(data, index, updatedItem);
+                await this.props.updateProduct(data, index, updatedItem);
             }
         }
     };
@@ -295,8 +297,13 @@ class Product extends PureComponent {
     };
 
     setTextForProductDesc = (productInfo) => {
-        const productDescElement = document.getElementById(`js-product-desc-${productInfo?.id}`);
-        productDescElement.innerText = productInfo?.desc;
+        const productName = document.getElementById(`js-product-name-${productInfo?.id}`);
+        const productDesc = document.getElementById(`js-product-desc-${productInfo?.id}`);
+        productName.innerText = productInfo.name;
+        if (productDesc && productName) {
+            productName.innerText = productInfo?.name;
+            productDesc.innerText = productInfo?.desc;
+        }
     };
 
     async componentDidUpdate(prevProps) {
@@ -315,7 +322,7 @@ class Product extends PureComponent {
         }
 
         // Set product desc after updateing from database by JS
-        if (productInfo?.desc !== prevProps?.productData?.productInfo?.desc) {
+        if (this.props.shouldUpdateProductNameAndDesc) {
             this.setTextForProductDesc(productInfo);
         }
 
@@ -421,7 +428,7 @@ class Product extends PureComponent {
                     <div className={cx('product-name-desc-image')} spellCheck="false">
                         <ContentEditableTag
                             id={`js-product-name-${productID}`}
-                            content={productName}
+                            content={productName || ''}
                             isCanEdit={isCanEdit}
                             className={cx('product-name', {
                                 contentEditable: isCanEdit,
@@ -757,6 +764,7 @@ const mapStateToProps = (state) => {
         owner: state.user.owner,
         userInfo: state.user.userInfo,
         isUpdateProductImageLoading: state.user.isLoading.updateProduct,
+        shouldUpdateProductNameAndDesc: state.user.shouldUpdateProductNameAndDesc,
     };
 };
 

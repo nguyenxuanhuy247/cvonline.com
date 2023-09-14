@@ -107,6 +107,7 @@ export const handleSendCVByEmail = async (data) => {
                     },
                 });
 
+                console.log('AAAAAAAAAAAAAAAAAAA', data);
                 // send mail with defined transport object
                 await transporter.sendMail({
                     from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
