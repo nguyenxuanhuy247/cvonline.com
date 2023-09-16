@@ -4,6 +4,8 @@ import * as appMiddleware from '~/middleware';
 import * as userController from '~/controllers';
 import * as appController from '~/controllers';
 const Yup = require('yup');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 let router = express.Router();
 
@@ -20,7 +22,12 @@ let initWebRoutes = (app) => {
     router.get('/api/search', userMiddleware.checkReqGetSearch, userController.handleGetSearch);
     router.get('/api/get-home-layout', userController.handleGetHomeLayout);
     router.get('/api/get-cv-layout', userMiddleware.checkReqGetCVLayout, userController.handleGetCVLayout);
-    router.post('/api/send-cv-by-email', userMiddleware.checkReqSendCVByEmail, userController.handleSendCVByEmail);
+    router.post(
+        '/api/send-cv-by-email',
+        upload.single('pdf'),
+        userMiddleware.checkReqSendCVByEmail,
+        userController.handleSendCVByEmail,
+    );
 
     // CRUD USER INFOMATION
     router.put(

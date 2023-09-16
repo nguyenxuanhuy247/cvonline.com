@@ -114,7 +114,8 @@ export const checkReqGetCVLayout = (req, res, next) => {
 
 // SEND CV VIA EMAIL
 export const checkReqSendCVByEmail = (req, res, next) => {
-    const { from, to, subject } = req.body;
+    const data = req.body.states;
+    const { from, to, subject } = JSON.parse(data);
 
     if (!to) {
         return res.status(400).json({

@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import classnames from 'classnames/bind';
 import { connect } from 'react-redux';
 import { AiFillHome } from 'react-icons/ai';
+import { IoNewspaperSharp } from 'react-icons/io5';
 import { MdRemoveRedEye } from 'react-icons/md';
 import { BsFillEnvelopeAtFill } from 'react-icons/bs';
 import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
-import { IoNewspaperSharp } from 'react-icons/io5';
 
 import styles from './SideBar.module.scss';
 import * as userActions from '~/store/actions';

@@ -192,9 +192,10 @@ export const handleGetCVLayout = async (req, res) => {
 
 // SEND CV VIA EMAIL
 export const handleSendCVByEmail = async (req, res) => {
-    const data = req.body;
+    const data = JSON.parse(req.body.states);
+    const file = req.file;
 
-    const message = await emailService.handleSendCVByEmail(data);
+    const message = await emailService.handleSendCVByEmail(data, file);
 
     if (message.errorCode === 0) {
         return res.status(200).json(message);

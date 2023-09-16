@@ -2,6 +2,7 @@ import db from '~/models';
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+import fs from 'fs';
 
 // RESET PASSWORD
 export const handleSendEmailResetPassword = async (data) => {
@@ -84,7 +85,7 @@ export const handleSendEmailResetPassword = async (data) => {
 
 // =========================================================================
 // SEND CV VIA EMAIL
-export const handleSendCVByEmail = async (data) => {
+export const handleSendCVByEmail = async (data, pdfFile) => {
     try {
         const user = await db.users.findOne({
             where: { email: data.from },
@@ -107,7 +108,6 @@ export const handleSendCVByEmail = async (data) => {
                     },
                 });
 
-                console.log('AAAAAAAAAAAAAAAAAAA', data);
                 // send mail with defined transport object
                 await transporter.sendMail({
                     from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
@@ -118,6 +118,11 @@ export const handleSendCVByEmail = async (data) => {
                         { path: binaryAvatar, cid: 'avatar' },
                         { path: data.productImage, cid: 'productImage' },
                         { path: './src/public/img/cv-ung-vien.png', cid: 'logo' },
+                        {
+                            filename: pdfFile.originalname,
+                            content: fs.readFileSync(pdfFile.path),
+                            encoding: 'utf-8',
+                        },
                     ],
                     html: `<div style="background-color: #f3f3f3; padding: 24px 20px 80px; ">
                             <a href="${
@@ -400,29 +405,34 @@ export const handleSendCVByEmail = async (data) => {
                               </tbody>
                             </table>
 
-                            <div style="margin-top: 40px;">
-                              <p style="
-                                  width: 300px;
-                                  margin: 16px auto;
-                                  padding: 6px 8px;
-                                  font-size: 20px;
-                                  font-weight: 600;
-                                  text-align: center;
-                                  color: #fff;
-                                  background-color: green;
-                                  border-radius: 4px;
-                                "
-                              >
-                                Hình ảnh sản phẩm
-                              </p>
-                              <img src="cid:productImage" alt="Ảnh sản phẩm"
-                                style="  
-                                  width: 100%;
-                                  height: fit-content;
-                                  object-fit: contain;
-                                "
-                              />
-                            </div>
+                            ${
+                                data.productImage &&
+                                `<div style="margin-top: 40px;">
+                                    <p style="
+                                        width: 300px;
+                                        margin: 16px auto;
+                                        padding: 6px 8px;
+                                        font-size: 20px;
+                                        font-weight: 600;
+                                        text-align: center;
+                                        color: #fff;
+                                        background-color: green;
+                                        border-radius: 4px;
+                                      "
+                                    >
+                                      Hình ảnh sản phẩm
+                                    </p>
+                                      <img
+                                        src="cid:productImage"
+                                        alt="Ảnh sản phẩm"
+                                        style="  
+                                        width: 100%;
+                                        height: fit-content;
+                                        object-fit: contain;
+                                        "
+                                      />
+                                  </div>`
+                            }
                           </div>
                           `,
                 });

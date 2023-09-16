@@ -64,6 +64,7 @@ export const moveProduct = (data) => {
     return axios.put(`/api/move-product`, data);
 };
 
+// =================================================================
 // CRUD TECHNOLOGY
 
 export const createTechnology = (data) => {
@@ -87,14 +88,19 @@ export const deleteTechnology = (technologyData) => {
 };
 
 // =============================================================================
+// HANDLE CHANGE USER ID
 
 export const changeUserID = (data) => {
     return axios.post(`/api/change-userID`, data);
 };
 
 // =============================================================================
-
 // HANDLE CHANGE PASSWORD
+
 export const SendCVByEmail = (data) => {
-    return axios.post(`/api/send-cv-by-email`, data);
+    return axios.post(`/api/send-cv-by-email`, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 };

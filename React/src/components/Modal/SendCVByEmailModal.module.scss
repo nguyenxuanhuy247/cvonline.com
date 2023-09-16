@@ -299,12 +299,8 @@
                     }
                 }
 
-                .actions {
-                    margin: -40px auto 40px;
-                    display: flex;
-                    justify-content: center;
-                    column-gap: 20px;
-
+                .cv-pdf-upload,
+                .image-pdf-upload {
                     .btn {
                         height: 42px;
                         font-size: 1.6rem;
@@ -313,28 +309,55 @@
                         cursor: pointer;
 
                         .icon {
-                            font-size: 26px;
+                            font-size: 24px;
                             color: currentColor;
                         }
-                    }
 
-                    .upload {
-                        width: 200px;
-                        padding: 4px 8px;
-                        border: 1px solid var(--primary-color);
-                        border-radius: 4px;
-                        font-weight: 400;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        column-gap: 8px;
-                        color: var(--primary-color);
+                        &.upload {
+                            width: 200px;
+                            padding: 4px 8px;
+                            border: 1px solid var(--primary-color);
+                            border-radius: 4px;
+                            font-weight: 400;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            column-gap: 8px;
+                            color: var(--primary-color);
 
-                        &:hover {
-                            color: #fff;
-                            background-color: var(--primary-color);
+                            &:hover {
+                                color: #fff;
+                                background-color: var(--primary-color);
+                            }
                         }
                     }
+                }
+
+                .cv-pdf-upload {
+                    .display-pdf-file {
+                        display: flex;
+                        align-items: center;
+                        column-gap: 4px;
+
+                        .pdf-file-name {
+                            font-size: 1.4rem;
+                            font-weight: 300;
+                        }
+
+                        .delete-file {
+                            display: grid;
+                            place-items: center;
+                            font-size: 20px;
+                            color: red;
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                .image-pdf-upload {
+                    display: flex;
+                    justify-content: center;
+                    column-gap: 20px;
 
                     .crop {
                         color: purple;
@@ -352,12 +375,6 @@
 
                         &:hover {
                             color: #fff;
-                            background-color: red;
-                        }
-                    }
-
-                    .upload-CV {
-                        #file-upload-button {
                             background-color: red;
                         }
                     }

@@ -5,6 +5,7 @@ import { MdClose, MdImageNotSupported } from 'react-icons/md';
 import { BsCardImage } from 'react-icons/bs';
 import { BiCut } from 'react-icons/bi';
 import { AiOutlineClose } from 'react-icons/ai';
+import { IoNewspaperSharp } from 'react-icons/io5';
 import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -32,9 +33,12 @@ class SendCVByEmailModal extends PureComponent {
             source: '',
             jobTitle: '',
             productImage: '',
-            CVPdf: null,
+
+            pdf: null,
+            fileName: '',
 
             isOpenCropImageModal: false,
+            isDisplayPdfFile: false,
         };
         this.ref = React.createRef();
     }
@@ -57,7 +61,15 @@ class SendCVByEmailModal extends PureComponent {
             Toast.TOP_CENTER_WARN('Nhập vị trí ứng tuyển', 3000);
         } else {
             const data = { ...this.state, from: this.props.owner?.email };
-            await this.props.SendCVByEmail(data);
+            delete data.pdf;
+            delete data.isOpenCropImageModal;
+            delete data.isDisplayPdfFile;
+
+            const formData = new FormData();
+
+            formData.append('pdf', this.state.pdf);
+            formData.append('states', JSON.stringify(data));
+            await this.props.SendCVByEmail(formData);
         }
     };
 
@@ -83,17 +95,18 @@ class SendCVByEmailModal extends PureComponent {
 
         if (pdfFile) {
             if (pdfFile.size / (1024 * 1024) <= 5) {
-                const formData = new FormData();
-                await formData.append('pdf', pdfFile);
-
-                console.log('PDF', formData);
-                await this.setState({ CVPdf: formData });
+                console.log('FIEL', pdfFile);
+                this.setState({ pdf: pdfFile, isDisplayPdfFile: true, fileName: pdfFile.name });
             } else {
                 toast.error(`Kích thước file lớn hơn 5MB. Vui lòng giảm dung lượng`);
             }
         } else {
             toast.error(`Tải CV PDF thất bại`);
         }
+    };
+
+    handleDeletePdfFile = () => {
+        this.setState({ pdf: null, isDisplayPdfFile: false, fileName: '' });
     };
 
     handleOpenCropImageModal = () => {
@@ -302,7 +315,36 @@ class SendCVByEmailModal extends PureComponent {
                                         </div>
                                     </div>
 
-                                    <div className={cx('actions')}>
+                                    <div className={cx('cv-pdf-upload')}>
+                                        <label
+                                            className={cx('btn', 'upload')}
+                                            onChange={() => this.handleUploadCVPdf()}
+                                            htmlFor="upload-cv-pdf"
+                                        >
+                                            <IoNewspaperSharp className={cx('icon')} />
+                                            Tải CV
+                                            <input
+                                                id="upload-cv-pdf"
+                                                name="CVPdf"
+                                                accept=".pdf"
+                                                type="file"
+                                                hidden
+                                                readOnly
+                                            />
+                                        </label>
+
+                                        {this.state.isDisplayPdfFile && (
+                                            <div className={cx('display-pdf-file')}>
+                                                <span className={cx('pdf-file-name')}>{this.state.fileName || ''}</span>
+                                                <AiOutlineClose
+                                                    className={cx('delete-file')}
+                                                    onClick={() => this.handleDeletePdfFile()}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className={cx('image-pdf-upload')}>
                                         <label
                                             className={cx('btn', 'upload')}
                                             htmlFor="upload-image"
@@ -312,37 +354,15 @@ class SendCVByEmailModal extends PureComponent {
                                             Tải ảnh sản phẩm
                                         </label>
 
-                                        {this.state.productImage && (
-                                            <>
-                                                <Button
-                                                    className={cx('btn', 'crop')}
-                                                    onClick={this.handleOpenCropImageModal}
-                                                >
-                                                    <BiCut className={cx('icon')} />
-                                                    <span className={cx('text')}>Cắt ảnh</span>
-                                                </Button>
+                                        <Button className={cx('btn', 'crop')} onClick={this.handleOpenCropImageModal}>
+                                            <BiCut className={cx('icon')} />
+                                            <span className={cx('text')}>Cắt ảnh</span>
+                                        </Button>
 
-                                                <Button
-                                                    className={cx('btn', 'delete')}
-                                                    onClick={this.handleDeleteImage}
-                                                >
-                                                    <MdImageNotSupported className={cx('icon')} />
-                                                    <span className={cx('text')}>Xóa ảnh</span>
-                                                </Button>
-                                            </>
-                                        )}
-
-                                        <label
-                                            className={cx('btn', 'upload')}
-                                            onChange={this.handleUploadCVPdf}
-                                            htmlFor="upload-cv-pdf"
-                                        >
-                                            Tải CV <input accept=".pdf" type="file" hidden readOnly />
-                                            <div>
-                                                <span>Nguyễn Xuân Huy.pdf</span>
-                                                <AiOutlineClose />
-                                            </div>
-                                        </label>
+                                        <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
+                                            <MdImageNotSupported className={cx('icon')} />
+                                            <span className={cx('text')}>Xóa ảnh</span>
+                                        </Button>
                                     </div>
 
                                     <label
