@@ -119,7 +119,7 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                         { path: data.productImage, cid: 'productImage' },
                         { path: './src/public/img/cv-ung-vien.png', cid: 'logo' },
                         {
-                            filename: pdfFile.originalname,
+                            filename: data.pdfName,
                             content: fs.readFileSync(pdfFile.path),
                             encoding: 'utf-8',
                         },
@@ -410,13 +410,13 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                 `<div style="margin-top: 40px;">
                                     <p style="
                                         width: 300px;
-                                        margin: 16px auto;
+                                        margin: 16px auto 30px;
                                         padding: 6px 8px;
                                         font-size: 20px;
                                         font-weight: 600;
                                         text-align: center;
                                         color: #fff;
-                                        background-color: green;
+                                        background-image: linear-gradient(to right, #14cc00 , 20%, #267426, 80%, #14cc00);
                                         border-radius: 4px;
                                       "
                                     >

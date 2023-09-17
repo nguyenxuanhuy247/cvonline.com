@@ -307,16 +307,25 @@ class Product extends PureComponent {
     };
 
     async componentDidUpdate(prevProps) {
-        const { productInfo, numberofFELibrary, numberofBELibrary } = this.props?.productData ?? {};
+        const { productInfo, FELibraryList, numberofFELibrary, BELibraryList, numberofBELibrary } =
+            this.props?.productData ?? {};
         const { jobTitle } = this.props;
 
+        const previousFELibraryListLength = prevProps.productData.FELibraryList?.length;
+        const updatedFELibraryListLength = FELibraryList?.length;
+        const isCreateFELibrary = updatedFELibraryListLength > previousFELibraryListLength;
+
         // Turn to last page when add or delete a library
-        if (numberofFELibrary !== prevProps?.productData?.numberofFELibrary) {
+        if (numberofFELibrary !== prevProps?.productData?.numberofFELibrary && isCreateFELibrary) {
             const FE_FinalPage = Math.ceil(numberofFELibrary / this.state.FE_PageSize);
             this.setState({ FE_Page: FE_FinalPage });
         }
 
-        if (numberofBELibrary !== prevProps?.productData?.numberofBELibrary) {
+        const previousBELibraryListLength = prevProps.productData.BELibraryList?.length;
+        const updatedBELibraryListLength = BELibraryList?.length;
+        const isCreateBELibrary = updatedBELibraryListLength > previousBELibraryListLength;
+
+        if (numberofBELibrary !== prevProps?.productData?.numberofBELibrary && isCreateBELibrary) {
             const BE_FinalPage = Math.ceil(numberofBELibrary / this.state.BE_PageSize);
             this.setState({ BE_Page: BE_FinalPage });
         }
@@ -764,6 +773,7 @@ const mapStateToProps = (state) => {
         owner: state.user.owner,
         userInfo: state.user.userInfo,
         isUpdateProductImageLoading: state.user.isLoading.updateProduct,
+        isCreateTechnologyLoading: state.user.isLoading.createTechnology,
         shouldUpdateProductNameAndDesc: state.user.shouldUpdateProductNameAndDesc,
     };
 };

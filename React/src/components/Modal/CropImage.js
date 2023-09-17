@@ -51,7 +51,7 @@ const CropImage = ({ src, round = false }, ref) => {
             setOriginalAspect(originalRatio);
             setAspect(originalRatio);
         }
-    }, [src]);
+    }, [src, round]);
 
     useImperativeHandle(
         ref,

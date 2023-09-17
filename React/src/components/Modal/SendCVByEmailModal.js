@@ -33,6 +33,7 @@ class SendCVByEmailModal extends PureComponent {
             source: '',
             jobTitle: '',
             productImage: '',
+            pdfName: '',
 
             pdf: null,
             fileName: '',
@@ -95,8 +96,7 @@ class SendCVByEmailModal extends PureComponent {
 
         if (pdfFile) {
             if (pdfFile.size / (1024 * 1024) <= 5) {
-                console.log('FIEL', pdfFile);
-                this.setState({ pdf: pdfFile, isDisplayPdfFile: true, fileName: pdfFile.name });
+                this.setState({ pdfName: pdfFile.name, pdf: pdfFile, isDisplayPdfFile: true, fileName: pdfFile.name });
             } else {
                 toast.error(`Kích thước file lớn hơn 5MB. Vui lòng giảm dung lượng`);
             }
@@ -344,7 +344,7 @@ class SendCVByEmailModal extends PureComponent {
                                         )}
                                     </div>
 
-                                    <div className={cx('image-pdf-upload')}>
+                                    <div className={cx('image-upload')}>
                                         <label
                                             className={cx('btn', 'upload')}
                                             htmlFor="upload-image"
@@ -354,19 +354,26 @@ class SendCVByEmailModal extends PureComponent {
                                             Tải ảnh sản phẩm
                                         </label>
 
-                                        <Button className={cx('btn', 'crop')} onClick={this.handleOpenCropImageModal}>
+                                        <Button
+                                            disabled={this.state.productImage ? false : true}
+                                            className={cx('btn', 'crop')}
+                                            onClick={this.handleOpenCropImageModal}
+                                        >
                                             <BiCut className={cx('icon')} />
                                             <span className={cx('text')}>Cắt ảnh</span>
                                         </Button>
 
-                                        <Button className={cx('btn', 'delete')} onClick={this.handleDeleteImage}>
+                                        <Button
+                                            disabled={this.state.productImage ? false : true}
+                                            className={cx('btn', 'delete')}
+                                            onClick={this.handleDeleteImage}
+                                        >
                                             <MdImageNotSupported className={cx('icon')} />
                                             <span className={cx('text')}>Xóa ảnh</span>
                                         </Button>
                                     </div>
 
                                     <label
-                                        id="js-product-image-cover-letter"
                                         className={cx('image-display')}
                                         onChange={this.handleUploadImage}
                                         htmlFor="upload-image"

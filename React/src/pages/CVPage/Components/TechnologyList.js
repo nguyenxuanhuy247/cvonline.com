@@ -78,6 +78,44 @@ class TechnologyList extends PureComponent {
         }
     };
 
+    handleChangeItemPosition = (event, isCanEdit) => {
+        const { index: productIndex } = this.props ?? {};
+        const { id: userId } = this.props?.userInfo ?? {};
+        const { oldIndex, newIndex } = event;
+
+        const prevList = this.state.list;
+        const updatedList = [...this.state.list];
+        const movedItem = updatedList.splice(oldIndex, 1)[0];
+        updatedList.splice(newIndex, 0, movedItem);
+
+        const isTwoListSame = _.isEqual(prevList, updatedList);
+
+        if (!isTwoListSame) {
+            const updateData = prevList.map((oldTechnology, index) => {
+                return {
+                    technologyID: updatedList[index]?.id,
+                    technologyOrder: oldTechnology.technologyOrder,
+                };
+            });
+
+            const getData = {
+                type: this.props?.type,
+                key: this.props?.keyprop,
+                side: this.props?.side,
+                userId: userId,
+                productId: this.props?.productId,
+                label: `${this.props?.label}`,
+            };
+
+            const data = {
+                updateData: updateData,
+                getData: getData,
+            };
+
+            this.props.dragAndDropTechology(data, productIndex);
+        }
+    };
+
     componentDidMount() {
         this.setState({ list: this.props.technologyList || [] });
     }
@@ -110,7 +148,8 @@ class TechnologyList extends PureComponent {
                     <ReactSortable
                         disabled={!isCanEdit}
                         list={this.state.list}
-                        setList={(newState) => this.handleSetListAndSaveToDatabase(newState, isCanEdit)}
+                        setList={(newState) => this.setState({ list: newState })}
+                        onEnd={(e) => this.handleChangeItemPosition(e, isCanEdit)}
                         id={this.props.technologyListID}
                         className={cx('technology-list-inner', {
                             'sourcecode-list': type === 'SOURCECODE',
