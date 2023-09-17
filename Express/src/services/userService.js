@@ -447,16 +447,18 @@ export const handlePostResetPassword = async (id, password) => {
 
 // =================================================================
 
-// UPDATE USER INFORMATION
+// SEARCH PRODUCT
 export const handleGetSearch = async (data) => {
     const { searchValue } = data;
+
+    console.log('Search', searchValue);
 
     try {
         const technologies = await db.technologies.findAll({
             where: {
                 type: 'PRODUCTDESC',
                 name: {
-                    [Op.substring]: searchValue,
+                    [Op.iLike]: `%${searchValue}%`,
                 },
             },
             attributes: ['id', 'name', 'image'],
@@ -1067,7 +1069,6 @@ export const handleUpdateMultipleTechnologies = async (data) => {
     try {
         for (let index in updateData) {
             const technology = updateData[index];
-            console.log('AAAAAAAAA', technology.technologyID);
 
             await db.technologies.update(
                 {

@@ -1,6 +1,7 @@
 @import '../GlobalStyles/GlobalStyles.module.scss';
 
 .overlay {
+    z-index: 11;
     position: fixed;
     top: var(--header-height-pc);
     right: 0;

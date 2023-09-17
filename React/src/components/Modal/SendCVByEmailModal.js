@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { MdClose, MdImageNotSupported } from 'react-icons/md';
-import { BsCardImage } from 'react-icons/bs';
+import { BsCardImage, BsGithub } from 'react-icons/bs';
 import { BiCut } from 'react-icons/bi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { IoNewspaperSharp } from 'react-icons/io5';
@@ -34,6 +34,7 @@ class SendCVByEmailModal extends PureComponent {
             jobTitle: '',
             productImage: '',
             pdfName: '',
+            githubLink: '',
 
             pdf: null,
             fileName: '',
@@ -47,6 +48,27 @@ class SendCVByEmailModal extends PureComponent {
     handleInputInfo = (e, name) => {
         const value = e.target.value?.trimStart();
         this.setState({ [name]: value });
+    };
+
+    handleCloseModal = () => {
+        this.setState({
+            to: '',
+            subject: '',
+            companyName: '',
+            source: '',
+            jobTitle: '',
+            productImage: '',
+            pdfName: '',
+            githubLink: '',
+
+            pdf: null,
+            fileName: '',
+
+            isOpenCropImageModal: false,
+            isDisplayPdfFile: false,
+        });
+
+        this.props.onClose();
     };
 
     handleSendInfoAndCVByEmail = async () => {
@@ -277,9 +299,25 @@ class SendCVByEmailModal extends PureComponent {
                                                             target="_blank"
                                                             rel="noreferrer"
                                                         >
-                                                            Trang CV của tôi
+                                                            SẢN PHẨM
+                                                        </a>
+                                                        <a
+                                                            className={cx('button', 'github')}
+                                                            href={`${this.state.githubLink}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                        >
+                                                            <BsGithub className={cx('icon')} />
+                                                            GITHUB
                                                         </a>
                                                     </div>
+
+                                                    <input
+                                                        value={this.state.githubLink}
+                                                        className={cx('github-link-input')}
+                                                        onInput={(e) => this.setState({ githubLink: e.target.value })}
+                                                        placeholder="Nhập link Github"
+                                                    />
 
                                                     <p className={cx('paragraph', 'hightlight')}>
                                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do sản phẩm được deploy trên những
@@ -389,7 +427,7 @@ class SendCVByEmailModal extends PureComponent {
                             </div>
 
                             <div className={cx('modal-footer')}>
-                                <Button className={cx('cancel-button')} onClick={onClose}>
+                                <Button className={cx('cancel-button')} onClick={() => this.handleCloseModal()}>
                                     Hủy
                                 </Button>
                                 <Button

@@ -25,6 +25,7 @@
         transition: 0.15s ease-in-out;
 
         .button {
+            height: 34px;
             width: 100%;
             justify-content: flex-start;
             column-gap: 4px;
@@ -51,6 +52,7 @@
             }
 
             .name-link {
+                height: 24px;
                 min-width: 30%;
                 flex: 1;
                 display: flex;
@@ -59,6 +61,7 @@
                 .name {
                     @include line-clamp;
 
+                    line-height: 24px;
                     margin-left: 0px;
                     text-align: left;
                     word-break: break-all;
@@ -142,19 +145,22 @@
 
     &.sourcecode-list {
         align-self: flex-start;
+
+        .edit-button-container {
+            top: 30px;
+            left: 50%;
+            z-index: 4;
+            width: 88px;
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.15s ease-in-out;
+            transform: translate(-50%, 0);
+        }
     }
 
     &.can-edit {
-        &:hover {
-            .button-conntainer {
-                margin-right: 90px;
-            }
-
-            .edit-button-container {
-                display: flex;
-            }
-        }
-
+        &:hover,
         &.hover-button {
             .button-conntainer {
                 margin-right: 90px;
@@ -166,43 +172,18 @@
                 opacity: 1;
                 visibility: visible;
             }
-
-            &.sourcecode-list {
-                .button-conntainer {
-                    margin-right: 0;
-                }
-
-                .edit-button-container {
-                    z-index: 4;
-                    margin-top: 4px;
-                    opacity: 1;
-                    visibility: visible;
-                    top: 30px;
-                }
-            }
         }
 
         &.sourcecode-list {
-            .edit-button-container {
-                z-index: 4;
-                width: 88px;
-                display: flex;
-                opacity: 0;
-                visibility: hidden;
-                transition: 0.15s ease-in-out;
-                top: 30px;
-                left: 50%;
-                transform: translate(-50%, 0);
-            }
-
-            &:hover {
+            &:hover,
+            &.hover-button {
                 .button-conntainer {
                     margin-right: 0;
                 }
 
                 .edit-button-container {
                     z-index: 4;
-                    margin-top: 4px;
+                    margin-top: 6px;
                     opacity: 1;
                     visibility: visible;
                 }
