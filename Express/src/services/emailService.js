@@ -312,9 +312,11 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>Thông qua ${
                                             data.source
                                         }, tôi được biết Quý
-                                        công ty đang cần tuyển vị trí ${
-                                            data.jobTitle
-                                        }. Sau khi tìm hiểu yêu cầu công việc, tôi
+                                        công ty đang cần tuyển vị trí ${data.jobTitle
+                                            ?.toLowerCase()
+                                            .split(' ')
+                                            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                            .join(' ')}. Sau khi tìm hiểu yêu cầu công việc, tôi
                                         nhận thấy mình có đủ năng lực để đảm nhận vị trí công việc này. Với trình độ của mình,
                                         tôi mong muốn được đóng góp vào sự phát triển của Quý công ty.
                                     </p>
@@ -418,8 +420,8 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                             font-weight: 600;
                                         "
                                     >
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do sản phẩm được deploy trên những trang miễn phí như
-                                        Supabase (Database), Render (Backend), Firebase (Frontend) nên ảnh hưởng đến tốc độ tải,
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do sản phẩm được deploy trên những nền tảng miễn phí như
+                                        Firebase (Frontend), Render (Backend), Supabase (Database) nên có ảnh hưởng đến tốc độ tải,
                                         mong Quý công ty thông cảm. Tôi xin đính kèm 1 bản CV pdf và hình ảnh sản phẩm để Quý
                                         công ty xem xét.
                                     </p>

@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 import { MdClose, MdImageNotSupported } from 'react-icons/md';
-import { BsCardImage, BsGithub } from 'react-icons/bs';
+import { BsCardImage, BsGithub, BsFillCheckCircleFill } from 'react-icons/bs';
 import { BiCut } from 'react-icons/bi';
-import { AiOutlineClose } from 'react-icons/ai';
+import { AiOutlineClose, AiFillCloseCircle } from 'react-icons/ai';
 import { IoNewspaperSharp } from 'react-icons/io5';
 import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -141,15 +141,22 @@ class SendCVByEmailModal extends PureComponent {
 
     handleFinishDropImage = async () => {
         const image = await this.ref.current.crop();
-        this.setState({ isOpenCropImageModal: false, productImage: image });
+        await this.setState({ isOpenCropImageModal: false, productImage: image });
     };
 
     handleDeleteImage = () => {
         this.setState({ productImage: '' });
     };
 
+    isGitHubUrl = (url) => {
+        const regex = /^https?:\/\/(www\.)?github\.com\/.*/;
+        return regex.test(url);
+    };
+
     render() {
         const { isOpen, onClose } = this.props;
+
+        const isGithub = this.isGitHubUrl(this.state.githubLink);
 
         return (
             isOpen &&
@@ -188,7 +195,7 @@ class SendCVByEmailModal extends PureComponent {
                                     </div>
                                 </div>
 
-                                <div className={cx('background')}>
+                                <div className={cx('background')} id="js-background">
                                     <div className={cx('content')}>
                                         <a href="/" target="_blank" rel="noopener">
                                             <img src={logoWithText} alt="cvonline.com" className={cx('logo')} />
@@ -275,7 +282,14 @@ class SendCVByEmailModal extends PureComponent {
                                                         />
                                                         , tôi được biết Quý Công ty đang cần tuyển vị trí
                                                         <input
-                                                            defaultValue={this.state.jobTitle}
+                                                            defaultValue={this.state.jobTitle
+                                                                ?.toLowerCase()
+                                                                .split(' ')
+                                                                .map(
+                                                                    (word) =>
+                                                                        word.charAt(0).toUpperCase() + word.slice(1),
+                                                                )
+                                                                .join(' ')}
                                                             className={cx('input-info', 'letter')}
                                                             spellCheck={false}
                                                             disabled
@@ -293,38 +307,73 @@ class SendCVByEmailModal extends PureComponent {
                                                     </p>
 
                                                     <div className={cx('button-container')}>
-                                                        <a
+                                                        <Button
                                                             className={cx('button')}
                                                             href={`${process.env.REACT_APP_FRONTEND_URL}${this.props.owner.id}`}
                                                             target="_blank"
                                                             rel="noreferrer"
                                                         >
                                                             SẢN PHẨM
-                                                        </a>
-                                                        <a
+                                                        </Button>
+                                                        <Button
+                                                            disabled={!isGithub}
                                                             className={cx('button', 'github')}
-                                                            href={`${this.state.githubLink}`}
+                                                            href={`${this.state.githubLink || ''}`}
                                                             target="_blank"
                                                             rel="noreferrer"
                                                         >
                                                             <BsGithub className={cx('icon')} />
                                                             GITHUB
-                                                        </a>
+                                                        </Button>
                                                     </div>
 
-                                                    <input
-                                                        value={this.state.githubLink}
-                                                        className={cx('github-link-input')}
-                                                        onInput={(e) => this.setState({ githubLink: e.target.value })}
-                                                        placeholder="Nhập link Github"
-                                                    />
+                                                    <div
+                                                        className={cx(
+                                                            'github-link-container',
+                                                            {
+                                                                'not-github-link': !isGithub && this.state.githubLink,
+                                                            },
+                                                            {
+                                                                'github-link-valid': isGithub && this.state.githubLink,
+                                                            },
+                                                        )}
+                                                    >
+                                                        <label htmlFor="github-link-input" className={cx('label')}>
+                                                            Link Github :
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            required
+                                                            value={this.state.githubLink}
+                                                            id="github-link-input"
+                                                            className={cx('github-link-input')}
+                                                            onInput={(e) =>
+                                                                this.setState({ githubLink: e.target.value })
+                                                            }
+                                                            placeholder="Nhập link Github (nếu có)"
+                                                        />
+                                                        {this.state.githubLink && (
+                                                            <span className={cx('icon-wrapper')}>
+                                                                {isGithub ? (
+                                                                    <BsFillCheckCircleFill
+                                                                        className={cx('icon', 'verified')}
+                                                                    />
+                                                                ) : (
+                                                                    <AiFillCloseCircle
+                                                                        className={cx('icon', 'error')}
+                                                                        onClick={() => {}}
+                                                                    />
+                                                                )}
+                                                            </span>
+                                                        )}
+                                                    </div>
 
                                                     <p className={cx('paragraph', 'hightlight')}>
                                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do sản phẩm được deploy trên những
-                                                        trang miễn phí như Supabase (Database), Render (Backend),
-                                                        Firebase (Frontend) nên ảnh hưởng đến tốc độ tải, mong Quý công
-                                                        ty thông cảm. Tôi xin đính kèm 1 bản CV pdf và hình ảnh sản phẩm
-                                                        để Quý công ty xem xét.
+                                                        nền tảng miễn phí như Firebase (Frontend), Render (Backend),
+                                                        Supabase (Database) nên có ảnh hưởng đến tốc độ tải, mong Quý
+                                                        công ty thông cảm. Tôi xin đính kèm 1 bản CV pdf và hình ảnh sản
+                                                        phẩm để Quý công ty xem xét.
                                                     </p>
 
                                                     <p className={cx('paragraph')}>
@@ -417,6 +466,7 @@ class SendCVByEmailModal extends PureComponent {
                                         htmlFor="upload-image"
                                     >
                                         <Image
+                                            id="js-product-image-in-cv-email"
                                             src={this.state.productImage || JpgImages.productPlaceholder}
                                             className={cx('image')}
                                             alt="Product Image"

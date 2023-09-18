@@ -87,13 +87,17 @@
                 position: relative;
 
                 .edit-image-button {
+                    font-family: var(--inter-font) !important;
+                    height: 42px;
+                    width: 120px;
                     position: absolute;
                     z-index: 1;
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    font-size: 1.8rem;
-                    padding: 8px 12px;
+                    font-size: 1.6rem;
+                    font-weight: 600;
+                    padding: 10px 12px;
                     border-radius: 4px;
                     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
                     background-color: var(--primary-color);

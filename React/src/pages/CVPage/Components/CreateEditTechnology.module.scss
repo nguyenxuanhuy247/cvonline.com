@@ -40,42 +40,41 @@
         }
 
         .image-wrapper {
+            position: relative;
             border: 1px dashed transparent;
             align-self: flex-start;
             width: 100%;
             display: flex;
             justify-content: center;
+            width: initial;
+            margin: auto;
 
             .add-edit-image-button {
+                font-family: var(--inter-font) !important;
+                display: none;
+                z-index: 1;
+                position: absolute;
+                top: 50%;
                 font-size: 1.4rem;
-                padding: 8px;
+                font-weight: 600;
+                padding: 8px 12px;
                 border-radius: 4px;
                 box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
                 background-color: var(--primary-color);
                 color: #fff;
-
-                &:hover {
-                    cursor: pointer;
-                }
-            }
-
-            .tooltip {
-                font-size: 1.4rem;
-                padding: 8px;
-                border-radius: 4px;
-                box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-                background-color: var(--primary-color);
-                color: #fff;
-
-                &:hover {
-                    cursor: pointer;
-                }
+                cursor: pointer;
             }
 
             .image {
                 width: 100px;
                 height: 100px;
                 border: 1px solid #ccc;
+            }
+
+            &:hover {
+                .add-edit-image-button {
+                    display: inline-block;
+                }
             }
         }
 
@@ -98,7 +97,7 @@
 
         .btn {
             font-size: 1.4rem;
-            min-width: 80px;
+            min-width: 100px;
             padding: 8px 12px;
             color: #fff;
             border-radius: 4px;

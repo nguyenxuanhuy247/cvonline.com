@@ -13,7 +13,7 @@
     .container {
         max-height: calc(100% - 12px);
         overflow: auto;
-        width: 900px;
+        width: 1000px;
         max-width: calc(100% - 12px);
         background-color: #fff;
         border-radius: 4px;
@@ -45,6 +45,7 @@
         }
 
         .modal-body {
+            flex: 1;
             padding: 12px 24px;
             display: flex;
             flex-direction: column;
@@ -300,15 +301,83 @@
                                     }
                                 }
 
-                                .github-link-input {
+                                .github-link-container {
+                                    position: relative;
                                     margin-top: -16px;
-                                    width: 500px;
-                                    margin-left: auto;
-                                    margin-right: auto;
-                                    padding: 4px 12px;
-                                    font-size: 1.4rem;
-                                    border: 1px dashed #000;
-                                    border-radius: 4px;
+                                    display: flex;
+                                    align-items: center;
+                                    column-gap: 12px;
+
+                                    .label {
+                                        font-size: 1.5rem;
+                                        font-weight: 600;
+                                    }
+
+                                    .github-link-input {
+                                        height: 30px;
+                                        flex: 1;
+                                        margin-left: auto;
+                                        margin-right: auto;
+                                        padding: 4px 36px 4px 12px;
+                                        font-size: 1.4rem;
+                                        border: 1px dashed #000;
+                                        border-radius: 2px;
+
+                                        &:valid {
+                                            border-style: solid;
+                                        }
+                                    }
+
+                                    .icon-wrapper {
+                                        position: absolute;
+                                        top: 50%;
+                                        right: 12px;
+                                        transform: translate(0, -50%);
+                                        display: grid;
+                                        place-items: center;
+
+                                        .icon {
+                                            &.verified {
+                                                font-size: 18px;
+                                                color: green;
+                                            }
+
+                                            &.error {
+                                                font-size: 20px;
+                                                margin-top: -1px;
+                                                color: red;
+                                                cursor: pointer;
+                                            }
+                                        }
+                                    }
+
+                                    &.not-github-link {
+                                        .label {
+                                            color: red;
+                                        }
+
+                                        .github-link-input {
+                                            border: 1px dashed red;
+
+                                            &:valid {
+                                                border-style: solid;
+                                            }
+                                        }
+                                    }
+
+                                    &.github-link-valid {
+                                        .label {
+                                            color: var(--primary-color);
+                                        }
+
+                                        .github-link-input {
+                                            border: 1px dashed var(--primary-color);
+
+                                            &:valid {
+                                                border-style: solid;
+                                            }
+                                        }
+                                    }
                                 }
 
                                 .note {
@@ -361,7 +430,7 @@
                 }
 
                 .cv-pdf-upload {
-                    margin-left: 160px;
+                    margin-left: 210px;
                     display: flex;
                     align-items: center;
                     column-gap: 20px;
@@ -425,6 +494,7 @@
                         width: 100%;
                         height: fit-content;
                         object-fit: contain;
+                        border: 1px solid #ccc;
                     }
                 }
             }

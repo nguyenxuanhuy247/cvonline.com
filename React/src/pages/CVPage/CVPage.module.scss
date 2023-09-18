@@ -27,20 +27,23 @@
                         .border-outline {
                             position: relative;
                             border-radius: 50%;
-                            border: 8px solid var(--primary-color);
-                            outline: 12px solid rgba(73, 178, 83, 0.4);
+                            border: 10px solid var(--primary-color);
+                            outline: 12px solid rgba(73, 178, 83, 0.25);
                             user-select: none;
 
                             .change-avatar-button {
+                                font-family: var(--inter-font) !important;
+                                width: 130px;
                                 display: none;
                                 position: absolute;
                                 z-index: 3;
-                                top: 50%;
+                                top: 60%;
                                 left: 50%;
-                                transform: translate(-50%, -50%);
-                                padding: 10px 16px;
+                                transform: translate(-50%, 0);
+                                padding: 10px 12px;
                                 border-radius: 4px;
-                                font-size: 1.6rem;
+                                font-size: 1.8rem;
+                                font-weight: 600;
                                 box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
                                 background-color: var(--primary-color);
                                 color: #fff;
@@ -289,7 +292,13 @@
 
 // PC revolution < 1400px
 @media (max-width: 1400px) {
-    .body {
+    .cv-page {
+        .cv-page-section {
+            .cv-container {
+                padding: 4px 0 0;
+            }
+        }
+
         .scroll-to-top-bottom {
             bottom: 24px;
             right: 12px;

@@ -244,7 +244,7 @@ class PersonalLayout extends PureComponent {
                                                             className={cx('change-avatar-button')}
                                                             onClick={() => this.handleOpenChangeAvatarModal()}
                                                         >
-                                                            Sửa ảnh
+                                                            {this.props.userInfo?.avatar ? `Sửa ảnh` : `Thêm ảnh`}
                                                         </Button>
                                                     )}
 

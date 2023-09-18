@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-import HeadlessTippy from '@tippyjs/react/headless';
 
 import * as userActions from '~/store/actions';
 import styles from './CreateEditTechnology.module.scss';
@@ -158,26 +157,16 @@ class CreateEditTechnology extends PureComponent {
                             ? `Chỉnh sửa ${type === 'SOURCECODE' ? '' : label}`
                             : `Thêm ${type === 'SOURCECODE' ? '' : label} mới`}
                     </p>
+
                     <div className={cx('image-wrapper')}>
-                        <HeadlessTippy
-                            zIndex="10"
-                            placement="bottom"
-                            interactive
-                            delay={[0, 300]}
-                            offset={[0, -50]}
-                            render={(attrs) => (
-                                <div tabIndex="-1" {...attrs}>
-                                    <Button
-                                        className={cx('add-edit-image-button')}
-                                        onClick={() => this.handleOpenChangeImageModal()}
-                                    >
-                                        {`${isedit ? `Sửa ảnh` : `Thêm ảnh`}`}
-                                    </Button>
-                                </div>
-                            )}
+                        <Button
+                            className={cx('add-edit-image-button')}
+                            onClick={() => this.handleOpenChangeImageModal()}
                         >
-                            <Image className={cx('image')} src={this.state.image} round />
-                        </HeadlessTippy>
+                            {this.state.image ? `Sửa ảnh` : `Thêm ảnh`}
+                        </Button>
+
+                        <Image className={cx('image')} src={this.state.image} round />
 
                         {this.state.isModalOpen && (
                             <ChangeImageModal
@@ -188,6 +177,7 @@ class CreateEditTechnology extends PureComponent {
                             />
                         )}
                     </div>
+
                     <input
                         id={`js-autofocus-input-${this.props.type}`}
                         type="text"
@@ -215,6 +205,7 @@ class CreateEditTechnology extends PureComponent {
                         onChange={(e) => this.handleInputTechnology(e, 'link')}
                     />
                 </div>
+
                 <div className={cx('actions')}>
                     <Button
                         className={cx('btn', 'cancel', { 'source-code-edit-btn': isedit })}

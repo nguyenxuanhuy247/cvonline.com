@@ -458,12 +458,12 @@ class Product extends PureComponent {
 
                         <div className={cx('product-image')}>
                             {isCanEdit && (
-                                <div
+                                <Button
                                     className={cx('edit-image-button')}
                                     onClick={() => this.handleOpenChangeImageModal()}
                                 >
-                                    Sửa ảnh
-                                </div>
+                                    {productInfo?.image ? 'Sửa ảnh' : 'Thêm ảnh'}
+                                </Button>
                             )}
                             <Image
                                 src={productInfo?.image || JpgImages.productPlaceholder}
