@@ -92,65 +92,76 @@
                 }
             }
 
-            .short-search-result {
-                width: 100%;
-                background-color: #fff;
-                text-align: left;
-                display: flex;
-                align-items: center;
-                border: 1px solid transparent;
-                padding: 6px;
-                column-gap: 8px;
-                cursor: pointer;
-
-                &:hover {
-                    border-color: var(--primary-color);
-                }
-
-                &:nth-child(2) {
-                    margin-top: 8px;
-                }
-
-                .product-image {
-                    width: 100px;
-                    height: 48px;
-                    object-fit: contain;
-                }
-
-                .result-desc {
-                    font-size: 1.4rem;
-                    flex: 1;
+            .short-search-result-container {
+                .short-search-result {
+                    width: 100%;
+                    background-color: #fff;
+                    text-align: left;
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid transparent;
+                    padding: 6px;
                     column-gap: 8px;
+                    cursor: pointer;
 
-                    .product-name {
-                        @include line-clamp;
-
-                        font-size: 1.6rem;
-                        line-height: 1.5;
-                        font-weight: 500;
-                        color: var(--green-color-01);
-                        word-break: break-all;
+                    &:hover {
+                        border-color: var(--primary-color);
                     }
 
-                    .author {
-                        display: flex;
-                        align-items: center;
+                    &:nth-child(2) {
+                        margin-top: 8px;
+                    }
 
-                        .name,
-                        .job-title {
+                    .product-image {
+                        width: 100px;
+                        height: 48px;
+                        object-fit: contain;
+                    }
+
+                    .result-desc {
+                        font-size: 1.4rem;
+                        flex: 1;
+                        column-gap: 8px;
+
+                        .product-name {
                             @include line-clamp;
+
+                            font-size: 1.6rem;
+                            line-height: 1.5;
+                            font-weight: 500;
+                            color: var(--green-color-01);
                             word-break: break-all;
                         }
 
-                        .separate {
-                            padding: 0 8px;
-                        }
+                        .author {
+                            display: flex;
+                            align-items: center;
 
-                        .job-title {
-                            min-width: 140px;
-                            font-weight: 300;
+                            .name,
+                            .job-title {
+                                @include line-clamp;
+                                word-break: break-all;
+                            }
+
+                            .separate {
+                                padding: 0 8px;
+                            }
+
+                            .job-title {
+                                min-width: 140px;
+                                font-weight: 300;
+                            }
                         }
                     }
+                }
+
+                &:not(:last-child)::after {
+                    margin: 4px;
+                    display: block;
+                    content: '';
+                    width: initial;
+                    height: 1px;
+                    background-color: var(--main-border-grey);
                 }
             }
         }

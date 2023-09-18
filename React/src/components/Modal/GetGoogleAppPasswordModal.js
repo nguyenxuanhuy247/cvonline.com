@@ -101,12 +101,13 @@ class GetGoogleAppPasswordModal extends PureComponent {
                                 <img className={cx('image', 'step-4')} src={googleAppPasswordGuide.guide4} alt="" />
                             </div>
                             <div className={cx('guide-container')}>
-                                <p className={cx('text')}>Bước 5 : Thiết lập như hình. Sau đó ấn Tạo</p>
+                                <p className={cx('text')}>Bước 5 : Thiết lập như hình. Sau đó nhấn "Tạo"</p>
                                 <img className={cx('image', 'step-5')} src={googleAppPasswordGuide.guide5} alt="" />
                             </div>
                             <div className={cx('guide-container')}>
                                 <p className={cx('text')}>
-                                    Bước 6 : Sao chép chuỗi mật khẩu ứng dụng và dán vào ô bên trên
+                                    Bước 6 : Sao chép chuỗi mật khẩu ứng dụng và dán vào ô "Nhập Google App Password"
+                                    bên trên. Sau đó nhấn "Xong"
                                 </p>
                                 <img className={cx('image', 'step-6')} src={googleAppPasswordGuide.guide6} alt="" />
                             </div>

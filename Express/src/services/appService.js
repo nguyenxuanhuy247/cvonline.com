@@ -77,17 +77,24 @@ export const handleVerifyCurrentPassword = async (data) => {
         });
 
         if (user) {
-            const isPasswordMatch = await bcrypt.compareSync(currentPassword, user.password);
+            if (user.password) {
+                const isPasswordMatch = await bcrypt.compareSync(currentPassword, user.password);
 
-            if (isPasswordMatch) {
-                return {
-                    errorCode: 0,
-                    errorMessage: `Mật khẩu chính xác`,
-                };
+                if (isPasswordMatch) {
+                    return {
+                        errorCode: 0,
+                        errorMessage: `Mật khẩu chính xác`,
+                    };
+                } else {
+                    return {
+                        errorCode: 33,
+                        errorMessage: `Mật khẩu không đúng`,
+                    };
+                }
             } else {
                 return {
-                    errorCode: 33,
-                    errorMessage: `Mật khẩu không đúng`,
+                    errorCode: 34,
+                    errorMessage: `Chưa thiết lập mật khẩu. Vui lòng vào mục "Quên mật khẩu ?" ☹️`,
                 };
             }
         } else {

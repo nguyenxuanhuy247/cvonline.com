@@ -19,10 +19,6 @@
             overflow: hidden;
             background-color: #fff;
 
-            &:hover {
-                outline: 3px solid var(--primary-color);
-            }
-
             .avatar-name-job-title {
                 display: flex;
                 flex-direction: column;
@@ -207,6 +203,16 @@
                     }
                 }
             }
+
+            &:hover {
+                outline: 2px solid var(--primary-color);
+
+                .avatar-name-job-title {
+                    .avatar {
+                        outline: 12px solid rgba(73, 178, 83, 0.25);
+                    }
+                }
+            }
         }
     }
 }
@@ -241,7 +247,7 @@
                 border-radius: 4px;
 
                 .avatar-name-job-title {
-                    padding: 16px 12px;
+                    padding: 28px 12px 16px ;
                     width: 100%;
                 }
 

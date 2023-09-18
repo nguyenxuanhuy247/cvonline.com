@@ -1,6 +1,6 @@
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import classnames from 'classnames/bind';
 
 import styles from './HomePage.module.scss';
@@ -20,7 +20,7 @@ class HomePage extends PureComponent {
     render() {
         const length = this.props.allCVList?.length;
 
-        return (
+        return !this.props.isRedirectToSignIn ? (
             <MainLayout isShowScrollButtons={true}>
                 <div className={cx('home-page')}>
                     {length > 0 && (
@@ -78,7 +78,7 @@ class HomePage extends PureComponent {
                                                                     <EmptyList404 />
                                                                 )}
                                                             </div>
-                                                            
+
                                                             <div className={cx('side')}>
                                                                 <span className={cx('title')}>Back-end</span>
                                                                 <div className={cx('list')}>
@@ -124,12 +124,15 @@ class HomePage extends PureComponent {
                     {this.props.isLoading && <Loading text="Đang tải..." />}
                 </div>
             </MainLayout>
+        ) : (
+            <Redirect to="/signin" />
         );
     }
 }
 
 const mapStateToProps = (state) => {
     return {
+        isRedirectToSignIn: state.user.isRedirectToSignIn,
         isLoading: state.user.isLoading.homeLayout,
         allCVList: state.user.allCVList,
     };

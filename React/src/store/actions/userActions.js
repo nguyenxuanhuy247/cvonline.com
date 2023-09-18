@@ -137,6 +137,12 @@ export const userSignOut = () => {
     };
 };
 
+export const userSignOutAndRedirectToSignIn = () => {
+    return {
+        type: actionNames.USER_SIGNOUT_REDIRECT_TO_SIGNIN,
+    };
+};
+
 // =================================================================
 // SEARCH VALUE
 export const readSearch = (searchValue) => {
@@ -284,7 +290,8 @@ export const SendCVByEmail_Fail = (errorCode) => ({
 // UPDATE USER INFORMATION
 export const updateUserInformation = (userData) => {
     return async (dispatch) => {
-        dispatch(updateUserInformation_Start());
+        const hasJobPosition = !!userData.jobPosition;
+        dispatch(updateUserInformation_Start(hasJobPosition));
         try {
             let res = await userService.updateUserInformation(userData);
             const { errorCode, data } = res ?? {};
@@ -302,8 +309,9 @@ export const updateUserInformation = (userData) => {
     };
 };
 
-export const updateUserInformation_Start = () => ({
+export const updateUserInformation_Start = (hasJobPosition) => ({
     type: actionNames.UPDATE_USER_INFORMATION_START,
+    payload: hasJobPosition,
 });
 
 export const updateUserInformation_Success = (data) => ({

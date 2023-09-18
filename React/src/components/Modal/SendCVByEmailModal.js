@@ -207,7 +207,7 @@ class SendCVByEmailModal extends PureComponent {
                                                 <input
                                                     value={this.state.jobTitle}
                                                     className={cx('job-title')}
-                                                    placeholder="Nhập vị trí ứng tuyển"
+                                                    placeholder="NHẬP VỊ TRÍ ỨNG TUYỂN"
                                                     spellCheck={false}
                                                     onInput={(e) => this.handleInputInfo(e, 'jobTitle')}
                                                 />
@@ -253,7 +253,7 @@ class SendCVByEmailModal extends PureComponent {
                                                         <input
                                                             value={this.state.companyName}
                                                             className={cx('input-info', 'company-name')}
-                                                            placeholder="Điền tên công ty"
+                                                            placeholder="Nhập tên công ty"
                                                             spellCheck={false}
                                                             onInput={(e) => this.handleInputInfo(e, 'companyName')}
                                                         />
@@ -291,6 +291,7 @@ class SendCVByEmailModal extends PureComponent {
                                                                 )
                                                                 .join(' ')}
                                                             className={cx('input-info', 'letter')}
+                                                            placeholder='Ô này không cần nhập'
                                                             spellCheck={false}
                                                             disabled
                                                         />

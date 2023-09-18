@@ -48,10 +48,12 @@ function Button({
     }
 
     // Check whether Button Component is a tag or Link
+    const isDomain = href?.startsWith('https://') || href?.startsWith('http://');
+
     if (route) {
         props.to = route;
         Button = Link;
-    } else if (href) {
+    } else if (href && isDomain) {
         props.href = href;
         props.target = '_blank';
         props.rel = 'noopener';

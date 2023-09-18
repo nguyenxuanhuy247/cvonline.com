@@ -19,6 +19,7 @@ const actionNames = Object.freeze({
 
     // USER SIGN OUT
     USER_SIGNOUT: 'USER_SIGNOUT',
+    USER_SIGNOUT_REDIRECT_TO_SIGNIN: 'USER_SIGNOUT_REDIRECT_TO_SIGNIN',
 
     // =================================================================
     // SEARCH

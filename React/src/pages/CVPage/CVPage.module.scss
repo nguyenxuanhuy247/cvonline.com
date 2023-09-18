@@ -78,6 +78,14 @@
                         &.contentEditable {
                             @include content-editable;
                         }
+
+                        &:empty::before {
+                            content: 'Họ và tên';
+                            color: #999;
+                            font-style: italic;
+                            font-weight: 300;
+                            word-break: break-word;
+                        }
                     }
 
                     .select-job-title {
@@ -170,6 +178,32 @@
                                     &.address {
                                         word-break: break-word;
                                     }
+
+                                    &:empty::before {
+                                        color: #999;
+                                        font-style: italic;
+                                        font-weight: 300;
+                                        word-break: break-word;
+                                    }
+
+                                    &[placeholder='Ngày tháng năm sinh']:empty::before {
+                                        content: 'Ngày tháng năm sinh';
+                                    }
+
+                                    &[placeholder='Giới tính']:empty::before {
+                                        content: 'Giới tính';
+                                    }
+                                    &[placeholder='Giới tính']:empty::before {
+                                        content: 'Giới tính';
+                                    }
+
+                                    &[placeholder='Số điện thoại']:empty::before {
+                                        content: 'Số điện thoại';
+                                    }
+
+                                    &[placeholder='Địa chỉ']:empty::before {
+                                        content: 'Địa chỉ';
+                                    }
                                 }
 
                                 .email {
@@ -180,6 +214,14 @@
                                     word-break: break-word;
                                     outline: none;
                                     border: 1px solid transparent;
+
+                                    &:empty::before {
+                                        content: 'Email';
+                                        color: #999;
+                                        font-style: italic;
+                                        font-weight: 300;
+                                        word-break: break-word;
+                                    }
                                 }
                             }
                         }
@@ -198,6 +240,14 @@
 
                             &.contentEditable {
                                 @include content-editable;
+                                word-break: break-word;
+                            }
+
+                            &[placeholder='Nhập chứng chỉ hoặc trình độ tương đương']:empty::before {
+                                content: 'Nhập chứng chỉ hoặc trình độ tương đương';
+                                color: #999;
+                                font-style: italic;
+                                font-weight: 300;
                                 word-break: break-word;
                             }
                         }
@@ -234,12 +284,13 @@
                     flex: 1;
                     display: grid;
                     place-items: center;
-                    padding: 50px;
+                    padding: 30px;
                     background-color: var(--button-bgc-green-02);
 
                     .add-new-product-button {
                         height: 52px;
                         min-width: 250px;
+                        padding: 12px 20px;
                         background-color: var(--primary-color);
                         color: #fff;
                         border-radius: 99px;

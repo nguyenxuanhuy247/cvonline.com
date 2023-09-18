@@ -1,7 +1,7 @@
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import className from 'classnames/bind';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 
 import styles from './AuthLayout.module.scss';
 import SignIn from '~/pages/SignInPage/Signin.js';
@@ -35,9 +35,9 @@ class Auth extends PureComponent {
         return (
             <div className={cx('auth-container')}>
                 <div className={cx('inner')}>
-                    <a href="/">
+                    <Link to="/">
                         <img src={logoWithText} alt="cvonline.com" className={cx('form-logo')} />
-                    </a>
+                    </Link>
                     <Switch>
                         <Route path={path.SIGNIN} component={SignIn} />
                         <Route path={path.SIGNUP} component={SignUp} />

@@ -22,6 +22,9 @@ class SignIn extends Component {
         this.state = {
             isShowPassword: false,
         };
+
+        this.divRef = React.createRef();
+        this.prevDivRef = null;
     }
 
     handleShowHidePassword = () => {
@@ -65,12 +68,6 @@ class SignIn extends Component {
         this.displayGoogleSignInButton();
         window.google?.accounts.id.prompt();
     }
-
-    componentDidUpdate = (prevProps) => {
-        if (this.props.isSignIn !== prevProps.isSignIn) {
-            this.displayGoogleSignInButton();
-        }
-    };
 
     render() {
         let Eye = this.state.isShowPassword ? FaEye : FaEyeSlash;
@@ -178,7 +175,7 @@ class SignIn extends Component {
                         )}
                     </Formik>
 
-                    <div id="google_id_signin-container" className={cx('signin-with-google')}>
+                    <div id="google_id_signin-container" className={cx('signin-with-google')} ref={this.divRef}>
                         <p className={cx('text')}>Hoặc</p>
                         <div id="google_id_signin"></div>
                     </div>

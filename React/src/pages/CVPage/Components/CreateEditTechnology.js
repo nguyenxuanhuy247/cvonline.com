@@ -50,6 +50,10 @@ class CreateEditTechnology extends PureComponent {
         const { id: userId } = this.props?.userInfo ?? {};
         const { index: productIndex } = this.props ?? {};
 
+        let errorCode;
+        const linkURL = this.state.link?.trim();
+        const isDomain = linkURL?.startsWith('https://') || linkURL?.startsWith('http://');
+
         const data = {
             id: this.state.id,
             type: this.props?.type,
@@ -64,41 +68,40 @@ class CreateEditTechnology extends PureComponent {
             label: this.props?.label,
         };
 
-        if (!isUpdate) {
-            // CREATE NEW TECHNOLOGY
-            if (this.props?.type === 'SOURCECODE') {
-                if (this.state.name && this.state.link) {
-                    await this.setState({ isLoading: true });
-                    const errorCode = await this.props.createTechnology(data, productIndex);
-                    await this.setState({ isLoading: false });
-
-                    if (errorCode === 0) {
-                        this.props.onClose();
-                    }
-                } else if (!this.state.name) {
-                    Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của Source code`, 3000);
-                } else if (!this.state.link) {
-                    Toast.TOP_CENTER_INFO(`Vui lòng nhập link của Source code`, 3000);
-                }
-            } else {
-                if (this.state.name) {
-                    await this.setState({ isLoading: true });
-                    const errorCode = await this.props.createTechnology(data, productIndex);
-                    await this.setState({ isLoading: false });
-
-                    if (errorCode === 0) {
-                        this.props.onClose();
-                    }
-                } else {
-                    Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
-                }
+        if (this.props?.type === 'SOURCECODE') {
+            if (!this.state.name) {
+                Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của Source code`, 3000);
+                return;
+            } else if (!this.state.link) {
+                Toast.TOP_CENTER_INFO(`Vui lòng nhập link của Source code`, 3000);
+                return;
+            } else if (!isDomain) {
+                Toast.TOP_CENTER_ERROR(`Link website phải bắt đầu bằng "https" hoặc "http"`, 3000);
+                return;
             }
         } else {
-            // UPDATE TECHNOLOGY
-            await this.setState({ isLoading: true });
-            const errorCode = await this.props?.updateTechnology(data, productIndex);
-            await this.setState({ isLoading: false });
+            if (!this.state.name) {
+                Toast.TOP_CENTER_INFO(`Vui lòng nhập tên của ${this.props.label}`, 3000);
+                return;
+            } else if (this.state.link && !isDomain) {
+                Toast.TOP_CENTER_ERROR(`Link website phải bắt đầu bằng "https" hoặc "http"`, 3000);
+                return;
+            }
+        }
 
+        await this.setState({ isLoading: true });
+        if (!isUpdate) {
+            errorCode = await this.props.createTechnology(data, productIndex);
+        } else {
+            errorCode = await this.props?.updateTechnology(data, productIndex);
+        }
+        await this.setState({ isLoading: false });
+
+        if (!isUpdate) {
+            if (errorCode === 0) {
+                this.props.onClose();
+            }
+        } else {
             if (errorCode === 0 || errorCode === 32) {
                 await this.props.onClose();
             }
@@ -142,6 +145,7 @@ class CreateEditTechnology extends PureComponent {
 
     render() {
         const { id, isedit, type, label } = this.props;
+        const linkURL = this.state.link?.trim();
 
         return (
             <div
@@ -199,7 +203,9 @@ class CreateEditTechnology extends PureComponent {
                     <input
                         type="text"
                         spellCheck="false"
-                        className={cx('input-form')}
+                        className={cx('input-form', {
+                            error: linkURL && !linkURL?.startsWith('https://') && !linkURL?.startsWith('http://'),
+                        })}
                         placeholder="Nhập link website"
                         value={this.state.link}
                         onChange={(e) => this.handleInputTechnology(e, 'link')}

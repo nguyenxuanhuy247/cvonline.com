@@ -83,8 +83,16 @@
             border: 1px dashed #333;
             padding: 6px;
 
+            &.error {
+                border-color: red;
+            }
+
             &:hover {
                 border: 1px solid var(--primary-color);
+
+                &.error {
+                    border-color: red;
+                }
             }
         }
     }

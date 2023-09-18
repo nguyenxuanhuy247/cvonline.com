@@ -5,7 +5,7 @@ import { FaUserCircle, FaAddressBook } from 'react-icons/fa';
 import { BsFillCalendarDayFill, BsFillTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { IoIosAddCircle } from 'react-icons/io';
-import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
+import { Redirect, withRouter } from 'react-router-dom/cjs/react-router-dom.min';
 
 import { Toast } from '~/components/Toast/Toast.js';
 import ChangeImageModal from '~/components/Modal/ChangeImageModal.js';
@@ -64,8 +64,10 @@ class PersonalLayout extends PureComponent {
         }
     };
 
-    handleUpdateUserInformation = async (e, name, label) => {
+    handleUpdateUserInformation = async (e, isCanEdit, name, label) => {
         const { id: ownerID } = this.props?.owner ?? {};
+
+        if (!isCanEdit) return;
 
         let value;
         if (name === 'jobPosition') {
@@ -78,7 +80,12 @@ class PersonalLayout extends PureComponent {
 
         if (value !== this.props?.userInfo?.[name]) {
             const data = { userId: ownerID, [name]: value, label: label };
-            await this.props.updateUserInformation(data);
+            const errorCode = await this.props.updateUserInformation(data);
+
+            if (errorCode !== 0) {
+                const selectElement = document.getElementById('js-select-job-position');
+                selectElement.value = this.props.userInfo?.jobPosition;
+            }
         }
     };
 
@@ -151,7 +158,6 @@ class PersonalLayout extends PureComponent {
     // =================================================================
     async componentDidMount() {
         const { paramId } = this.props?.match?.params ?? {};
-        // const { languages } = this.props?.userInfo;
         const { history } = this.props;
 
         // Read CV Layout
@@ -228,7 +234,7 @@ class PersonalLayout extends PureComponent {
 
         const isCanEdit = userID === ownerID;
 
-        return (
+        return !this.props.isRedirectToSignIn ? (
             <MainLayout isShowScrollButtons={true}>
                 <div className={cx('cv-page')} id="cv-page">
                     {userID !== 0 ? (
@@ -271,18 +277,25 @@ class PersonalLayout extends PureComponent {
                                                 isCanEdit={isCanEdit}
                                                 content={this.props?.userInfo?.fullName || ''}
                                                 className={cx('full-name', { contentEditable: isCanEdit })}
-                                                placeholder="Nguyễn Xuân Huy"
+                                                placeholder="Họ và tên"
                                                 onBlur={(e) =>
-                                                    this.handleUpdateUserInformation(e, 'fullName', 'Họ và tên')
+                                                    this.handleUpdateUserInformation(
+                                                        e,
+                                                        isCanEdit,
+                                                        'fullName',
+                                                        'Họ và tên',
+                                                    )
                                                 }
                                             />
                                             <select
+                                                id="js-select-job-position"
                                                 disabled={!isCanEdit}
-                                                value={this.props?.userInfo?.jobPosition || ''}
+                                                // value={this.props?.userInfo?.jobPosition || ''}
                                                 className={cx('select-job-title')}
                                                 onChange={(e) =>
                                                     this.handleUpdateUserInformation(
                                                         e,
+                                                        isCanEdit,
                                                         'jobPosition',
                                                         'Vị trí ứng tuyển',
                                                     )
@@ -315,6 +328,7 @@ class PersonalLayout extends PureComponent {
                                                             onBlur={(e) =>
                                                                 this.handleUpdateUserInformation(
                                                                     e,
+                                                                    isCanEdit,
                                                                     'dateOfBirth',
                                                                     'Ngày sinh',
                                                                 )
@@ -333,6 +347,7 @@ class PersonalLayout extends PureComponent {
                                                             onBlur={(e) =>
                                                                 this.handleUpdateUserInformation(
                                                                     e,
+                                                                    isCanEdit,
                                                                     'gender',
                                                                     'Giới tính',
                                                                 )
@@ -351,6 +366,7 @@ class PersonalLayout extends PureComponent {
                                                             onBlur={(e) =>
                                                                 this.handleUpdateUserInformation(
                                                                     e,
+                                                                    isCanEdit,
                                                                     'phoneNumber',
                                                                     'Số điện thoại',
                                                                 )
@@ -385,6 +401,7 @@ class PersonalLayout extends PureComponent {
                                                             onBlur={(e) =>
                                                                 this.handleUpdateUserInformation(
                                                                     e,
+                                                                    isCanEdit,
                                                                     'address',
                                                                     'Địa chỉ',
                                                                 )
@@ -402,7 +419,12 @@ class PersonalLayout extends PureComponent {
                                                     className={cx('language-desc', { contentEditable: isCanEdit })}
                                                     spellCheck={false}
                                                     onBlur={(e) =>
-                                                        this.handleUpdateUserInformation(e, 'languages', 'Ngoại ngữ')
+                                                        this.handleUpdateUserInformation(
+                                                            e,
+                                                            isCanEdit,
+                                                            'languages',
+                                                            'Ngoại ngữ',
+                                                        )
                                                     }
                                                 ></p>
                                             </div>
@@ -413,6 +435,7 @@ class PersonalLayout extends PureComponent {
                                         <div className={cx('product-list')}>
                                             {this.props.productList?.map((product, index) => {
                                                 const totalPage = this.props.productList?.length;
+
                                                 return (
                                                     <Product
                                                         key={index}
@@ -473,12 +496,15 @@ class PersonalLayout extends PureComponent {
                     )}
                 </div>
             </MainLayout>
+        ) : (
+            <Redirect to="/signin" />
         );
     };
 }
 
 const mapStateToProps = (state) => {
     return {
+        isRedirectToSignIn: state.user.isRedirectToSignIn,
         owner: state.user.owner,
         userInfo: state.user.userInfo,
         shouldUpdateUserInfo: state.user.shouldUpdateUserInfo,

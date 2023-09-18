@@ -76,7 +76,13 @@
         min-height: calc(100vh - 2 * var(--header-height-mobile));
 
         .left-col {
+            width: 100%;
             border-right: none;
+
+            .item-list {
+                .item {
+                }
+            }
         }
 
         .right-col {

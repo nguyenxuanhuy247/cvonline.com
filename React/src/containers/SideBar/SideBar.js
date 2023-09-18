@@ -32,9 +32,9 @@ class SideBar extends PureComponent {
         const isSignIn = this.props.isSignIn;
 
         if (!isSignIn) {
-            Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để tạo CV của bạn', 2000);
+            Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để tạo CV của bạn', 3000);
             this.id.current = setTimeout(() => {
-                window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}signin`);
+                this.props.userSignOutAndRedirectToSignIn();
             }, 2000);
         }
     };
@@ -50,9 +50,9 @@ class SideBar extends PureComponent {
                 this.setState({ isGetGoogleAppPasswordModal: true });
             }
         } else {
-            Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để gửi CV bằng email', 2000);
+            Toast.TOP_CENTER_INFO('Vui lòng đăng nhập để gửi CV bằng email', 3000);
             this.id.current = setTimeout(() => {
-                window.location.href = '/signin';
+                this.props.userSignOutAndRedirectToSignIn();
             }, 2000);
         }
     };
@@ -141,6 +141,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         removeCVFromHistory: () => dispatch({ type: 'REMOVE_CV_FROM_HISTORY' }),
         userSignOut: () => dispatch(userActions.userSignOut()),
+        userSignOutAndRedirectToSignIn: () => dispatch(userActions.userSignOutAndRedirectToSignIn()),
     };
 };
 

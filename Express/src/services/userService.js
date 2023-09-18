@@ -451,8 +451,6 @@ export const handlePostResetPassword = async (id, password) => {
 export const handleGetSearch = async (data) => {
     const { searchValue } = data;
 
-    console.log('Search', searchValue);
-
     try {
         const technologies = await db.technologies.findAll({
             where: {
@@ -714,7 +712,7 @@ export const handleCreateProduct = async (data) => {
                 maxOrder = Math.max(...productIDArrWithNULL);
             }
 
-            const { id, name, desc, image } = await db.technologies.create({
+            const { id, name, desc, image, productOrder } = await db.technologies.create({
                 type: 'PRODUCTDESC',
                 key: 'PD',
                 userId: userId,
@@ -728,7 +726,7 @@ export const handleCreateProduct = async (data) => {
 
             const newProduct = {
                 order: undefined,
-                productInfo: { id, name, desc, image: binaryImage },
+                productInfo: { id, name, desc, image: binaryImage, productOrder },
                 sourceCodeList: [],
                 FETechnologyList: [],
                 BETechnologyList: [],

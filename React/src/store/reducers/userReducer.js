@@ -18,6 +18,7 @@ const initialState = {
     },
     isSignIn: false,
     isSignUp: false,
+    isRedirectToSignIn: false,
     owner: null,
     allCVList: undefined,
     CVHistory: [],
@@ -45,6 +46,7 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, authLayout: false },
                 isSignUp: true,
                 isSignIn: true,
+                isRedirectToSignIn: false,
                 owner: action.payload,
             };
         case actionNames.USER_SIGNIN_FAILURE:
@@ -64,6 +66,7 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, authLayout: false },
                 isSignUp: true,
+                isRedirectToSignIn: false,
             };
         case actionNames.USER_SIGNUP_FAILURE:
             return {
@@ -83,6 +86,7 @@ const userReducer = (state = initialState, action) => {
                 isLoading: { ...state.isLoading, deleteAccount: false },
                 isSignIn: false,
                 isSignUp: false,
+                isRedirectToSignIn: false,
                 owner: null,
             };
         case actionNames.DELETE_ACCOUNT_FAILURE:
@@ -114,6 +118,18 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isSignIn: false,
                 isSignUp: false,
+                isRedirectToSignIn: false,
+                owner: null,
+                CVHistory: [],
+            };
+
+        // SIGN OUT AND REDIRECT TO SIGN IN PAGE
+        case actionNames.USER_SIGNOUT_REDIRECT_TO_SIGNIN:
+            return {
+                ...state,
+                isSignIn: false,
+                isSignUp: false,
+                isRedirectToSignIn: true,
                 owner: null,
                 CVHistory: [],
             };
@@ -153,6 +169,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, homeLayout: false },
+                isRedirectToSignIn: false,
                 allCVList: action.payload,
             };
         case actionNames.READ_HOME_LAYOUT_FAILURE:
@@ -185,6 +202,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
+                isRedirectToSignIn: false,
                 ...action.payload,
                 CVHistory: userIDList,
             };
@@ -251,15 +269,21 @@ const userReducer = (state = initialState, action) => {
 
         // UPDATE USER INFORMATION
         case actionNames.UPDATE_USER_INFORMATION_START:
+            const hasJobPosition = action.payload;
+            let isCVLoading = false;
+            if (hasJobPosition) {
+                isCVLoading = true;
+            }
+
             return {
                 ...state,
-                isLoading: { ...state.isLoading, updateUserInformation: true },
+                isLoading: { ...state.isLoading, updateUserInformation: true, CVLayout: isCVLoading },
                 shouldUpdateUserInfo: false,
             };
         case actionNames.UPDATE_USER_INFORMATION_SUCCESS:
             return {
                 ...state,
-                isLoading: { ...state.isLoading, updateUserInformation: false },
+                isLoading: { ...state.isLoading, updateUserInformation: false, CVLayout: false },
                 owner: action.payload,
                 userInfo: action.payload,
                 shouldUpdateUserInfo: false,
@@ -278,7 +302,7 @@ const userReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                isLoading: { ...state.isLoading, updateUserInformation: false },
+                isLoading: { ...state.isLoading, updateUserInformation: false, CVLayout: false },
                 shouldUpdateUserInfo: true,
                 ...updateUserInformationProps,
             };
@@ -416,6 +440,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, moveProduct: true },
+                shouldUpdateProductNameAndDesc: false,
             };
         case actionNames.MOVE_PRODUCT_SUCCESS:
             const { movedItemIndex, siblingItemIndex } = action.payload;
@@ -430,6 +455,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, moveProduct: false },
+                shouldUpdateProductNameAndDesc: true,
                 productList: newProductList,
             };
         case actionNames.MOVE_PRODUCT_FAILURE:
@@ -451,6 +477,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, moveProduct: false },
+                shouldUpdateProductNameAndDesc: false,
                 ...moveProductProps,
                 ...moveProductProductList,
             };

@@ -59,6 +59,8 @@ class SearchBar extends PureComponent {
         if (productName) {
             productName.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+
+        this.setState({ visible: false });
     };
 
     componentWillUnmount() {
@@ -107,33 +109,34 @@ class SearchBar extends PureComponent {
 
                                     {this.props.searchResultList?.map((result, index) => {
                                         return (
-                                            <Button
-                                                key={index}
-                                                className={cx('short-search-result')}
-                                                route={`/${result.user.id}`}
-                                                onClick={() => this.handleClickOnSreachResult(result.id)}
-                                            >
-                                                <Image
-                                                    src={result.image || JpgImages.productPlaceholder}
-                                                    className={cx('product-image')}
-                                                />
-                                                <div className={cx('result-desc')}>
-                                                    <p className={cx('product-name')}>{result.name}</p>
-                                                    <div className={cx('author')}>
-                                                        <p className={cx('name')}>
-                                                            {result.user.fullName
-                                                                ? result.user.fullName
-                                                                : 'Chưa có Tên tác giả'}
-                                                        </p>
-                                                        <p className={cx('separate')}>-</p>
-                                                        <p className={cx('job-title')}>
-                                                            {result.user.jobPosition
-                                                                ? result.user.jobPosition
-                                                                : 'Chưa có Vị trí ứng tuyển'}
-                                                        </p>
+                                            <div key={index} className={cx('short-search-result-container')}>
+                                                <Button
+                                                    className={cx('short-search-result')}
+                                                    route={`/${result.user.id}`}
+                                                    onClick={() => this.handleClickOnSreachResult(result.id)}
+                                                >
+                                                    <Image
+                                                        src={result.image || JpgImages.productPlaceholder}
+                                                        className={cx('product-image')}
+                                                    />
+                                                    <div className={cx('result-desc')}>
+                                                        <p className={cx('product-name')}>{result.name}</p>
+                                                        <div className={cx('author')}>
+                                                            <p className={cx('name')}>
+                                                                {result.user.fullName
+                                                                    ? result.user.fullName
+                                                                    : 'Chưa có Tên tác giả'}
+                                                            </p>
+                                                            <p className={cx('separate')}>-</p>
+                                                            <p className={cx('job-title')}>
+                                                                {result.user.jobPosition
+                                                                    ? result.user.jobPosition
+                                                                    : 'Chưa có Vị trí ứng tuyển'}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </Button>
+                                                </Button>
+                                            </div>
                                         );
                                     })}
                                 </div>
