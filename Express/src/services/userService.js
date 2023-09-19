@@ -272,7 +272,7 @@ export const postUserSignIn = async (data) => {
                         return message;
                     }
                 } catch (error) {
-                    console.log('An error Get User Info in postUserSignIn() in userService.js : ', error);
+                    console.log('An error in Get User Info in postUserSignIn() in userService.js : ', error);
 
                     return {
                         errorCode: 31,
@@ -288,17 +288,26 @@ export const postUserSignIn = async (data) => {
                     jobPosition: 'Fullstack developer',
                 });
 
-                const message = await getUserInfo(true, email);
-                const { errorCode, data } = message;
+                try {
+                    const message = await getUserInfo(true, email);
+                    const { errorCode, data } = message;
 
-                if (errorCode === 0) {
+                    if (errorCode === 0) {
+                        return {
+                            errorCode: 0,
+                            errorMessage: `Đăng ký bằng Google thành công`,
+                            data: data,
+                        };
+                    } else {
+                        return message;
+                    }
+                } catch (error) {
+                    console.log('An error in Get User Info in postUserSignIn() in userService.js : ', error);
+
                     return {
-                        errorCode: 0,
-                        errorMessage: `Đăng ký bằng Google thành công`,
-                        data: data,
+                        errorCode: 31,
+                        errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
                     };
-                } else {
-                    return message;
                 }
             } catch (error) {
                 console.log('An error Create New Product in postUserSignIn() in userService.js : ', error);
