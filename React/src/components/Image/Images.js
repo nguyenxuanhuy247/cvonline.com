@@ -4,6 +4,8 @@ import productPlaceholder from '~/assets/img/product-placeholder.jpg';
 import emptyProductList from '~/assets/img/empty-product-list.jpg';
 import emptyProductIcon from '~/assets/img/empty-list-icon.png';
 
+import logo from '~/assets/logo/logo.png';
+
 import guide1 from '~/assets/img/guide-1.png';
 import guide2 from '~/assets/img/guide-2.png';
 import guide3 from '~/assets/img/guide-3.png';
@@ -17,6 +19,10 @@ export const JpgImages = {
     avatarPlaceholder,
     emptyProductList,
     emptyProductIcon,
+};
+
+export const logoImages = {
+    logo,
 };
 
 export const googleAppPasswordGuide = {

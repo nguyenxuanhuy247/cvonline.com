@@ -22,7 +22,7 @@ class GetGoogleAppPasswordModal extends PureComponent {
     }
 
     handleInputGmailPassword = (e) => {
-        const value = e.target.value.replace(/ /g, '');
+        const value = e.target.value?.replace(/ /g, '');
         this.setState({ gmailPassword: value });
     };
 
@@ -40,12 +40,21 @@ class GetGoogleAppPasswordModal extends PureComponent {
 
                 if (errorCode === 0) {
                     Toast.TOP_CENTER_SUCCESS('Cập nhật Google App Password thành công', 3000);
-                    this.props.onClose();
+                    this.props.onCloseAndOpenSendCVModal();
                 }
             }
         } else {
             Toast.TOP_CENTER_ERROR('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3000);
         }
+    };
+
+    handleCloseModalAndClearData = () => {
+        this.setState({
+            isLoading: false,
+            gmailPassword: '',
+        });
+
+        this.props.onClose();
     };
 
     render() {
@@ -71,7 +80,7 @@ class GetGoogleAppPasswordModal extends PureComponent {
                                     {!this.state.isLoading ? 'Cập nhật' : <Loading inner auth />}
                                 </Button>
                             </form>
-                            <span className={cx('close')} onClick={onClose}>
+                            <span className={cx('close')} onClick={() => this.handleCloseModalAndClearData()}>
                                 <MdClose className={cx('hide-on-mobile')} />
                                 <span className={cx('only-show-on-mobile')}>Hủy</span>
                             </span>

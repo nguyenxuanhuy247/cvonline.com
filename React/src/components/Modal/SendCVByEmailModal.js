@@ -16,7 +16,7 @@ import { Toast } from '~/components/Toast/Toast.js';
 import Loading from '~/components/Modal/Loading.js';
 import logoWithText from '~/assets/logo/logo-with-text.png';
 import Image from '~/components/Image/Image.js';
-import { JpgImages } from '~/components/Image/Images.js';
+import { JpgImages, logoImages } from '~/components/Image/Images.js';
 import CommonUtils from '~/utils/CommonUtils.js';
 import Modal from '~/components/Modal/Modal.js';
 import CropImage from '~/components/Modal/CropImage.js';
@@ -71,9 +71,18 @@ class SendCVByEmailModal extends PureComponent {
         this.props.onClose();
     };
 
+    testGmailAddress = (link) => {
+        const regex = /@gmail\.com$/;
+        return regex.test(link);
+    };
+
     handleSendInfoAndCVByEmail = async () => {
+        const isGmailAddress = this.testGmailAddress(this.state.to);
+
         if (!this.state.to) {
             Toast.TOP_CENTER_WARN('Nhập email nhà tuyển dụng', 3000);
+        } else if (!isGmailAddress) {
+            Toast.TOP_CENTER_WARN('Email nhà tuyển dụng không đúng định dạng Gmail', 3000);
         } else if (!this.state.subject) {
             Toast.TOP_CENTER_WARN('Nhập tiêu đề email gửi nhà tuyển dụng', 3000);
         } else if (!this.state.companyName) {
@@ -93,6 +102,10 @@ class SendCVByEmailModal extends PureComponent {
             formData.append('pdf', this.state.pdf);
             formData.append('states', JSON.stringify(data));
             await this.props.SendCVByEmail(formData);
+
+            if (!this.props.owner?.isGmailPassword) {
+                this.props.onCloseAndOpenGetGoogleAppPasswordModal();
+            }
         }
     };
 
@@ -166,7 +179,7 @@ class SendCVByEmailModal extends PureComponent {
                         <div className={cx('container')} onClick={(e) => e.stopPropagation()}>
                             <div className={cx('modal-header')}>
                                 <p className={cx('title')}>Email gửi nhà tuyển dụng</p>
-                                <span className={cx('close')} onClick={onClose}>
+                                <span className={cx('close')} onClick={() => this.handleCloseModal()}>
                                     <MdClose />
                                 </span>
                             </div>
@@ -309,12 +322,17 @@ class SendCVByEmailModal extends PureComponent {
 
                                                     <div className={cx('button-container')}>
                                                         <Button
-                                                            className={cx('button')}
+                                                            className={cx('button', 'product')}
                                                             href={`${process.env.REACT_APP_FRONTEND_URL}${this.props.owner.id}`}
                                                             target="_blank"
                                                             rel="noreferrer"
                                                         >
-                                                            SẢN PHẨM
+                                                            <img
+                                                                src={logoImages.logo}
+                                                                className={cx('logo')}
+                                                                alt="Logo"
+                                                            />
+                                                            <span className={cx('text')}>SẢN PHẨM</span>
                                                         </Button>
                                                         <Button
                                                             disabled={!isGithub}

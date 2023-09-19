@@ -64,6 +64,19 @@ class SideBar extends PureComponent {
         });
     };
 
+    handleCloseSendCVModalAndOpenGetGoogleAppPasswordModal = () => {
+        this.setState({
+            isGetGoogleAppPasswordModal: true,
+            isSendCVViaEmailModal: false,
+        });
+    };
+
+    handleCloseGetGoogleAppPasswordModalAndOpenSendCVModal = () => {
+        this.setState({
+            isGetGoogleAppPasswordModal: false,
+            isSendCVViaEmailModal: true,
+        });
+    };
     componentDidUpdate(prevProps) {
         if (this.props.userInfo?.id !== prevProps.userInfo?.id) {
             this.setState({ prevUserID: prevProps.userInfo?.id });
@@ -121,8 +134,15 @@ class SideBar extends PureComponent {
                 <GetGoogleAppPasswordModal
                     isOpen={this.state.isGetGoogleAppPasswordModal}
                     onClose={() => this.handleCloseModal()}
+                    onCloseAndOpenSendCVModal={() => this.handleCloseGetGoogleAppPasswordModalAndOpenSendCVModal()}
                 />
-                <SendCVByEmailModal isOpen={this.state.isSendCVViaEmailModal} onClose={() => this.handleCloseModal()} />
+                <SendCVByEmailModal
+                    isOpen={this.state.isSendCVViaEmailModal}
+                    onClose={() => this.handleCloseModal()}
+                    onCloseAndOpenGetGoogleAppPasswordModal={() =>
+                        this.handleCloseSendCVModalAndOpenGetGoogleAppPasswordModal()
+                    }
+                />
             </div>
         );
     };

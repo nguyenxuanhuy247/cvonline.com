@@ -117,10 +117,24 @@ export const checkReqSendCVByEmail = (req, res, next) => {
     const data = req.body.states;
     const { from, to, subject } = JSON.parse(data);
 
+    const testGmailAddress = (link) => {
+        const regex = /@gmail\.com$/;
+        return regex.test(link);
+    };
+
     if (!to) {
         return res.status(400).json({
             errorCode: 11,
             errorMessage: 'Vui lòng nhập Email của nhà tuyển dụng',
+        });
+    }
+
+    const isGmailAddress = testGmailAddress(to);
+
+    if (!isGmailAddress) {
+        return res.status(400).json({
+            errorCode: 11,
+            errorMessage: 'Vui lòng nhập Email nhà tuyển dụng theo định dạng Gmail',
         });
     }
 

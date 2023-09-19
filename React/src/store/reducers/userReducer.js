@@ -258,15 +258,21 @@ const userReducer = (state = initialState, action) => {
         case actionNames.SEND_CV_BY_EMAIL_FAILURE:
             const sendCVByEmailErrorCode = action.payload;
             let sendCVByEmailProps;
+            let sendCVByEmail_newOwner = state.owner;
 
             if (sendCVByEmailErrorCode === 32) {
                 sendCVByEmailProps = { isSignIn: false, isSignUp: false };
+            }
+
+            if (sendCVByEmailErrorCode === 33 || sendCVByEmailErrorCode === 34) {
+                sendCVByEmail_newOwner = { ...state.owner, isGmailPassword: false };
             }
 
             return {
                 ...state,
                 isLoading: { ...state.isLoading, sendCVByEmail: false },
                 isCVSent: false,
+                owner: sendCVByEmail_newOwner,
                 ...sendCVByEmailProps,
             };
 
