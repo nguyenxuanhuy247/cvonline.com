@@ -79,7 +79,7 @@ export const handleSendEmailResetPassword = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không gửi được email để đặt lại mật khẩu ☹️`,
+            errorMessage: `Lỗi Server! Không thể gửi email để đặt lại mật khẩu ☹️`,
         };
     }
 };

@@ -28,7 +28,7 @@ export const handleVerifyUserEmail = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không xác thực được email ☹️`,
+            errorMessage: `Lỗi Server! Không thể xác thực email ☹️`,
         };
     }
 };
@@ -60,7 +60,7 @@ export const handleVerifyUserID = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không xác thực được ID của tài khoản ☹️`,
+            errorMessage: `Lỗi Server! Không thể xác thực ID của tài khoản ☹️`,
         };
     }
 };
@@ -108,7 +108,7 @@ export const handleVerifyCurrentPassword = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không xác thực được mật khẩu hiện tại ☹️`,
+            errorMessage: `Lỗi Server! Không thể xác thực mật khẩu hiện tại ☹️`,
         };
     }
 };

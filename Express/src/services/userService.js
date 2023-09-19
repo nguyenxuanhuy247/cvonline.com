@@ -231,18 +231,30 @@ export const postUserSignIn = async (data) => {
                     const isPasswordMatch = await bcrypt.compareSync(password, user.password);
 
                     if (isPasswordMatch) {
-                        const message = await getUserInfo(true, email);
-                        const { errorCode, data } = message;
+                        try {
+                            const message = await getUserInfo(true, email);
+                            const { errorCode, data } = message;
 
-                        if (errorCode === 0) {
+                            if (errorCode === 0) {
+                                return {
+                                    errorCode: 0,
+                                    errorMessage: `Đăng nhập bằng Email thành công`,
+                                    data: data,
+                                    token: token,
+                                };
+                            } else {
+                                return message;
+                            }
+                        } catch (error) {
+                            console.log(
+                                'An error in Get User Info in postUserSignIn() by Email in userService.js : ',
+                                error,
+                            );
+
                             return {
-                                errorCode: 0,
-                                errorMessage: `Đăng nhập thành công`,
-                                data: data,
-                                token: token,
+                                errorCode: 31,
+                                errorMessage: `Lỗi Server! Không thể đăng nhập bằng Email ☹️`,
                             };
-                        } else {
-                            return message;
                         }
                     } else {
                         return {
@@ -253,7 +265,7 @@ export const postUserSignIn = async (data) => {
                 } else {
                     return {
                         errorCode: 32,
-                        errorMessage: `Chưa thiết lập mật khẩu. Hãy nhấn vào "Quên mật khẩu ?"`,
+                        errorMessage: `Chưa thiết lập mật khẩu. Hãy nhấn vào "Quên mật khẩu?"`,
                     };
                 }
             } else {
@@ -276,7 +288,7 @@ export const postUserSignIn = async (data) => {
 
                     return {
                         errorCode: 31,
-                        errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
+                        errorMessage: `Lỗi Server! Không thể đăng nhập bằng Google ☹️`,
                     };
                 }
             }
@@ -295,26 +307,26 @@ export const postUserSignIn = async (data) => {
                     if (errorCode === 0) {
                         return {
                             errorCode: 0,
-                            errorMessage: `Đăng ký bằng Google thành công`,
+                            errorMessage: `Đăng ký tài khoản bằng Google thành công`,
                             data: data,
                         };
                     } else {
                         return message;
                     }
                 } catch (error) {
-                    console.log('An error in Get User Info in postUserSignIn() in userService.js : ', error);
+                    console.log('An error in Get User Info in postUserSignIn() by Google in userService.js : ', error);
 
                     return {
                         errorCode: 31,
-                        errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
+                        errorMessage: `Lỗi Server! Không thể đăng ký tài khoản bằng Google ☹️`,
                     };
                 }
             } catch (error) {
-                console.log('An error Create New Product in postUserSignIn() in userService.js : ', error);
+                console.log('An error in Create New User in postUserSignIn() by Google in userService.js : ', error);
 
                 return {
                     errorCode: 31,
-                    errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
+                    errorMessage: `Lỗi Server! Không thể đăng ký tài khoản bằng Google ☹️`,
                 };
             }
         } else {
@@ -328,7 +340,7 @@ export const postUserSignIn = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
+            errorMessage: `Lỗi Server! Không thể đăng nhập vào ứng dụng ☹️`,
         };
     }
 };
@@ -523,7 +535,7 @@ export const handleGetSearch = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Tìm kiếm sản phẩm thất bại ☹️`,
+            errorMessage: `Lỗi Server! Không thể tìm kiếm sản phẩm ☹️`,
         };
     }
 };
@@ -625,7 +637,7 @@ export const handleGetHomeLayout = async () => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Tải danh sách CV thất bại ☹️`,
+            errorMessage: `Lỗi Server! Không thể tải danh sách CV ☹️`,
         };
     }
 };
@@ -654,7 +666,7 @@ export const handleGetCVLayout = async (userId) => {
         console.log('An error in handleGetCVLayout() in userService.js : ', error);
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không tải được CV của ứng viên ☹️`,
+            errorMessage: `Lỗi Server! Không thể tải CV của ứng viên ☹️`,
         };
     }
 };
@@ -716,7 +728,7 @@ export const handleUpdateUserInformation = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Cập nhật ${label} thất bại ☹️`,
+            errorMessage: `Lỗi Server! Không thể cập nhật ${label} ☹️`,
         };
     }
 };
@@ -788,7 +800,7 @@ export const handleCreateProduct = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không tạo được sản phẩm mới ☹️`,
+            errorMessage: `Lỗi Server! Không thể tải sản phẩm mới ☹️`,
         };
     }
 };
@@ -828,7 +840,7 @@ export const handleUpdateProduct = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không cập nhật được ${label} ☹️`,
+            errorMessage: `Lỗi Server! Không thể cập nhật ${label} ☹️`,
         };
     }
 };
@@ -860,7 +872,7 @@ export const handleDeleteProduct = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không xóa được sản phẩm ☹️`,
+            errorMessage: `Lỗi Server! Không thể xóa sản phẩm ☹️`,
         };
     }
 };
@@ -1090,7 +1102,7 @@ export const handleDeleteTechnology = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không xóa được ${label} ☹️`,
+            errorMessage: `Lỗi Server! Không thể xóa ${label} ☹️`,
         };
     }
 };
@@ -1128,7 +1140,7 @@ export const handleUpdateMultipleTechnologies = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không sắp xếp được danh sách ${label} ☹️`,
+            errorMessage: `Lỗi Server! Không thể sắp xếp danh sách ${label} ☹️`,
         };
     }
 };
@@ -1164,7 +1176,7 @@ export const handleChangeUserID = async (data) => {
 
         return {
             errorCode: 31,
-            errorMessage: `Lỗi Server! Không cập nhật được ID người dùng ☹️`,
+            errorMessage: `Lỗi Server! Không thể cập nhật ID người dùng ☹️`,
         };
     }
 };
