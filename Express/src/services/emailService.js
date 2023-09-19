@@ -467,7 +467,7 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                     <div style="margin-top: 40px">
                         <p
                             style="
-                                width: 420px;
+                                width: 300px;
                                 margin: 16px auto 30px;
                                 padding: 6px 8px;
                                 font-size: 20px;

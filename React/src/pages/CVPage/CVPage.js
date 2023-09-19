@@ -158,7 +158,6 @@ class PersonalLayout extends PureComponent {
     // =================================================================
     async componentDidMount() {
         const { paramId } = this.props?.match?.params ?? {};
-        const { history } = this.props;
 
         // Read CV Layout
         if (paramId) {
@@ -174,8 +173,7 @@ class PersonalLayout extends PureComponent {
             Toast.TOP_CENTER_ERROR('Không tìm thấy ID người dùng, vui lòng đăng nhập lại', 3500);
 
             this.redirectID.current = setTimeout(() => {
-                this.props.userSignOut();
-                history.push('/signin');
+                this.props.userSignOutAndRedirectToSignIn();
             }, 2000);
         }
 
@@ -221,6 +219,7 @@ class PersonalLayout extends PureComponent {
         // Change to another CV
         if (this.props?.match?.params.paramId !== prevProps?.match?.params.paramId) {
             this.props.readCVLayout(paramId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
 
@@ -532,7 +531,7 @@ const mapDispatchToProps = (dispatch) => {
         moveProduct: (data, index) => dispatch(userActions.moveProduct(data, index)),
 
         // Sign out
-        userSignOut: () => dispatch(userActions.userSignOut()),
+        userSignOutAndRedirectToSignIn: () => dispatch(userActions.userSignOutAndRedirectToSignIn()),
     };
 };
 

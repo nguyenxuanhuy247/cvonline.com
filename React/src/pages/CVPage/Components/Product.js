@@ -337,6 +337,29 @@ class Product extends PureComponent {
 
         // Set display BE, FE Technology
         this.displayJobPositionLayout(jobTitle);
+
+        // Reset parameters when change param URL
+        if (prevProps.userInfo !== this.props.userInfo) {
+            this.setState({
+                isFE: true,
+                FE_isPagination: true,
+                FE_Page: 1,
+                FE_PageSize: 10,
+                FE_sortBy: '',
+                FE_isSearch: false,
+                FE_searchInputValue: '',
+
+                isBE: true,
+                BE_isPagination: true,
+                BE_Page: 1,
+                BE_PageSize: 10,
+                BE_sortBy: '',
+                BE_isSearch: false,
+                BE_searchInputValue: '',
+
+                isChangeImageModalOpen: false,
+            });
+        }
     }
 
     async componentDidMount() {

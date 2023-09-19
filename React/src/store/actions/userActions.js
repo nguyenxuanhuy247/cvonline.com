@@ -137,6 +137,7 @@ export const userSignOut = () => {
     };
 };
 
+// USER SIGN OUT AND REDIRECT TO SIGIN IN PAGE
 export const userSignOutAndRedirectToSignIn = () => {
     return {
         type: actionNames.USER_SIGNOUT_REDIRECT_TO_SIGNIN,
