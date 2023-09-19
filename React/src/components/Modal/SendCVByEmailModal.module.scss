@@ -46,14 +46,12 @@
 
         .modal-body {
             flex: 1;
-            padding: 12px 24px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             height: 500px;
 
             .email-header {
-                min-width: 740px;
-
                 .email-info-group {
                     padding: 8px 0;
                     border-bottom: 1px solid #ccc;
@@ -77,6 +75,8 @@
                 margin-top: 12px;
                 background-color: #f3f3f3;
                 overflow: auto;
+                display: flex;
+                flex-direction: column;
 
                 .content {
                     margin: auto;
@@ -229,7 +229,7 @@
                                 }
 
                                 &.letter {
-                                    font-weight: 400;
+                                    font-weight: 300;
                                 }
                             }
 
@@ -395,117 +395,147 @@
                     }
                 }
 
-                .cv-pdf-upload,
-                .image-upload {
-                    .btn {
-                        height: 42px;
-                        font-size: 1.6rem;
-                        background-color: #fff;
-                        user-select: none;
-                        cursor: pointer;
+                .attachment {
+                    .cv-pdf-upload {
+                        margin: auto;
+                        width: 520px;
+                        border: 1px solid var(--auth-hover-input-border-color-green);
+                        display: flex;
+                        align-items: center;
 
-                        .icon {
-                            font-size: 24px;
-                            color: currentColor;
+                        .display-pdf-file {
+                            margin: 0 8px;
+                            flex: 1;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            column-gap: 4px;
+
+                            .pdf-file-name {
+                                max-width: 300px;
+                                font-size: 1.4rem;
+                                font-weight: 300;
+                                word-break: break-all;
+
+                                @include line-clamp;
+                            }
+
+                            .delete-file {
+                                display: grid;
+                                place-items: center;
+                                font-size: 20px;
+                                color: red;
+                                cursor: pointer;
+                            }
                         }
 
-                        &.upload {
-                            width: 200px;
-                            padding: 4px 8px;
-                            border: 1px solid var(--primary-color);
-                            border-radius: 4px;
+                        .no-file-selected {
+                            margin: 0 8px;
+                            flex: 1;
+                            text-align: center;
+                            font-size: 1.4rem;
+                            font-weight: 300;
+                        }
+
+                        .upload-btn {
+                            width: 160px;
+                            margin-left: auto;
+                            padding: 6px 8px;
+                            border-right: 1px solid var(--primary-color);
                             font-weight: 400;
                             display: flex;
                             justify-content: center;
                             align-items: center;
                             column-gap: 8px;
-                            color: var(--primary-color);
+                            color: #fff;
+                            background-color: var(--primary-color);
+                            cursor: pointer;
 
-                            &:hover {
-                                color: #fff;
-                                background-color: var(--primary-color);
+                            .icon {
+                                font-size: 24px;
+                                color: currentColor;
                             }
                         }
                     }
-                }
 
-                .cv-pdf-upload {
-                    margin-left: 210px;
-                    display: flex;
-                    align-items: center;
-                    column-gap: 20px;
-
-                    .display-pdf-file {
+                    .image-upload {
+                        margin-top: 16px;
                         display: flex;
-                        align-items: center;
-                        column-gap: 4px;
+                        justify-content: center;
+                        column-gap: 20px;
 
-                        .pdf-file-name {
-                            max-width: 300px;
-                            font-size: 1.4rem;
-                            font-weight: 300;
-                            word-break: break-all;
-
-                            @include line-clamp;
-                        }
-
-                        .delete-file {
-                            display: grid;
-                            place-items: center;
-                            font-size: 20px;
-                            color: red;
+                        .btn {
+                            height: 42px;
+                            font-size: 1.6rem;
+                            background-color: #fff;
+                            user-select: none;
                             cursor: pointer;
+
+                            .icon {
+                                font-size: 24px;
+                                color: currentColor;
+                            }
+
+                            &.upload {
+                                width: 200px;
+                                padding: 4px 8px;
+                                border: 1px solid var(--primary-color);
+                                border-radius: 4px;
+                                font-weight: 400;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                column-gap: 8px;
+                                color: var(--primary-color);
+
+                                &:hover {
+                                    color: #fff;
+                                    background-color: var(--primary-color);
+                                }
+                            }
+
+                            &.crop {
+                                width: 140px;
+                                color: purple;
+                                border: 1px solid currentColor;
+                                column-gap: 4px;
+
+                                &:hover {
+                                    color: #fff;
+                                    background-color: purple;
+                                }
+                            }
+
+                            &.delete {
+                                width: 140px;
+                                color: red;
+                                border: 1px solid currentColor;
+                                column-gap: 4px;
+
+                                &:hover {
+                                    color: #fff;
+                                    background-color: red;
+                                }
+                            }
                         }
                     }
-                }
 
-                .image-upload {
-                    margin-top: 12px;
-                    display: flex;
-                    justify-content: center;
-                    column-gap: 20px;
+                    .image-display {
+                        display: block;
+                        margin: 20px 0 80px;
 
-                    .crop {
-                        width: 140px;
-                        color: purple;
-                        border: 1px solid currentColor;
-                        column-gap: 4px;
-
-                        &:hover {
-                            color: #fff;
-                            background-color: purple;
+                        .image {
+                            width: 100%;
+                            height: fit-content;
+                            object-fit: contain;
+                            border: 1px solid #ccc;
                         }
-                    }
-
-                    .delete {
-                        width: 140px;
-                        color: red;
-                        border: 1px solid currentColor;
-                        column-gap: 4px;
-
-                        &:hover {
-                            color: #fff;
-                            background-color: red;
-                        }
-                    }
-                }
-
-                .image-display {
-                    display: block;
-                    margin: 20px 20px 80px;
-
-                    .image {
-                        width: 100%;
-                        height: fit-content;
-                        object-fit: contain;
-                        border: 1px solid #ccc;
                     }
                 }
             }
         }
 
         .modal-footer {
-            margin-top: 12px;
             padding: 12px;
             display: flex;
             justify-content: center;
@@ -546,9 +576,15 @@
             }
 
             .modal-body {
-                .background {
-                    .cv-pdf-upload {
-                        margin-left: calc((100% - 520px) / 2);
+                .email-header {
+                    .email-info-group {
+                        font-size: 1.5rem;
+
+                        .label {
+                        }
+
+                        .input {
+                        }
                     }
                 }
             }
@@ -568,13 +604,32 @@
             }
 
             .modal-body {
-                padding: 16px;
-                flex-direction: column;
-                padding: 12px;
-
                 .background {
-                    .cv-pdf-upload {
-                        margin-left: 104px;
+                    min-width: 0;
+
+                    .attachment {
+                        width: 740px;
+                        padding: 0 12px;
+
+                        .cv-pdf-upload {
+                            width: 520px;
+                            margin: auto;
+                        }
+
+                        .image-upload {
+                            width: 544px;
+                            padding: 0 12px;
+                            margin: auto;
+                            margin-top: 16px;
+                        }
+                    }
+                }
+
+                .email-header {
+                    .email-info-group {
+                        .label {
+                            min-width: 100px;
+                        }
                     }
                 }
             }

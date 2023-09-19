@@ -20,10 +20,10 @@ const allMiddleware = [
     }),
 ];
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...allMiddleware)));
-// const store = createStore(rootReducer, {}, applyMiddleware(...allMiddleware));
+// const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...allMiddleware)));
+const store = createStore(rootReducer, {}, applyMiddleware(...allMiddleware));
 
 initMessageListener(store);
 export const dispatch = store.dispatch;

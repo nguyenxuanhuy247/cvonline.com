@@ -257,38 +257,56 @@ export const postUserSignIn = async (data) => {
                     };
                 }
             } else {
+                try {
+                    const message = await getUserInfo(true, email);
+                    const { errorCode, data } = message;
+
+                    if (errorCode === 0) {
+                        return {
+                            errorCode: 0,
+                            errorMessage: `Đăng nhập bằng Google thành công`,
+                            data: data,
+                            token: token,
+                        };
+                    } else {
+                        return message;
+                    }
+                } catch (error) {
+                    console.log('An error Get User Info in postUserSignIn() in userService.js : ', error);
+
+                    return {
+                        errorCode: 31,
+                        errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
+                    };
+                }
+            }
+        } else if (isGoogle) {
+            try {
+                await db.users.create({
+                    email: email,
+                    fullName: fullName,
+                    jobPosition: 'Fullstack developer',
+                });
+
                 const message = await getUserInfo(true, email);
                 const { errorCode, data } = message;
 
                 if (errorCode === 0) {
                     return {
                         errorCode: 0,
-                        errorMessage: `Đăng nhập bằng Google thành công`,
+                        errorMessage: `Đăng ký bằng Google thành công`,
                         data: data,
-                        token: token,
                     };
                 } else {
                     return message;
                 }
-            }
-        } else if (isGoogle) {
-            await db.users.create({
-                email: email,
-                fullName: fullName,
-                jobPosition: 'Fullstack developer',
-            });
+            } catch (error) {
+                console.log('An error Create New Product in postUserSignIn() in userService.js : ', error);
 
-            const message = await getUserInfo(true, email);
-            const { errorCode, data } = message;
-
-            if (errorCode === 0) {
                 return {
-                    errorCode: 0,
-                    errorMessage: `Đăng ký bằng Google thành công`,
-                    data: data,
+                    errorCode: 31,
+                    errorMessage: `Lỗi Server! Đăng nhập thất bại ☹️`,
                 };
-            } else {
-                return message;
             }
         } else {
             return {
@@ -328,17 +346,26 @@ export const postUserSignUp = async (data) => {
             });
 
             if (created) {
-                await db.technologies.create({
-                    type: 'PRODUCTDESC',
-                    key: 'PD',
-                    userId: user.id,
-                    productOrder: 1,
-                });
+                try {
+                    await db.technologies.create({
+                        type: 'PRODUCTDESC',
+                        key: 'PD',
+                        userId: user.id,
+                        productOrder: 1,
+                    });
 
-                return {
-                    errorCode: 0,
-                    errorMessage: `Đăng ký tài khoản thành công`,
-                };
+                    return {
+                        errorCode: 0,
+                        errorMessage: `Đăng ký tài khoản thành công`,
+                    };
+                } catch (error) {
+                    console.log('An error in Create New Product in postUserSignUp() in userService.js : ', error);
+
+                    return {
+                        errorCode: 31,
+                        errorMessage: `Lỗi Server! Không thể đăng ký tài khoản ☹️`,
+                    };
+                }
             } else {
                 return {
                     errorCode: 32,

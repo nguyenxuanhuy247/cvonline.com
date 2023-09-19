@@ -5,7 +5,7 @@ import { MdClose, MdImageNotSupported } from 'react-icons/md';
 import { BsCardImage, BsGithub, BsFillCheckCircleFill } from 'react-icons/bs';
 import { BiCut } from 'react-icons/bi';
 import { AiOutlineClose, AiFillCloseCircle } from 'react-icons/ai';
-import { IoNewspaperSharp } from 'react-icons/io5';
+import { FaFileUpload } from 'react-icons/fa';
 import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -205,7 +205,7 @@ class SendCVByEmailModal extends PureComponent {
                                             <p className={cx('title')}>
                                                 THƯ ỨNG TUYỂN VỊ TRÍ
                                                 <input
-                                                    value={this.state.jobTitle}
+                                                    value={this.state.jobTitle?.toUpperCase()}
                                                     className={cx('job-title')}
                                                     placeholder="NHẬP VỊ TRÍ ỨNG TUYỂN"
                                                     spellCheck={false}
@@ -291,7 +291,7 @@ class SendCVByEmailModal extends PureComponent {
                                                                 )
                                                                 .join(' ')}
                                                             className={cx('input-info', 'letter')}
-                                                            placeholder='Ô này không cần nhập'
+                                                            placeholder="Ô này không cần nhập"
                                                             spellCheck={false}
                                                             disabled
                                                         />
@@ -403,77 +403,83 @@ class SendCVByEmailModal extends PureComponent {
                                         </div>
                                     </div>
 
-                                    <div className={cx('cv-pdf-upload')}>
-                                        <label
-                                            className={cx('btn', 'upload')}
-                                            onChange={() => this.handleUploadCVPdf()}
-                                            htmlFor="upload-cv-pdf"
-                                        >
-                                            <IoNewspaperSharp className={cx('icon')} />
-                                            Tải CV
-                                            <input
-                                                id="upload-cv-pdf"
-                                                name="CVPdf"
-                                                accept=".pdf"
-                                                type="file"
-                                                hidden
-                                                readOnly
-                                            />
-                                        </label>
+                                    <div className={cx('attachment')}>
+                                        <div className={cx('cv-pdf-upload')}>
+                                            {this.state.isDisplayPdfFile ? (
+                                                <div className={cx('display-pdf-file')}>
+                                                    <span className={cx('pdf-file-name')}>
+                                                        {this.state.fileName || ''}
+                                                    </span>
+                                                    <AiOutlineClose
+                                                        className={cx('delete-file')}
+                                                        onClick={() => this.handleDeletePdfFile()}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <span className={cx('no-file-selected')}>Chưa có file PDF nào</span>
+                                            )}
 
-                                        {this.state.isDisplayPdfFile && (
-                                            <div className={cx('display-pdf-file')}>
-                                                <span className={cx('pdf-file-name')}>{this.state.fileName || ''}</span>
-                                                <AiOutlineClose
-                                                    className={cx('delete-file')}
-                                                    onClick={() => this.handleDeletePdfFile()}
+                                            <label
+                                                className={cx('upload-btn')}
+                                                onChange={() => this.handleUploadCVPdf()}
+                                                htmlFor="upload-cv-pdf"
+                                            >
+                                                <FaFileUpload className={cx('icon')} />
+                                                Tải CV PDF
+                                                <input
+                                                    id="upload-cv-pdf"
+                                                    name="CVPdf"
+                                                    accept=".pdf"
+                                                    type="file"
+                                                    hidden
+                                                    readOnly
                                                 />
-                                            </div>
-                                        )}
-                                    </div>
+                                            </label>
+                                        </div>
 
-                                    <div className={cx('image-upload')}>
+                                        <div className={cx('image-upload')}>
+                                            <label
+                                                className={cx('btn', 'upload')}
+                                                htmlFor="upload-image"
+                                                onChange={this.handleUploadImage}
+                                            >
+                                                <BsCardImage className={cx('icon')} />
+                                                Tải ảnh sản phẩm
+                                            </label>
+
+                                            <Button
+                                                disabled={this.state.productImage ? false : true}
+                                                className={cx('btn', 'crop')}
+                                                onClick={this.handleOpenCropImageModal}
+                                            >
+                                                <BiCut className={cx('icon')} />
+                                                <span className={cx('text')}>Cắt ảnh</span>
+                                            </Button>
+
+                                            <Button
+                                                disabled={this.state.productImage ? false : true}
+                                                className={cx('btn', 'delete')}
+                                                onClick={this.handleDeleteImage}
+                                            >
+                                                <MdImageNotSupported className={cx('icon')} />
+                                                <span className={cx('text')}>Xóa ảnh</span>
+                                            </Button>
+                                        </div>
+
                                         <label
-                                            className={cx('btn', 'upload')}
-                                            htmlFor="upload-image"
+                                            className={cx('image-display')}
                                             onChange={this.handleUploadImage}
+                                            htmlFor="upload-image"
                                         >
-                                            <BsCardImage className={cx('icon')} />
-                                            Tải ảnh sản phẩm
+                                            <Image
+                                                id="js-product-image-in-cv-email"
+                                                src={this.state.productImage || JpgImages.productPlaceholder}
+                                                className={cx('image')}
+                                                alt="Product Image"
+                                            />
+                                            <input id="upload-image" type="file" hidden readOnly />
                                         </label>
-
-                                        <Button
-                                            disabled={this.state.productImage ? false : true}
-                                            className={cx('btn', 'crop')}
-                                            onClick={this.handleOpenCropImageModal}
-                                        >
-                                            <BiCut className={cx('icon')} />
-                                            <span className={cx('text')}>Cắt ảnh</span>
-                                        </Button>
-
-                                        <Button
-                                            disabled={this.state.productImage ? false : true}
-                                            className={cx('btn', 'delete')}
-                                            onClick={this.handleDeleteImage}
-                                        >
-                                            <MdImageNotSupported className={cx('icon')} />
-                                            <span className={cx('text')}>Xóa ảnh</span>
-                                        </Button>
                                     </div>
-
-                                    <label
-                                        className={cx('image-display')}
-                                        onChange={this.handleUploadImage}
-                                        htmlFor="upload-image"
-                                    >
-                                        <Image
-                                            id="js-product-image-in-cv-email"
-                                            src={this.state.productImage || JpgImages.productPlaceholder}
-                                            className={cx('image')}
-                                            alt="Product Image"
-                                        />
-                                        <input id="upload-image" type="file" hidden readOnly />
-                                    </label>
                                 </div>
                             </div>
 

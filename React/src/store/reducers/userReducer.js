@@ -184,6 +184,8 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: true },
+                shouldUpdateUserInfo: false,
+                shouldUpdateProductNameAndDesc: false,
             };
         case actionNames.READ_CV_LAYOUT_SUCCESS:
             const userIDList = [...state.CVHistory];
@@ -203,6 +205,8 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
                 isRedirectToSignIn: false,
+                shouldUpdateUserInfo: true,
+                shouldUpdateProductNameAndDesc: true,
                 ...action.payload,
                 CVHistory: userIDList,
             };
@@ -232,6 +236,8 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: { ...state.isLoading, CVLayout: false },
+                shouldUpdateUserInfo: false,
+                shouldUpdateProductNameAndDesc: false,
                 ...CVLayoutUserInfo,
                 ...CVLayoutProductList,
                 ...CVLayoutProps,
