@@ -21,18 +21,18 @@ export const handleSendEmailResetPassword = async (data) => {
             const payload = { id: user.id, email: user.email };
             var token = jwt.sign(payload, secret, { expiresIn: '10h' });
             const link = `${process.env.EXPRESS_BACKEND_URL}/reset-password/${user.id}/${token}`;
-
-            const transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
-                auth: {
-                    user: process.env.EMAIL_APP,
-                    pass: process.env.EMAIL_APP_PASSWORD,
-                },
-            });
-
+            
             try {
+                const transporter = await nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: process.env.EMAIL_APP,
+                        pass: process.env.EMAIL_APP_PASSWORD,
+                    },
+                });
+
                 // send mail with defined transport object
                 await transporter.sendMail({
                     from: '"cvonline.com" <no-reply@cvonline.com.vn>',
@@ -88,7 +88,6 @@ export const handleSendEmailResetPassword = async (data) => {
 // SEND CV VIA EMAIL
 export const handleSendCVByEmail = async (data, pdfFile) => {
     try {
-        console.log('Sending CV VIA EMAIL', data.from);
         const user = await db.users.findOne({
             where: { email: data.from },
             attributes: ['id', 'fullName', 'phoneNumber', 'avatar', 'jobPosition', 'email', 'gmailPassword'],
@@ -111,25 +110,24 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                         },
                     });
 
-                    try {
-                        // send mail with defined transport object
-                        await transporter.sendMail({
-                            from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
-                            to: data.to,
-                            subject: data.subject,
-                            text: data.subject,
-                            attachments: [
-                                { path: binaryAvatar, cid: 'avatar' },
-                                { path: data.productImage ? data.productImage : '', cid: 'productImage' },
-                                { path: './src/public/img/cv-ung-vien-1.png', cid: 'logo' },
-                                { path: './src/public/img/cv-ung-vien-2.png', cid: 'logo-icon' },
-                                { path: './src/public/img/github-icon.png', cid: 'github-icon' },
-                                {
-                                    filename: data?.pdfName,
-                                    content: pdfFile?.path ? fs.readFileSync(pdfFile.path) : '',
-                                },
-                            ],
-                            html: `<div style="background-color: #f3f3f3; padding: 24px 0 80px">
+                    // send mail with defined transport object
+                    await transporter.sendMail({
+                        from: `"Ứng viên ${user.fullName}" <no-reply@cvonline.com.vn>`,
+                        to: data?.to,
+                        subject: data?.subject || 'Email không có tiêu đề',
+                        text: data?.subject || 'Email không có tiêu đề',
+                        attachments: [
+                            { path: binaryAvatar, cid: 'avatar' },
+                            { path: data?.productImage ? data?.productImage : '', cid: 'productImage' },
+                            { path: './src/public/img/cv-ung-vien-1.png', cid: 'logo' },
+                            { path: './src/public/img/cv-ung-vien-2.png', cid: 'logo-icon' },
+                            { path: './src/public/img/github-icon.png', cid: 'github-icon' },
+                            {
+                                filename: data?.pdfName,
+                                content: pdfFile?.path ? fs.readFileSync(pdfFile?.path) : '',
+                            },
+                        ],
+                        html: `<div style="background-color: #f3f3f3; padding: 24px 0 80px">
                                         <a
                                             href="${process.env.EXPRESS_FRONTEND_URL}"
                                             target="_blank"
@@ -157,7 +155,7 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                 text-transform: uppercase;
                                                             "
                                                         >
-                                                            THƯ ỨNG TUYỂN VỊ TRÍ ${data.jobTitle}
+                                                            THƯ ỨNG TUYỂN VỊ TRÍ ${data?.jobTitle}
                                                         </p>
                                                     </td>
                                                 </tr>
@@ -310,8 +308,8 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                             Hà Nội, ngày ${String(
                                                                                 new Date().getDate(),
                                                                             )} tháng ${String(
-                                new Date().getMonth() + 1,
-                            )} năm ${String(new Date().getFullYear())}.
+                            new Date().getMonth() + 1,
+                        )} năm ${String(new Date().getFullYear())}.
                                                                         </p>
                                                                     </td>
                                                                 </tr>
@@ -376,8 +374,8 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                         padding: 8px 111px;
                                                                         "
                                                                         href="${process.env.EXPRESS_FRONTEND_URL}/${
-                                user.id
-                            }"
+                            user.id
+                        }"
                                                                         target="_blank"
                                                                         rel="noreferrer"
                                                                     >
@@ -510,23 +508,12 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                         }
                                     </div>
                                 `,
-                        });
+                    });
 
-                        return {
-                            errorCode: 0,
-                            errorMessage: `CV của bạn đã được gửi tới nhà tuyển dụng`,
-                        };
-                    } catch (error) {
-                        console.log(
-                            'An error in transporter.sendMail() in NODEMAILER in handleSendCVByEmail() in emailService.js : ',
-                            error,
-                        );
-
-                        return {
-                            errorCode: 31,
-                            errorMessage: `Lỗi Server! Kiểm tra lại Email nhà tuyển dụng ☹️`,
-                        };
-                    }
+                    return {
+                        errorCode: 0,
+                        errorMessage: `CV của bạn đã được gửi tới nhà tuyển dụng`,
+                    };
                 } catch (error) {
                     console.log(
                         'An error in nodemailer.createTransport() in NODEMAILER in handleSendCVByEmail() in emailService.js : ',
