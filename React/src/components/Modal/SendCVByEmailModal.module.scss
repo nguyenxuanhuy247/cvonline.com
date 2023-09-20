@@ -412,6 +412,8 @@
                 }
 
                 .attachment {
+                    padding: 0 12px;
+
                     .cv-pdf-upload {
                         margin: auto;
                         width: 520px;
@@ -595,12 +597,6 @@
                 .email-header {
                     .email-info-group {
                         font-size: 1.5rem;
-
-                        .label {
-                        }
-
-                        .input {
-                        }
                     }
                 }
             }
@@ -625,7 +621,6 @@
 
                     .attachment {
                         width: 740px;
-                        padding: 0 12px;
 
                         .cv-pdf-upload {
                             width: 520px;

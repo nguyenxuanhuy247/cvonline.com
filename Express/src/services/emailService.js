@@ -381,7 +381,7 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                     >
                                                                         <img
                                                                             src="cid:logo-icon"
-                                                                            alt="Logo"
+                                                                            alt="Logo cvonline.com"
                                                                             style="width: 26px; height: 26px;"
                                                                         />
                                                                         <span  style="margin-top: 3px; display: inline-block; height: 26px; line-height: 26px;">SẢN PHẨM</span>
@@ -417,7 +417,7 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                     >
                                                                         <img
                                                                         src="cid:github-icon"
-                                                                        alt="Github icon"
+                                                                        alt="Github Icon"
                                                                         style="width: 26px;height: 26px;"
                                                                         />
                                                                         <span style="display: inline-block; height: 26px; line-height: 26px;">GITHUB</span>
