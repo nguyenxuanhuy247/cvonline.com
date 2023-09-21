@@ -71,18 +71,18 @@ class SendCVByEmailModal extends PureComponent {
         this.props.onClose();
     };
 
-    testGmailAddress = (link) => {
-        const regex = /@gmail\.com$/;
+    testEmailFormat = (link) => {
+        const regex = /^[a-zA-Z0-9._%-]+@[a-zA-Z]+\.com$/;
         return regex.test(link);
     };
 
     handleSendInfoAndCVByEmail = async () => {
-        const isGmailAddress = this.testGmailAddress(this.state.to);
+        const hasEmailFormat = this.testEmailFormat(this.state.to);
 
         if (!this.state.to) {
             Toast.TOP_CENTER_WARN('Nhập email nhà tuyển dụng', 3000);
-        } else if (!isGmailAddress) {
-            Toast.TOP_CENTER_WARN('Email nhà tuyển dụng không đúng định dạng Gmail', 3000);
+        } else if (!hasEmailFormat) {
+            Toast.TOP_CENTER_WARN('Email nhà tuyển dụng không đúng định dạng', 3000);
         } else if (!this.state.subject) {
             Toast.TOP_CENTER_WARN('Nhập tiêu đề email gửi nhà tuyển dụng', 3000);
         } else if (!this.state.companyName) {
@@ -114,11 +114,15 @@ class SendCVByEmailModal extends PureComponent {
         const file = await inputEl.files[0];
 
         if (file) {
-            if (file.size / (1024 * 1024) <= 5) {
-                const urlBase64 = await CommonUtils.getBase64(file);
-                await this.setState({ productImage: urlBase64, isOpenCropImageModal: true });
+            if (file.type?.startsWith('image')) {
+                if (file.size / (1024 * 1024) <= 5) {
+                    const urlBase64 = await CommonUtils.getBase64(file);
+                    await this.setState({ productImage: urlBase64, isOpenCropImageModal: true });
+                } else {
+                    toast.error(`Kích thước ảnh lớn hơn 5MB. Vui lòng chọn ảnh khác`);
+                }
             } else {
-                toast.error(`Kích thước ảnh lớn hơn 5MB. Vui lòng chọn ảnh khác`);
+                toast.error(`File bạn chọn không phải là ảnh`);
             }
         } else {
             toast.error(`Tải ảnh thất bại`);
@@ -130,10 +134,19 @@ class SendCVByEmailModal extends PureComponent {
         const pdfFile = await inputEl.files[0];
 
         if (pdfFile) {
-            if (pdfFile.size / (1024 * 1024) <= 5) {
-                this.setState({ pdfName: pdfFile.name, pdf: pdfFile, isDisplayPdfFile: true, fileName: pdfFile.name });
+            if (pdfFile.type === 'application/pdf') {
+                if (pdfFile.size / (1024 * 1024) <= 5) {
+                    this.setState({
+                        pdfName: pdfFile.name,
+                        pdf: pdfFile,
+                        isDisplayPdfFile: true,
+                        fileName: pdfFile.name,
+                    });
+                } else {
+                    toast.error(`Kích thước file lớn hơn 5MB. Vui lòng giảm dung lượng`);
+                }
             } else {
-                toast.error(`Kích thước file lớn hơn 5MB. Vui lòng giảm dung lượng`);
+                toast.error(`File bạn chọn không phải là PDF`);
             }
         } else {
             toast.error(`Tải CV PDF thất bại`);

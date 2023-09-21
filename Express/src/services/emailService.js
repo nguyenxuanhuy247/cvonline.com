@@ -21,7 +21,7 @@ export const handleSendEmailResetPassword = async (data) => {
             const payload = { id: user.id, email: user.email };
             var token = jwt.sign(payload, secret, { expiresIn: '10h' });
             const link = `${process.env.EXPRESS_BACKEND_URL}/reset-password/${user.id}/${token}`;
-            
+
             try {
                 const transporter = await nodemailer.createTransport({
                     host: 'smtp.gmail.com',
@@ -100,15 +100,28 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                 const binaryAvatar = avatar?.toString('binary');
 
                 try {
-                    const transporter = await nodemailer.createTransport({
-                        host: 'smtp.gmail.com',
-                        port: 465,
-                        secure: true,
-                        auth: {
-                            user: user.email,
-                            pass: user.gmailPassword,
-                        },
-                    });
+                    let transporter;
+                    try {
+                        transporter = await nodemailer.createTransport({
+                            host: 'smtp.gmail.com',
+                            port: 465,
+                            secure: true,
+                            auth: {
+                                user: user.email,
+                                pass: user.gmailPassword,
+                            },
+                        });
+                    } catch (error) {
+                        console.log(
+                            'An error in nodemailer.createTransport() in NODEMAILER in handleSendCVByEmail() in emailService.js : ',
+                            error,
+                        );
+
+                        return {
+                            errorCode: 34,
+                            errorMessage: `Mật khẩu ứng dụng của Google không đúng, vui lòng thiết lập lại ☹️`,
+                        };
+                    }
 
                     // send mail with defined transport object
                     await transporter.sendMail({
@@ -351,9 +364,8 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                 <tr>
                                                                     <a
                                                                         style="
-                                                                        margin-top: 16px;
+                                                                        margin: 16px 0;
                                                                         box-sizing: border-box; 
-                                                                        margin-left: calc((100% - 344px) / 2);
                                                                         width: 344px;
                                                                         display: block;
                                                                         text-decoration: none;
@@ -387,13 +399,14 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                         <span  style="margin-top: 3px; display: inline-block; height: 26px; line-height: 26px;">SẢN PHẨM</span>
                                                                     </a>
 
-                                                                    <a
-                                                                        style="
-                                                                        margin-bottom: 16px;
+                                                                    ${
+                                                                        data.githubLink &&
+                                                                        `<a
+                                                                                style="
                                                                         box-sizing: border-box;
-                                                                        margin-left: calc((100% - 344px) / 2);
+                                                                        margin-top: 24px;
+                                                                        margin-bottom: 16px;
                                                                         width: 344px;
-                                                                        margin-top: 16px;
                                                                         text-decoration: none;
                                                                         max-width: 100%;
                                                                         font-size: 16px;
@@ -411,17 +424,20 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                                                                         user-select: none;
                                                                         ${!data.githubLink ? 'opacity: 0.2' : ''}
                                                                         "
-                                                                        href="${data.githubLink}"
-                                                                        target="_blank"
-                                                                        rel="noreferrer"
-                                                                    >
-                                                                        <img
-                                                                        src="cid:github-icon"
-                                                                        alt="Github Icon"
-                                                                        style="width: 26px;height: 26px;"
-                                                                        />
-                                                                        <span style="display: inline-block; height: 26px; line-height: 26px;">GITHUB</span>
-                                                                    </a>
+                                                                                href="${data.githubLink}"
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                            >
+                                                                                <img
+                                                                                    src="cid:github-icon"
+                                                                                    alt="Github Icon"
+                                                                                    style="width: 26px;height: 26px;"
+                                                                                />
+                                                                                <span style="display: inline-block; height: 26px; line-height: 26px;">
+                                                                                    GITHUB
+                                                                                </span>
+                                                                            </a>`
+                                                                    }
                                                                 </tr>
                                                             </tbody>
                                                         </table>  
@@ -516,13 +532,13 @@ export const handleSendCVByEmail = async (data, pdfFile) => {
                     };
                 } catch (error) {
                     console.log(
-                        'An error in nodemailer.createTransport() in NODEMAILER in handleSendCVByEmail() in emailService.js : ',
+                        'An error in transporter.sendMail() in NODEMAILER in handleSendCVByEmail() in emailService.js : ',
                         error,
                     );
 
                     return {
-                        errorCode: 34,
-                        errorMessage: `Mật khẩu ứng dụng của Google không đúng, vui lòng thiết lập lại ☹️`,
+                        errorCode: 31,
+                        errorMessage: `Lỗi Server! Không kết nối được với hệ thống gửi email ☹️`,
                     };
                 }
             } else {
