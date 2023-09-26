@@ -72,8 +72,8 @@ class SendCVByEmailModal extends PureComponent {
     };
 
     testEmailFormat = (link) => {
-        const regex = /^[a-zA-Z0-9._%-]+@[a-zA-Z]+\.com$/;
-        return regex.test(link);
+        const position = link?.search(/@/);
+        return position !== -1 ? true : false;
     };
 
     handleSendInfoAndCVByEmail = async () => {

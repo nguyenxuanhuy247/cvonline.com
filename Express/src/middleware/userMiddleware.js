@@ -118,8 +118,8 @@ export const checkReqSendCVByEmail = (req, res, next) => {
     const { from, to, subject } = JSON.parse(data);
 
     const testEmailFormat = (link) => {
-        const regex = /^[a-zA-Z0-9._%-]+@[a-zA-Z]+\.com$/;
-        return regex.test(link);
+        const position = link?.search(/@/);
+        return position !== -1 ? true : false;
     };
 
     if (!to) {
